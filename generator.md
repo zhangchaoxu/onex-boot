@@ -1,6 +1,6 @@
-# xquick-generator 代码生成器
+# 代码生成器
 
-参考[人人开源renren-generator](https://gitee.com/renrenio/renren-generator) 工具生成entity、xml、dao、service、vue、sql代码 结合[xquick-rocket]和[xquick-satellite]使用
+参考[人人开源renren-generator](https://gitee.com/renrenio/renren-generator) 工具生成entity、xml、dao、service、vue、sql代码 结合\[xquick-rocket\]和\[xquick-satellite\]使用
 
 代码生成器本身不需要依赖booster和api，可以独立运行
 
@@ -14,7 +14,6 @@
 * 选中需要生成的代码的表，生成代码后，将代码放到工程对应的位置
 
 ## TODO
-[] 按策略生成代码 
-[] 生成android代码 
-[] 生成mobile代码
+
+\[\] 按策略生成代码 \[\] 生成android代码 \[\] 生成mobile代码
 
