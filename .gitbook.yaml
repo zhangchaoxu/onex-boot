@@ -1,4 +1,4 @@
 # https://docs.gitbook.com/integrations/github/content-configuration
 structure:
-  readme: wiki/README.md
+  readme: README.md
   summary: wiki/SUMMARY.md

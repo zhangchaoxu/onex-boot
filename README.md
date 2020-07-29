@@ -1,25 +1,21 @@
----
-description: xquick极速开发,如火箭发射卫星般加速您的软件开发速度
----
+# OneX
+![](https://cdn4.iconfinder.com/data/icons/space-and-astronomy-1/800/rocket-128.png)
 
-# xquick
-![img](https://cdn4.iconfinder.com/data/icons/space-and-astronomy-1/800/rocket-128.png)
-
-xquick致力于搭建一套软件项目中经常遇到的一些常见需求,比如权限管理、消息管理、日志管理等。     
+OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如权限管理、消息管理、日志管理等。     
 结合代码生成器工具,减轻开发人员的繁琐开发工作。
 
 ## 演示地址
-* [极速开发管理后台](http://xquick-admin.nb6868.com)
-* [极速开发h5商城](http://xquick-shop.nb6868.com)
+* [OneX 管理后台](http://onex-admin.nb6868.com)
+* [OneX H5商城](http://onex-shop.nb6868.com)
 
 ## 项目组成
 项目前后端分离
 
-* [火箭rocket🚀](https://github.com/zhangchaoxu/xquick/tree/master/rocket) 接口
-* [admin-vue](https://github.com/zhangchaoxu/xquick/tree/master/admin-vue) 管理后台前端
-* [shop-wmp](https://github.com/zhangchaoxu/xquick/tree/master/shop-wmp) 商城微信小程序
-* [shop-h5](https://github.com/zhangchaoxu/xquick/tree/master/shop-h5) 商城H5
-* [写字机typewriter✍](https://github.com/zhangchaoxu/xquick/tree/master/typewriter) 代码生成器
+* [火箭rocket🚀](https://github.com/zhangchaoxu/onex/tree/master/rocket) 接口
+* [admin-vue](https://github.com/zhangchaoxu/onex/tree/master/admin-vue) 管理后台前端
+* [shop-wmp](https://github.com/zhangchaoxu/onex/tree/master/shop-wmp) 商城微信小程序
+* [shop-h5](https://github.com/zhangchaoxu/onex/tree/master/shop-h5) 商城H5
+* [xcoder](https://github.com/zhangchaoxu/onex/tree/master/xcoder) 代码生成器
 
 ## 已实现功能模块
 ### 用户权限管理模块
@@ -69,4 +65,4 @@ xquick致力于搭建一套软件项目中经常遇到的一些常见需求,比�
 * [万年历]()
 
 ## 文档 
-更多详细内容见[gitbook文档](https://zhangchaoxu.gitbook.io/xquick/)
+更多详细内容见[gitbook文档](https://onex.nb6868.com)
