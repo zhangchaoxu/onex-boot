@@ -18,7 +18,7 @@ config.externals({ jquery: 'jQuery' })
 1. 如何解决类命名冲突的问题    
 
 在实现过程中经常出现不同包中同名类的情况,比如不同功能模块都有IndexController,比如系统中有pay\_order和shop\_order两个去除前缀后的同名表\(表设计应该尽量避免\)。  
-4.1 对于Spring中不同包下同名类,可以通过namespace`@ComponentScan(nameGenerator = SpringBeanNameGenerator.class)`解决 4.2 对于Mybatis中去除前缀后的同名表,Mapper\(Dao\)也一样通过namespace`@MapperScan(basePackages="com.nb6868.xquick.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)`解决 4.3 对于Mybatis中去除前缀后的同名表,Entity可以通过Alias`@Alias("ShopOrderEntity")`解决
+4.1 对于Spring中不同包下同名类,可以通过namespace`@ComponentScan(nameGenerator = SpringBeanNameGenerator.class)`解决 4.2 对于Mybatis中去除前缀后的同名表,Mapper\(Dao\)也一样通过namespace`@MapperScan(basePackages="com.nb6868.onex.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)`解决 4.3 对于Mybatis中去除前缀后的同名表,Entity可以通过Alias`@Alias("ShopOrderEntity")`解决
 
 1. Maven项目如何引入外部jar包
 
