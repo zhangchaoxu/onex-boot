@@ -6,15 +6,12 @@ OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如
 
 ## 演示地址
 * [OneX 管理后台](http://onex-admin.nb6868.com)
-* [OneX H5商城](http://onex-shop.nb6868.com)
 
 ## 项目组成
 项目前后端分离
 
-* [火箭rocket🚀](https://github.com/zhangchaoxu/onex/tree/master/rocket) 接口
-* [admin-vue](https://github.com/zhangchaoxu/onex/tree/master/admin-vue) 管理后台前端
-* [shop-wmp](https://github.com/zhangchaoxu/onex/tree/master/shop-wmp) 商城微信小程序
-* [shop-h5](https://github.com/zhangchaoxu/onex/tree/master/shop-h5) 商城H5
+* [火箭rocket🚀](https://github.com/zhangchaoxu/onex/tree/master/rocket)  统计的接口地址,对外保留oneapi
+* [门户portal](https://github.com/zhangchaoxu/onex/tree/master/portal) 管理后台的前端页面
 * [xcoder](https://github.com/zhangchaoxu/onex/tree/master/xcoder) 代码生成器
 
 ## 已实现功能模块
