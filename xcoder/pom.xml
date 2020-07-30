@@ -27,7 +27,6 @@
 		<commons.configuration.version>1.10</commons.configuration.version>
 		<fastjson.version>1.2.59</fastjson.version>
 		<velocity.version>1.7</velocity.version>
-		<mysql.version>5.1.49</mysql.version>
 		<mssql.version>4.0</mssql.version>
 		<oracle.version>11.2.0.3</oracle.version>
 	</properties>
@@ -86,7 +85,6 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
 		</dependency>
 		<!-- oracle驱动 -->
 		<dependency>
