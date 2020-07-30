@@ -119,14 +119,6 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>${alipay.sdk.version}</version>
         </dependency>
-        <!-- dingtalk sdk
-        <dependency>
-            <groupId>com.taobao.top</groupId>
-            <artifactId>top-api-sdk-java</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/libs/taobao-sdk-java-auto_1479188381469-20200605.jar</systemPath>
-        </dependency>-->
         <!-- jwt -->
         <dependency>
             <groupId>com.auth0</groupId>
@@ -138,21 +130,6 @@
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
-        </dependency>
-        <!-- aep sdk -->
-        <dependency>
-            <groupId>com.ctg.ag</groupId>
-            <artifactId>ctg-ag-sdk-core</artifactId>
-            <version>2.5.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/libs/ctg-ag-sdk-core-2.5.0-20200430.073030-18.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.ctg.ag</groupId>
-            <artifactId>ag-sdk-biz-29062.tar.gz</artifactId>
-            <version>20200607.002203-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/libs/ag-sdk-biz-29062.tar.gz-20200607.002203-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 
