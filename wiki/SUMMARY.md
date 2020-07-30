@@ -15,6 +15,7 @@
   * [第三方登录](UserOauth.md)
   * [数据存储](OSS.md)
   * [支付](Pay.md)
+  * [多数据源](DynamicDatasource.md)
 * [前端](portal.md)
   * [Iconfont](iconfont.md)
   * [接口调用](axios.md)

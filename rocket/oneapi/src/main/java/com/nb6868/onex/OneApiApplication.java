@@ -1,6 +1,5 @@
 package com.nb6868.onex;
 
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import com.nb6868.onex.booster.util.SpringBeanNameGenerator;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class, DruidDataSourceAutoConfigure.class})
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @ComponentScan(nameGenerator = SpringBeanNameGenerator.class)
 @MapperScan(basePackages="com.nb6868.onex.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)
 public class OneApiApplication extends SpringBootServletInitializer {
