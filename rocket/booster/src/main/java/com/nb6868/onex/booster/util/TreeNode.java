@@ -1,7 +1,7 @@
 package com.nb6868.onex.booster.util;
 
-import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.pojo.BaseDTO;
+import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
