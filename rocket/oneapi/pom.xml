@@ -16,7 +16,7 @@
         <shiro.version>1.5.3</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.2.0</easypoi.version>
-        <aliyun.core.version>4.5.4</aliyun.core.version>
+        <aliyun.core.version>4.5.5</aliyun.core.version>
         <aliyun.oss.version>3.10.2</aliyun.oss.version>
         <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
         <aliyun.imageaudit.version>1.0.6</aliyun.imageaudit.version>
@@ -37,12 +37,12 @@
             <artifactId>booster</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!-- dynamic.datasource -->
+        <!-- dynamic.datasource
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
             <version>${dynamic.datasource.version}</version>
-        </dependency>
+        </dependency>-->
         <!-- shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
