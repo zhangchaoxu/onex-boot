@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>rocket</artifactId>
+        <groupId>com.nb6868.onex</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>oneapi</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <shiro.version>1.5.3</shiro.version>
+        <easy.captcha.version>1.6.2</easy.captcha.version>
+        <easypoi.version>4.2.0</easypoi.version>
+        <aliyun.core.version>4.5.4</aliyun.core.version>
+        <aliyun.oss.version>3.10.2</aliyun.oss.version>
+        <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
+        <aliyun.imageaudit.version>1.0.6</aliyun.imageaudit.version>
+        <jpush.version>3.4.4</jpush.version>
+        <jwt.version>3.10.3</jwt.version>
+        <thumbnailator.version>0.4.11</thumbnailator.version>
+        <weixin.pay.version>3.8.0</weixin.pay.version>
+        <weixin.miniapp.version>3.8.0</weixin.miniapp.version>
+        <weixin.mp.version>3.8.0</weixin.mp.version>
+        <alipay.sdk.version>4.10.58.ALL</alipay.sdk.version>
+        <dynamic.datasource.version>3.1.1</dynamic.datasource.version>
+    </properties>
+
+    <dependencies>
+        <!-- common -->
+        <dependency>
+            <groupId>com.nb6868.onex</groupId>
+            <artifactId>booster</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- dynamic.datasource -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>${dynamic.datasource.version}</version>
+        </dependency>
+        <!-- shiro -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <!-- captcha -->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>${easy.captcha.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-spring-boot-starter</artifactId>
+            <version>${easypoi.version}</version>
+        </dependency>
+        <!-- aliyun -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>${aliyun.core.version}</version>
+        </dependency>
+        <!-- aliyun sms -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+            <version>${aliyun.dysmsapi.version}</version>
+        </dependency>
+        <!-- aliyun oss -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${aliyun.oss.version}</version>
+        </dependency>
+        <!-- aliyun imageaudit -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-imageaudit</artifactId>
+            <version>${aliyun.imageaudit.version}</version>
+        </dependency>
+        <!-- jpush -->
+        <dependency>
+            <groupId>cn.jpush.api</groupId>
+            <artifactId>jpush-client</artifactId>
+            <version>${jpush.version}</version>
+        </dependency>
+        <!-- wechat miniapp -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+            <version>${weixin.miniapp.version}</version>
+        </dependency>
+        <!-- wechat pay -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+            <version>${weixin.pay.version}</version>
+        </dependency>
+        <!-- wechat mp -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>${weixin.mp.version}</version>
+        </dependency>
+        <!-- alipay sdk -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>${alipay.sdk.version}</version>
+        </dependency>
+        <!-- dingtalk sdk
+        <dependency>
+            <groupId>com.taobao.top</groupId>
+            <artifactId>top-api-sdk-java</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/libs/taobao-sdk-java-auto_1479188381469-20200605.jar</systemPath>
+        </dependency>-->
+        <!-- jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <!-- thumbnailator -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>${thumbnailator.version}</version>
+        </dependency>
+        <!-- aep sdk -->
+        <dependency>
+            <groupId>com.ctg.ag</groupId>
+            <artifactId>ctg-ag-sdk-core</artifactId>
+            <version>2.5.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/libs/ctg-ag-sdk-core-2.5.0-20200430.073030-18.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.ctg.ag</groupId>
+            <artifactId>ag-sdk-biz-29062.tar.gz</artifactId>
+            <version>20200607.002203-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/libs/ag-sdk-biz-29062.tar.gz-20200607.002203-SNAPSHOT.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.parent.artifactId}-${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
