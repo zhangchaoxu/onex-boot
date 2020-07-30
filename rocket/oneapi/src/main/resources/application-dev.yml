@@ -3,7 +3,7 @@ spring:
     druid:
       #MySQL
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      url: jdbc:mysql://hw1.nb6868.com:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
       username: onex
       password: onex
       initial-size: 10
@@ -32,11 +32,3 @@ spring:
         wall:
           config:
             multi-statement-allow: true
-
-# mybatis plus
-# see {https://mybatis.plus/config/}
-mybatis-plus:
-  #原生配置
-  configuration:
-    # console中打印出sql
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
