@@ -52,7 +52,9 @@ public class ShiroConfig {
         Map<String, Filter> filters = new HashMap<>();
         filters.put("oauth2", new Oauth2Filter());
         shiroFilter.setFilters(filters);
-
+        /*
+         * 自定义url规则 {http://shiro.apache.org/web.html#urls-}
+         */
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/static/**", "anon");
         filterMap.put("/webjars/**", "anon");
