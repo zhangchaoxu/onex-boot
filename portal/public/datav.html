@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DataV</title>
+    <script src="//unpkg.com/vue@2.6.11/dist/vue.js"></script>
+    <script src="//unpkg.com/@jiaminghi/data-view@2.9.4/dist/datav.min.vue.js"></script>
+    <style>
+        html, body, #app {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            font-family: 'Avenir', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #030409;
+            color: #fff;
+        }
+
+        #app #dv-full-screen-container {
+            background-image: url('./img/datav-bg-cloud.png');
+            background-size: 100% 100%;
+            box-shadow: 0 0 3px blue;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #app .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #app .block-left-right-content {
+            flex: 1;
+            display: flex;
+            margin-top: 20px;
+        }
+
+        #app .block-top-bottom-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding-left: 20px;
+        }
+
+        #app .block-top-content {
+            height: 100%;
+            display: flex;
+            flex-grow: 0;
+            box-sizing: border-box;
+            padding-bottom: 0px;
+        }
+
+        #top-header {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        #top-header .header-center-decoration {
+            width: 40%;
+            height: 60px;
+            margin-top: 30px;
+        }
+
+        #top-header .header-left-decoration,
+        #top-header .header-right-decoration {
+            width: 25%;
+            height: 60px;
+        }
+
+        #top-header .center-title {
+            position: absolute;
+            font-size: 30px;
+            font-weight: bold;
+            left: 50%;
+            top: 15px;
+            transform: translateX(-50%);
+        }
+
+        #scroll-board {
+            width: 50%;
+            box-sizing: border-box;
+            margin-left: 20px;
+            padding: 60px 10px 10px 10px;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /**
+        * 一排数字
+         */
+        #digital-flop {
+            position: relative;
+            height: 15%;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(6, 30, 93, 0.5);
+        }
+        #digital-flop .dv-decoration-10 {
+            position: absolute;
+            width: 95%;
+            left: 2.5%;
+            height: 5px;
+            bottom: 0px;
+        }
+        #digital-flop .digital-flop-item {
+            width: 25%;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-left: 3px solid #061e5d;
+            border-right: 3px solid #061e5d;
+        }
+        #digital-flop .digital-flop-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        #digital-flop .digital-flop {
+            display: flex;
+        }
+        #digital-flop .unit {
+            margin-left: 10px;
+            display: flex;
+            align-items: flex-end;
+            box-sizing: border-box;
+            padding-bottom: 13px;
+        }
+
+        /**
+        * 左侧饼图
+         */
+        #rose-chart {
+            width: 60%;
+            height: 100%;
+            background-color: rgba(6, 30, 93, 0.5);
+            border-top: 2px solid rgba(1, 153, 209, 0.5);
+            box-sizing: border-box;
+        }
+        #rose-chart .rose-chart-title {
+            height: 50px;
+            font-weight: bold;
+            text-indent: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+        #rose-chart .dv-charts-container {
+            height: calc(100% - 50px);
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <dv-full-screen-container>
+        <div id="top-header">
+            <dv-decoration-8 class="header-left-decoration"></dv-decoration-8>
+            <dv-decoration-5 class="header-center-decoration"></dv-decoration-5>
+            <dv-decoration-8 class="header-right-decoration" :reverse="true"></dv-decoration-8>
+            <div class="center-title">IT<sup>+</sup>智能安全供电系统</div>
+        </div>
+        <div class="main-content">
+            <!-- -最上面一排数字 -->
+            <div id="digital-flop">
+                <div class="digital-flop-item" v-for="item in digitalFlopData" :key="item.title">
+                    <div class="digital-flop-title">{{ item.title }}</div>
+                    <div class="digital-flop">
+                        <dv-digital-flop :config="item.number" style="width:100px; height:50px;"></dv-digital-flop>
+                        <div class="unit">{{ item.unit }}</div>
+                    </div>
+                </div>
+                <dv-decoration-10 />
+            </div>
+            <div class="block-left-right-content">
+                <div class="block-top-bottom-content">
+                    <div class="block-top-content">
+                        <div id="rose-chart">
+                            <div class="rose-chart-title">设备类型分布图</div>
+                            <dv-charts :option="option"></dv-charts>
+                        </div>
+                        <dv-border-box-11 title="漏电报警实时监控" id="scroll-board">
+                            <dv-scroll-board :config="config"></dv-scroll-board>
+                        </dv-border-box-11>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dv-full-screen-container>
+</div>
+
+<script>
+let app = new Vue({
+    el: '#app',
+    data() {
+        return {
+            option: {
+                series: [
+                    {
+                        type: 'pie',
+                        radius: '50%',
+                        roseSort: false,
+                        data: [
+                            { name: '路基', value: 40 },
+                            { name: '交安设施', value: 50 },
+                            { name: '日常养护', value: 20 },
+                            { name: '桥通', value: 10 }
+                        ],
+                        insideLabel: {
+                            show: false
+                        },
+                        outsideLabel: {
+                            formatter: '{name} {percent}%',
+                            labelLineEndLength: 20,
+                            style: {
+                                fill: '#fff'
+                            },
+                            labelLineStyle: {
+                                stroke: '#fff'
+                            }
+                        },
+                        roseType: true
+                    }
+                ],
+                color: ['#da2f00', '#fa3600', '#ff4411', '#ff724c', '#541200', '#801b00', '#a02200', '#5d1400', '#b72700']
+            },
+            digitalFlopData: [
+                {
+                    title: '入驻企业',
+                    number: {
+                        number: [0, 5],
+                        content: '{nt}',
+                        textAlign: 'right',
+                        style: {
+                            fill: '#4d99fc',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    unit: '个'
+                },
+                {
+                    title: '设备总数',
+                    number: {
+                        number: [0, 5],
+                        content: '{nt}',
+                        textAlign: 'right',
+                        style: {
+                            fill: '#f46827',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    unit: '个'
+                },
+                {
+                    title: '在线设备',
+                    number: {
+                        number: [0, 5],
+                        content: '{nt}',
+                        textAlign: 'right',
+                        style: {
+                            fill: '#40faee',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    unit: '个'
+                },
+                {
+                    title: '报警数量',
+                    number: {
+                        number: [0, 5],
+                        content: '{nt}',
+                        textAlign: 'right',
+                        style: {
+                            fill: '#4d99fc',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    unit: '次'
+                }
+            ],
+            config: {
+                header: ['时间', '病害信息', '数量', '标段'],
+                data: [
+                    ['2019-07-01 19:25:00', '路面危害-松散', '5', 'xxxxxxx'],
+                    ['2019-07-02 17:25:00', '路面危害-路面油污清理', '13', 'xxxxxxx'],
+                    ['2019-07-03 16:25:00', '交安设施-交通标志牌结构', '6', 'xxxxxxx'],
+                    ['2019-07-04 15:25:00', '路基危害-防尘网', '2', 'xxxxxxx'],
+                    ['2019-07-05 14:25:00', '交安设施-交通标志牌结构', '1', 'xxxxxxx'],
+                    ['2019-07-06 13:25:00', '路面危害-松散', '3', 'xxxxxxx'],
+                    ['2019-07-07 12:25:00', '路基危害-防尘网', '4', 'xxxxxxx'],
+                    ['2019-07-08 11:25:00', '路面危害-路面油污清理', '2', 'xxxxxxx'],
+                    ['2019-07-09 10:25:00', '交安设施-交通标志牌结构', '5', 'xxxxxxx'],
+                    ['2019-07-10 09:25:00', '路基危害-防尘网', '3', 'xxxxxxx'],
+                    ['2019-07-10 09:25:00', '路基危害-防尘网', '3', 'xxxxxxx'],
+                    ['2019-07-10 09:25:00', '路基危害-防尘网', '3', 'xxxxxxx'],
+                    ['2019-07-10 09:25:00', '路基危害-防尘网', '3', 'xxxxxxx'],
+                    ['2019-07-10 09:25:00', '路基危害-防尘网', '3', 'xxxxxxx'],
+                ],
+                index: true,
+                columnWidth: [50, 170, 300],
+                align: ['center'],
+                rowNum: 10,
+                headerBGC: '#1981f6',
+                headerHeight: 45,
+                oddRowBGC: 'rgba(0, 44, 81, 0.8)',
+                evenRowBGC: 'rgba(10, 29, 50, 0.8)'
+            }
+        }
+    }
+})
+</script>
+</body>
+</html>
