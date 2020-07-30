@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/2.4.0/weui.min.css"/>
+    <link rel="stylesheet" href="${ctx.contextPath}/static/css/common.css"/>
+    <title>订单详情</title>
+</head>
+<body ontouchstart>
+<div class="container" id="container">
+    <div class="page js_show">
+        <div class="page__bd">
+            <div class="weui-form-preview">
+                <div class="weui-form-preview__hd">
+                    <label class="weui-form-preview__label">订单号</label>
+                    <span class="weui-form-preview__value">${data.no!}</span>
+                </div>
+                <div class="weui-form-preview__bd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">商品</label>
+                        <span class="weui-form-preview__value">${data.goodsDetail!}</span>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">金额</label>
+                        <span class="weui-form-preview__value">${data.totalPrice!}</span>
+                    </div>
+                </div>
+                <div class="weui-form-preview__ft">
+                    <#if data.userCancelable>
+                        <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:">取消</a>
+                    </#if>
+                    <#if data.payable>
+                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:pay('${data.id?c}')">支付</a>
+                    </#if>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
+<script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/zepto.min.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/common.js"></script>
+<script type="application/javascript">
+// 支付参数
+let payDate;
+
+/**
+ * 删除code和state,避免重复刷新
+ */
+urlRemoveParam(['code', 'state'])
+
+/**
+ * 删除地址中指定参数
+ */
+function urlRemoveParam(paramArray) {
+    // ?id=xx&code=xx&state=xx
+    let search = window.location.search
+    if (search.length > 0) {
+        let url = window.location.origin + '?'
+        // 移除后新的search
+        let newSearch = ''
+        let params = search.substr(1).split('&');
+        for (let i = 0; i < params.length; i++) {
+            let kv = params[i].split('=');
+            if (!paramArray.indexOf(kv[0])) {
+                if ('' === newSearch) {
+                    newSearch = params[i]
+                } else {
+                    newSearch += ('&' + params[i])
+                }
+            }
+        }
+        window.history.pushState({}, 0, url + newSearch)
+    }
+}
+
+/**
+ * 唤起支付
+ */
+function pay(orderId) {
+    console.log(orderId)
+    payDate = null
+    $.ajax({
+        url: '${ctx.contextPath}/shop/order/pay',
+        data: JSON.stringify({orderId: orderId, openid: '${openid}', payType: 'WECHAT_MWEB'}),
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json;charset=utf-8',
+        success: function (data) {
+            payDate = data.data
+            // 唤起微信h5支付
+            // https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
+            if (typeof WeixinJSBridge === 'undefined') {
+                if (document.addEventListener) {
+                    document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady)
+                    document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady)
+                }
+            } else {
+                this.onBridgeReady()
+            }
+        },
+        error: function () {
+            return false
+        },
+        complete: function () {
+        }
+    });
+}
+
+/**
+ * 微信bridge ready event
+ */
+function onBridgeReady() {
+    if (null == payDate) {
+        return
+    }
+    WeixinJSBridge.invoke('getBrandWCPayRequest', payDate, function (res) {
+        if (res.err_msg === "get_brand_wcpay_request:ok") {
+            // 使用以上方式判断前端返回 res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+        }
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+# Tomcat
+server:
+  tomcat:
+    # 配置tomcat的临时目录
+    basedir: /home/temp
+
+# Spring
+spring:
+  #data:
+  #  mongodb:
+  #    host: 127.0.0.1
+  #    database: dbname
+  datasource:
+    druid:
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        #login-username: admin
+        #login-password: admin
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+    dynamic:
+      druid:
+        filters: stat
+      datasource:
+        master:
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+          username: onex
+          password: onex
+          druid:
+            initial-size: 5
