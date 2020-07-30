@@ -1,0 +1,34 @@
+package ${package}.modules.${moduleName}.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import ${package}.booster.pojo.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.apache.ibatis.type.Alias;
+
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+import java.util.Date;
+
+/**
+ * ${comments}
+ *
+ * @author ${author} ${email}
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("${tableName}")
+@Alias("${tableName}")
+public class ${className}Entity extends BaseEntity {
+	private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+#if($column.columnName != 'id' && $column.columnName != 'creator' && $column.columnName != 'create_id' && $column.columnName != 'create_date' && $column.columnName != 'create_time' && $column.columnName != 'updater' && $column.columnName != 'update_id' && $column.columnName != 'update_date' && $column.columnName != 'update_time' && $column.columnName != 'del_flag' && $column.columnName != 'deleted')
+    /**
+     * $column.comments
+     */
+	private $column.attrType $column.attrname;
+#end
+#end
+}
