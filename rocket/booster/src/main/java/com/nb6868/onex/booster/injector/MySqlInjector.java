@@ -1,7 +1,7 @@
 package com.nb6868.onex.booster.injector;
 
-import com.nb6868.onex.booster.injector.methods.LogicDeleteBatchByIdsWithFill;
 import com.nb6868.onex.booster.injector.methods.LogicDeleteByIdWithFill;
+import com.nb6868.onex.booster.injector.methods.LogicDeleteBatchByIdsWithFill;
 import com.nb6868.onex.booster.injector.methods.LogicDeleteByWrapperWithFill;
 import com.nb6868.onex.booster.injector.methods.SelectCountById;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
