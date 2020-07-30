@@ -4,14 +4,27 @@ server:
     # 配置tomcat的临时目录
     basedir: /home/temp
 
-# Spring
 spring:
-  #data:
-  #  mongodb:
-  #    host: 127.0.0.1
-  #    database: dbname
   datasource:
     druid:
+      #MySQL
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      username: onex
+      password: onex
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 6000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      #Oracle需要打开注释
+      #validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
       stat-view-servlet:
         enabled: true
         url-pattern: /druid/*
@@ -25,14 +38,3 @@ spring:
         wall:
           config:
             multi-statement-allow: true
-    dynamic:
-      druid:
-        filters: stat
-      datasource:
-        master:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
-          username: onex
-          password: onex
-          druid:
-            initial-size: 5
