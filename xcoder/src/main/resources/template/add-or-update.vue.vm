@@ -1,0 +1,64 @@
+<template>
+  <el-dialog :visible.sync="visible" :title="!dataForm.${pk.attrname} ? $t('add') : $t('update')" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-form v-loading="formLoading" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
+#foreach($column in $columns)
+  #if($column.columnName != $pk.columnName && $column.columnName != "creator" && $column.columnName != "create_id" && $column.columnName != "create_date" && $column.columnName != "create_time" && $column.columnName != "del_flag" && $column.columnName != "deleted" && $column.columnName != "update_date" && $column.columnName != "update_time" && $column.columnName != "updater" && $column.columnName != "update_id" && $column.columnName != "creator_name" && $column.columnName != "create_name" && $column.columnName != "updater_name" && $column.columnName != "update_name")
+      <el-form-item label="${column.comments}" prop="${column.attrname}">
+          <el-input v-model="dataForm.${column.attrname}" placeholder="${column.comments}"></el-input>
+      </el-form-item>
+  #end
+#end
+    </el-form>
+    <template slot="footer">
+      <el-button @click="visible = false">{{ $t('cancel') }}</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">{{ $t('confirm') }}</el-button>
+    </template>
+  </el-dialog>
+</template>
+
+<script>
+import mixinFormModule from '@/mixins/form-module'
+export default {
+  mixins: [mixinFormModule],
+  data () {
+    return {
+      // 表单模块参数
+      mixinFormModuleOptions: {
+        dataFormSaveURL: `/${moduleName}/${pathName}/save`,
+        dataFormUpdateURL: `/${moduleName}/${pathName}/update`,
+        dataFormInfoURL: `/${moduleName}/${pathName}/info?id=`
+      },
+      dataForm: {
+#foreach($column in $columns)
+        ${column.attrname}: ''#if($velocityCount != $columns.size()),#end
+
+#end
+      }
+    }
+  },
+  computed: {
+    dataRule () {
+      return {
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName && $column.columnName != "creator" && $column.columnName != "create_date" && $column.columnName != "del_flag" && $column.columnName != "update_date" && $column.columnName != "updater" && $column.columnName != "creator_name" && $column.columnName != "updater_name")
+        ${column.attrname}: [
+          { required: true, message: this.$t('validate.required'), trigger: 'blur' }
+        ]#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+      }
+    }
+  },
+  methods: {
+    init () {
+      this.formLoading = true
+      this.visible = true
+      this.$nextTick(() => {
+        this.resetForm()
+        this.initFormData()
+      })
+    }
+  }
+}
+</script>
