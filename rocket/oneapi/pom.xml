@@ -26,7 +26,7 @@
         <weixin.pay.version>3.8.0</weixin.pay.version>
         <weixin.miniapp.version>3.8.0</weixin.miniapp.version>
         <weixin.mp.version>3.8.0</weixin.mp.version>
-        <alipay.sdk.version>4.10.58.ALL</alipay.sdk.version>
+        <alipay.sdk.version>4.10.70.ALL</alipay.sdk.version>
         <dynamic.datasource.version>3.1.1</dynamic.datasource.version>
     </properties>
 
@@ -134,7 +134,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.parent.artifactId}-${project.artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
