@@ -30,9 +30,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 @Autowired
 private MongoTemplate mongoTemplate;
-/**
-* 通过条件查询符合条件的内容列表
-*/
+// 通过条件查询符合条件的内容列表
 public List<ModelEntity> list(Date time, String code) {
     Criteria criteria = Criteria.where("time").gte(time).and("code").is(code);
     Query query = Query.query(criteria).with(Sort.by("date").descending()).limit(2000);
