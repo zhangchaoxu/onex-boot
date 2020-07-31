@@ -21,7 +21,7 @@
 ```
 
 3. 配置文件application-profile.yml中加入多个数据源配置    
-主库为master,其它库名字自定义如salve_1
+主库为master,其它库名字自定义如salve_name
 ```yaml
 # Spring
 spring:
@@ -69,5 +69,6 @@ public class AreaServiceImpl implements AreaService {
 
 }
 ```
+
 
 ## 更多使用方法见[文档](https://mybatis.plus/guide/dynamic-datasource.html)
