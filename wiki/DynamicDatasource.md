@@ -61,7 +61,7 @@ spring:
 
 4. 使用 @DS 切换数据源     
 master库作为默认库读取方式不变,其它库只要在实体对应ServiceImpl类定义或者方法定义加入@Ds注解即可。同时存在方法注解优先于类上注解。
-```java
+```yaml
 import com.baomidou.dynamic.datasource.annotation.DS;
 
 @Service
