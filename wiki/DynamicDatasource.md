@@ -68,4 +68,5 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 public class AreaServiceImpl implements AreaService {}
 ```
 
-5. 更多使用方法见[文档](https://mybatis.plus/guide/dynamic-datasource.html)
+## Ref.
+1. [dynamic-datasource](https://mybatis.plus/guide/dynamic-datasource.html)

@@ -28,10 +28,8 @@ spring:
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
 @Autowired
 private MongoTemplate mongoTemplate;
-
 /**
 * 通过条件查询符合条件的内容列表
 */
@@ -43,4 +41,5 @@ public List<ModelEntity> list(Date time, String code) {
 }
 ```
 
-4. 更多使用方法见[文档](https://spring.io/projects/spring-data-mongodb)
+## Ref.
+1. [spring-data-mongodb](https://spring.io/projects/spring-data-mongodb)
