@@ -70,5 +70,4 @@ public class AreaServiceImpl implements AreaService {
 }
 ```
 
-
-## 更多使用方法见[文档](https://mybatis.plus/guide/dynamic-datasource.html)
+5. 更多使用方法见[文档](https://mybatis.plus/guide/dynamic-datasource.html)
