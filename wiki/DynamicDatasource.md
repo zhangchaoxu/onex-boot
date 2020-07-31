@@ -1,6 +1,5 @@
-# 多数据源
-在实际项目当中,经常会遇到需要连接多个数据库的情况,因此需要配置多(动态)数据源。   
-本项目中多数据源的支持由[MybatisPlus dynamic-datasource](https://mybatis.plus/guide/dynamic-datasource.html)提供。
+# 多(动态)数据源
+本项目中多数据源的支持由[MybatisPlus Dynamic Datasource](https://mybatis.plus/guide/dynamic-datasource.html)提供。
 
 ## 使用方法：
 以dynamic-datasource与druid结合为例:
@@ -63,8 +62,10 @@ spring:
 4. 使用 @DS 切换数据源     
 master库作为默认库读取方式不变,其它库只要在实体对应ServiceImpl类定义或者方法定义加入@Ds注解即可。同时存在方法注解优先于类上注解。
 ```java
+import com.baomidou.dynamic.datasource.annotation.DS;
+
 @Service
-@com.baomidou.dynamic.datasource.annotation.DS("slave_name")
+@DS("slave_name")
 public class AreaServiceImpl implements AreaService {
 
 }
