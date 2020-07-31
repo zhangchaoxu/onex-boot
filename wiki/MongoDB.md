@@ -43,5 +43,4 @@ public List<ModelEntity> list(Date time, String code) {
 }
 ```
 
-
-## 更多使用方法见[文档](https://spring.io/projects/spring-data-mongodb)
+4. 更多使用方法见[文档](https://spring.io/projects/spring-data-mongodb)
