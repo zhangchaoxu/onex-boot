@@ -69,12 +69,12 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
                     .set("transaction_id", notifyResult.getTransactionId())
                     .set("total_fee", notifyResult.getTotalFee())
                     .set("currency", notifyResult.getFeeType())
-                    .apply("notify_count = notify_count + 1")
+                    .setSql("notify_count = notify_count + 1")
                     .update(new OrderEntity());
             return true;
         } else {
             update().eq("id", payOrder.getId())
-                    .apply("notify_count = notify_count + 1")
+                    .setSql("notify_count = notify_count + 1")
                     .update(new OrderEntity());
             return true;
         }
