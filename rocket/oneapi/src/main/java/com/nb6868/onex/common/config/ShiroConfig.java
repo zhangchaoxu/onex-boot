@@ -54,6 +54,7 @@ public class ShiroConfig {
         shiroFilter.setFilters(filters);
         /*
          * 自定义url规则 {http://shiro.apache.org/web.html#urls-}
+         * *注意* 无法区分接口请求方法是post/get/put
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/static/**", "anon");
@@ -69,8 +70,6 @@ public class ShiroConfig {
         filterMap.put("/modeler.html", "anon");
         filterMap.put("/captcha", "anon");
         filterMap.put("/favicon.ico", "anon");
-        // *注意* 无法区分接口请求方法是post/get/put
-        // 短地址访问
         filterMap.put("/t/**", "anon");
 
         filterMap.put("/**", "oauth2");

@@ -142,7 +142,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.addOrUpdate.clear()
         this.$refs.addOrUpdate.dataForm.id = id
-        this.$refs.addOrUpdate.dataFormMode = !id ? 'add' : 'update'
+        this.$refs.addOrUpdate.dataFormMode = !id ? 'save' : 'update'
         this.$refs.addOrUpdate.init()
       })
     }

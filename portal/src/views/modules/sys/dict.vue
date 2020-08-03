@@ -135,10 +135,11 @@ export default {
     addOrUpdateHandle (row = {}) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
+        this.$refs.addOrUpdate.clear()
         this.$refs.addOrUpdate.dataForm.id = row.id
-        this.$refs.addOrUpdate.mode = !row.id ? 'add' : 'update'
         this.$refs.addOrUpdate.dataForm.pid = this.searchDataForm.pid
         this.$refs.addOrUpdate.dataForm.type = row.type || this.searchDataForm.type || ''
+        this.$refs.addOrUpdate.dataFormMode = !row.id ? 'save' : 'update'
         this.$refs.addOrUpdate.init()
       })
     }

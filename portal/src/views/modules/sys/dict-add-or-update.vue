@@ -74,7 +74,7 @@ export default {
       this.formLoading = true
       this.visible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].resetFields()
+        this.resetForm()
         this.initFormData()
       })
     }
