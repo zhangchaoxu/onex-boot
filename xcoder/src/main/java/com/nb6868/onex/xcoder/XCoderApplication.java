@@ -14,4 +14,5 @@ public class XCoderApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(XCoderApplication.class, args);
 	}
+
 }
