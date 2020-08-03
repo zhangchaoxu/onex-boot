@@ -209,7 +209,7 @@ export default {
         this.$refs.addOrUpdate.clear()
         this.$refs.addOrUpdate.dataForm.id = id
         this.$refs.addOrUpdate.dataForm.businessId = this.dataForm.id
-        this.$refs.addOrUpdate.dataFormMode = !id ? 'add' : 'update'
+        this.$refs.addOrUpdate.dataFormMode = !id ? 'save' : 'update'
         this.$refs.addOrUpdate.init()
       })
     },

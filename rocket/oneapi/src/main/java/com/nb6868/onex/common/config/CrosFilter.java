@@ -10,7 +10,6 @@ import java.io.IOException;
 
 /**
  * cros filter
- * 放行所有Options请求，提高接口访问速度
  *
  * @author Charles
  */
@@ -23,7 +22,8 @@ public class CrosFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        //  放行所有Options请求，提高接口访问速度
+        if (HttpServlet.METHOD.equalsIgnoreCase(request.getMethod())) {
             HttpServletResponse response = (HttpServletResponse) resp;
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Headers", "content-type,token");
