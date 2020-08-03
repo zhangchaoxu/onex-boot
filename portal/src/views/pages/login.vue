@@ -162,7 +162,6 @@ export default {
     this.getParamCfg()
   },
   beforeDestroy () {
-    console.log('beforeDestroy')
     // 把子窗口销毁
     if (this.thirdLoginWindow) {
       this.thirdLoginWindow.close()

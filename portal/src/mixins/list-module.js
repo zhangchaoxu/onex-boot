@@ -96,7 +96,7 @@ export default {
     // list信息获取成功
     onGetListSuccess (res) {
       this.dataList = this.mixinListModuleOptions.getDataListIsPage ? res.data.list : res.data
-      this.total = this.mixinListModuleOptions.getDataListIsPage ? res.data.total : res.data.list.length
+      this.total = this.mixinListModuleOptions.getDataListIsPage ? res.data.total : res.data.length
     },
     // list信息获取失败
     onGetListError (res) {
