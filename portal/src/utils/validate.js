@@ -61,3 +61,11 @@ export function isURL (s) {
 export function isImage (s) {
   return /\w(\.gif|\.jpeg|\.png|\.jpg|\.bmp)/i.test(s)
 }
+
+/**
+ * 视频
+ * @param {*} s
+ */
+export function isVideo (s) {
+  return /\w(\.mp4|\.avi|\.rmvb|\.flv|\.mpg|\.mov|\.mkv)/i.test(s)
+}
