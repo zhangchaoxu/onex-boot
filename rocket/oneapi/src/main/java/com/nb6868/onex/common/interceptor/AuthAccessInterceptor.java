@@ -1,5 +1,7 @@
 package com.nb6868.onex.common.interceptor;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
+import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.util.HttpContextUtils;
 import com.nb6868.onex.common.annotation.AnonAccess;
 import com.nb6868.onex.modules.uc.UcConst;
@@ -31,9 +33,9 @@ public class AuthAccessInterceptor extends HandlerInterceptorAdapter {
                 return true;
             }
 
-            /*if (annotation == null || !annotation.value()) {
+            if (annotation == null || !annotation.value()) {
                 throw new OnexException(ErrorCode.UNAUTHORIZED);
-            }*/
+            }
         }
         return true;
     }

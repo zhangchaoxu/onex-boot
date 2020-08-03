@@ -22,12 +22,12 @@
         <el-table-column type="selection" header-align="center" align="center" width="50"/>
         <el-table-column prop="filename" label="文件名" header-align="center" align="center" min-width="120">
           <template slot-scope="scope">
-            <el-link type="text" :underline="false" size="small" @click="fileViewHandle(scope.row.filename)">{{ scope.row.filename }}</el-link>
+            <file-viewer type="public" :file="{ name: scope.row.filename, url:scope.row.url }"/>
           </template>
         </el-table-column>
         <el-table-column prop="contentType" label="类型" header-align="center" align="center" min-width="120"/>
         <el-table-column prop="size" label="尺寸" header-align="center" align="center" width="120"/>
-        <el-table-column prop="url" label="url" header-align="center" align="center"/>
+        <el-table-column prop="url" label="url" header-align="center" align="center" show-tooltip-when-overflow/>
         <el-table-column prop="createTime" :label="$t('base.createTime')" sortable="custom" header-align="center" align="center" width="180"/>
         <el-table-column :label="$t('handle')" fixed="right" header-align="center" align="center" width="100">
           <template slot-scope="scope">
@@ -52,12 +52,14 @@
 
 <script>
 import mixinListModule from '@/mixins/list-module'
+import FileViewer from '@/components/file-viewer'
 import Config from './param-oss-cfg'
 import Upload from './oss-upload'
 import UploadAliyun from './oss-aliyun-upload'
+
 export default {
   mixins: [mixinListModule],
-  components: { Config, Upload, UploadAliyun },
+  components: { Config, Upload, UploadAliyun, FileViewer },
   data () {
     return {
       mixinListModuleOptions: {
