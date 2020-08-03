@@ -13,7 +13,7 @@
                 <el-input id="map__input" size="small" v-model="searchText" clearable placeholder="输入关键字选取地点"/>
                 <div class="vue-map__content-box">
                     <!-- 地图 -->
-                    <div id="map__container" class="vue-map__content-container" tabindex="0"/>
+                    <div id="map__container__locpick" class="vue-map__content-container" tabindex="0"/>
                     <!-- 搜索结果 -->
                     <div id="map__result" class="vue-map__content-result"/>
                 </div>
@@ -167,7 +167,7 @@ export default {
     // 初始化
     init (callback) {
       // 定义地图
-      this.map = new window.AMap.Map('map__container', {
+      this.map = new window.AMap.Map('map__container__locpick', {
         zoom: 13,
         center: (() => {
           if (this.isValidLngLat()) {

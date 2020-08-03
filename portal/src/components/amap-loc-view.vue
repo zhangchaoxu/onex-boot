@@ -11,7 +11,7 @@
             <div class="vue-map__content" v-if="visible">
                 <div class="vue-map__content-box">
                     <!-- 地图 -->
-                    <div id="map__container" class="vue-map__content-container" tabindex="0"/>
+                    <div id="map__container__locview" class="vue-map__content-container" tabindex="0"/>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -131,7 +131,7 @@ export default {
     // 初始化
     init (callback) {
       // 定义地图
-      this.map = new window.AMap.Map('map__container', {
+      this.map = new window.AMap.Map('map__container__locview', {
         zoom: 13,
         center: (() => {
           if (this.isValidLngLat()) {
