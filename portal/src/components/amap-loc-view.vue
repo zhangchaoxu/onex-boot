@@ -3,7 +3,8 @@
         <el-dialog :title="title" :visible.sync="visible" append-to-body modal-append-to-body
                    :close-on-click-modal="false" :close-on-press-escape="false"
                    @close="closeHandle"
-                   width="80%" :fullscreen="fullscreen">
+                   width="80%" :fullscreen="fullscreen"
+                   custom-class="el-dialog-no-padding">
             <div slot="title">
                 <span class="el-dialog__title">{{ title }}</span>
                 <button type="button" class="el-dialog__headerbtn" style="right: 50px;" @click="fullscreen = !fullscreen"><i class="el-dialog__close el-icon el-icon-full-screen"/></button>
@@ -11,7 +12,7 @@
             <div class="vue-map__content" v-if="visible">
                 <div class="vue-map__content-box">
                     <!-- 地图 -->
-                    <div id="map__container__locview" class="vue-map__content-container" tabindex="0"/>
+                    <div id="map__container__loc-view" class="vue-map__content-container" tabindex="0"/>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -64,7 +65,7 @@ export default {
                   // 没有地址,解析marker点地址
                   this.getAddress(this.poi.lng, this.poi.lat)
                 } else {
-                  this.marker.setContent(this.getMarkerContent(this.poi.address)) // 更新点标记内容
+                  this.marker.setContent(this.getMarkerContent(this.poi.address))
                 }
               }
             })
@@ -94,12 +95,10 @@ export default {
     // 获取坐标
     getAddress (lng, lat) {
       let self = this
-      window.AMap.service('AMap.Geocoder', () => {
-        // 回调函数
+      window.AMap.plugin('AMap.Geocoder', () => {
         new window.AMap.Geocoder({}).getAddress([lng, lat], (status, result) => {
-          console.log(result)
           if (status === 'complete' && result.info === 'OK' && result.regeocode) {
-            this.marker.setContent(this.getMarkerContent(result.regeocode.formattedAddress)) // 更新点标记内容
+            self.marker.setContent(self.getMarkerContent(result.regeocode.formattedAddress))
           } else {
             self.$message.error('地址解析失败')
           }
@@ -131,7 +130,7 @@ export default {
     // 初始化
     init (callback) {
       // 定义地图
-      this.map = new window.AMap.Map('map__container__locview', {
+      this.map = new window.AMap.Map('map__container__loc-view', {
         zoom: 13,
         center: (() => {
           if (this.isValidLngLat()) {
