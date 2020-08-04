@@ -1,7 +1,5 @@
 package com.nb6868.onex.common.config;
 
-import com.nb6868.onex.booster.util.SpringContextUtils;
-import com.nb6868.onex.common.annotation.AnonAccess;
 import com.nb6868.onex.modules.uc.shiro.Oauth2Filter;
 import com.nb6868.onex.modules.uc.shiro.Oauth2Realm;
 import org.apache.shiro.mgt.SecurityManager;
@@ -11,13 +9,10 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import javax.servlet.Filter;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -79,13 +74,13 @@ public class ShiroConfig {
 
         filterMap.put("/**", "oauth2");
         // 加入注解中含有anon的
-        filterMap.putAll(getAnonAccessSet());
+        // filterMap.putAll(getAnonAccessSet());
         shiroFilter.setFilterChainDefinitionMap(filterMap);
 
         return shiroFilter;
     }
 
-    @Autowired
+    /*@Autowired
     Environment env;
 
     private Map<String, String> getAnonAccessSet() {
@@ -107,7 +102,7 @@ public class ShiroConfig {
         }
 
         return filterRuleMap;
-    }
+    }*/
 
     @Bean("lifecycleBeanPostProcessor")
     public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
