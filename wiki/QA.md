@@ -56,11 +56,11 @@ config.externals({ jquery: 'jQuery' })
 * 5.2 在对应module的pom文件中加入依赖配置
 ```xml
 <dependency>
-    <groupId>com.xyz</groupId>
-    <artifactId>abc</artifactId>
+    <groupId>com.foo</groupId>
+    <artifactId>boo</artifactId>
     <version>1.0.0</version>
     <scope>system</scope>
-    <systemPath>${pom.basedir}/src/libs/abc.1.0.0.jar</systemPath>
+    <systemPath>${pom.basedir}/src/libs/boo.1.0.0.jar</systemPath>
 </dependency>
 ```
 
