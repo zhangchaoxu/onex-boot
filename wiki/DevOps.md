@@ -12,7 +12,7 @@
 
 ### 编译
 
-在admin-vue目录中执行build.cmd\(`npm run build:prod`\)即可。  
+在portal目录中执行build.cmd(```cnpm run build:prod```)即可。     
 编译结果为dist文件夹,文件夹中为一个index.html页面以及若干css、js等静态文件。
 
 ### 部署
@@ -51,18 +51,21 @@ Spring Boot内置了Tomcat，可配置Tomcat的端口号、初始化线程数、
 
 #### windows部署
 
-`java -jar rest.jar --spring.profiles.active=prod`
+`java -jar oneapi.jar --spring.profiles.active=prod`
 
 #### linux部署
 
-建议使用shell执行,可以指定运行环境、端口、context等 `nohup java -Dspring.profiles.active=prod -jar xquick-rocket.jar --server.port=8080 --server.servlet.context-path=/xquick-rocket 2>&1 | cronolog xquick-rocket-log.%Y-%m-%d.out >> /dev/null &`
+建议使用shell执行,可以指定运行环境、端口、context等 
+```
+nohup java -Dspring.profiles.active=prod -jar oneapi.jar --server.port=8080 --server.servlet.context-path=/oneapi 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
+```
 
 如果使用cronolog做日志分割，可能需要先安装cronolog`yum install -y cronolog httpd`
 
 优化脚本如下
 
 ```text
-process=`ps -fe|grep "xquick-rocket.jar" |grep -ivE "grep|cron" |awk '{print $2}'`
+process=`ps -fe|grep "one.jar" |grep -ivE "grep|cron" |awk '{print $2}'`
 if [ !$process ];
 then
 echo "stop erp process $process ....."
@@ -182,4 +185,7 @@ server {
    }
 }
 ```
+
+## 运维实践
+以下为一种比较推荐的[实践方式](DevOps_foo.md)
 

@@ -17,4 +17,6 @@ public @interface AnonAccess {
      */
     boolean value() default true;
 
+    String path() default "";
+
 }

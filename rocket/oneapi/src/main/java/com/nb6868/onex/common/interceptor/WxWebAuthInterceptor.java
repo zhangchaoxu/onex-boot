@@ -27,6 +27,7 @@ import java.util.Map;
 
 /**
  * 微信页面授权拦截器
+ *
  * see {https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html}
  *
  * @author Charles zhangchaoxu@gmail.com
@@ -93,9 +94,7 @@ public class WxWebAuthInterceptor extends HandlerInterceptorAdapter {
                         }
                     }
                 } else {
-                    // 取出请求中的code和status
-                    request.getParameterMap().remove("code");
-                    request.getParameterMap().remove("state");
+                    // todo 取出请求中的code和status
                 }
             }
         }
