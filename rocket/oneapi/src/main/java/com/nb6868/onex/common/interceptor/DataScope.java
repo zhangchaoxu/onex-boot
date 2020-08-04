@@ -6,6 +6,7 @@ package com.nb6868.onex.common.interceptor;
  * @author Charles zhangchaoxu@gmail.com
  */
 public class DataScope {
+
     private String sqlFilter;
 
     public DataScope(String sqlFilter) {
@@ -24,4 +25,5 @@ public class DataScope {
     public String toString() {
         return this.sqlFilter;
     }
+
 }

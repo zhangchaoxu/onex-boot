@@ -59,7 +59,7 @@ public class ReleaseController {
 
     @GetMapping("getLatestByCode")
     @ApiOperation("通过code获取最新的release")
-    @AnonAccess
+    @AnonAccess(path = "log/release/getLatestByCode")
     public Result<?> getLatestByCode(@NotBlank(message = "{code.require}") @RequestParam String code) {
         ReleaseDTO data = releaseService.getLatestByCode(code);
 
