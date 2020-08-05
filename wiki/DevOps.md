@@ -44,9 +44,8 @@ location / {
 直接使用`mvn clean package -Dmaven.test.skip=true -P prod`即可得到所需的jar或者war包      
 
 #### 单jar包(spring-boot-maven-plugin)
-会使得整个jar包比较大,而且修改配置或者静态资源需要重新打包部署       
+编译结果只有一个jar包,方便管理,但是jar包比较大,而且修改配置或者静态资源需要重新打包部署       
 
-打包成单jar
 ```xml
 <build>
     <finalName>${project.artifactId}</finalName>
@@ -71,7 +70,8 @@ location / {
 ```
 
 #### 分离jar/lib/resource(maven-jar-plugin)
-分离打包,便于后续热修改
+编译结果只有一个小jar包、lib、resource,便于后面有热修改,只需要修改覆盖对应的内容即可          
+注意lib若有修改,要清空重新上传,否则可能出现不同版本的相同依赖jar
 
 ```xml
 <build>
