@@ -2,7 +2,7 @@ spring:
   datasource:
     druid:
       #MySQL
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://hw1.nb6868.com:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
       username: onex
       password: onex

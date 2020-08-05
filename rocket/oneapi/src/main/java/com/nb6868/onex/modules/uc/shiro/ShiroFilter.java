@@ -19,16 +19,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Oauth2 过滤器
+ * Shiro过滤器
+ * 代码的执行流程preHandle->isAccessAllowed->isLoginAttempt->executeLogin
  *
  * @author Charles (zhanngchaoxu@gmail.com)
  */
-public class Oauth2Filter extends AuthenticatingFilter {
+public class ShiroFilter extends AuthenticatingFilter {
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
         // 获取请求token
         final String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, UcConst.TOKEN_HEADER);
+        // 当请求为空的时候,赋予匿名访问Token
         return new AuthenticationToken() {
             @Override
             public String getPrincipal() {
@@ -50,14 +52,14 @@ public class Oauth2Filter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        // 会调用createToken
+        // 会调用createToken,提交给realm进行登入
         return executeLogin(request, response);
     }
 
     /**
      * 登录失败
      *
-     * Oauth2Realm.doGetAuthenticationInfo抛出的异常会在这里捕获处理
+     * Realm.doGetAuthenticationInfo抛出的异常会在这里捕获处理
      */
     @SneakyThrows
     @Override
