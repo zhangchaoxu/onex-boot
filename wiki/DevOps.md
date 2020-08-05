@@ -299,3 +299,6 @@ server {
 ## 运维实践
 以下为一种比较推荐的[实践方式](DevOps_foo.md)
 
+## ref
+1. [SpringBoot 项目打包分开lib,配置和资源文件](https://blog.csdn.net/qq_30220585/article/details/90201643)
+
