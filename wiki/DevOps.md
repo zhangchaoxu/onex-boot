@@ -1,10 +1,7 @@
-# DevOps
+# 编译部署
+后台管理功能前后端分离,前端为vue工程,后端为springboot工程,需要分开编译部署。
 
-## DevOps
-
-后台管理功能前后端分离,前端为vue工程,后端为springboot工程。
-
-## 前端部署
+## 前端
 
 ### 环境配置
 
@@ -12,12 +9,12 @@
 
 ### 编译
 
-在portal目录中执行build.cmd(```cnpm run build:prod```)即可。     
-编译结果为dist文件夹,文件夹中为一个index.html页面以及若干css、js等静态文件。
+在portal目录中执行build.cmd(```cnpm run build:prod```)          
+编译结果为dist文件夹,文件夹中为一个index.html页面以及若干css/js等静态文件。
 
 ### 部署
 
-将编译所得的dist目录中所有的文件复制到前端服务器\(比如Nginx、Apache、Tomcat\),甚至是阿里云的oss都可以。
+将编译所得的dist目录中所有的文件复制到前端服务器(比如Nginx、Apache、Tomcat),甚至是阿里云的oss即可。
 
 ### Vue Router Mode
 
@@ -33,15 +30,128 @@ location / {
 }
 ```
 
-## 接口部署
+## 接口
 
 ### 环境配置
 
-接口的运行环境有多种方式可以指定 1. 打包的时候用`-P`指定环境,环境由代码中的application\_env.yml文件配置 2. 运行的时候通过参数`-Dspring.profiles.active`指定环境,合作和用`--server.port`,`-server.servlet.context-path`指定具体的参数 3. 将配置文件放在jar同目录下,也可以指定该配置文件作为运行环境,这样做的好处是修改配置\(如数据库\)不需要重新打包
+接口的运行环境有多种方式可以指定    
+1. 打包的时候用`-P`指定环境,环境由代码中的application_profile.yml文件配置         
+2. 运行的时候通过参数`-Dspring.profiles.active`指定环境,合作和用`--server.port`,`-server.servlet.context-path`指定具体的参数        
+3. 将配置文件放在jar同目录下,也可以指定该配置文件作为运行环境,这样做的好处是修改配置(如数据库)不需要重新打包
 
 ### 编译
 
-直接使用`mvn clean package -Dmaven.test.skip=true -P prod`即可得到所需的jar或者war包
+直接使用`mvn clean package -Dmaven.test.skip=true -P prod`即可得到所需的jar或者war包      
+
+#### 单jar包(spring-boot-maven-plugin)
+会使得整个jar包比较大,而且修改配置或者静态资源需要重新打包部署       
+
+打包成单jar
+```xml
+<build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <includeSystemScope>true</includeSystemScope>
+            </configuration>
+        </plugin>
+        <!-- 跳过测试 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+                <skipTests>true</skipTests>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+#### 分离jar/lib/resource(maven-jar-plugin)
+分离打包,便于后续热修改
+
+```xml
+<build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+        <!-- 打包jar,排除lib -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+                <archive>
+                    <addMavenDescriptor>false</addMavenDescriptor>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>lib/</classpathPrefix>
+                        <mainClass>com.nb6868.onex.OneApiApplication</mainClass>
+                    </manifest>
+                    <manifestEntries>
+                        <Class-Path>./resources/</Class-Path>
+                    </manifestEntries>
+                </archive>
+            </configuration>
+        </plugin>
+        <!-- 分离lib -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-lib</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        <excludeTransitive>false</excludeTransitive>
+                        <stripVersion>false</stripVersion>
+                        <includeScope>runtime</includeScope>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <!-- 分离resources -->
+        <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-resources</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                        <resources>
+                            <resource>
+                                <directory>src/main/resources</directory>
+                                <includes>
+                                    <include>*.*</include>
+                                    <include>static/**</include>
+                                    <include>templates/**</include>
+                                </includes>
+                            </resource>
+                        </resources>
+                        <outputDirectory>${project.build.directory}/resources</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <!-- 跳过测试 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+                <skip>true</skip>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
 
 ### jar运行
 
@@ -73,8 +183,8 @@ kill -9 $process
 sleep 1
 fi
 echo "start erp process....."
-nohup java -Dspring.profiles.active=prod -jar xquick-rocket.jar --server.port=8080 --server.se
-rvlet.context-path=/xquick-rocket 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
+nohup java -Dspring.profiles.active=prod -jar oneapi.jar --server.port=8080 --server.se
+rvlet.context-path=/oneapi 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 echo "start erp success!"
 ```
 
@@ -83,18 +193,18 @@ echo "start erp success!"
 1. 将Application对应的pom文件中的packaging改为war `<packaging>jar</packaging>`
 2. 排除tomcat的依赖
 
-   ```text
-   <dependency>
-   <groupId>org.springframework.boot</groupId>
-   <artifactId>spring-boot-starter-tomcat</artifactId>
-   <scope>provided</scope>
-   </dependency>
-   <dependency>
-   <groupId>org.apache.tomcat.embed</groupId>
-   <artifactId>tomcat-embed-jasper</artifactId>
-   <scope>provided</scope>
-   </dependency>
-   ```
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-jasper</artifactId>
+    <scope>provided</scope>
+</dependency>
+```
 
 3. 编译打包 `mvn clean package -Dmaven.test.skip=true -P prod`
 
@@ -112,17 +222,17 @@ echo "start erp success!"
 2. 证书放到classpath: 将证书文件，比如xquick.idogfooding.com.pfx放到resources文件夹中，最后会打包到classpath中
 3. 配置端口：在application.yml文件中配置http和https的端口
 
-   ```text
-   #https port
-   port: 8089 
-   #http port
-   http:
-   port: 8088
-   ```
+```yaml
+#https port
+port: 8089 
+#http port
+http:
+port: 8088
+```
 
 4. 配置application: 在启动Application,比如AdminApplication中加入以下配置
 
-```text
+```java
 @Value("${server.port}") private Integer httpsPort;   @Value("${server.http.port}") private Integer httpPort;   @Bean public TomcatServletWebServerFactory servletContainer() {
 TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {    @Override
 protected void postProcessContext(Context context) {
