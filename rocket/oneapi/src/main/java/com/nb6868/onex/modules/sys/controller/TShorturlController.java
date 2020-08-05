@@ -1,8 +1,11 @@
 package com.nb6868.onex.modules.sys.controller;
 
 import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.entity.ShorturlEntity;
 import com.nb6868.onex.modules.sys.service.ShorturlService;
+import com.nb6868.onex.modules.uc.user.SecurityUser;
+import com.nb6868.onex.modules.uc.user.UserDetail;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
@@ -25,8 +28,10 @@ public class TShorturlController {
     @SneakyThrows
     @GetMapping("{code}")
     @ApiOperation("系统信息")
+    @LogOperation("系统信息")
     @AnonAccess
     public String redirect(@PathVariable("code") String code, HttpServletResponse response) {
+        UserDetail user = SecurityUser.getUser();
         ShorturlEntity entity = shorturlService.getByCode(code);
         if (null == entity) {
             response.setCharacterEncoding("UTF-8");
@@ -37,8 +42,11 @@ public class TShorturlController {
             response.setContentType("text/plain;charset='utf-8'");
             response.getWriter().print("not open");
         } else {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("text/plain;charset='utf-8'");
+            response.getWriter().print(user.getUsername());
             // 301 redirect
-            return "redirect:" + entity.getUrl();
+            //return "redirect:" + entity.getUrl();
         }
         return null;
     }

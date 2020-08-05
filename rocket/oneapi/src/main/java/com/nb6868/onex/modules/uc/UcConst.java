@@ -19,8 +19,7 @@ public interface UcConst {
     /**
      * 匿名角色编码
      */
-    String ROLE_CODE_ANON = "ANNO";
-
+    String ROLE_CODE_ANON = "ANON";
     /**
      * 匿名用户token
      */

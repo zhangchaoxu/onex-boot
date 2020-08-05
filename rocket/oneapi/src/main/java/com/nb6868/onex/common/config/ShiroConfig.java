@@ -1,7 +1,7 @@
 package com.nb6868.onex.common.config;
 
-import com.nb6868.onex.modules.uc.shiro.Oauth2Filter;
-import com.nb6868.onex.modules.uc.shiro.Oauth2Realm;
+import com.nb6868.onex.modules.uc.shiro.ShiroFilter;
+import com.nb6868.onex.modules.uc.shiro.ShiroRealm;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -9,8 +9,10 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -35,9 +37,9 @@ public class ShiroConfig {
     }
 
     @Bean("securityManager")
-    public SecurityManager securityManager(Oauth2Realm oAuth2Realm, SessionManager sessionManager) {
+    public SecurityManager securityManager(ShiroRealm shiroRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(oAuth2Realm);
+        securityManager.setRealm(shiroRealm);
         securityManager.setSessionManager(sessionManager);
         securityManager.setRememberMeManager(null);
         return securityManager;
@@ -48,13 +50,13 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
 
-        // oauth过滤
+        // shiro过滤
         Map<String, Filter> filters = new HashMap<>();
-        filters.put("oauth2", new Oauth2Filter());
+        filters.put("shiro", new ShiroFilter());
         shiroFilter.setFilters(filters);
         /*
          * 自定义url规则 {http://shiro.apache.org/web.html#urls-}
-         * *注意* 无法区分接口请求方法是post/get/put
+         * 注意无法区分接口请求方法是post/get/put
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/static/**", "anon");
@@ -70,25 +72,25 @@ public class ShiroConfig {
         filterMap.put("/modeler.html", "anon");
         filterMap.put("/captcha", "anon");
         filterMap.put("/favicon.ico", "anon");
-        filterMap.put("/t/**", "anon");
-
-        filterMap.put("/**", "oauth2");
+        // 除上述anon外,其它都需要过oauth2
+        filterMap.put("/**", "shiro");
         // 加入注解中含有anon的
-        // filterMap.putAll(getAnonAccessSet());
+        filterMap.putAll(getAnonAccessSet());
         shiroFilter.setFilterChainDefinitionMap(filterMap);
 
         return shiroFilter;
     }
 
-    /*@Autowired
+    @Autowired
     Environment env;
 
     private Map<String, String> getAnonAccessSet() {
+        Map<String, String> filterRuleMap = new LinkedHashMap<>();
+
         // 获得所有controller
-        String[] controllerNameList = SpringContextUtils.getBeanNamesForAnnotation(org.springframework.stereotype.Controller.class);
+        /*String[] controllerNameList = SpringContextUtils.getBeanNamesForAnnotation(org.springframework.stereotype.Controller.class);
         String[] restControllerNameList = SpringContextUtils.getBeanNamesForAnnotation(org.springframework.web.bind.annotation.RestController.class);
 
-        Map<String, String> filterRuleMap = new LinkedHashMap<>();
         for (String controllerName : restControllerNameList) {
             Class<?> clazz = SpringContextUtils.getType(controllerName);
             Method[] methods = clazz.getMethods();
@@ -99,10 +101,10 @@ public class ShiroConfig {
                 }
             }
 
-        }
+        }*/
 
         return filterRuleMap;
-    }*/
+    }
 
     @Bean("lifecycleBeanPostProcessor")
     public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {

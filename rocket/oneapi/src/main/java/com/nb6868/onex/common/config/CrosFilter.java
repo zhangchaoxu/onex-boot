@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.config;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.*;
@@ -23,7 +24,7 @@ public class CrosFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         //  放行所有Options请求，提高接口访问速度
-        if ("Options".equalsIgnoreCase(request.getMethod())) {
+        if (RequestMethod.OPTIONS.name().equalsIgnoreCase(request.getMethod())) {
             HttpServletResponse response = (HttpServletResponse) resp;
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Headers", "content-type,token");

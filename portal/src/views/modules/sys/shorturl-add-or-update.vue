@@ -50,6 +50,7 @@ export default {
         id: '',
         name: '',
         url: '',
+        code: '',
         short: '',
         remark: '',
         status: ''

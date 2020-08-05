@@ -27,16 +27,19 @@ import static com.nb6868.onex.modules.uc.UcConst.TOKEN_ANON;
 import static com.nb6868.onex.modules.uc.UcConst.TOKEN_GUEST;
 
 /**
- * 认证
+ * Shiro认证
  *
  * @author Charles (zhanngchaoxu@gmail.com)
  */
 @Component
-public class Oauth2Realm extends AuthorizingRealm {
+public class ShiroRealm extends AuthorizingRealm {
 
     @Autowired
     private ShiroService shiroService;
 
+    /**
+     * 必须重写此方法，不然Shiro会报错
+     */
     @Override
     public boolean supports(AuthenticationToken token) {
         return token != null;
@@ -44,6 +47,7 @@ public class Oauth2Realm extends AuthorizingRealm {
 
     /**
      * 授权(验证权限时调用)
+     * 只有当需要检测用户权限的时候才会调用此方法,例如RequiresPermissions/checkRole/checkPermission
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -94,7 +98,8 @@ public class Oauth2Realm extends AuthorizingRealm {
             userDetail.setToken(TOKEN_ANON);
             userDetail.setType(-100);
             return new SimpleAuthenticationInfo(userDetail, TOKEN_ANON, getName());
-        } else if (TOKEN_GUEST.equalsIgnoreCase(accessToken)) {
+        }
+        if (TOKEN_GUEST.equalsIgnoreCase(accessToken)) {
             // 游客访问
             UserDetail userDetail = new UserDetail();
             userDetail.setToken(TOKEN_GUEST);
