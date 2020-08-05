@@ -124,3 +124,9 @@ location /
 2. BtPanel-网站-(sub.foo.com)-设置-SSL 
 填入步骤5中下载的key和pem内容,保存后即可        
 如开启强制HTTPS,前端的接口配置也应该是https的地址
+
+# Tips
+1. 服务器使用阿里云、腾讯云、华为云均可
+2. 域名DNS解析为域名所在的解析上,如阿里云、万网、DNSPod等
+3. 数据库可以另外使用一台单独的服务器,或者直接使用[阿里云RDS](https://rdsnext.console.aliyun.com/#/dashboard/cn-hangzhou)
+4. 开通HTTPS主要是为了微信小程序和苹果接口使用,如果没有这方面需求,可以不配置
