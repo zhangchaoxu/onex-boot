@@ -10,11 +10,7 @@
 OPTIONS请求直接放行,好处是OPTIONS请求的时间会提高,缺点也很明显,失去了OPTIONS请求预检的意义。
 具体实现见CrosFilter。
 
-## 2. 报错`java.io.IOException: The temporary upload location [/tmp/tomcat.x.x/work/Tomcat/localhost/xxx] is not valid`
-
-对于Multipart上传内容,Springboot会先把文件缓存在tmp文件夹中,然而在CentOS有一个定期清空tmp的机制,因此会导致文件上传功能长时间不用的时候缓存文件夹被清空掉,然后上传失败的问题。    
-注意该问题暴露在前端是错误`No 'Access-Control-Allow-Origin' header is present on the requested resource.`,比较容易误导人。   
-最简单的解决办法是配置文件中加上tomcat.basedir的路径 [参考](https://blog.csdn.net/qq_21383435/article/details/91891664)
+## 2. 
 
 ## 3. 如何在vue中使用jQuery?
 
@@ -63,4 +59,24 @@ config.externals({ jquery: 'jQuery' })
     <systemPath>${pom.basedir}/src/libs/boo.1.0.0.jar</systemPath>
 </dependency>
 ```
+
+## 6. 报错`java.io.IOException: The temporary upload location [/tmp/tomcat.x.x/work/Tomcat/localhost/xxx] is not valid`
+
+对于Multipart上传内容,Springboot会先把文件缓存在tmp文件夹中,然而在CentOS有一个定期清空tmp的机制,因此会导致文件上传功能长时间不用的时候缓存文件夹被清空掉,然后上传失败的问题。    
+注意该问题暴露在前端是错误`No 'Access-Control-Allow-Origin' header is present on the requested resource.`,比较容易误导人。   
+最简单的解决办法是配置文件中加上tomcat.basedir的路径 [参考](https://blog.csdn.net/qq_21383435/article/details/91891664)
+
+## 7. 启动报错
+```
+Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+```
+
+除了检查yaml中数据库配置是否正确,格式是否正确外,检查启动Application,如果@SpringBootApplication的exclude中加了DruidDataSourceAutoConfigure.class会导致这个问题         
+exclude中加了DruidDataSourceAutoConfigure.class是为了适配[Dynamic Datasource](DynamicDatasource.md),如果使用单个数据库的方式不需要添加。
+
+## 8. 启动时候提示很多类找不到
+
+除了检查类是否存在,依赖包是否正确以外,可以尝试IDEA->File->Invalidate Cache/Restart试试
+
+
 
