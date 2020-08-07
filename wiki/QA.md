@@ -10,7 +10,22 @@
 OPTIONS请求直接放行,好处是OPTIONS请求的时间会提高,缺点也很明显,失去了OPTIONS请求预检的意义。
 具体实现见CrosFilter。
 
-## 2. 
+## 2. 如何在js中调用vue方法
+
+实际开发中往往会嵌入部分html和js代码,比如[amap infowindow](https://lbs.amap.com/api/javascript-api/guide/overlays/infowindow)中显示内容       
+1. 在vue的钩子函数中将需要调用的函数赋值给window。
+```vue
+mounted() {
+    //将Vue方法传到全局对象window中
+    window.methName = this.methName
+}
+```
+2. js直接使用即可
+```javascript
+<script type="text/javascript">
+　　methName();
+</script>
+```
 
 ## 3. 如何在vue中使用jQuery?
 
