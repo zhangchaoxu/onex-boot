@@ -55,4 +55,11 @@ public interface ParamService extends CrudService<ParamEntity, ParamDTO> {
      */
     void updateContentByCode(String code, String value);
 
+    /**
+     * 清空缓存
+     * @param key 缓存key
+     * @return 操作结果
+     */
+    boolean clearCache(String key);
+
 }
