@@ -90,6 +90,7 @@ location / {
                         <mainClass>com.nb6868.onex.OneApiApplication</mainClass>
                     </manifest>
                     <manifestEntries>
+                        <!-- 若有其他比如自定义jar,空格隔开加后面 -->
                         <Class-Path>./resources/</Class-Path>
                     </manifestEntries>
                 </archive>
@@ -110,7 +111,7 @@ location / {
                         <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         <excludeTransitive>false</excludeTransitive>
                         <stripVersion>false</stripVersion>
-                        <includeScope>runtime</includeScope>
+                        <includeScope>compile</includeScope>
                     </configuration>
                 </execution>
             </executions>
