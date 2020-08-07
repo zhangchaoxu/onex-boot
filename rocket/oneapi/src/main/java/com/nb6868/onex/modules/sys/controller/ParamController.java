@@ -162,4 +162,12 @@ public class ParamController {
         ExcelUtils.exportExcelToTarget(response, "参数", list, ParamExcel.class);
     }
 
+    @GetMapping("clearCache")
+    @ApiOperation("清空缓存")
+    @AnonAccess
+    public Result<?> clearCache(@RequestParam(required = false) String key) {
+        paramService.clearCache(key);
+        return new Result<>().success();
+    }
+
 }

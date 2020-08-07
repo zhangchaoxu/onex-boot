@@ -121,4 +121,14 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
         update().set("content", content).eq("code", code);
     }
 
+    @Override
+    public boolean clearCache(String key) {
+        if (StringUtils.isNotBlank(key)) {
+            localCache.invalidate(key);
+        } else {
+            localCache.invalidateAll();
+        }
+        return true;
+    }
+
 }
