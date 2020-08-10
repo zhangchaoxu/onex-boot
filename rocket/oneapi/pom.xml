@@ -133,7 +133,7 @@
         </dependency>
     </dependencies>
 
-    <!-- 单个jar -->
+    <!-- 单个jar
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -152,9 +152,9 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 
-    <!-- 分离jar/lib/resources
+    <!-- 分离jar/lib/resources -->
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -189,7 +189,7 @@
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
                             <excludeTransitive>false</excludeTransitive>
                             <stripVersion>false</stripVersion>
-                            <includeScope>runtime</includeScope>
+                            <includeScope>compile</includeScope>
                         </configuration>
                     </execution>
                 </executions>
@@ -227,6 +227,6 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>-->
+    </build>
 
 </project>
