@@ -149,7 +149,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
         // Long类型转String类型
-        // 解决js中Long型数据经度丢失的问题 {https://mybatis.plus/guide/faq.html#id-worker-生成主键太长导致-js-精度丢失}
+        // 解决js中Long型数据精度丢失的问题 {https://mybatis.plus/guide/faq.html#id-worker-生成主键太长导致-js-精度丢失}
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
         simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);

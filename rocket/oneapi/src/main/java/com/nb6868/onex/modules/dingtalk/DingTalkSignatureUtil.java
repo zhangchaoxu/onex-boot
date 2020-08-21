@@ -2,16 +2,17 @@ package com.nb6868.onex.modules.dingtalk;
 
 import org.apache.commons.codec.binary.Base64;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Random;
 
 /**
  * dingtalk util
@@ -38,12 +39,8 @@ public class DingTalkSignatureUtil {
     }
 
     public static String computeSignature(String canonicalString, String secret) {
-        try {
-            byte[] signData = sign(canonicalString.getBytes("UTF-8"), secret.getBytes("UTF-8"));
-            return new String(Base64.encodeBase64(signData, false));
-        } catch (UnsupportedEncodingException var3) {
-            throw new RuntimeException("Unsupported algorithm: UTF-8", var3);
-        }
+        byte[] signData = sign(canonicalString.getBytes(StandardCharsets.UTF_8), secret.getBytes(StandardCharsets.UTF_8));
+        return new String(Base64.encodeBase64(signData, false));
     }
 
     private static byte[] sign(byte[] key, byte[] data) {

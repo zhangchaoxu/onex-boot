@@ -6,7 +6,6 @@ public class DingTalkApi {
 
     public static String getByCode() {
         return "";
-
     }
 
 }
