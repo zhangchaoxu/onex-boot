@@ -21,13 +21,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 @Log4j2
 @Component
-@ServerEndpoint("/websocket/{userId}")
+@ServerEndpoint("/webSocket/{userId}")
 public class WebSocketServer {
 
     private Session session;
 
     private final static CopyOnWriteArraySet<WebSocketServer> webSockets = new CopyOnWriteArraySet<>();
     private final static Map<Long, Session> sessionPool = new HashMap<>();
+
+
 
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "userId") Long userId) {
@@ -48,7 +50,10 @@ public class WebSocketServer {
         log.debug("[websocket]" + "收到客户端消息:" + message);
     }
 
-    // 发送广播消息
+    /**
+     * 发送广播消息
+     * @param message
+     */
     public void sendAllMessage(String message) {
         for (WebSocketServer webSocket : webSockets) {
             log.debug("[websocket]" + "广播消息:" + message);
@@ -60,7 +65,11 @@ public class WebSocketServer {
         }
     }
 
-    // 发送单点消息
+    /**
+     * 发送单点消息
+     * @param userId
+     * @param message
+     */
     public void sendOneMessage(Long userId, String message) {
         log.debug("[websocket]" + "单点消息:" + message);
         Session session = sessionPool.get(userId);
@@ -73,7 +82,11 @@ public class WebSocketServer {
         }
     }
 
-    // 发送多点消息
+    /**
+     * 发送多点消息
+     * @param userIdList
+     * @param message
+     */
     public void sendMultiMessage(List<Long> userIdList, String message) {
         log.debug("[websocket]" + "单点消息:" + message);
         for (Long userId : userIdList) {
