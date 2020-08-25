@@ -3,9 +3,11 @@ package com.nb6868.onex.modules.pay.controller;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
@@ -66,6 +68,7 @@ public class OrderController {
     @RequiresPermissions("pay:order:info")
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         OrderDTO data = orderService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<OrderDTO>().success(data);
     }

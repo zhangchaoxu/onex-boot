@@ -35,17 +35,15 @@ import java.util.Map;
 @Api(tags = "操作日志")
 public class OperationController {
     @Autowired
-    private OperationService logOperationService;
+    OperationService logOperationService;
 
     @GetMapping("page")
 
     @ApiOperation("分页")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "status", value = "状态  0：失败    1：成功", paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "startCreateTime", value = "开始时间", paramType = "query", dataType="String"),
-            @ApiImplicitParam(name = "endCreateTime", value = "结束时间", paramType = "query", dataType="String"),
-            @ApiImplicitParam(name = "createName", value = "用户名", paramType = "query", dataType = "String")
-    })
+    @ApiImplicitParams({@ApiImplicitParam(name = "status", value = "状态  0：失败    1：成功", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "startCreateTime", value = "开始时间", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "endCreateTime", value = "结束时间", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "createName", value = "用户名", paramType = "query", dataType = "String")})
     @RequiresPermissions("log:operation:page")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<OperationDTO> page = logOperationService.pageDto(params);
