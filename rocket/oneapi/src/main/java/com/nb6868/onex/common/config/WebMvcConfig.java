@@ -46,11 +46,11 @@ import java.util.TimeZone;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
-    private AuthAccessInterceptor authAccessInterceptor;
+    AuthAccessInterceptor authAccessInterceptor;
     @Autowired
-    private WxWebAuthInterceptor wxWebAuthInterceptor;
+    WxWebAuthInterceptor wxWebAuthInterceptor;
     @Autowired
-    private LoginUserHandlerMethodArgumentResolver loginUserHandlerMethodArgumentResolver;
+    LoginUserHandlerMethodArgumentResolver loginUserHandlerMethodArgumentResolver;
 
     /**
      * 拦截器
@@ -59,7 +59,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authAccessInterceptor).addPathPatterns("/**");
+        // registry.addInterceptor(authAccessInterceptor).addPathPatterns("/**");
         registry.addInterceptor(wxWebAuthInterceptor).addPathPatterns("/**");
     }
 
