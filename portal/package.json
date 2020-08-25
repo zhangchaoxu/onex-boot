@@ -1,7 +1,7 @@
 {
   "name": "portal",
   "version": "1.0.0",
-  "description": "onex admin portal based on ElementUI",
+  "description": "OneX admin portal based on ElementUI",
   "author": "Charles <zhangchaoxu@gmail.com>",
   "license": "Apache License Version 2.0",
   "private": true,

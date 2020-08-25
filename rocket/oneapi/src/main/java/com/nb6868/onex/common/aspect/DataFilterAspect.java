@@ -22,6 +22,8 @@ import java.util.Map;
 
 /**
  * 数据过滤，切面处理类
+ *
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Aspect
 @Component
@@ -69,34 +71,41 @@ public class DataFilterAspect {
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = point.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
         DataFilter dataFilter = method.getAnnotation(DataFilter.class);
+        if (dataFilter.creatorFilter() || dataFilter.tenantFilter() || dataFilter.deptFilter() || dataFilter.userFilter()) {
+            // 有开启的过滤器
+            // 获取表的别名
+            String tableAlias = dataFilter.tableAlias();
+            if (StringUtils.isNotBlank(tableAlias)) {
+                tableAlias += ".";
+            }
 
-        // 获取表的别名
-        String tableAlias = dataFilter.tableAlias();
-        if (StringUtils.isNotBlank(tableAlias)) {
-            tableAlias += ".";
+            StringBuilder sqlFilter = new StringBuilder();
+
+            //查询条件前缀
+            String prefix = dataFilter.prefix();
+            if (StringUtils.isNotBlank(prefix)) {
+                sqlFilter.append(" ").append(prefix);
+            }
+
+            sqlFilter.append(" (");
+            // 过滤租户
+            if (dataFilter.tenantFilter() && !ObjectUtils.isEmpty(user.getTenantId())) {
+                sqlFilter.append(tableAlias).append(dataFilter.tenantId()).append("=").append(user.getTenantId());
+            }
+            // 过滤用户
+            if (dataFilter.userFilter()) {
+                sqlFilter.append(tableAlias).append(dataFilter.userId()).append("=").append(user.getId());
+            }
+            // 过滤用户
+            if (dataFilter.creatorFilter()) {
+                sqlFilter.append(tableAlias).append(dataFilter.creatorId()).append("=").append(user.getId());
+            }
+
+            sqlFilter.append(")");
+
+            return sqlFilter.toString();
+        } else {
+            return null;
         }
-
-        StringBuilder sqlFilter = new StringBuilder();
-
-        //查询条件前缀
-        String prefix = dataFilter.prefix();
-        if (StringUtils.isNotBlank(prefix)) {
-            sqlFilter.append(" ").append(prefix);
-        }
-
-        sqlFilter.append(" (");
-
-        // 过滤租户
-        if (dataFilter.tenantFilter() && !ObjectUtils.isEmpty(user.getTenantId())) {
-            sqlFilter.append(tableAlias).append(dataFilter.tenantId()).append("=").append(user.getTenantId());
-        }
-        // 过滤用户
-        if (dataFilter.userFilter()) {
-            sqlFilter.append(tableAlias).append(dataFilter.userId()).append("=").append(user.getId());
-        }
-
-        sqlFilter.append(")");
-
-        return sqlFilter.toString();
     }
 }
