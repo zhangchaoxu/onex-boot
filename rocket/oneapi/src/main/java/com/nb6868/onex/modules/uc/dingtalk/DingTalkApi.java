@@ -1,4 +1,4 @@
-package com.nb6868.onex.modules.dingtalk;
+package com.nb6868.onex.modules.uc.dingtalk;
 
 public class DingTalkApi {
 
