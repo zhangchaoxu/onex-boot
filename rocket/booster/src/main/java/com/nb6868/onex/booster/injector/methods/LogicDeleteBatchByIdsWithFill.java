@@ -34,7 +34,7 @@ public class LogicDeleteBatchByIdsWithFill extends AbstractMethod {
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.LOGIC_DELETE_BATCH_BY_IDS;
         String sql;
-        if (tableInfo.isLogicDelete()) {
+        if (tableInfo.isWithLogicDelete()) {
             // 包含->逻辑删除
             // 自动填充字段
             List<TableFieldInfo> fieldInfos = tableInfo.getFieldList().stream().filter(TableFieldInfo::isWithUpdateFill).collect(toList());

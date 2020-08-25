@@ -34,6 +34,8 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
     @Override
     public QueryWrapper<OrderEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<OrderEntity>(new QueryWrapper<>(), params)
+                .eq("orderNo", "order_no")
+                .eq("orderTable", "order_table")
                 .apply(Const.SQL_FILTER)
                 .getQueryWrapper();
     }

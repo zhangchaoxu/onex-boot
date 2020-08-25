@@ -1,4 +1,4 @@
-package com.nb6868.onex.modules.dingtalk;
+package com.nb6868.onex.modules.uc.dingtalk;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -55,6 +55,7 @@ public class DingTalkSignatureUtil {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static String paramToQueryString(Map<String, String> params, String charset) {
         if (params != null && !params.isEmpty()) {
             StringBuilder paramString = new StringBuilder();

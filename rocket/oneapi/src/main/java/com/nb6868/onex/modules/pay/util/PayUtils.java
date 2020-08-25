@@ -5,7 +5,7 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import com.nb6868.onex.booster.util.JacksonUtils;
 import com.nb6868.onex.booster.validator.AssertUtils;
-import com.nb6868.onex.modules.wx.config.WxPayProp;
+import com.nb6868.onex.modules.uc.wx.WxPayProp;
 
 public class PayUtils {
 

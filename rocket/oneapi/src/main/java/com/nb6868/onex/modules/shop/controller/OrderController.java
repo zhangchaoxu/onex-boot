@@ -74,7 +74,7 @@ public class OrderController {
         return new Result<>().success(page);
     }
 
-    @DataFilter(tableAlias = "shop_order", userFilter = true, userId = "user_id")
+    @DataFilter(tableAlias = "shop_order", userFilter = true)
     @GetMapping("myPage")
     @ApiOperation("分页")
     public Result<?> myPage(@ApiIgnore @RequestParam Map<String, Object> params) {
