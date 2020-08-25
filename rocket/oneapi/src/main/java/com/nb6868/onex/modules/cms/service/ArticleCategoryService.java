@@ -16,4 +16,9 @@ public interface ArticleCategoryService extends CrudService<ArticleCategoryEntit
      */
     boolean updateSiteCode(Long siteId, String newSiteCode);
 
+    /**
+     * 获取子类别数量
+     */
+    Integer childrenCount(Long id);
+
 }
