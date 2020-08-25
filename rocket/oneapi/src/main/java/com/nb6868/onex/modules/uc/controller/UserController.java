@@ -23,12 +23,12 @@ import com.nb6868.onex.common.util.ExcelUtils;
 import com.nb6868.onex.modules.uc.UcConst;
 import com.nb6868.onex.modules.uc.dto.*;
 import com.nb6868.onex.modules.uc.entity.RoleUserEntity;
+import com.nb6868.onex.modules.uc.entity.UserEntity;
 import com.nb6868.onex.modules.uc.excel.UserExcel;
 import com.nb6868.onex.modules.uc.service.DeptService;
 import com.nb6868.onex.modules.uc.service.RoleUserService;
 import com.nb6868.onex.modules.uc.service.UserService;
 import com.nb6868.onex.modules.uc.user.SecurityUser;
-import com.nb6868.onex.modules.uc.user.UserDetail;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
@@ -96,7 +96,7 @@ public class UserController {
         data.setRoleIdList(roleUserService.getRoleIdList(id));
         // 部门树
         data.setDeptChain(deptService.getParentChain(data.getDeptId()));
-        return new Result<UserDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @GetMapping("userInfo")
@@ -110,18 +110,26 @@ public class UserController {
     @ApiOperation("修改密码")
     @LogOperation("修改密码")
     public Result<?> password(@Validated @RequestBody PasswordDTO dto) {
-        UserDetail user = SecurityUser.getUser();
-        UserDTO userDTO = userService.getDtoById(user.getId());
-        AssertUtils.isNull(userDTO, ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 获取数据库中的用户
+        UserEntity data = userService.getById(SecurityUser.getUserId());
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 校验原密码
+        AssertUtils.isFalse(new BCryptPasswordEncoder().matches(dto.getPassword(), data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
 
-        // 原密码不正确
-        if (!new BCryptPasswordEncoder().matches(dto.getPassword(), user.getPassword())) {
-            return new Result<>().error(ErrorCode.ACCOUNT_PASSWORD_ERROR);
-        }
-
-        userService.updatePassword(user.getId(), dto.getNewPassword());
+        userService.updatePassword(data.getId(), dto.getNewPassword());
 
         return new Result<>();
+    }
+
+    /**
+     * 通过短信验证码修改密码
+     * 忘记密码功能,通过短信验证码找回
+     */
+    @PostMapping("changePasswordBySmsCode")
+    @ApiOperation(value = "通过短信验证码修改密码")
+    @AnonAccess
+    public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordBySmsCodeRequest request) {
+        return userService.changePasswordBySmsCode(request);
     }
 
     @PostMapping("save")
@@ -212,17 +220,6 @@ public class UserController {
     @AnonAccess
     public Result<?> register(@Validated @RequestBody RegisterRequest request) {
         return userService.register(request);
-    }
-
-    /**
-     * 通过短信验证码修改密码
-     * 忘记密码功能,通过短信验证码找回
-     */
-    @PostMapping("changePasswordBySmsCode")
-    @ApiOperation(value = "通过短信验证码修改密码")
-    @AnonAccess
-    public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordBySmsCodeRequest request) {
-        return userService.changePasswordBySmsCode(request);
     }
 
     @PostMapping("logout")

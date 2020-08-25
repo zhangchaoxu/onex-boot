@@ -67,6 +67,7 @@ public class UserOauthController {
     @RequiresPermissions("uc:userOauth:info")
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         UserOauthDTO data = userOauthService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<UserOauthDTO>().success(data);
     }

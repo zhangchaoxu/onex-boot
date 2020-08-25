@@ -1,8 +1,10 @@
 package com.nb6868.onex.modules.shop.controller;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
 import com.nb6868.onex.booster.util.ParamUtils;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
@@ -77,6 +79,7 @@ public class GoodsCategoryController {
     @RequiresPermissions("shop:goodsCategory:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         GoodsCategoryDTO data = categoryService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         data.setParentMenuList(categoryService.getParentMenuList(data.getPid()));
 

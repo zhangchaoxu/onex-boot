@@ -51,7 +51,7 @@ public class MailLogController {
     @RequiresPermissions("msg:mailLog:page")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<MailLogDTO> page = mailLogService.pageDto(params);
-        //测试
+
         return new Result<>().success(page);
     }
 
@@ -103,7 +103,7 @@ public class MailLogController {
             // 先校验该收件人是否timeLimit秒内发送过
             MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(dto.getTplCode(), dto.getMailTo());
             if (null != lastSmsLog && DateUtils.timeDiff(lastSmsLog.getCreateTime()) < mailTpl.getTimeLimit() * 1000) {
-                // 1分钟内已经发送过了
+                // 限定时间内已经发送过了
                 return new Result<>().error("发送请求过于频繁");
             }
         }
