@@ -1,8 +1,11 @@
 package com.nb6868.onex.modules.shop.controller;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.ChangeStatusRequest;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
+import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
 import com.nb6868.onex.common.annotation.AnonAccess;
@@ -11,6 +14,9 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.util.ExcelUtils;
 import com.nb6868.onex.modules.pay.dto.PayRequest;
 import com.nb6868.onex.modules.shop.dto.OrderDTO;
+import com.nb6868.onex.modules.shop.dto.OrderItemDTO;
+import com.nb6868.onex.modules.shop.dto.OrderOneClickRequest;
+import com.nb6868.onex.modules.shop.entity.OrderEntity;
 import com.nb6868.onex.modules.shop.excel.OrderExcel;
 import com.nb6868.onex.modules.shop.service.OrderItemService;
 import com.nb6868.onex.modules.shop.service.OrderService;
@@ -19,6 +25,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -67,11 +74,25 @@ public class OrderController {
         return new Result<>().success(page);
     }
 
+    @DataFilter(tableAlias = "shop_order", userFilter = true, userId = "user_id")
+    @GetMapping("myPage")
+    @ApiOperation("分页")
+    public Result<?> myPage(@ApiIgnore @RequestParam Map<String, Object> params) {
+        PageData<OrderDTO> page = orderService.pageDto(params);
+
+        return new Result<>().success(page);
+    }
+
     @GetMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("shop:order:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         OrderDTO data = orderService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.RECORD_NOT_EXISTED);
+
+        // 通过id获取相关产品信息
+        List<OrderItemDTO> orderItemList = orderItemService.getDtoListByOrderId(id);
+        data.setOrderItemList(orderItemList);
 
         return new Result<OrderDTO>().success(data);
     }
@@ -155,6 +176,28 @@ public class OrderController {
     public Result<?> pay(@Validated(value = {DefaultGroup.class}) @RequestBody PayRequest payRequest) {
         // 执行支付
         return new Result<>().success(orderService.pay(payRequest));
+    }
+
+    @PostMapping("oneClick")
+    @ApiOperation("一键下单")
+    @LogOperation("一键下单")
+    public Result<?> oneClick(@Validated(value = {AddGroup.class, DefaultGroup.class}) @RequestBody OrderOneClickRequest request) {
+        // 下单
+        OrderEntity order = orderService.oneClick(request);
+
+        return new Result<>().success(order);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping("oneClickAndPay")
+    @ApiOperation("一键下单并支付")
+    @LogOperation("一键下单并支付")
+    public Result<?> oneClickAndPay(@Validated(value = {AddGroup.class, DefaultGroup.class}) @RequestBody OrderOneClickRequest request) {
+        // 下单
+        OrderEntity order = orderService.oneClick(request);
+        // todo 支付
+        // Serializable result = orderService.pay(order.getId());
+        return new Result<>();
     }
 
 }

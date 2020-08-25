@@ -23,7 +23,7 @@ public class PageData<T> implements Serializable {
     @ApiModelProperty(value = "每页显示记录数")
     private int limit;
 
-    @ApiModelProperty(value = "最后页")
+    @ApiModelProperty(value = "是否最后页")
     private boolean lastPage = true;
 
     @ApiModelProperty(value = "总记录数")
