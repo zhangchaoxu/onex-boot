@@ -108,4 +108,8 @@ public class ArticleServiceImpl extends CrudServiceImpl<ArticleDao, ArticleEntit
         return update(new UpdateWrapper<ArticleEntity>().eq("article_category_id", siteId).set("article_category_code", newSiteCode));
     }
 
+    @Override
+    public Integer countByArticleCategoryId(Long articleCategoryId) {
+        return query().eq("article_category_id", articleCategoryId).count();
+    }
 }

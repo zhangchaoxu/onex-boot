@@ -41,4 +41,7 @@ public class MailTplDTO extends BaseDTO {
 	@ApiModelProperty(value = "配置参数")
 	private String param;
 
+	@ApiModelProperty(value = "限时秒")
+	private Integer timeLimit;
+
 }

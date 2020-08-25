@@ -1,7 +1,9 @@
 package com.nb6868.onex.modules.cms.controller;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
@@ -53,12 +55,12 @@ public class ArticleController {
         return new Result<PageData<ArticleDTO>>().success(page);
     }
 
-
     @GetMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("cms:article:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         ArticleDTO data = articleService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<ArticleDTO>().success(data);
     }

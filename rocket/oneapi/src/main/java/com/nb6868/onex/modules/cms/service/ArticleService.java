@@ -36,4 +36,11 @@ public interface ArticleService extends CrudService<ArticleEntity, ArticleDTO> {
      * 更新articleCategoryCode
      */
     boolean updateArticleCategoryCode(Long articleCategoryId, String articleCategoryCode);
+
+    /**
+     * 统计分类下的内容
+     * @param articleCategoryId
+     */
+    Integer countByArticleCategoryId(Long articleCategoryId);
+
 }
