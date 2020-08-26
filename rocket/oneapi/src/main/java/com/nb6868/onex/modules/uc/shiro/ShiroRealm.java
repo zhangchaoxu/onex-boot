@@ -5,7 +5,6 @@ import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.util.ConvertUtils;
 import com.nb6868.onex.booster.util.MessageUtils;
 import com.nb6868.onex.modules.uc.UcConst;
-import com.nb6868.onex.modules.uc.dto.LoginChannelCfg;
 import com.nb6868.onex.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.modules.uc.entity.UserEntity;
 import com.nb6868.onex.modules.uc.service.ShiroService;
@@ -50,6 +49,10 @@ public class ShiroRealm extends AuthorizingRealm {
     private boolean shiroRole;
     @Value("${onex.shiro.permissions: true}")
     private boolean shiroPermissions;
+    @Value("${onex.shiro.token.renewal: true}")
+    private boolean tokenRenewal;
+    @Value("${onex.shiro.token.expire: 604800}")
+    private long tokenExpire;
 
     /**
      * 授权(验证权限时调用)
@@ -113,16 +116,13 @@ public class ShiroRealm extends AuthorizingRealm {
         // 转换成UserDetail对象
         UserDetail userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
 
-        // 将登录配置塞入user
-        LoginChannelCfg loginCfg = shiroService.getLoginCfg(token.getType());
-
         // 获取用户对应的部门数据权限
         /*List<Long> deptIdList = shiroService.getDataScopeList(userDetail.getId());
         userDetail.setDeptIdList(deptIdList);*/
 
         // 更新token
-        if (loginCfg.isRenewalToken()) {
-            shiroService.renewalToken(accessToken, loginCfg.getExpire());
+        if (tokenRenewal) {
+            shiroService.renewalToken(accessToken, tokenExpire);
         }
 
         return new SimpleAuthenticationInfo(userDetail, accessToken, getName());

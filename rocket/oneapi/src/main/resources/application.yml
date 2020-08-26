@@ -75,7 +75,16 @@ mybatis-plus:
 
 # onex 配置
 onex:
+  # shiro相关
   shiro:
+    # token策略
+    token:
+      # 支持uuid和jwt
+      policy: uuid
+      # 是否自动延期
+      renewal: true
+      # token有效秒
+      expire: 604800
     # 基于角色分配
     role: false
     # 基于权限分配
