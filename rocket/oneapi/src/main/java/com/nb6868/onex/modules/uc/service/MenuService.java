@@ -74,4 +74,9 @@ public interface MenuService extends CrudService<MenuEntity, MenuDTO> {
      * @return result
      */
     List<String> getPermissionsListByUserId(Long userId);
+
+    /**
+     * 查询所有级联的子节点id
+     */
+    List<Long> getCascadeChildrenListByIds(List<Long> ids);
 }
