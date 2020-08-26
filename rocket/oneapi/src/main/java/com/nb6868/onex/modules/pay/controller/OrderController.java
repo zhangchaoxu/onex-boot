@@ -11,7 +11,7 @@ import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.util.ExcelUtils;
 import com.nb6868.onex.modules.pay.dto.OrderDTO;
@@ -133,7 +133,7 @@ public class OrderController {
     @ApiOperation(value = "微信订单支付回调通知")
     @LogOperation("微信订单支付回调通知")
     @PostMapping("/wxNotify")
-    @AnonAccess
+    @AccessControl
     public String wxNotify(@RequestBody String xmlData) {
         try {
             orderService.handleWxNotifyResult(WxPayOrderNotifyResult.fromXML(xmlData));
@@ -149,7 +149,7 @@ public class OrderController {
     @ApiOperation(value = "支付宝订单支付回调通知")
     @LogOperation("支付宝订单支付回调通知")
     @PostMapping("/alipayNotify")
-    @AnonAccess
+    @AccessControl
     public String alipayNotify(@RequestBody String xmlData) {
         // todo
         return "";

@@ -2,7 +2,7 @@ package com.nb6868.onex.modules.shop.controller;
 
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.validator.AssertUtils;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.WxWebAuth;
 import com.nb6868.onex.modules.shop.dto.GoodsDTO;
 import com.nb6868.onex.modules.shop.dto.OrderDTO;
@@ -36,9 +36,9 @@ public class HtmlController {
     @Autowired
     OrderService orderService;
 
-    @AnonAccess
     @ApiOperation("商品详情页面")
     @GetMapping("goods/info")
+    @AccessControl
     public String goodsInfo(ModelMap map, @NotNull(message = "{id.require}") @RequestParam Long id) {
         GoodsDTO data = goodsService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -47,10 +47,10 @@ public class HtmlController {
         return "shop/goods-info";
     }
 
-    @AnonAccess
     @WxWebAuth
     @ApiOperation("订单详情页面")
     @GetMapping("order/info")
+    @AccessControl
     public String orderInfo(HttpServletRequest request, ModelMap map, @NotNull(message = "{id.require}") @RequestParam Long id) {
         OrderDTO data = orderService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

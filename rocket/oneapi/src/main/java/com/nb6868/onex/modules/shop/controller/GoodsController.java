@@ -7,7 +7,7 @@ import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.DataFilter;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.util.ExcelUtils;
@@ -61,9 +61,9 @@ public class GoodsController {
         return new Result<>().success(page);
     }
 
-    @AnonAccess
     @GetMapping("info")
     @ApiOperation("信息")
+    @AccessControl
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         GoodsDTO data = goodsService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

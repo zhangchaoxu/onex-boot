@@ -3,7 +3,6 @@ package com.nb6868.onex.modules.uc.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.pojo.Const;
@@ -91,14 +90,9 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     }
 
     @Override
-    public boolean logout() {
-        UserDetail user = SecurityUser.getUser();
+    public boolean logout(String token) {
         // 删除token
-        boolean ret = tokenService.deleteToken(user.getToken());
-        // 记录登录日志
-        if (!ret) {
-            throw new OnexException("删除token失败");
-        }
+        boolean ret = tokenService.deleteToken(token);
         return ret;
     }
 

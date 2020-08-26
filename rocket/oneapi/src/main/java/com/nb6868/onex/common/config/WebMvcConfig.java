@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.nb6868.onex.booster.util.DateUtils;
-import com.nb6868.onex.common.interceptor.AuthAccessInterceptor;
 import com.nb6868.onex.common.interceptor.WxWebAuthInterceptor;
-import com.nb6868.onex.common.resolver.LoginUserHandlerMethodArgumentResolver;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +44,7 @@ import java.util.TimeZone;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
-    AuthAccessInterceptor authAccessInterceptor;
-    @Autowired
     WxWebAuthInterceptor wxWebAuthInterceptor;
-    @Autowired
-    LoginUserHandlerMethodArgumentResolver loginUserHandlerMethodArgumentResolver;
 
     /**
      * 拦截器
@@ -59,7 +53,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // registry.addInterceptor(authAccessInterceptor).addPathPatterns("/**");
         registry.addInterceptor(wxWebAuthInterceptor).addPathPatterns("/**");
     }
 
@@ -70,8 +63,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        // 加入登录用户参数resolver
-        argumentResolvers.add(loginUserHandlerMethodArgumentResolver);
     }
 
     @Override

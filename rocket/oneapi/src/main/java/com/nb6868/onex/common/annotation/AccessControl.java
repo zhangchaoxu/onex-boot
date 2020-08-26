@@ -15,11 +15,6 @@ public @interface AccessControl {
     /**
      * 是否允许匿名用户
      */
-    boolean anon() default false;
-
-    /**
-     * 是否允许游客用户
-     */
-    boolean guest() default false;
+    boolean anon() default true;
 
 }

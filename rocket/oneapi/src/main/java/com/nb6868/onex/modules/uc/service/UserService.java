@@ -26,7 +26,7 @@ public interface UserService extends CrudService<UserEntity, UserDTO> {
     /**
      * 退出
      */
-    boolean logout();
+    boolean logout(String token);
 
     /**
      * 通过短信验证码修改密码

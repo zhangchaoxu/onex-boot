@@ -3,7 +3,6 @@ package com.nb6868.onex.common.aspect;
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.common.annotation.AccessControl;
-import com.nb6868.onex.modules.uc.UcConst;
 import com.nb6868.onex.modules.uc.user.SecurityUser;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
 /**
- * 匿名访问，切面处理类
+ * 访问控制，切面处理类
  *
  * @author Charles (zhanngchaoxu@gmail.com)
  */
@@ -23,21 +22,24 @@ import java.lang.reflect.Method;
 @Component
 public class AccessControlAspect {
 
-    @Pointcut("@annotation(com.nb6868.onex.common.annotation.AccessControl)")
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping)" +
+            " || @annotation(org.springframework.web.bind.annotation.PutMapping)" +
+            " || @annotation(org.springframework.web.bind.annotation.PostMapping)" +
+            " || @annotation(org.springframework.web.bind.annotation.PatchMapping)" +
+            " || @annotation(org.springframework.web.bind.annotation.DeleteMapping)" )
     public void pointcut() {
     }
 
     @Around("pointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
-        AccessControl annotation = method.getAnnotation(AccessControl.class);
-        if (annotation != null) {
-            // 注解上的控制
-            if (!annotation.anon()) {
-                if (UcConst.TOKEN_ANON.equalsIgnoreCase(SecurityUser.getUser().getToken())) {
-                    throw new OnexException(ErrorCode.UNAUTHORIZED);
-                }
+        if (SecurityUser.isAnon()) {
+            // 注解所在方法
+            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+            Method method = joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
+            AccessControl annotation = method.getAnnotation(AccessControl.class);
+            if (annotation == null || !annotation.anon()) {
+                // 不存在注解或者注解不允许
+                throw new OnexException(ErrorCode.UNAUTHORIZED);
             }
         }
 

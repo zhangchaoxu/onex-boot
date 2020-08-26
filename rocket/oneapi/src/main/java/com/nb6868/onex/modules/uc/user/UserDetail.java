@@ -26,7 +26,6 @@ public class UserDetail implements Serializable {
     private Long tenantId;
     private String tenantName;
     private String password;
-    private String token;
     private Integer status;
     private Integer type;
     private String regionCd;
@@ -35,5 +34,12 @@ public class UserDetail implements Serializable {
      * 部门数据权限
      */
     private List<Long> deptIdList;
+
+    /**
+     * 是否匿名用户
+     */
+    public boolean isAnon() {
+        return null == getId() || 0L == getId();
+    }
 
 }

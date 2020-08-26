@@ -28,9 +28,9 @@ public class ShiroFilter extends AuthenticatingFilter {
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
-        // 获取请求token
+        // 请求token
         final String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, UcConst.TOKEN_HEADER);
-        // 当请求为空的时候,赋予匿名访问Token
+        // 当请求token为空的时候,赋予匿名访问Token
         return new AuthenticationToken() {
             @Override
             public String getPrincipal() {

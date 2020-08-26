@@ -5,7 +5,7 @@ import com.nb6868.onex.booster.pojo.Result;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.util.ExcelUtils;
 import com.nb6868.onex.modules.log.dto.ReleaseDTO;
@@ -59,7 +59,7 @@ public class ReleaseController {
 
     @GetMapping("getLatestByCode")
     @ApiOperation("通过code获取最新的release")
-    @AnonAccess(path = "log/release/getLatestByCode")
+    @AccessControl
     public Result<?> getLatestByCode(@NotBlank(message = "{code.require}") @RequestParam String code) {
         ReleaseDTO data = releaseService.getLatestByCode(code);
 
