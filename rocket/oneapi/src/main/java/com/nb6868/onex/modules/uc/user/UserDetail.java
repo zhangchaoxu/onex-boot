@@ -28,8 +28,6 @@ public class UserDetail implements Serializable {
     private String password;
     private Integer status;
     private Integer type;
-    private String regionCd;
-    private LoginChannelCfg loginCfg;
     /**
      * 部门数据权限
      */
