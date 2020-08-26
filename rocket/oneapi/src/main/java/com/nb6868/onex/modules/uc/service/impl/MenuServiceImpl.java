@@ -1,5 +1,6 @@
 package com.nb6868.onex.modules.uc.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.service.impl.CrudServiceImpl;
@@ -13,13 +14,13 @@ import com.nb6868.onex.modules.uc.entity.MenuEntity;
 import com.nb6868.onex.modules.uc.service.MenuService;
 import com.nb6868.onex.modules.uc.service.RoleMenuService;
 import com.nb6868.onex.modules.uc.user.UserDetail;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * 菜单管理
@@ -30,7 +31,7 @@ import java.util.*;
 public class MenuServiceImpl extends CrudServiceImpl<MenuDao, MenuEntity, MenuDTO> implements MenuService {
 
     @Autowired
-    private RoleMenuService sysRoleMenuService;
+    private RoleMenuService roleMenuService;
 
     @Override
     public QueryWrapper<MenuEntity> getWrapper(String method, Map<String, Object> params) {
@@ -109,17 +110,23 @@ public class MenuServiceImpl extends CrudServiceImpl<MenuDao, MenuEntity, MenuDT
         return menus;
     }
 
+    @Override
+    public List<Long> getCascadeChildrenListByIds(List<Long> ids) {
+        List<Long> menuIds = new ArrayList<>();
+        while (ids.size() > 0) {
+            menuIds.addAll(ids);
+            ids = listObjs(new QueryWrapper<MenuEntity>().select("id").in("pid", ids), o -> Long.valueOf(String.valueOf(o)));
+        }
+        return menuIds;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
-        // 判断是否有子菜单或按钮
-        if (hasRecord(new QueryWrapper<MenuEntity>().in("pid", idList))) {
-            throw new OnexException(ErrorCode.HAS_SUB_RECORD);
-        }
         List<Long> ids = (List<Long>) idList;
         // 删除角色菜单关系
-        sysRoleMenuService.deleteByMenuIds(ids);
+        roleMenuService.deleteByMenuIds(ids);
         // 删除菜单
         return super.logicDeleteByIds(idList);
     }

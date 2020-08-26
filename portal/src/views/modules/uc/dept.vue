@@ -15,8 +15,18 @@
                     <el-button type="info" @click="exportHandle()">{{ $t('export') }}</el-button>
                 </el-form-item>
             </el-form>
-            <el-table v-loading="dataListLoading" :data="dataList" border @sort-change="dataListSortChangeHandle" style="width: 100%;" row-key="id">
-                <el-table-column prop="name" :label="$t('base.name')" header-align="center" align="left" min-width="150"/>
+            <el-table v-loading="dataListLoading" :data="dataList"
+                      :default-expand-all="expandTree"
+                      ref="table"
+                      border @sort-change="dataListSortChangeHandle" style="width: 100%;" row-key="id">
+                <el-table-column prop="name" :label="$t('base.name')" header-align="left" align="left" min-width="150">
+                  <template slot="header" slot-scope="scope">
+                    <el-tooltip class="item" effect="dark" :content="expandTree ? '点击收起全部' : '点击展开全部'" placement="top-start">
+                      <i :class="[{'el-icon-s-unfold':!expandTree}, {'el-icon-s-fold':expandTree}]" @click="expandTreeHandle(dataList, !expandTree)"></i>
+                    </el-tooltip>
+                    {{ $t('base.name') }}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="remark" label="备注" header-align="center" align="center" min-width="150"/>
                 <el-table-column :label="$t('handle')" fixed="right" header-align="center" align="center" width="150">
                     <template slot-scope="scope">
@@ -61,9 +71,22 @@ export default {
       searchDataForm: {
         code: '',
         name: ''
-      }
+      },
+      // 展开树结构
+      expandTree: false
+    }
+  },
+  methods: {
+    // 展开或者收起树
+    expandTreeHandle (rowList, isExpand) {
+      rowList.forEach(i => {
+        this.$refs.table.toggleRowExpansion(i, isExpand)
+        if (i.children) {
+          this.expandTreeHandle(i.children, isExpand)
+        }
+      })
+      this.expandTree = !this.expandTree
     }
   }
-
 }
 </script>

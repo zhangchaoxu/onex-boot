@@ -20,8 +20,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -103,18 +103,13 @@ public class RoleController {
 	@LogOperation("删除")
 	@RequiresPermissions("uc:role:delete")
 	public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
+		// 删除数据
 		roleService.logicDeleteById(id);
-
+		// 删除角色菜单关联关系
+		roleMenuService.deleteByRoleIds(Collections.singletonList(id));
+		// 删除角色数据关联关系
+		roleDataScopeService.deleteByRoleIds(Collections.singletonList(id));
 		return new Result<>();
 	}
 
-	@DeleteMapping("deleteBatch")
-	@ApiOperation("批量删除")
-	@LogOperation("批量删除")
-	@RequiresPermissions("uc:role:deleteBatch")
-	public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-		roleService.logicDeleteByIds(ids);
-
-		return new Result<>();
-	}
 }

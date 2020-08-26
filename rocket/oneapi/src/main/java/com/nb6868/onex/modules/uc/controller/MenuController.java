@@ -16,6 +16,7 @@ import com.nb6868.onex.modules.uc.dto.MenuDTO;
 import com.nb6868.onex.modules.uc.dto.MenuTreeDTO;
 import com.nb6868.onex.modules.uc.entity.MenuEntity;
 import com.nb6868.onex.modules.uc.service.MenuService;
+import com.nb6868.onex.modules.uc.service.RoleMenuService;
 import com.nb6868.onex.modules.uc.service.ShiroService;
 import com.nb6868.onex.modules.uc.user.SecurityUser;
 import com.nb6868.onex.modules.uc.user.UserDetail;
@@ -27,12 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 菜单权限
@@ -47,7 +44,10 @@ import java.util.Set;
 public class MenuController {
 
     @Autowired
-    private MenuService menuService;
+    MenuService menuService;
+    @Autowired
+    RoleMenuService roleMenuService;
+
     @Autowired
     private ShiroService shiroService;
 
@@ -160,17 +160,9 @@ public class MenuController {
     @LogOperation("删除")
     @RequiresPermissions("uc:menu:delete")
     public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        menuService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
-    @DeleteMapping("deleteBatch")
-    @ApiOperation("批量删除")
-    @LogOperation("批量删除")
-    @RequiresPermissions("uc:menu:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-       menuService.logicDeleteByIds(ids);
+        // 包括自己和子菜单
+        List<Long> menuIds = menuService.getCascadeChildrenListByIds(Collections.singletonList(id));
+        menuService.logicDeleteByIds(menuIds);
 
         return new Result<>();
     }
