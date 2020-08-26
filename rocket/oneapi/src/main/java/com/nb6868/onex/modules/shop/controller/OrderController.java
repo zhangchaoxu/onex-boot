@@ -8,7 +8,6 @@ import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
 import com.nb6868.onex.common.annotation.DataFilter;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.util.ExcelUtils;
@@ -172,7 +171,6 @@ public class OrderController {
     @PostMapping("pay")
     @ApiOperation("支付")
     @LogOperation("支付")
-    @AnonAccess
     public Result<?> pay(@Validated(value = {DefaultGroup.class}) @RequestBody PayRequest payRequest) {
         // 执行支付
         return new Result<>().success(orderService.pay(payRequest));

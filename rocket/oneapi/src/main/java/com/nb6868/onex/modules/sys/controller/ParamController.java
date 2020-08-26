@@ -10,7 +10,7 @@ import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.util.ExcelUtils;
 import com.nb6868.onex.modules.sys.dto.ParamDTO;
@@ -70,7 +70,7 @@ public class ParamController {
 
     @GetMapping("getContentByCode")
     @ApiOperation("通过code获取对应参数的content")
-    @AnonAccess
+    @AccessControl
     public Result<?> getContentByCode(@NotBlank(message = "code不能为空") @RequestParam String code) {
         String content = paramService.getContent(code);
 
@@ -79,7 +79,7 @@ public class ParamController {
 
     @GetMapping("getContentByCodes")
     @ApiOperation("通过code获取对应参数的content")
-    @AnonAccess
+    @AccessControl
     public Result<?> getContentByCodes(@NotBlank(message = "codes不能为空") @RequestParam String codes) {
         List<String> codeList = StringUtils.splitToList(codes);
         Kv kv = Kv.init();
@@ -167,7 +167,7 @@ public class ParamController {
 
     @GetMapping("clearCache")
     @ApiOperation("清空缓存")
-    @AnonAccess
+    @AccessControl
     public Result<?> clearCache(@RequestParam(required = false) String key) {
         paramService.clearCache(key);
         return new Result<>().success();

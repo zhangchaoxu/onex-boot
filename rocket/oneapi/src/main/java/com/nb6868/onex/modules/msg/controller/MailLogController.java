@@ -8,7 +8,7 @@ import com.nb6868.onex.booster.util.JacksonUtils;
 import com.nb6868.onex.booster.util.StringUtils;
 import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.msg.MsgConst;
 import com.nb6868.onex.modules.msg.dto.MailLogDTO;
@@ -91,7 +91,7 @@ public class MailLogController {
     @PostMapping("sendCode")
     @ApiOperation("发送验证码消息")
     @LogOperation("发送验证码消息")
-    @AnonAccess
+    @AccessControl
     public Result<?> sendCode(@Validated(value = {AddGroup.class}) @RequestBody MailSendRequest dto) {
         // 只允许发送CODE_开头的模板
         AssertUtils.isFalse(dto.getTplCode().startsWith(MsgConst.SMS_CODE_TPL_PREFIX), "只支持" + MsgConst.SMS_CODE_TPL_PREFIX + "类型模板发送");

@@ -8,15 +8,6 @@ package com.nb6868.onex.modules.uc;
 public interface UcConst {
 
     /**
-     * 游客token
-     */
-    String TOKEN_GUEST = "00000000000000000000000000000001";
-    /**
-     * 游客角色编码
-     */
-    String ROLE_CODE_GUEST = "GUEST";
-
-    /**
      * 匿名角色编码
      */
     String ROLE_CODE_ANON = "ANON";

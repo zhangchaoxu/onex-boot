@@ -2,7 +2,7 @@ package com.nb6868.onex.modules.sys.controller;
 
 import com.nb6868.onex.booster.pojo.Kv;
 import com.nb6868.onex.booster.pojo.Result;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.modules.uc.service.CaptchaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -35,7 +35,7 @@ public class CaptchaController {
     @ApiOperation(value = "base64格式验证码图片")
     @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "width", value = "图片宽度"),
             @ApiImplicitParam(paramType = "query", dataType = "int", name = "height", value = "图片高度")})
-    @AnonAccess
+    @AccessControl
     public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width, @RequestParam(required = false, defaultValue = "50") int height) {
         String uuid = UUID.randomUUID().toString();
         // 随机取出一种

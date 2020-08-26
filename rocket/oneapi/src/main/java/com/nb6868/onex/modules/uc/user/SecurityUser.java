@@ -55,4 +55,11 @@ public class SecurityUser {
     public static Long getTenantId() {
         return getUser().getTenantId();
     }
+
+    /**
+     * 是否匿名用户
+     */
+    public static boolean isAnon() {
+        return getUser().isAnon();
+    }
 }

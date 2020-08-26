@@ -72,3 +72,12 @@ mybatis-plus:
     cache-enabled: false
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
+
+# onex 配置
+onex:
+  shiro:
+    # 基于角色分配
+    role: false
+    # 基于权限分配
+    permissions: true
+

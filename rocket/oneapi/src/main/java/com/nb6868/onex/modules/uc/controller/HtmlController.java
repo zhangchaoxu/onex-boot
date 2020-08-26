@@ -1,6 +1,6 @@
 package com.nb6868.onex.modules.uc.controller;
 
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.modules.uc.UcConst;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Api(tags = "uc html")
 public class HtmlController {
 
-    @AnonAccess
     @ApiOperation("绑定微信")
     @GetMapping("wx/bind")
+    @AccessControl
     public String wxBind(ModelMap map, @RequestParam(required = false, defaultValue = UcConst.WX_CFG_MP) String paramCode, @RequestParam(required = false) String code) {
         return "uc/wx-bind";
     }

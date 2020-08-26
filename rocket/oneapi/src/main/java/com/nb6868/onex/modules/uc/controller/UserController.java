@@ -7,6 +7,7 @@ import com.nb6868.onex.booster.pojo.MsgResult;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
 import com.nb6868.onex.booster.util.ConvertUtils;
+import com.nb6868.onex.booster.util.HttpContextUtils;
 import com.nb6868.onex.booster.util.JacksonUtils;
 import com.nb6868.onex.booster.util.bcrypt.BCryptPasswordEncoder;
 import com.nb6868.onex.booster.validator.AssertUtils;
@@ -14,7 +15,7 @@ import com.nb6868.onex.booster.validator.ValidatorUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.DataFilter;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -127,7 +128,7 @@ public class UserController {
      */
     @PostMapping("changePasswordBySmsCode")
     @ApiOperation(value = "通过短信验证码修改密码")
-    @AnonAccess
+    @AccessControl
     public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordBySmsCodeRequest request) {
         return userService.changePasswordBySmsCode(request);
     }
@@ -187,8 +188,8 @@ public class UserController {
     @SneakyThrows
     @PostMapping("loginEncrypt")
     @ApiOperation(value = "加密登录")
-    @AnonAccess
     @LogLogin
+    @AccessControl
     public Result<?> loginEncrypt(HttpServletRequest request, @RequestBody String loginEncrypted) {
         // 密文转json明文
         String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, "UTF-8"));
@@ -206,8 +207,8 @@ public class UserController {
      */
     @PostMapping("login")
     @ApiOperation(value = "登录")
-    @AnonAccess
     @LogLogin
+    @AccessControl
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
         return new Result<>().success(userService.login(loginRequest));
     }
@@ -217,7 +218,7 @@ public class UserController {
      */
     @PostMapping("register")
     @ApiOperation(value = "注册")
-    @AnonAccess
+    @AccessControl
     public Result<?> register(@Validated @RequestBody RegisterRequest request) {
         return userService.register(request);
     }
@@ -225,8 +226,10 @@ public class UserController {
     @PostMapping("logout")
     @ApiOperation(value = "退出")
     @LogLogin(type = UcConst.LoginTypeEnum.LOGOUT)
-    public Result<?> logout() {
-        userService.logout();
+    public Result<?> logout(HttpServletRequest request) {
+        String token = HttpContextUtils.getRequestParameter(request, UcConst.TOKEN_HEADER);
+
+        userService.logout(token);
 
         return new Result<>();
     }

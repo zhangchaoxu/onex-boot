@@ -8,7 +8,7 @@ import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.Result;
 import com.nb6868.onex.booster.validator.AssertUtils;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.modules.sys.service.ParamService;
 import com.nb6868.onex.modules.uc.wx.WxProp;
 import io.swagger.annotations.Api;
@@ -45,8 +45,7 @@ public class WxController {
 
     @GetMapping("/getJsapiSignature")
     @ApiOperation("获得签名")
-    @AnonAccess
-    @ApiImplicitParams({@ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String")})
+    @AccessControl
     public Result<?> getJsapiSignature(@RequestParam(required = false, defaultValue = "WX_CONFIG") String paramCode, @RequestParam String url) {
         WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class, null);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
@@ -73,9 +72,7 @@ public class WxController {
 
     @GetMapping("/getOauth2Url")
     @ApiOperation("获得OAuth2地址")
-    @AnonAccess
-    @ApiImplicitParams({@ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "scope", value = "授权范围", paramType = "query", dataType = "String")})
+    @AccessControl
     public Result<?> getOauth2Url(@RequestParam String paramCode, @RequestParam String url,
                                   @RequestParam(required = false, defaultValue = WxConsts.OAuth2Scope.SNSAPI_USERINFO) String scope,
                                   @RequestParam(required = false) String state) {

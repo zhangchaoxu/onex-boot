@@ -8,7 +8,7 @@ import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.service.ParamService;
@@ -117,8 +117,8 @@ public class UserOauthController {
      */
     @PostMapping("/oauthLoginByCode")
     @ApiOperation("Oauth授权登录")
-    @AnonAccess
     @LogLogin
+    @AccessControl
     public Result<?> oauthLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
         // 获得登录配置
         JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
