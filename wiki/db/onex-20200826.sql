@@ -766,9 +766,6 @@ CREATE TABLE `msg_mail_tpl`  (
 -- ----------------------------
 -- Records of msg_mail_tpl
 -- ----------------------------
-INSERT INTO `msg_mail_tpl` VALUES (1273468852126146561, '验证码-通用', 'CODE_COMMON', 'sms', -1, '', '您的验证码：${code}，您正进行身份验证，打死不告诉别人！', '{\"platform\":\"aliyun\",\"appKey\":\"LTAI4FoC5LeSGWdHoKPygy8q\",\"appSecret\":\"2pEOyBxXBgoWwZ4D5lmOmYW9YxntdB\",\"appId\":\"\",\"sign\":\"大鱼测试\",\"tplId\":\"SMS_185813154\",\"regionId\":\"cn-hangzhou\"}', 1118075560757063682, '2020-06-18 12:13:29', 1118075560757063682, '2020-06-18 17:14:03', 0);
-INSERT INTO `msg_mail_tpl` VALUES (1273826577951498242, '设备漏电提醒', 'ALARM_AEP_LEAK', 'wx_mp_template', -1, '设备告警通知', '${first}\n告警对象：${keyword1}\n告警类型：${keyword2}\n告警时间：${keyword3}\n报警内容：${keyword4}\n${remark}', '{\"appid\":\"wxaf3ba5c657b43b51\",\"secret\":\"5ba448c597efffdc123ca016e43c8721\",\"token\":\"omJNpZEhZeHj1ZxFECKkP48B5VFbk1HP\",\"aesKey\":\"HEuvCyvO2zvpSxvDKI9TLJc27pnXqjpApqR38jTCZUJ\",\"msgDataFormat\":\"JSON\",\"templateId\":\"LVie_uxKZX_rujgQPJxegTqItzgN9J5FewEQuQ_4404\"}', 1118075560757063682, '2020-06-19 11:54:57', 1118075560757063682, '2020-06-19 13:37:25', 0);
-INSERT INTO `msg_mail_tpl` VALUES (1273852219556392962, '设备上下线提醒', 'ALARM_AEP_ONOFF', 'wx_mp_template', -1, '设备状态通知', '${first}\n设备号：${keyword1}\n当前状态：${keyword2}\n${remark}', '{\"appid\":\"wxaf3ba5c657b43b51\",\"secret\":\"5ba448c597efffdc123ca016e43c8721\",\"token\":\"omJNpZEhZeHj1ZxFECKkP48B5VFbk1HP\",\"aesKey\":\"HEuvCyvO2zvpSxvDKI9TLJc27pnXqjpApqR38jTCZUJ\",\"msgDataFormat\":\"JSON\",\"templateId\":\"NmU5Qbf_Y93fuHawx0u_CelTxLHWhUJDSq_VKyoNsVs\"}', 1118075560757063682, '2020-06-19 13:36:51', 1118075560757063682, '2020-06-19 13:37:11', 0);
 
 -- ----------------------------
 -- Table structure for msg_notice_log
@@ -851,9 +848,6 @@ CREATE TABLE `pay_channel`  (
 -- ----------------------------
 -- Records of pay_channel
 -- ----------------------------
-INSERT INTO `pay_channel` VALUES (1249946532665376770, '微信JSAPI支付', 1, 'WECHAT_JSAPI', 'http://oneapi.nbxuda.com/rocket-admin/pay/order/wxNotify', '{\"appId\":\"wxaf3ba5c657b43b51\",\"mchId\":\"1391027702\",\"tradeType\":\"JSAPI\",\"mchKey\":\"BkI4DeJ19FHTIfrdAvga0j0T3mE5UFQg\",\"subAppId\":\"\",\"subMchId\":\"\",\"keyPath\":\"/data/wwwroot/oneapi/apiclient_cert.p12\"}', '微信内支付，如公众号', 1, 1118075560757063682, '2020-04-14 14:24:11', 1118075560757063682, '2020-07-24 09:25:17', 0, 1244554469220323331, '甬江鱼塘');
-INSERT INTO `pay_channel` VALUES (1249946532665376771, '微信NATIVE支付', 2, 'WECHAT_NATIVE', 'http://oneapi.nbxuda.com/rocket-admin/pay/order/wxNotify', '{\"appId\":\"wxaf3ba5c657b43b51\",\"mchId\":\"1391027702\",\"tradeType\":\"NATIVE\",\"mchKey\":\"BkI4DeJ19FHTIfrdAvga0j0T3mE5UFQg\",\"subAppId\":\"\",\"subMchId\":\"\",\"keyPath\":\"/data/wwwroot/oneapi/apiclient_cert.p12\"}', '微信Nativie支付,比如刷二维码支付', 1, 1118075560757063682, '2020-04-14 14:24:11', 1118075560757063682, '2020-07-23 18:21:24', 0, 1244554469220323331, '甬江鱼塘');
-INSERT INTO `pay_channel` VALUES (1249946532665376772, '微信H5支付', 3, 'WECHAT_MWEB', 'http://oneapi.nbxuda.com/rocket-admin/pay/order/wxNotify', '{\"appId\":\"wxaf3ba5c657b43b51\",\"mchId\":\"1391027702\",\"tradeType\":\"MWEB\",\"mchKey\":\"BkI4DeJ19FHTIfrdAvga0j0T3mE5UFQg\",\"subAppId\":\"\",\"subMchId\":\"\",\"keyPath\":\"/data/wwwroot/oneapi/apiclient_cert.p12\"}', '微信外H5支付', 1, 1118075560757063682, '2020-04-14 14:24:11', 1118075560757063682, '2020-07-24 09:47:02', 0, 1244554469220323331, '甬江鱼塘');
 
 -- ----------------------------
 -- Table structure for pay_order
@@ -889,7 +883,7 @@ CREATE TABLE `pay_order`  (
 -- ----------------------------
 -- Records of pay_order
 -- ----------------------------
-INSERT INTO `pay_order` VALUES (1265134614280683521, 1249946532665376770, '{\"appId\":\"wxaf3ba5c657b43b51\",\"mchId\":\"1391027702\",\"tradeType\":\"JSAPI\",\"mchKey\":\"BkI4DeJ19FHTIfrdAvga0j0T3mE5UFQg\",\"subAppId\":\"\",\"subMchId\":\"\",\"keyPath\":\"/data/wwwroot/oneapi/apiclient_cert.p12\"}', NULL, NULL, 'http://oneapi.nbxuda.com/rocket-admin/pay/wx/notify/order/', 0, NULL, 'shop_order', 1265134613018198017, '20200526259251', NULL, NULL, 0, 1261171414166401025, '2020-05-26 12:16:12', 1261171414166401025, '2020-05-26 12:16:12', 0, 1244554469220323331, '甬江鱼塘');
+
 
 -- ----------------------------
 -- Table structure for pay_trans
@@ -2499,13 +2493,10 @@ INSERT INTO `sys_param` VALUES (1067246875800000076, 'LOGIN_CHANNEL_CFG_10', 0, 
 INSERT INTO `sys_param` VALUES (1191713399273168898, 'OSS_CFG_PRI', 0, '{\"type\":\"aliyun\",\"domain\":\"http://xquick-pri-private.oss-cn-hangzhou.aliyuncs.com/\",\"prefix\":\"oss\",\"endPoint\":\"http://oss-cn-hangzhou.aliyuncs.com/\",\"accessKeyId\":\"LTAI4FjnHJSv8hrYXTYim5ZQ\",\"accessKeySecret\":\"yfg9DsFZ9X8DSuzDaY0GLiMZpopVT3\",\"bucketName\":\"xquick-pri\"}', '私有云存储配置', NULL, NULL, 1118075560757063682, '2020-05-14 14:44:40', 0);
 INSERT INTO `sys_param` VALUES (1233320401057107960, 'LOGIN_CHANNEL_CFG_70', 0, '{\"captcha\":false,\"multiLogin\":true,\"expire\":604800,\"type\":70,\"renewalToken\":true,\"magicCaptcha\":\"1\",\"autoCreate\":false,\"roleBase\":false,\"permissionsBase\":false}', 'APP手机号短信登录配置', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `sys_param` VALUES (1233320401057107969, 'LOGIN_CHANNEL_CFG_30', 0, '{\"captcha\":false,\"multiLogin\":true,\"expire\":604800,\"type\":30,\"renewalToken\":true,\"magicCaptcha\":\"1\",\"autoCreate\":false,\"roleBase\":false,\"permissionsBase\":true}', '后台手机号短信登录配置', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `sys_param` VALUES (1248159181299560450, 'WX_CFG_XUDA_MA', 0, '{\"appid\":\"wx43ecc4868ea330ac\",\"secret\":\"67eed0ff0f8bd54872408f1c1a6527f7\",\"token\":\"\",\"aesKey\":\"\",\"msgDataFormat\":\"JSON\"}', '小程序微信配置', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `sys_param` VALUES (1248508404331204608, 'SYS_CFG', 0, '{\"title\":\"OneX统一平台\",\"titleAbbr\":\"<img src=\\\"~@/assets/img/logo_white.png\\\" style=\\\"width: 30px;height: 30px; margin-right: 10px;\\\"/>IT<sup>+</sup>\",\"loginTitle\":\"OneX统一平台\",\"copyright\":\"版权所有 2020 © nb6868\",\"titleBrand\":\"<img src=\\\"./img/logo_white.png\\\" style=\\\"width: 30px;height: 30px; margin-right: 10px;\\\"/>OneX\",\"titleBrandMini\":\"<img src=\\\"./img/logo_white.png\\\" style=\\\"width: 30px;height: 30px;\\\"/>\"}', '系统配置', NULL, NULL, 1118075560757063682, '2020-08-26 08:03:06', 0);
 INSERT INTO `sys_param` VALUES (1248508404331204609, 'LOGIN_CHANNEL_CFG_103', 0, '{\"captcha\":false,\"multiLogin\":true,\"expire\":604800,\"type\":103,\"renewalToken\":true,\"magicCaptcha\":\"\",\"autoCreate\":true,\"roleBase\":false,\"permissionsBase\":false}', '微信登录配置', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `sys_param` VALUES (1253531225914703873, 'WX_CFG_MP', 1, '{\"appid\":\"wxaf3ba5c657b43b51\",\"secret\":\"5ba448c597efffdc123ca016e43c8721\",\"token\":\"omJNpZEhZeHj1ZxFECKkP48B5VFbk1HP\",\"aesKey\":\"HEuvCyvO2zvpSxvDKI9TLJc27pnXqjpApqR38jTCZUJ\",\"msgDataFormat\":\"JSON\"}', '微信公众号', 1118075560757063682, '2020-04-24 11:48:28', 1118075560757063682, '2020-04-24 11:50:21', 0);
 INSERT INTO `sys_param` VALUES (1253833898564005890, 'LOGIN_ADMIN_CFG', 1, '{\"register\":false,\"forgetPassword\":false,\"loginByUsernameAndPassword\":true,\"loginByMobileAndSmsCode\":true,\"loginByWechatScan\":false,\"loginByDingtalkScan\":false}', '管理后台登录配置', 1118075560757063682, '2020-04-25 07:51:11', 1118075560757063682, '2020-06-29 15:55:16', 0);
 INSERT INTO `sys_param` VALUES (1268786810801102849, 'LOGIN_CHANNEL_CFG_50', 1, '{\"captcha\":false,\"multiLogin\":true,\"expire\":604800,\"type\":\"50\",\"renewalToken\":true,\"magicCaptcha\":\"1\",\"autoCreate\":false,\"roleBase\":false,\"permissionsBase\":true}', '钉钉扫码登录配置', 1118075560757063682, '2020-06-05 14:08:43', 1118075560757063682, '2020-06-05 14:08:59', 0);
-INSERT INTO `sys_param` VALUES (1270200687099203585, 'DINGTALK_SCAN', 1, '{\"appid\":\"dingoayykgpnxyw1plfu1g\",\"secret\":\"gBeJ26_n465-M3cFWQqECFkajFACoNa-IfGPO3HYSE0shV_CU1Tcju7o0D1Q5-7o\",\"callback\":\"http://xquick-admin.nb6868.com/loginCallback?type=dingtalk_scan\",\"cropId\":\"dingcc67a84e283773d435c2f4657eb6378f\"}', '钉钉扫码登录配置', 1118075560757063682, '2020-06-09 11:46:58', 1118075560757063682, '2020-06-09 11:53:03', 0);
 
 -- ----------------------------
 -- Table structure for sys_region
@@ -6668,20 +6659,7 @@ CREATE TABLE `uc_user`  (
 -- ----------------------------
 -- Records of uc_user
 -- ----------------------------
-INSERT INTO `uc_user` VALUES (1118075560757063681, NULL, 'appuser', NULL, NULL, NULL, NULL, '86', '13000000001', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 100, 1, NULL, NULL, 1118075560757063682, '2020-03-17 16:37:47', 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `uc_user` VALUES (1118075560757063682, NULL, 'admin', '$2a$10$MMJp4J/d69DJlGHy2aYoHOZ32QhTP575W7bnuAkPCbl1kmbyFolEW', '管理员', NULL, NULL, '86', '13252421988', 'root@xquick.co', NULL, NULL, NULL, 'http://cdn3.iconfinder.com/data/icons/business-avatar-1/512/7_avatar-512.png', NULL, 0, 0.00, 0.00, 0.00, 0, 1, 1118075560757063682, '2019-04-16 14:39:00', 1118075560757063682, '2020-05-13 16:45:10', 0, NULL, NULL, NULL, 1244554469220323329, '中视LED');
-INSERT INTO `uc_user` VALUES (1258330882213699586, NULL, 'zsled-admin', '$2a$10$mpdfeugm43i1jnUSmSZws.AhPUjx.317p6pwbcSbKHYDiFbY60oHq', '中视LED管理员', NULL, '', '86', '13011112222', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 20, 1, 1118075560757063682, '2020-05-07 17:40:36', 1118075560757063682, '2020-05-08 13:17:18', 0, NULL, NULL, NULL, 1244554469220323329, '中视LED');
-INSERT INTO `uc_user` VALUES (1258331057372028929, NULL, 'dnsjj-admin', '$2a$10$ZEFVJNJaPMu9APWix6CCpeFp81aAlU/Flu9ulOVHaI.p85cxYF9xi', '丹尼诗家具管理员', NULL, '', '86', '13011124545', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 20, 1, 1118075560757063682, '2020-05-07 17:41:17', 1118075560757063682, '2020-05-11 16:43:32', 0, NULL, NULL, NULL, 1244554469220323330, '丹尼诗家具');
-INSERT INTO `uc_user` VALUES (1260838154475401217, NULL, 'crmdemo-admin', '$2a$10$UJgzlSksFj78DiVqXpKCwepU8EXga3pxhUQFllZM7WAe/rRenKhCu', 'CRM演示管理员', NULL, '', '86', '13000000002', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 20, 1, 1118075560757063682, '2020-05-14 15:43:36', 1118075560757063682, '2020-05-14 15:43:36', 0, NULL, NULL, NULL, 1260837890204889089, 'CRM演示');
-INSERT INTO `uc_user` VALUES (1261171414166401025, NULL, 'oq6GTt0ZLO5UrAsqHJuOvt5yGLeQ', '$2a$10$URW7.v/jT9/bl8RtUglMcOuNcmTEHlrfnX6tXcKQEMxKF/sUyFWQq', NULL, NULL, '张朝旭', '86', 'oq6GTt0ZLO5UrAsqHJuOvt5yGLeQ', NULL, NULL, NULL, NULL, NULL, NULL, 3, 0.00, 0.00, 0.00, 100, 1, NULL, '2020-05-15 13:47:51', NULL, '2020-05-15 13:47:51', 0, NULL, NULL, NULL, 1244554469220323331, '甬江鱼塘');
-INSERT INTO `uc_user` VALUES (1261181193337143298, NULL, 'shop-fish-admin', '$2a$10$arHaBoFxE5URdp/uuHdmhOGBvKC./D5NvPUnF.uJwO02yQVUEwmue', '渔场管理员', NULL, '', '86', '19900000001', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 20, 1, 1118075560757063682, '2020-05-15 14:26:43', 1118075560757063682, '2020-05-15 14:26:43', 0, NULL, NULL, NULL, 1244554469220323331, '甬江鱼塘');
-INSERT INTO `uc_user` VALUES (1261267452013305858, NULL, 'oq6GTt5A5S6lu1JtrgSR81A3AHr8', '$2a$10$nRqyeUhcHF8ORyXP0oITu.m1Q/hDf.ZwjM84G8nnOZn1oJnSbszNO', NULL, NULL, '黄宇', '86', 'oq6GTt5A5S6lu1JtrgSR81A3AHr8', NULL, NULL, NULL, NULL, NULL, NULL, 3, 0.00, 0.00, 0.00, 100, 1, NULL, '2020-05-15 20:09:28', NULL, '2020-05-15 20:09:28', 0, NULL, NULL, NULL, 1244554469220323331, '甬江鱼塘');
-INSERT INTO `uc_user` VALUES (1262568389432328194, NULL, 'shopdemo-admin', '$2a$10$yu4lpMxGaF2CAWwEFTrkmu97Z5NliTly9y/Mq.VCV30ZLOB1Twr42', '商城演示', NULL, '', '86', '19900000002', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 20, 1, 1118075560757063682, '2020-05-19 10:18:56', 1118075560757063682, '2020-05-19 10:18:56', 0, NULL, NULL, NULL, 1262205195325661186, '商城演示');
-INSERT INTO `uc_user` VALUES (1262660535569735681, NULL, 'yqqtest', '$2a$10$j5WqoXTnrWMuvXBzfdqRO.9HCSRB5hj0KYWbWFHqWvEGuNCAvOqWO', '', NULL, '', '86', '13012345678', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 100, 1, 1262568389432328194, '2020-05-19 16:25:05', 1262568389432328194, '2020-05-19 16:25:05', 0, NULL, NULL, NULL, 1262205195325661186, '商城演示');
-INSERT INTO `uc_user` VALUES (1270943558857256962, 0, 'emes-admin', '$2a$10$lH3V7HNF279FJKIR7y3mbupTL18wc46SZ7CI8kqojwCqsXp/YyhQm', '能效管理员', NULL, '', '86', '19900000005', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 10, 1, 1118075560757063682, '2020-06-11 12:58:52', 1118075560757063682, '2020-06-11 15:11:01', 0, NULL, NULL, NULL, 1244554469220323329, '中视LED');
-INSERT INTO `uc_user` VALUES (1273503157523087362, 0, 'aep-admin', '$2a$10$ZtWxkTHgOs2kWzTrp/2I3uqnbGyAIEcww994Br4FTv3wrEoFwiANu', 'AEP管理员', NULL, '', '86', '19900000123', '', '', '', NULL, '', '', 0, 0.00, 0.00, 0.00, 20, 1, 1118075560757063682, '2020-06-18 14:29:48', 1118075560757063682, '2020-06-18 14:29:48', 0, NULL, NULL, NULL, 1244554469220323329, '中视LED');
-INSERT INTO `uc_user` VALUES (1277072820655931393, 0, 'tms-admin', '$2a$10$sd9GomZgYuSyTKf12EHAD.MgNlBKVDqnkH.GtX7EHttk5Xswr7elG', 'TMS管理员', NULL, '', '86', '19900000023', '123@qq.com', '', '330333333333333333', NULL, '', '', 2, 0.00, 0.00, 0.00, 20, 1, 1118075560757063682, '2020-06-28 10:54:22', 1118075560757063682, '2020-06-29 15:56:38', 0, NULL, NULL, NULL, NULL, NULL);
-
 -- ----------------------------
 -- Table structure for uc_user_oauth
 -- ----------------------------
@@ -6710,6 +6688,4 @@ CREATE TABLE `uc_user_oauth`  (
 -- ----------------------------
 -- Records of uc_user_oauth
 -- ----------------------------
-INSERT INTO `uc_user_oauth` VALUES (1, '1', NULL, 'oq6GTt0ZLO5UrAsqHJuOvt5yGLeQ', 'wx', NULL, NULL, NULL, 1261171414166401025, NULL, NULL, NULL, NULL, 0, NULL, NULL);
-
 SET FOREIGN_KEY_CHECKS = 1;
