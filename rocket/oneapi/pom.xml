@@ -21,7 +21,7 @@
         <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
         <jpush.version>3.4.6</jpush.version>
         <jwt.version>3.10.3</jwt.version>
-        <thumbnailator.version>0.4.11</thumbnailator.version>
+        <thumbnailator.version>0.4.12</thumbnailator.version>
         <weixin.pay.version>3.9.0</weixin.pay.version>
         <weixin.miniapp.version>3.9.0</weixin.miniapp.version>
         <weixin.mp.version>3.9.0</weixin.mp.version>

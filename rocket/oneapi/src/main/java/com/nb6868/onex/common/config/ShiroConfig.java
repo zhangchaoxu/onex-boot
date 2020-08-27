@@ -70,7 +70,9 @@ public class ShiroConfig {
         filterMap.put("/editor-app/**", "anon");
         filterMap.put("/diagram-viewer/**", "anon");
         filterMap.put("/modeler.html", "anon");
-        filterMap.put("/captcha", "anon");
+        // 图形验证码
+        filterMap.put("/sys/captcha/base64", "anon");
+        filterMap.put("/sys/captcha/stream", "anon");
         filterMap.put("/favicon.ico", "anon");
         // 除上述anon外,其它都需要过oauth2
         filterMap.put("/**", "shiro");
