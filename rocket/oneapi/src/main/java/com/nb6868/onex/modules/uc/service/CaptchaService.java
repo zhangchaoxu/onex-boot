@@ -1,5 +1,7 @@
 package com.nb6868.onex.modules.uc.service;
 
+import com.wf.captcha.base.Captcha;
+
 /**
  * 验证码
  *
@@ -15,7 +17,7 @@ public interface CaptchaService {
      * @param type 类型
      * @return 生成的图片base64
      */
-    String createBase64(String uuid, int width, int height, String type);
+    Captcha createCaptcha(String uuid, int width, int height, String type);
 
     /**
      * 效验验证码

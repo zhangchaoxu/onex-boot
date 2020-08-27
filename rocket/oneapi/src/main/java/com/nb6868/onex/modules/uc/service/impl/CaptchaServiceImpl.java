@@ -26,7 +26,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     Cache<String, String> localCache = CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.MINUTES).build();
 
     @Override
-    public String createBase64(String uuid, int width, int height, String type) {
+    public Captcha createCaptcha(String uuid, int width, int height, String type) {
         Captcha captcha;
         if ("spec".equalsIgnoreCase(type)) {
             // png
@@ -50,7 +50,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 
         // 保存到缓存
         setCache(uuid, captcha.text().toLowerCase());
-        return captcha.toBase64();
+        return captcha;
     }
 
     /**
