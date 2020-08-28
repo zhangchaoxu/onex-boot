@@ -123,13 +123,13 @@ public class UserController {
     }
 
     /**
-     * 通过短信验证码修改密码
-     * 忘记密码功能,通过短信验证码找回
+     * 通过验证码修改密码
+     * 忘记密码功能,通过验证码找回
      */
-    @PostMapping("changePasswordBySmsCode")
+    @PostMapping("changePasswordByMailCode")
     @ApiOperation(value = "通过短信验证码修改密码")
     @AccessControl
-    public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordBySmsCodeRequest request) {
+    public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordByMailCodeRequest request) {
         return userService.changePasswordBySmsCode(request);
     }
 
@@ -189,7 +189,6 @@ public class UserController {
     @PostMapping("loginEncrypt")
     @ApiOperation(value = "加密登录")
     @LogLogin
-    @AccessControl
     public Result<?> loginEncrypt(HttpServletRequest request, @RequestBody String loginEncrypted) {
         // 密文转json明文
         String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, "UTF-8"));
@@ -208,7 +207,6 @@ public class UserController {
     @PostMapping("login")
     @ApiOperation(value = "登录")
     @LogLogin
-    @AccessControl
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
         return new Result<>().success(userService.login(loginRequest));
     }
@@ -218,7 +216,6 @@ public class UserController {
      */
     @PostMapping("register")
     @ApiOperation(value = "注册")
-    @AccessControl
     public Result<?> register(@Validated @RequestBody RegisterRequest request) {
         return userService.register(request);
     }
@@ -248,7 +245,7 @@ public class UserController {
     @ApiOperation("导入")
     @LogOperation("导入")
     @RequiresPermissions("uc:user:import")
-    public Result<?> importExcel(@RequestParam("file") MultipartFile file, @RequestParam(value = "deptId") Long deptId) {
+    public Result<?> importExcel(@RequestParam("file") MultipartFile file, @RequestParam Long deptId) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         ImportParams params = new ImportParams();

@@ -3,7 +3,7 @@ package com.nb6868.onex.modules.uc.service;
 import com.nb6868.onex.booster.pojo.Kv;
 import com.nb6868.onex.booster.pojo.Result;
 import com.nb6868.onex.booster.service.CrudService;
-import com.nb6868.onex.modules.uc.dto.ChangePasswordBySmsCodeRequest;
+import com.nb6868.onex.modules.uc.dto.ChangePasswordByMailCodeRequest;
 import com.nb6868.onex.modules.uc.dto.LoginRequest;
 import com.nb6868.onex.modules.uc.dto.RegisterRequest;
 import com.nb6868.onex.modules.uc.dto.UserDTO;
@@ -31,7 +31,7 @@ public interface UserService extends CrudService<UserEntity, UserDTO> {
     /**
      * 通过短信验证码修改密码
      */
-    Result<?> changePasswordBySmsCode(ChangePasswordBySmsCodeRequest request);
+    Result<?> changePasswordBySmsCode(ChangePasswordByMailCodeRequest request);
 
     /**
      * 注册
@@ -41,17 +41,17 @@ public interface UserService extends CrudService<UserEntity, UserDTO> {
     /**
      * 通过用户名获取用户
      */
-    UserDTO getByUsername(String username);
+    UserEntity getByUsername(String username);
 
     /**
      * 通过手机号获取用户
      */
-    UserDTO getByMobile(String mobile);
+    UserEntity getByMobile(String mobile);
 
     /**
      * 通过手机号区域和手机号获取用户
      */
-    UserDTO getByMobile(String mobileArea, String mobile);
+    UserEntity getByMobile(String mobileArea, String mobile);
 
     /**
      * 修改状态
