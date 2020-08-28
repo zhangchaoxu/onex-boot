@@ -7,13 +7,13 @@
                         <span>{{ $t('forgetPassword') }}</span>
                     </div>
                     <el-form v-loading="formLoading" :model="dataForm" :rules="dataRule" ref="dataForm" status-icon @keyup.enter.native="dataFormSubmitHandle()">
-                        <el-form-item prop="mobile">
-                            <el-input v-model="dataForm.mobile" :placeholder="$t('mobile')" prefix-icon="el-icon-mobile-phone" maxlength="11" minlength="11" class="input-with-select">
+                        <el-form-item prop="mailTo">
+                            <el-input v-model="dataForm.mailTo" :placeholder="$t('mobile')" prefix-icon="el-icon-mobile-phone" maxlength="11" minlength="11" class="input-with-select">
                                 <template slot="prepend">+86</template>
                             </el-input>
                         </el-form-item>
-                        <el-form-item prop="smsCode">
-                            <el-input v-model="dataForm.smsCode" :placeholder="$t('smsCode')" prefix-icon="el-icon-message" maxlength="6" minlength="4">
+                        <el-form-item prop="code">
+                            <el-input v-model="dataForm.code" :placeholder="$t('smsCode')" prefix-icon="el-icon-message" maxlength="6" minlength="4">
                                 <el-button slot="append" @click="smsCodeSendHandle()" :disabled="smsSendTimeout < 60">{{ smsSendTimeout !== 60 ? $t('resendSmsCode', { 'sec': smsSendTimeout }) :
                                     '发送验证码' }}
                                 </el-button>
@@ -51,7 +51,7 @@ export default {
       mixinFormModuleOptions: {
         // 登录接口
         dataFormParamEncrypt: false,
-        dataFormSaveURL: 'uc/user/changePasswordBySmsCode'
+        dataFormSaveURL: 'uc/user/changePasswordByMailCode'
       },
       formLoading: false, // 表单是否加载中
       dataFormMode: 'save',
@@ -60,9 +60,8 @@ export default {
       dataForm: {
         newPassword: '',
         confirmPassword: '',
-        mobile: '',
-        mobileArea: '86',
-        smsCode: ''
+        mailTo: '',
+        code: ''
       }
     }
   },
@@ -82,10 +81,10 @@ export default {
           { required: true, message: this.$t('validate.required'), trigger: 'blur' },
           { validator: validateConfirmPassword, trigger: 'blur' }
         ],
-        mobile: [
+        mailTo: [
           { required: true, message: this.$t('validate.required'), trigger: 'blur' }
         ],
-        smsCode: [
+        code: [
           { required: true, message: this.$t('validate.required'), trigger: 'blur' }
         ]
       }

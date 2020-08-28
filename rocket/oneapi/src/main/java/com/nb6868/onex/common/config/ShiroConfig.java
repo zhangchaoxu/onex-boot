@@ -70,10 +70,16 @@ public class ShiroConfig {
         filterMap.put("/editor-app/**", "anon");
         filterMap.put("/diagram-viewer/**", "anon");
         filterMap.put("/modeler.html", "anon");
+        filterMap.put("/favicon.ico", "anon");
         // 图形验证码
         filterMap.put("/sys/captcha/base64", "anon");
         filterMap.put("/sys/captcha/stream", "anon");
-        filterMap.put("/favicon.ico", "anon");
+        // 登录注册
+        filterMap.put("/uc/user/loginEncrypt", "anon");
+        filterMap.put("/uc/user/login", "anon");
+        filterMap.put("/uc/user/register", "anon");
+        filterMap.put("/uc/userOauth/oauthLoginByCode", "anon");
+
         // 除上述anon外,其它都需要过oauth2
         filterMap.put("/**", "shiro");
         // 加入注解中含有anon的
