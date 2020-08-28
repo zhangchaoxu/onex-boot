@@ -219,10 +219,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     public Result<?> register(RegisterRequest request) {
         LoginCfg loginCfg = paramService.getContentObject(UcConst.LOGIN_CFG_ADMIN, LoginCfg.class);
         AssertUtils.isEmpty(loginCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
-
-        if (!loginCfg.isRegister()) {
-            throw new OnexException("未开放注册");
-        }
+        AssertUtils.isFalse(loginCfg.isRegister(), "未开放注册");
 
         // 操作结果
         int resultCode = 0;
