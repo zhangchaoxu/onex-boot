@@ -165,7 +165,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                 // todo 使用apple keys做验证
                 // {https://developer.apple.com/cn/app-store/review/guidelines/#sign-in-with-apple}
                 // 通过packageName和userIdentifier找对应的数据记录
-                UserOauthEntity userApple = userOauthService.getByAppidAndOpenid(packageName, userIdentifier);
+                UserOauthEntity userApple = userOauthService.getByOpenid(userIdentifier);
                 if (userApple == null) {
                     // 不存在记录,则保存记录
                     userApple = new UserOauthEntity();

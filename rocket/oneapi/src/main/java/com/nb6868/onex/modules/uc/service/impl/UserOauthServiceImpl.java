@@ -1,6 +1,7 @@
 package com.nb6868.onex.modules.uc.service.impl;
 
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.booster.pojo.Const;
 import com.nb6868.onex.booster.service.impl.CrudServiceImpl;
@@ -34,8 +35,13 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
     }
 
     @Override
-    public UserOauthEntity getByAppidAndOpenid(String appid, String openid) {
-        return query().eq("appid", appid).eq("openid", openid).last(Const.LIMIT_ONE).one();
+    public String getSessionKeyByOpenid(String openid) {
+        return query().eq("openid", openid).last(Const.LIMIT).oneOpt().map(UserOauthEntity::getSessionKey).orElse(null);
+    }
+
+    @Override
+    public UserOauthEntity getByOpenid(String openid) {
+        return query().eq("openid", openid).last(Const.LIMIT_ONE).one();
     }
 
     @Override
@@ -44,8 +50,8 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
     }
 
     @Override
-    public UserOauthEntity saveOrUpdateWxMpUser(String appId, WxMpUser user) {
-        UserOauthEntity userWx = getByAppidAndOpenid(appId, user.getOpenId());
+    public UserOauthEntity saveOrUpdateByWxMpUser(String appId, WxMpUser user) {
+        UserOauthEntity userWx = getByOpenid(user.getOpenId());
         if (userWx == null) {
             // 不存在,则新增数据
             userWx = new UserOauthEntity();
@@ -62,6 +68,31 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
             userWx.setUnionid(user.getUnionId());
             userWx.setAvatar(user.getHeadImgUrl());
             userWx.setNickname(user.getNickname());
+            userWx.setExt(user.toString());
+            updateById(userWx);
+        }
+        return userWx;
+    }
+
+    @Override
+    public UserOauthEntity saveOrUpdateByWxMaUserInfo(String appId, WxMaUserInfo user) {
+        UserOauthEntity userWx = getByOpenid(user.getOpenId());
+        if (userWx == null) {
+            // 不存在,则新增数据
+            userWx = new UserOauthEntity();
+            userWx.setAppid(appId);
+            userWx.setType(UcConst.OauthTypeEnum.WECHAT_MA.name());
+            userWx.setOpenid(user.getOpenId());
+            userWx.setUnionid(user.getUnionId());
+            userWx.setAvatar(user.getAvatarUrl());
+            userWx.setNickname(user.getNickName());
+            userWx.setExt(user.toString());
+            save(userWx);
+        } else {
+            // 已存在,则更新数据
+            userWx.setUnionid(user.getUnionId());
+            userWx.setAvatar(user.getAvatarUrl());
+            userWx.setNickname(user.getNickName());
             updateById(userWx);
         }
         return userWx;
@@ -69,7 +100,7 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
 
     @Override
     public UserOauthEntity saveOrUpdateByWxMaJscode2SessionResult(String appId, WxMaJscode2SessionResult sessionResult) {
-        UserOauthEntity userWx = getByAppidAndOpenid(appId, sessionResult.getOpenid());
+        UserOauthEntity userWx = getByOpenid(sessionResult.getOpenid());
         if (userWx == null) {
             // 不存在,则新增数据
             userWx = new UserOauthEntity();
