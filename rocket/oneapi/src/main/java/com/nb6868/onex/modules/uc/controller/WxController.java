@@ -84,7 +84,6 @@ public class WxController {
         return new Result<>().success(oauth2buildAuthorizationUrl);
     }
 
-
     @ApiOperation("获取用户信息")
     @ApiImplicitParams({@ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String")})
     @GetMapping("/info")
