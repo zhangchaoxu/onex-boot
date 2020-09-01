@@ -15,6 +15,7 @@ import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.service.ParamService;
+import com.nb6868.onex.modules.uc.UcConst;
 import com.nb6868.onex.modules.uc.dto.OauthLoginByCodeRequest;
 import com.nb6868.onex.modules.uc.dto.UserOauthDTO;
 import com.nb6868.onex.modules.uc.entity.UserEntity;
@@ -196,7 +197,7 @@ public class UserOauthController {
     @ApiOperation("更新微信小程序用户信息")
     @PostMapping("/updateWxMaUserInfo")
     @AccessControl
-    public Result<?> updateWxMaUserInfo(@RequestParam String paramCode, @RequestParam String openid, @RequestParam String signature, @RequestParam String rawData, @RequestParam String encryptedData, String iv) {
+    public Result<?> updateWxMaUserInfo(@RequestParam(required = false, defaultValue = UcConst.WX_CFG_MP) String paramCode, @RequestParam String openid, @RequestParam String signature, @RequestParam String rawData, @RequestParam String encryptedData, String iv) {
         // 微信登录(小程序)
         WxMaService wxService = wxApiService.getWxMaService(paramCode);
         String sessionKey = userOauthService.getSessionKeyByOpenid(openid);
