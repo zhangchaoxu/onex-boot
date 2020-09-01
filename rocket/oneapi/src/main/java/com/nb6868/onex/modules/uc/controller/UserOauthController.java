@@ -2,6 +2,7 @@ package com.nb6868.onex.modules.uc.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
@@ -10,6 +11,7 @@ import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.service.ParamService;
@@ -116,7 +118,7 @@ public class UserOauthController {
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("uc:userOauth:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}")@RequestBody List<Long> ids) {
+    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         userOauthService.logicDeleteByIds(ids);
 
         return new Result<>();
@@ -176,24 +178,37 @@ public class UserOauthController {
 
     @PostMapping("/updateWxMaSession")
     @ApiOperation("更新微信")
-    @LogLogin
+    @AccessControl
     public Result<?> updateWxMaSession(@Validated @RequestBody OauthLoginByCodeRequest request) {
-        return null;
+        // 微信登录(小程序)
+        WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+        WxMaJscode2SessionResult jscode2SessionResult;
+        try {
+            jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
+        } catch (WxErrorException e) {
+            return new Result<>().error("微信接口调用失败");
+        }
+        // 更新或者插入Oauth表
+        userOauthService.saveOrUpdateByWxMaJscode2SessionResult(wxService.getWxMaConfig().getAppid(), jscode2SessionResult);
+        return new Result<>();
     }
 
     @ApiOperation("更新微信小程序用户信息")
     @PostMapping("/updateWxMaUserInfo")
-    public Result<?> updateWxMaUserInfo(@RequestParam String paramCode, @RequestParam String openid, String signature, String rawData, String encryptedData, String iv) {
-        // 微信登录
+    @AccessControl
+    public Result<?> updateWxMaUserInfo(@RequestParam String paramCode, @RequestParam String openid, @RequestParam String signature, @RequestParam String rawData, @RequestParam String encryptedData, String iv) {
+        // 微信登录(小程序)
         WxMaService wxService = wxApiService.getWxMaService(paramCode);
+        String sessionKey = userOauthService.getSessionKeyByOpenid(openid);
         // 用户信息校验
-        /*if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
+        if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
             return new Result<>().error(ErrorCode.WX_API_ERROR, "user check failed");
         }
         // 解密用户信息
         WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(sessionKey, encryptedData, iv);
-        return new Result<>().success(userInfo);*/
-        return null;
+        // 更新或者插入Oauth表
+        userOauthService.saveOrUpdateByWxMaUserInfo(wxService.getWxMaConfig().getAppid(), userInfo);
+        return new Result<>().success(userInfo);
     }
 
 }
