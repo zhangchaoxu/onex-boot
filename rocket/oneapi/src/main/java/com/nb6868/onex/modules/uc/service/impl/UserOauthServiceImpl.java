@@ -1,5 +1,6 @@
 package com.nb6868.onex.modules.uc.service.impl;
 
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.booster.pojo.Const;
 import com.nb6868.onex.booster.service.impl.CrudServiceImpl;
@@ -23,8 +24,8 @@ import java.util.Map;
 public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOauthEntity, UserOauthDTO> implements UserOauthService {
 
     @Override
-    public QueryWrapper<UserOauthEntity> getWrapper(String method, Map<String, Object> params){
-        String id = (String)params.get("id");
+    public QueryWrapper<UserOauthEntity> getWrapper(String method, Map<String, Object> params) {
+        String id = (String) params.get("id");
 
         QueryWrapper<UserOauthEntity> wrapper = new QueryWrapper<>();
         wrapper.eq(StringUtils.isNotBlank(id), "id", id);
@@ -33,13 +34,18 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
     }
 
     @Override
-    public UserOauthEntity getByAppidAndOpenid(String type, String appid, String openid) {
-        return query().eq("type", type).eq("appid", appid).eq("openid", openid).last(Const.LIMIT_ONE).one();
+    public UserOauthEntity getByAppidAndOpenid(String appid, String openid) {
+        return query().eq("appid", appid).eq("openid", openid).last(Const.LIMIT_ONE).one();
+    }
+
+    @Override
+    public boolean unbindByUserId(Long userId) {
+        return update().set("user_id", null).eq("user_id", userId).update(new UserOauthEntity());
     }
 
     @Override
     public UserOauthEntity saveOrUpdateWxMpUser(String appId, WxMpUser user) {
-        UserOauthEntity userWx = getByAppidAndOpenid(UcConst.OauthTypeEnum.WECHAT_MP.name(), appId, user.getOpenId());
+        UserOauthEntity userWx = getByAppidAndOpenid(appId, user.getOpenId());
         if (userWx == null) {
             // 不存在,则新增数据
             userWx = new UserOauthEntity();
@@ -61,6 +67,26 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
         return userWx;
     }
 
-
-
+    @Override
+    public UserOauthEntity saveOrUpdateByWxMaJscode2SessionResult(String appId, WxMaJscode2SessionResult sessionResult) {
+        UserOauthEntity userWx = getByAppidAndOpenid(appId, sessionResult.getOpenid());
+        if (userWx == null) {
+            // 不存在,则新增数据
+            userWx = new UserOauthEntity();
+            userWx.setAppid(appId);
+            userWx.setType(UcConst.OauthTypeEnum.WECHAT_MA.name());
+            userWx.setOpenid(sessionResult.getOpenid());
+            userWx.setUnionid(sessionResult.getUnionid());
+            // 更新sessionKey
+            userWx.setSessionKey(sessionResult.getSessionKey());
+            save(userWx);
+        } else {
+            // 已存在,则更新数据
+            userWx.setUnionid(sessionResult.getUnionid());
+            // 更新sessionKey
+            userWx.setSessionKey(sessionResult.getSessionKey());
+            updateById(userWx);
+        }
+        return userWx;
+    }
 }

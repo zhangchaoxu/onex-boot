@@ -1,5 +1,6 @@
 package com.nb6868.onex.modules.uc.service;
 
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.nb6868.onex.booster.service.CrudService;
 import com.nb6868.onex.modules.uc.dto.UserOauthDTO;
 import com.nb6868.onex.modules.uc.entity.UserOauthEntity;
@@ -18,11 +19,21 @@ public interface UserOauthService extends CrudService<UserOauthEntity, UserOauth
      * @param openid
      * @return
      */
-    UserOauthEntity getByAppidAndOpenid(String type, String appid, String openid);
+    UserOauthEntity getByAppidAndOpenid(String appid, String openid);
 
     /**
      * 插入或者更新微信用户
      */
     UserOauthEntity saveOrUpdateWxMpUser(String appId, WxMpUser user);
+
+    /**
+     * 插入或者更新微信小程序Session
+     */
+    UserOauthEntity saveOrUpdateByWxMaJscode2SessionResult(String appId, WxMaJscode2SessionResult sessionResult);
+
+    /**
+     * 解绑某个用户
+     */
+    boolean unbindByUserId(Long userId);
 
 }

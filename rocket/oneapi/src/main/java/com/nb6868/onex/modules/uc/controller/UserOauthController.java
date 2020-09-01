@@ -1,5 +1,7 @@
 package com.nb6868.onex.modules.uc.controller;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
@@ -13,9 +15,14 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.service.ParamService;
 import com.nb6868.onex.modules.uc.dto.OauthLoginByCodeRequest;
 import com.nb6868.onex.modules.uc.dto.UserOauthDTO;
+import com.nb6868.onex.modules.uc.entity.UserEntity;
+import com.nb6868.onex.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onex.modules.uc.service.UserOauthService;
+import com.nb6868.onex.modules.uc.service.UserService;
+import com.nb6868.onex.modules.uc.wx.WxApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +48,11 @@ public class UserOauthController {
     @Autowired
     UserOauthService userOauthService;
     @Autowired
+    UserService userService;
+    @Autowired
     ParamService paramService;
+    @Autowired
+    WxApiService wxApiService;
 
     @GetMapping("list")
     @ApiOperation("列表")
@@ -135,9 +146,54 @@ public class UserOauthController {
                 return new Result<>().error("钉钉接口调用失败");
             }*/
             return new Result<>().error("钉钉接口调用失败");
+        } else if (request.getType().startsWith("WECHAT")) {
+            // 微信登录(小程序)
+            WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+            WxMaJscode2SessionResult jscode2SessionResult;
+            try {
+                jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
+            } catch (WxErrorException e) {
+                return new Result<>().error("微信接口调用失败");
+            }
+            // 更新或者插入Oauth表
+            UserOauthEntity userOauth = userOauthService.saveOrUpdateByWxMaJscode2SessionResult(wxService.getWxMaConfig().getAppid(), jscode2SessionResult);
+            if (userOauth.getUserId() != null) {
+                UserEntity userEntity = userService.getById(userOauth.getUserId());
+                if (null == userEntity) {
+                    // 如果用户空了,同时结束所有绑定关系
+                    userOauthService.unbindByUserId(userOauth.getUserId());
+                } else {
+                    // todo 自动登录
+
+                }
+            }
+            // todo 根据自己的业务判断比如是否有头像、是否关联用户等
+            return new Result<>().success(userOauth);
         } else {
             return new Result<>().error("不支持的登录类型:" + request.getType());
         }
+    }
+
+    @PostMapping("/updateWxMaSession")
+    @ApiOperation("更新微信")
+    @LogLogin
+    public Result<?> updateWxMaSession(@Validated @RequestBody OauthLoginByCodeRequest request) {
+        return null;
+    }
+
+    @ApiOperation("更新微信小程序用户信息")
+    @PostMapping("/updateWxMaUserInfo")
+    public Result<?> updateWxMaUserInfo(@RequestParam String paramCode, @RequestParam String openid, String signature, String rawData, String encryptedData, String iv) {
+        // 微信登录
+        WxMaService wxService = wxApiService.getWxMaService(paramCode);
+        // 用户信息校验
+        /*if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
+            return new Result<>().error(ErrorCode.WX_API_ERROR, "user check failed");
+        }
+        // 解密用户信息
+        WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(sessionKey, encryptedData, iv);
+        return new Result<>().success(userInfo);*/
+        return null;
     }
 
 }
