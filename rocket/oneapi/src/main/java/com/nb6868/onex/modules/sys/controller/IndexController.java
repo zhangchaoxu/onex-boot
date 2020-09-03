@@ -4,8 +4,6 @@ import com.nb6868.onex.booster.pojo.Kv;
 import com.nb6868.onex.booster.pojo.Result;
 import com.nb6868.onex.booster.util.DateUtils;
 import com.nb6868.onex.common.annotation.AccessControl;
-import com.nb6868.onex.modules.uc.user.SecurityUser;
-import com.nb6868.onex.modules.uc.user.UserDetail;
 import com.sun.management.OperatingSystemMXBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,10 +26,9 @@ import java.math.RoundingMode;
 public class IndexController {
 
     @GetMapping("/")
-    @ApiOperation("系统信息")
-    @AccessControl(anon = true)
+    @ApiOperation("welcome")
+    @AccessControl
     public Result<?> index() {
-        UserDetail userDetail = SecurityUser.getUser();
         return new Result<>().success("api success");
     }
 

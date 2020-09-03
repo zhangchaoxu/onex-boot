@@ -13,13 +13,13 @@ import java.util.Date;
 /**
  * 基础实体类
  * 包含基础数据
- *
  * 对字段的修改见 FieldMetaObjectHandler
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 public abstract class BaseEntity implements Serializable {
+
     /**
      * 主键id
      */
@@ -29,7 +29,7 @@ public abstract class BaseEntity implements Serializable {
      * 创建者id
      */
     @TableField(fill = FieldFill.INSERT)
-    private Long  createId;
+    private Long createId;
     /**
      * 创建时间
      */

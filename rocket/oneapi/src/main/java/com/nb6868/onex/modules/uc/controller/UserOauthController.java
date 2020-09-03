@@ -126,6 +126,58 @@ public class UserOauthController {
     }
 
     /**
+     * 钉钉授权码登录
+     */
+    @PostMapping("/dingtalkLoginByCode")
+    @ApiOperation("Oauth授权登录")
+    @LogLogin
+    public Result<?> dingtalkLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
+        // 获得登录配置
+        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
+        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+
+        if (request.getType().startsWith("DINGTALK")) {
+            // 钉钉登录
+            /*DefaultDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/sns/getuserinfo_bycode");
+            OapiSnsGetuserinfoBycodeRequest req = new OapiSnsGetuserinfoBycodeRequest();
+            req.setTmpAuthCode(request.getCode());
+            try {
+                OapiSnsGetuserinfoBycodeResponse response = client.execute(req, oauthCfg.get("appid").asText(),oauthCfg.get("secret").asText());
+                return new Result<>().success(response.getUserInfo());
+            } catch (ApiException e) {
+                e.printStackTrace();
+                return new Result<>().error("钉钉接口调用失败");
+            }*/
+            return new Result<>().error("钉钉接口调用失败");
+        } else if (request.getType().startsWith("WECHAT")) {
+            // 微信登录(小程序)
+            WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+            WxMaJscode2SessionResult jscode2SessionResult;
+            try {
+                jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
+            } catch (WxErrorException e) {
+                return new Result<>().error("微信接口调用失败");
+            }
+            // 更新或者插入Oauth表
+            UserOauthEntity userOauth = userOauthService.saveOrUpdateByWxMaJscode2SessionResult(wxService.getWxMaConfig().getAppid(), jscode2SessionResult);
+            if (userOauth.getUserId() != null) {
+                UserEntity userEntity = userService.getById(userOauth.getUserId());
+                if (null == userEntity) {
+                    // 如果用户空了,同时结束所有绑定关系
+                    userOauthService.unbindByUserId(userOauth.getUserId());
+                } else {
+                    // todo 自动登录
+
+                }
+            }
+            // todo 根据自己的业务判断比如是否有头像、是否关联用户等
+            return new Result<>().success(userOauth);
+        } else {
+            return new Result<>().error("不支持的登录类型:" + request.getType());
+        }
+    }
+
+    /**
      * Oauth授权登录
      */
     @PostMapping("/oauthLoginByCode")
