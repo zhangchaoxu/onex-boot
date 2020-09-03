@@ -35,7 +35,7 @@ import java.util.UUID;
 public class CaptchaController {
 
     @Autowired
-    private CaptchaService captchaService;
+    CaptchaService captchaService;
 
     /**
      * base64的图形验证码
@@ -46,7 +46,6 @@ public class CaptchaController {
     @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", required = true),
             @ApiImplicitParam(paramType = "query", dataType="string", name = "uuid")})
-    @AccessControl
     public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width,
                             @RequestParam(required = false, defaultValue = "50") int height,
                             @RequestParam(required = false) String uuid) {
@@ -69,7 +68,6 @@ public class CaptchaController {
     @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", required = true),
             @ApiImplicitParam(paramType = "query", dataType="string", name = "uuid", required = true)})
-    @AccessControl
     public void captcha(HttpServletResponse response,
                         @RequestParam(required = false, defaultValue = "150") int width,
                         @RequestParam(required = false, defaultValue = "50") int height,

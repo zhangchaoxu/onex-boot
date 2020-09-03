@@ -11,7 +11,7 @@ public interface CaptchaService {
 
     /**
      * 生成图片验证码
-     * @param uuid
+     * @param uuid uuid
      * @param width 宽度
      * @param height 高度
      * @param type 类型

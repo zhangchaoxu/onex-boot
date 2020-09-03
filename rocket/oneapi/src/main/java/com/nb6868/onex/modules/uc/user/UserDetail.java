@@ -1,6 +1,5 @@
 package com.nb6868.onex.modules.uc.user;
 
-import com.nb6868.onex.modules.uc.dto.LoginChannelCfg;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -37,7 +36,7 @@ public class UserDetail implements Serializable {
      * 是否匿名用户
      */
     public boolean isAnon() {
-        return null == getId() || 0L == getId();
+        return getId() != null && -1L == getId();
     }
 
 }

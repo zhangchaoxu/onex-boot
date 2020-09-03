@@ -4,7 +4,6 @@ import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.util.ConvertUtils;
 import com.nb6868.onex.booster.util.MessageUtils;
-import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.modules.uc.UcConst;
 import com.nb6868.onex.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.modules.uc.entity.UserEntity;
@@ -92,7 +91,7 @@ public class ShiroRealm extends AuthorizingRealm {
         if (TOKEN_ANON.equalsIgnoreCase(accessToken)) {
             // 匿名访问
             UserDetail userDetail = new UserDetail();
-            userDetail.setId(0L);
+            userDetail.setId(-1L);
             userDetail.setType(-100);
             return new SimpleAuthenticationInfo(userDetail, TOKEN_ANON, getName());
         }
