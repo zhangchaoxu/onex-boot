@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * mybatis-plus配置
+ * see {https://baomidou.com/guide/interceptor.html}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -26,7 +27,12 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
+        // 单页分页条数限制，默认不受限制
+        paginationInnerInterceptor.setMaxLimit(-1L);
+        // 溢出总页数后是否进行处理
+        paginationInnerInterceptor.setOverflow(false);
+        interceptor.addInnerInterceptor(paginationInnerInterceptor);
         return interceptor;
     }
 
