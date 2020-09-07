@@ -35,11 +35,6 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
     }
 
     @Override
-    public String getSessionKeyByOpenid(String openid) {
-        return query().eq("openid", openid).last(Const.LIMIT).oneOpt().map(UserOauthEntity::getSessionKey).orElse(null);
-    }
-
-    @Override
     public UserOauthEntity getByOpenid(String openid) {
         return query().eq("openid", openid).last(Const.LIMIT_ONE).one();
     }
@@ -108,14 +103,10 @@ public class UserOauthServiceImpl extends CrudServiceImpl<UserOauthDao, UserOaut
             userWx.setType(UcConst.OauthTypeEnum.WECHAT_MA.name());
             userWx.setOpenid(sessionResult.getOpenid());
             userWx.setUnionid(sessionResult.getUnionid());
-            // 更新sessionKey
-            userWx.setSessionKey(sessionResult.getSessionKey());
             save(userWx);
         } else {
             // 已存在,则更新数据
             userWx.setUnionid(sessionResult.getUnionid());
-            // 更新sessionKey
-            userWx.setSessionKey(sessionResult.getSessionKey());
             updateById(userWx);
         }
         return userWx;

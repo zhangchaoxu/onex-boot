@@ -26,9 +26,6 @@ public class UserOauthDTO extends BaseTenantDTO {
 	@ApiModelProperty(value = "openid")
 	private String openid;
 
-	@ApiModelProperty(value = "sessionKey")
-	private String sessionKey;
-
 	@ApiModelProperty(value = "类型 dingtalk/wechat/apple")
 	private String type;
 

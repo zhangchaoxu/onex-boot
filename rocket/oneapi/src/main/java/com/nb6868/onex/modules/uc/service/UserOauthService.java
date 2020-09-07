@@ -15,13 +15,6 @@ import me.chanjar.weixin.mp.bean.result.WxMpUser;
 public interface UserOauthService extends CrudService<UserOauthEntity, UserOauthDTO> {
 
     /**
-     * 通过openid获取用户SessionKey
-     * @param openid
-     * @return
-     */
-    String getSessionKeyByOpenid(String openid);
-
-    /**
      * 通过openid获取用户，openid可以保证唯一
      * @param openid
      * @return
