@@ -6,7 +6,7 @@
     <groupId>com.nb6868.onex</groupId>
     <artifactId>rocket</artifactId>
     <version>1.0.0</version>
-    <name>rocket</name>
+    <name>OneX Rocket</name>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
