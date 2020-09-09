@@ -7,10 +7,10 @@ import com.nb6868.onex.modules.uc.dao.TokenDao;
 import com.nb6868.onex.modules.uc.dto.LoginChannelCfg;
 import com.nb6868.onex.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.modules.uc.service.TokenService;
-import com.nb6868.onex.modules.uc.shiro.TokenGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * token
@@ -36,12 +36,12 @@ public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> imp
         // 不管逻辑，永远都是重新生成一个token
         TokenEntity tokenEntity = new TokenEntity();
         tokenEntity.setUserId(userId);
-        tokenEntity.setToken(TokenGenerator.generateValue());
+        tokenEntity.setToken(UUID.randomUUID().toString().replaceAll("-", ""));
         tokenEntity.setUpdateTime(now);
         tokenEntity.setExpireTime(expireTime);
         tokenEntity.setType(loginConfig.getType());
 
-        //保存token
+        // 保存token
         this.save(tokenEntity);
 
         return tokenEntity.getToken();

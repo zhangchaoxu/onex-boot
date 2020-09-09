@@ -6,7 +6,7 @@
 	<artifactId>xcoder</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	<description>onex code generator</description>
+	<description>OneX Code Generator</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
