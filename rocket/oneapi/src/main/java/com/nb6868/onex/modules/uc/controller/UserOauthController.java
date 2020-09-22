@@ -17,7 +17,6 @@ import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.service.ParamService;
-import com.nb6868.onex.modules.uc.UcConst;
 import com.nb6868.onex.modules.uc.dto.OauthLoginByCodeRequest;
 import com.nb6868.onex.modules.uc.dto.OauthWxMaLoginByCodeAndUserInfoRequest;
 import com.nb6868.onex.modules.uc.dto.UserDTO;
@@ -172,7 +171,7 @@ public class UserOauthController {
         }
         // 登录成功
         Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
+        //kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
         kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(kv);
     }
@@ -180,7 +179,7 @@ public class UserOauthController {
     /**
      * Oauth授权登录
      */
-    @PostMapping("/oauthWxMaLoginByCode")
+    @PostMapping("/wxMaLoginByCode")
     @ApiOperation("Oauth微信小程序授权登录")
     @LogLogin
     @AccessControl
@@ -209,7 +208,7 @@ public class UserOauthController {
         }
         // 登录成功
         Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
+        // kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
         kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(kv);
     }
