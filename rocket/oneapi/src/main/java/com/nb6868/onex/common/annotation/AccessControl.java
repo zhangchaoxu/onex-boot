@@ -10,13 +10,11 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface AnonAccess {
+public @interface AccessControl {
 
     /**
-     * 是否允许,默认允许
+     * 是否允许匿名用户
      */
-    boolean value() default true;
-
-    String path() default "";
+    boolean anon() default true;
 
 }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.AnnotationBeanNameGenerator;
 
 /**
  * Spring Bean名称生成器
+ * 自定义bean名称生成策略,解决同名bean冲突的问题
  *
  * @author Charles zhangchaoxu@gmail.com
  */

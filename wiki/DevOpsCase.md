@@ -39,7 +39,6 @@ username: username
 password: pwd
 ```
   
-  
 2. 安装必须软件		
 BtPanel-软件商城     
 安装所需软件Nginx 1.x/MySQL 5.x/Tomcat 8.x

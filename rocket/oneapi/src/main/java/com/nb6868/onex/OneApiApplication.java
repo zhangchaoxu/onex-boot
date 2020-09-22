@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 /**
  * One Api Application
- * 自定义bean名称生成策略,解决同名bean冲突的问题
  *
  * @author Charles zhangchaoxu@gmail.com
  */

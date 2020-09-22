@@ -18,21 +18,21 @@ import java.time.Instant;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="接口返回对象", description="接口返回对象")
+@ApiModel(value="接口返回对象")
 public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "编码: 0表示成功,其他值表示失败")
+    @ApiModelProperty(value = "消息码:0表示成功,其他值表示失败")
     private int code = ErrorCode.SUCCESS;
 
     @ApiModelProperty(value = "消息内容")
     private String msg = "success";
 
-    @ApiModelProperty(value = "响应数据")
+    @ApiModelProperty(value = "消息数据")
     private T data;
 
-    @ApiModelProperty(value = "消息时间")
+    @ApiModelProperty(value = "消息Unix时间戳")
     private Long time = Instant.now().toEpochMilli();
 
     public boolean isSuccess(){

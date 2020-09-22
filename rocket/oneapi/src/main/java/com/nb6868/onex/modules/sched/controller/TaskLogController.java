@@ -1,7 +1,9 @@
 package com.nb6868.onex.modules.sched.controller;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.modules.sched.dto.TaskLogDTO;
 import com.nb6868.onex.modules.sched.service.TaskLogService;
 import io.swagger.annotations.Api;
@@ -45,8 +47,9 @@ public class TaskLogController {
     @ApiOperation("信息")
     @RequiresPermissions("sched:task:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        TaskLogDTO log = scheduleJobLogService.get(id);
+        TaskLogDTO data = scheduleJobLogService.get(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<>().success(log);
+        return new Result<>().success(data);
     }
 }

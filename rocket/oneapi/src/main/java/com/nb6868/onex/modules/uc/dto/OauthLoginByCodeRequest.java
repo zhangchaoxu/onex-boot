@@ -1,5 +1,6 @@
 package com.nb6868.onex.modules.uc.dto;
 
+import com.nb6868.onex.modules.uc.UcConst;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class OauthLoginByCodeRequest implements Serializable {
 
     @ApiModelProperty(value = "配置信息编码", required = true)
     @NotBlank(message = "配置信息编码")
-    private String paramCode;
+    private String paramCode = UcConst.WX_CFG_MP;
 
     @ApiModelProperty(value = "用户登录凭证", required = true)
     @NotBlank(message = "code")

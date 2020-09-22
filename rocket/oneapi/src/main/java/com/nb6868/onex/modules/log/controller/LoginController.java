@@ -27,7 +27,7 @@ import java.util.Map;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-@RestController
+@RestController("LogLogin")
 @RequestMapping("log/login")
 @Validated
 @Api(tags = "登录日志")

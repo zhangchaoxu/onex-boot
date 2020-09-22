@@ -7,6 +7,7 @@ import com.nb6868.onex.booster.util.*;
 import com.nb6868.onex.modules.log.entity.ErrorEntity;
 import com.nb6868.onex.modules.log.service.ErrorService;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +132,20 @@ public class OnexExceptionHandler {
     @ExceptionHandler(UnauthenticatedException.class)
     public Object handleUnauthenticatedExceptionException(HttpServletRequest request, UnauthenticatedException e) {
         return handleExceptionResult(request, ErrorCode.UNAUTHORIZED);
+    }
+
+    /**
+     * 处理微信接口异常
+     *
+     * @param e exception
+     * @return result
+     */
+    @ExceptionHandler(WxErrorException.class)
+    public Object handleWxErrorException(HttpServletRequest request, WxErrorException e) {
+        log.error(e.getMessage(), e);
+        // 保存日志
+        saveLog(e);
+        return handleExceptionResult(request, ErrorCode.WX_API_ERROR);
     }
 
     /**

@@ -1,22 +1,35 @@
 package com.nb6868.onex.modules.uc.controller;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nb6868.onex.booster.exception.ErrorCode;
+import com.nb6868.onex.booster.pojo.Kv;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.util.ConvertUtils;
 import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.service.ParamService;
 import com.nb6868.onex.modules.uc.dto.OauthLoginByCodeRequest;
+import com.nb6868.onex.modules.uc.dto.OauthWxMaLoginByCodeAndUserInfoRequest;
+import com.nb6868.onex.modules.uc.dto.UserDTO;
 import com.nb6868.onex.modules.uc.dto.UserOauthDTO;
+import com.nb6868.onex.modules.uc.entity.UserEntity;
+import com.nb6868.onex.modules.uc.entity.UserOauthEntity;
+import com.nb6868.onex.modules.uc.service.TokenService;
 import com.nb6868.onex.modules.uc.service.UserOauthService;
+import com.nb6868.onex.modules.uc.service.UserService;
+import com.nb6868.onex.modules.uc.wx.WxApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -42,7 +55,13 @@ public class UserOauthController {
     @Autowired
     UserOauthService userOauthService;
     @Autowired
+    UserService userService;
+    @Autowired
     ParamService paramService;
+    @Autowired
+    TokenService tokenService;
+    @Autowired
+    WxApiService wxApiService;
 
     @GetMapping("list")
     @ApiOperation("列表")
@@ -67,6 +86,7 @@ public class UserOauthController {
     @RequiresPermissions("uc:userOauth:info")
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         UserOauthDTO data = userOauthService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<UserOauthDTO>().success(data);
     }
@@ -105,40 +125,92 @@ public class UserOauthController {
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("uc:userOauth:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}")@RequestBody List<Long> ids) {
+    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         userOauthService.logicDeleteByIds(ids);
 
         return new Result<>();
     }
 
     /**
-     * Oauth授权登录
+     * 微信小程序Oauth授权登录
      */
-    @PostMapping("/oauthLoginByCode")
+    @PostMapping("/oauthWxMaLoginByCodeAndUserInfo")
     @ApiOperation("Oauth授权登录")
-    @AnonAccess
     @LogLogin
-    public Result<?> oauthLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
+    @AccessControl
+    public Result<?> oauthWxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
         // 获得登录配置
         JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
         AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
-        if (request.getType().startsWith("DINGTALK")) {
-            // 钉钉登录
-            /*DefaultDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/sns/getuserinfo_bycode");
-            OapiSnsGetuserinfoBycodeRequest req = new OapiSnsGetuserinfoBycodeRequest();
-            req.setTmpAuthCode(request.getCode());
-            try {
-                OapiSnsGetuserinfoBycodeResponse response = client.execute(req, oauthCfg.get("appid").asText(),oauthCfg.get("secret").asText());
-                return new Result<>().success(response.getUserInfo());
-            } catch (ApiException e) {
-                e.printStackTrace();
-                return new Result<>().error("钉钉接口调用失败");
-            }*/
-            return new Result<>().error("钉钉接口调用失败");
-        } else {
-            return new Result<>().error("不支持的登录类型:" + request.getType());
+        // 微信登录
+        WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+        WxMaJscode2SessionResult jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
+
+        // 用户信息校验
+        if (!wxService.getUserService().checkUserInfo(jscode2SessionResult.getSessionKey(), request.getRawData(), request.getSignature())) {
+            return new Result<>().error(ErrorCode.WX_API_ERROR, "user check failed");
         }
+        // 解密用户信息
+        WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(jscode2SessionResult.getSessionKey(), request.getEncryptedData(), request.getIv());
+
+        // 更新或者插入Oauth表
+        UserOauthEntity userOauth = userOauthService.saveOrUpdateByWxMaUserInfo(wxService.getWxMaConfig().getAppid(), userInfo);
+        // 用户
+        UserEntity user = null;
+        if (userOauth.getUserId() != null) {
+            user = userService.getById(userOauth.getUserId());
+            if (null == user) {
+                // 如果用户空了,同时结束所有绑定关系
+                userOauthService.unbindByUserId(userOauth.getUserId());
+            }
+        }
+        if (user == null) {
+            // 根据业务提示错误或者自动创建用户
+            return new Result<>().error(ErrorCode.OAUTH_NOT_BIND_ERROR);
+        }
+        // 登录成功
+        Kv kv = Kv.init();
+        //kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
+        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(kv);
+    }
+
+    /**
+     * Oauth授权登录
+     */
+    @PostMapping("/wxMaLoginByCode")
+    @ApiOperation("Oauth微信小程序授权登录")
+    @LogLogin
+    @AccessControl
+    public Result<?> oauthWxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
+        // 获得登录配置
+        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
+        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+
+        // 微信登录(小程序)
+        WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+        WxMaJscode2SessionResult jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
+        // 更新或者插入Oauth表
+        UserOauthEntity userOauth = userOauthService.saveOrUpdateByWxMaJscode2SessionResult(wxService.getWxMaConfig().getAppid(), jscode2SessionResult);
+        // 用户
+        UserEntity user = null;
+        if (userOauth.getUserId() != null) {
+            user = userService.getById(userOauth.getUserId());
+            if (null == user) {
+                // 如果用户空了,同时结束所有绑定关系
+                userOauthService.unbindByUserId(userOauth.getUserId());
+            }
+        }
+        if (user == null) {
+            // 根据业务提示错误或者自动创建用户
+            return new Result<>().error(ErrorCode.OAUTH_NOT_BIND_ERROR);
+        }
+        // 登录成功
+        Kv kv = Kv.init();
+        // kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
+        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(kv);
     }
 
 }

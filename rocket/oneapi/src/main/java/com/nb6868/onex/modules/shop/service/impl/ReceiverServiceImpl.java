@@ -7,7 +7,7 @@ import com.nb6868.onex.booster.pojo.Const;
 import com.nb6868.onex.booster.service.impl.CrudServiceImpl;
 import com.nb6868.onex.booster.util.WrapperUtils;
 import com.nb6868.onex.booster.validator.AssertUtils;
-import com.nb6868.onex.modules.app.dto.AppReceiverRequest;
+import com.nb6868.onex.modules.shop.dto.AppReceiverRequest;
 import com.nb6868.onex.modules.shop.dao.ReceiverDao;
 import com.nb6868.onex.modules.shop.dto.ReceiverDTO;
 import com.nb6868.onex.modules.shop.entity.ReceiverEntity;

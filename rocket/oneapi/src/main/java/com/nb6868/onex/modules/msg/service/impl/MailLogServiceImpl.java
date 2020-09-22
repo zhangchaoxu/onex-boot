@@ -25,7 +25,7 @@ import com.nb6868.onex.modules.msg.service.MailTplService;
 import com.nb6868.onex.modules.msg.sms.AbstractSmsService;
 import com.nb6868.onex.modules.msg.sms.SmsFactory;
 import com.nb6868.onex.modules.msg.sms.SmsProps;
-import com.nb6868.onex.modules.wx.config.WxProp;
+import com.nb6868.onex.modules.uc.wx.WxProp;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;

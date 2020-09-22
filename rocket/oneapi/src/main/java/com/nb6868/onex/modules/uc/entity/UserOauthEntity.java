@@ -30,6 +30,7 @@ public class UserOauthEntity extends BaseTenantEntity {
 	private String openid;
     /**
      * 类型 dingtalk/wechat/apple
+	 *
      */
 	private String type;
     /**

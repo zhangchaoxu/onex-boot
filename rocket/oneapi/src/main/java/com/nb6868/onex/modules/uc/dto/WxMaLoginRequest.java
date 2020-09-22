@@ -1,4 +1,4 @@
-package com.nb6868.onex.modules.wx.dto;
+package com.nb6868.onex.modules.uc.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

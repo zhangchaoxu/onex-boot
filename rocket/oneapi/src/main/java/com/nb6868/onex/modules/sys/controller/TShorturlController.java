@@ -1,6 +1,6 @@
 package com.nb6868.onex.modules.sys.controller;
 
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.entity.ShorturlEntity;
 import com.nb6868.onex.modules.sys.service.ShorturlService;
@@ -29,7 +29,7 @@ public class TShorturlController {
     @GetMapping("{code}")
     @ApiOperation("系统信息")
     @LogOperation("系统信息")
-    @AnonAccess
+    @AccessControl
     public String redirect(@PathVariable("code") String code, HttpServletResponse response) {
         UserDetail user = SecurityUser.getUser();
         ShorturlEntity entity = shorturlService.getByCode(code);

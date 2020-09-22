@@ -8,15 +8,6 @@ package com.nb6868.onex.modules.uc;
 public interface UcConst {
 
     /**
-     * 游客token
-     */
-    String TOKEN_GUEST = "00000000000000000000000000000001";
-    /**
-     * 游客角色编码
-     */
-    String ROLE_CODE_GUEST = "GUEST";
-
-    /**
      * 匿名角色编码
      */
     String ROLE_CODE_ANON = "ANON";
@@ -44,9 +35,14 @@ public interface UcConst {
     String TOKEN_HEADER = "token";
 
     /**
-     * 微信公众号配置项
+     * 微信公众号配置项默认key
      */
     String WX_CFG_MP = "WX_CFG_MP";
+
+    /**
+     * 微信小程序配置项默认key
+     */
+    String WX_CFG_MA = "WX_CFG_MA";
 
     /**
      * 微信session中的openid

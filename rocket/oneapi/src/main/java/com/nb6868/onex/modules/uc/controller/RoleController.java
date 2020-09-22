@@ -1,7 +1,9 @@
 package com.nb6868.onex.modules.uc.controller;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
@@ -18,8 +20,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +65,7 @@ public class RoleController {
 	@RequiresPermissions("uc:role:info")
 	public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id){
 		RoleDTO data = roleService.getDtoById(id);
+		AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
 		// 查询角色对应的菜单
 		List<Long> menuIdList = roleMenuService.getMenuIdListByRoleId(id);
@@ -100,18 +103,13 @@ public class RoleController {
 	@LogOperation("删除")
 	@RequiresPermissions("uc:role:delete")
 	public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
+		// 删除数据
 		roleService.logicDeleteById(id);
-
+		// 删除角色菜单关联关系
+		roleMenuService.deleteByRoleIds(Collections.singletonList(id));
+		// 删除角色数据关联关系
+		roleDataScopeService.deleteByRoleIds(Collections.singletonList(id));
 		return new Result<>();
 	}
 
-	@DeleteMapping("deleteBatch")
-	@ApiOperation("批量删除")
-	@LogOperation("批量删除")
-	@RequiresPermissions("uc:role:deleteBatch")
-	public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-		roleService.logicDeleteByIds(ids);
-
-		return new Result<>();
-	}
 }

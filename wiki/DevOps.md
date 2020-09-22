@@ -71,7 +71,10 @@ location / {
 
 #### 分离jar/lib/resource(maven-jar-plugin)
 编译结果只有一个小jar包、lib、resource,便于后面有热修改,只需要修改覆盖对应的内容即可          
-注意lib若有修改,要清空重新上传,否则可能出现不同版本的相同依赖jar
+注意lib若有修改,要清空重新上传,否则可能出现不同版本的相同依赖jar。
+注意两点：
+1. copy-lib中的includeScope决定了将哪些依赖jar包复制过去,比如compile就不会将scope为runtime的jar包复制过去
+2. 如果存在自定义的本地jar，maven-jar-plugin中的Class-Path需要将jar用空格分隔加进去，比如`./resources/ lib/abc-1.0.0.jar`
 
 ```xml
 <build>

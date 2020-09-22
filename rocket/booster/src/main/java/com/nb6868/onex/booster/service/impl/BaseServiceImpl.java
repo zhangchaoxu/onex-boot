@@ -1,11 +1,5 @@
 package com.nb6868.onex.booster.service.impl;
 
-import com.nb6868.onex.booster.util.ParamUtils;
-import com.nb6868.onex.booster.pojo.Const;
-import com.nb6868.onex.booster.dao.BaseDao;
-import com.nb6868.onex.booster.pojo.PageData;
-import com.nb6868.onex.booster.service.BaseService;
-import com.nb6868.onex.booster.util.ConvertUtils;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
@@ -15,21 +9,21 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.nb6868.onex.booster.dao.BaseDao;
+import com.nb6868.onex.booster.pojo.Const;
+import com.nb6868.onex.booster.pojo.PageData;
+import com.nb6868.onex.booster.service.BaseService;
+import com.nb6868.onex.booster.util.ConvertUtils;
+import com.nb6868.onex.booster.util.ParamUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
-import org.apache.ibatis.reflection.ExceptionUtil;
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.MyBatisExceptionTranslator;
-import org.mybatis.spring.SqlSessionHolder;
 import org.mybatis.spring.SqlSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -37,9 +31,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.BiConsumer;
 
 /**
  * 基础服务实现类
@@ -50,6 +44,8 @@ import java.util.function.BiConsumer;
  */
 @SuppressWarnings("unchecked")
 public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> {
+
+    protected Log log = LogFactory.getLog(getClass());
 
     @Override
     public boolean logicDeleteById(Serializable id) {
@@ -130,7 +126,7 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
      * @return 当时Entity实例
      */
     protected T currentModel() {
-        Class<T> modelClass = (Class<T>) ReflectionKit.getSuperClassGenericType(getClass(), 1);
+        Class<T> modelClass = currentModelClass();
         try {
             return modelClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -159,7 +155,7 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
 
         // 前端字段排序
         if (StringUtils.isNotBlank(orderField) && StringUtils.isNotBlank(order)) {
-            return page.addOrder(new OrderItem().setColumn(orderField).setAsc(Const.ASC.equalsIgnoreCase(order)));
+            return page.addOrder(new OrderItem(orderField, Const.ASC.equalsIgnoreCase(order)));
         }
 
         // 没有排序字段，则不排序
@@ -168,7 +164,7 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
         }
 
         // 默认排序
-        page.addOrder(new OrderItem().setColumn(orderField).setAsc(isAsc));
+        page.addOrder(new OrderItem(orderField, isAsc));
 
         return page;
     }
@@ -191,8 +187,6 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
 
     // [+] ServiceImpl
 
-    protected Log log = LogFactory.getLog(getClass());
-
     @Autowired
     protected M baseMapper;
 
@@ -202,6 +196,8 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
     }
 
     protected Class<?> entityClass = currentModelClass();
+
+    protected Class<?> mapperClass = currentMapperClass();
 
     /**
      * 判断数据库操作是否成功
@@ -213,6 +209,10 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
     @Deprecated
     protected boolean retBool(Integer result) {
         return SqlHelper.retBool(result);
+    }
+
+    protected Class<T> currentMapperClass() {
+        return (Class<T>) ReflectionKit.getSuperClassGenericType(getClass(), 0);
     }
 
     protected Class<T> currentModelClass() {
@@ -245,7 +245,10 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
      *
      * @param sqlMethod ignore
      * @return ignore
+     * @see #getSqlStatement(SqlMethod)
+     * @deprecated 3.4.0
      */
+    @Deprecated
     protected String sqlStatement(SqlMethod sqlMethod) {
         return SqlHelper.table(entityClass).getSqlStatement(sqlMethod.getMethod());
     }
@@ -260,8 +263,19 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean saveBatch(Collection<T> entityList, int batchSize) {
-        String sqlStatement = sqlStatement(SqlMethod.INSERT_ONE);
+        String sqlStatement = getSqlStatement(SqlMethod.INSERT_ONE);
         return executeBatch(entityList, batchSize, (sqlSession, entity) -> sqlSession.insert(sqlStatement, entity));
+    }
+
+    /**
+     * 获取mapperStatementId
+     *
+     * @param sqlMethod 方法名
+     * @return 命名id
+     * @since 3.4.0
+     */
+    protected String getSqlStatement(SqlMethod sqlMethod) {
+        return SqlHelper.getSqlStatement(mapperClass, sqlMethod);
     }
 
     /**
@@ -274,8 +288,7 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
     @Override
     public boolean saveOrUpdate(T entity) {
         if (null != entity) {
-            Class<?> cls = entity.getClass();
-            TableInfo tableInfo = TableInfoHelper.getTableInfo(cls);
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(this.entityClass);
             Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
             String keyProperty = tableInfo.getKeyProperty();
             Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
@@ -292,22 +305,21 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
         Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
         String keyProperty = tableInfo.getKeyProperty();
         Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-        return executeBatch(entityList, batchSize, (sqlSession, entity) -> {
+        return SqlHelper.saveOrUpdateBatch(this.entityClass, this.mapperClass, this.log, entityList, batchSize, (sqlSession, entity) -> {
             Object idVal = ReflectionKit.getFieldValue(entity, keyProperty);
-            if (StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal))) {
-                sqlSession.insert(tableInfo.getSqlStatement(SqlMethod.INSERT_ONE.getMethod()), entity);
-            } else {
-                MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
-                param.put(Constants.ENTITY, entity);
-                sqlSession.update(tableInfo.getSqlStatement(SqlMethod.UPDATE_BY_ID.getMethod()), param);
-            }
+            return StringUtils.checkValNull(idVal)
+                    || CollectionUtils.isEmpty(sqlSession.selectList(getSqlStatement(SqlMethod.SELECT_BY_ID), entity));
+        }, (sqlSession, entity) -> {
+            MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
+            param.put(Constants.ENTITY, entity);
+            sqlSession.update(getSqlStatement(SqlMethod.UPDATE_BY_ID), param);
         });
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean updateBatchById(Collection<T> entityList, int batchSize) {
-        String sqlStatement = sqlStatement(SqlMethod.UPDATE_BY_ID);
+        String sqlStatement = getSqlStatement(SqlMethod.UPDATE_BY_ID);
         return executeBatch(entityList, batchSize, (sqlSession, entity) -> {
             MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
             param.put(Constants.ENTITY, entity);
@@ -342,36 +354,7 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
      */
     @Deprecated
     protected boolean executeBatch(Consumer<SqlSession> consumer) {
-        SqlSessionFactory sqlSessionFactory = SqlHelper.sqlSessionFactory(entityClass);
-        SqlSessionHolder sqlSessionHolder = (SqlSessionHolder) TransactionSynchronizationManager.getResource(sqlSessionFactory);
-        boolean transaction = TransactionSynchronizationManager.isSynchronizationActive();
-        if (sqlSessionHolder != null) {
-            SqlSession sqlSession = sqlSessionHolder.getSqlSession();
-            //原生无法支持执行器切换，当存在批量操作时，会嵌套两个session的，优先commit上一个session
-            //按道理来说，这里的值应该一直为false。
-            sqlSession.commit(!transaction);
-        }
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
-        if (!transaction) {
-            log.warn("SqlSession [" + sqlSession + "] was not registered for synchronization because DataSource is not transactional");
-        }
-        try {
-            consumer.accept(sqlSession);
-            //非事物情况下，强制commit。
-            sqlSession.commit(!transaction);
-            return true;
-        } catch (Throwable t) {
-            sqlSession.rollback();
-            Throwable unwrapped = ExceptionUtil.unwrapThrowable(t);
-            if (unwrapped instanceof RuntimeException) {
-                MyBatisExceptionTranslator myBatisExceptionTranslator
-                        = new MyBatisExceptionTranslator(sqlSessionFactory.getConfiguration().getEnvironment().getDataSource(), true);
-                throw Objects.requireNonNull(myBatisExceptionTranslator.translateExceptionIfPossible((RuntimeException) unwrapped));
-            }
-            throw ExceptionUtils.mpe(unwrapped);
-        } finally {
-            sqlSession.close();
-        }
+        return SqlHelper.executeBatch(this.entityClass, this.log, consumer);
     }
 
     /**
@@ -385,18 +368,7 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
      * @since 3.3.1
      */
     protected <E> boolean executeBatch(Collection<E> list, int batchSize, BiConsumer<SqlSession, E> consumer) {
-        Assert.isFalse(batchSize < 1, "batchSize must not be less than one");
-        return !CollectionUtils.isEmpty(list) && executeBatch(sqlSession -> {
-            int size = list.size();
-            int i = 1;
-            for (E element : list) {
-                consumer.accept(sqlSession, element);
-                if ((i % batchSize == 0) || i == size) {
-                    sqlSession.flushStatements();
-                }
-                i++;
-            }
-        });
+        return SqlHelper.executeBatch(this.entityClass, this.log, list, batchSize, consumer);
     }
 
     /**

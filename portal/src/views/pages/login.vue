@@ -64,7 +64,7 @@
           </el-form>
           <el-divider v-if="loginCfg.loginByWechatScan || loginCfg.loginByDingtalkScan">第三方登录</el-divider>
           <div>
-            <el-link :underline="false" @click="onOauthLogin('wechat')" title="微信" v-if="loginCfg.loginByWechatScan" class="no-underline">
+            <el-link :underline="false" @click="onOauthLogin('WECHAT_SCAN')" title="微信" v-if="loginCfg.loginByWechatScan" class="no-underline">
               <i class="ad-icon-wechat-fill" style="font-size: 24px; margin-left: 12px; margin-right: 12px;"/>
             </el-link>
             <el-link :underline="false" @click="onOauthLogin('DINGTALK_SCAN')" title="钉钉" v-if="loginCfg.loginByDingtalkScan" class="no-underline">
@@ -264,7 +264,7 @@ export default {
     },
     // 表单提交成功
     onFormSubmitSuccess (res) {
-      // 加一个message,缓解跳转过程中的耗时
+      // 加一个message,缓解跳转过程中的等待
       this.$message({ message: '登录成功', type: 'success', duration: 1000 })
       // 将token保存到cookie
       Cookies.set('token', res.data.token)
@@ -313,8 +313,6 @@ export default {
     },
     /**
      * 第三方code登录
-     * @param type
-     * @param code
      */
     oauthLoginHandle (type, code) {
       this.formLoading = true

@@ -79,5 +79,7 @@ public interface ErrorCode {
     int WX_API_ERROR = 11001;
     int APPLE_LOGIN_ERROR = 11100;
     int APPLE_NOT_BIND = 11101;
+    int OAUTH_USER_INFO_LACK = 11002;
+    int OAUTH_USER_UNBIND = 11003;
 
 }
