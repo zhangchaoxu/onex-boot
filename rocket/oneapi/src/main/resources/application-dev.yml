@@ -32,3 +32,11 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+
+# mybatis plus
+# see {https://mybatis.plus/config/}
+mybatis-plus:
+  #原生配置
+  configuration:
+    # console中打印出sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -60,4 +60,8 @@ public class ArticleCategoryServiceImpl extends CrudServiceImpl<ArticleCategoryD
         return update().eq("site_id", siteId).set("site_code", newSiteCode).update(new ArticleCategoryEntity());
     }
 
+    @Override
+    public Integer childrenCount(Long id) {
+        return query().eq("pid", id).count();
+    }
 }

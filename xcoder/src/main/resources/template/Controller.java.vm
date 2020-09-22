@@ -1,8 +1,10 @@
 package ${package}.modules.${moduleName}.controller;
 
 import ${package}.common.annotation.LogOperation;
-import ${package}.booster.pojo.Result;
+import ${package}booster.exception.ErrorCode;
 import ${package}.booster.pojo.PageData;
+import ${package}.booster.pojo.Result;
+import ${package}.booster.validator.AssertUtils;
 import ${package}.booster.validator.AssertUtils;
 import ${package}.booster.validator.ValidatorUtils;
 import ${package}.booster.validator.group.AddGroup;
@@ -65,6 +67,7 @@ public class ${className}Controller {
     @RequiresPermissions("${moduleName}:${pathName}:info")
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         ${className}DTO data = ${classname}Service.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<${className}DTO>().success(data);
     }

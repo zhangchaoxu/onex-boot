@@ -8,7 +8,7 @@ import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
 import com.nb6868.onex.common.annotation.DataFilter;
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.modules.app.dto.AppReceiverRequest;
+import com.nb6868.onex.modules.shop.dto.AppReceiverRequest;
 import com.nb6868.onex.modules.shop.dto.ReceiverDTO;
 import com.nb6868.onex.modules.shop.service.ReceiverService;
 import io.swagger.annotations.Api;

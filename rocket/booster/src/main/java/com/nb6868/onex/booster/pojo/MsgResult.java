@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "导入结果", description = "数据导入结果")
+@ApiModel(value = "消息结果")
 public class MsgResult implements Serializable {
 
     @ApiModelProperty(value = "编码: 0表示成功,其他值表示失败")

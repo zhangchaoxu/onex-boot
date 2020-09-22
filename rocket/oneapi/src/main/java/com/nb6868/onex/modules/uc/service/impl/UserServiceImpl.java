@@ -3,7 +3,6 @@ package com.nb6868.onex.modules.uc.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.pojo.Const;
@@ -91,20 +90,13 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     }
 
     @Override
-    public boolean logout() {
-        UserDetail user = SecurityUser.getUser();
+    public boolean logout(String token) {
         // 删除token
-        boolean ret = tokenService.deleteToken(user.getToken());
-        // 记录登录日志
-        if (!ret) {
-            throw new OnexException("删除token失败");
-        }
-        return ret;
+        return tokenService.deleteToken(token);
     }
 
     @Override
     public Kv login(LoginRequest loginRequest) {
-        // todo 检查是否开放
         // 获得登录配置
         LoginChannelCfg loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + loginRequest.getType(), LoginChannelCfg.class, null);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
@@ -117,7 +109,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
         }
 
         // 登录用户
-        UserDTO user;
+        UserEntity user;
         if (UcConst.LoginTypeEnum.ADMIN_USER_PWD.value() == loginRequest.getType() || UcConst.LoginTypeEnum.APP_USER_PWD.value() == loginRequest.getType()) {
             // 帐号密码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.UsernamePasswordGroup.class);
@@ -173,7 +165,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                 // todo 使用apple keys做验证
                 // {https://developer.apple.com/cn/app-store/review/guidelines/#sign-in-with-apple}
                 // 通过packageName和userIdentifier找对应的数据记录
-                UserOauthEntity userApple = userOauthService.getByAppidAndOpenid(UcConst.OauthTypeEnum.APPLE.name(), packageName, userIdentifier);
+                UserOauthEntity userApple = userOauthService.getByOpenid(userIdentifier);
                 if (userApple == null) {
                     // 不存在记录,则保存记录
                     userApple = new UserOauthEntity();
@@ -186,7 +178,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                     // 未绑定用户
                     throw new OnexException(ErrorCode.APPLE_NOT_BIND);
                 } else {
-                    user = getDtoById(userApple.getUserId());
+                    user = getById(userApple.getUserId());
                     if (user == null) {
                         // 帐号不存在
                         throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
@@ -200,7 +192,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
             throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
         }
 
-        if (user == null && loginChannelCfg.isAutoCreate()) {
+        /*if (user == null && loginChannelCfg.isAutoCreate()) {
             // 没有该用户，并且需要自动创建用户
             user = new UserDTO();
             user.setStatus(UcConst.UserStatusEnum.ENABLED.value());
@@ -213,7 +205,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
             saveDto(user);
             //保存角色用户关系
             roleUserService.saveOrUpdate(user.getId(), user.getRoleIdList());
-        }
+        }*/
 
         // 登录成功
         Kv kv = Kv.init();
@@ -227,9 +219,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     public Result<?> register(RegisterRequest request) {
         LoginCfg loginCfg = paramService.getContentObject(UcConst.LOGIN_CFG_ADMIN, LoginCfg.class);
         AssertUtils.isEmpty(loginCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
-        if (!loginCfg.isRegister()) {
-            throw new OnexException("未开放注册");
-        }
+        AssertUtils.isFalse(loginCfg.isRegister(), "未开放注册");
 
         // 操作结果
         int resultCode = 0;
@@ -265,7 +255,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     }
 
     @Override
-    public Result<?> changePasswordBySmsCode(ChangePasswordBySmsCodeRequest request) {
+    public Result<?> changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
         LoginCfg loginCfg = paramService.getContentObject(UcConst.LOGIN_CFG_ADMIN, LoginCfg.class);
         AssertUtils.isEmpty(loginCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
         if (!loginCfg.isForgetPassword()) {
@@ -275,7 +265,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
         // 操作结果
         int resultCode = 0;
         // 登录用户
-        UserDTO user = getByMobile(request.getMobileArea(), request.getMobile());
+        UserEntity user = getByMobile(request.getMailTo());
         if (user == null) {
             // 帐号不存在
             resultCode = ErrorCode.ACCOUNT_NOT_EXIST;
@@ -284,8 +274,8 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
             resultCode = ErrorCode.ACCOUNT_DISABLE;
         } else {
             //  校验验证码
-            MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_CHANGE_PASSWORD, request.getMobile());
-            if (null == lastSmsLog || !request.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString())) {
+            MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_CHANGE_PASSWORD, user.getMobile());
+            if (null == lastSmsLog || !request.getCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString())) {
                 // 验证码错误,找不到验证码
                 resultCode = ErrorCode.SMS_CODE_ERROR;
             } else {
@@ -304,19 +294,17 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     }
 
     @Override
-    public UserDTO getByUsername(String username) {
-        UserEntity entity = query().eq("username", username).last(Const.LIMIT_ONE).one();
-        return ConvertUtils.sourceToTarget(entity, currentDtoClass());
+    public UserEntity getByUsername(String username) {
+        return query().eq("username", username).last(Const.LIMIT_ONE).one();
     }
 
     @Override
-    public UserDTO getByMobile(String mobileArea, String mobile) {
-        UserEntity entity = query().eq("mobile_area", mobileArea).eq("mobile", mobile).last(Const.LIMIT_ONE).one();
-        return ConvertUtils.sourceToTarget(entity, currentDtoClass());
+    public UserEntity getByMobile(String mobileArea, String mobile) {
+        return query().eq("mobile_area", mobileArea).eq("mobile", mobile).last(Const.LIMIT_ONE).one();
     }
 
     @Override
-    public UserDTO getByMobile(String mobile) {
+    public UserEntity getByMobile(String mobile) {
         return getByMobile("86", mobile);
     }
 
@@ -328,7 +316,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updatePassword(Long id, String newPassword) {
-        return update(new UserEntity(), new UpdateWrapper<UserEntity>().eq("id", id).set("password", new BCryptPasswordEncoder().encode(newPassword)));
+        return update().eq("id", id).set("password", new BCryptPasswordEncoder().encode(newPassword)).update(new UserEntity());
     }
 
     @Override

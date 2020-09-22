@@ -5,7 +5,6 @@ import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.util.ConvertUtils;
 import com.nb6868.onex.booster.util.MessageUtils;
 import com.nb6868.onex.modules.uc.UcConst;
-import com.nb6868.onex.modules.uc.dto.LoginChannelCfg;
 import com.nb6868.onex.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.modules.uc.entity.UserEntity;
 import com.nb6868.onex.modules.uc.service.ShiroService;
@@ -16,15 +15,13 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static com.nb6868.onex.modules.uc.UcConst.TOKEN_ANON;
-import static com.nb6868.onex.modules.uc.UcConst.TOKEN_GUEST;
 
 /**
  * Shiro认证
@@ -46,6 +43,18 @@ public class ShiroRealm extends AuthorizingRealm {
     }
 
     /**
+     * shiro是否基于角色或者权限来判断
+     */
+    @Value("${onex.shiro.role: false}")
+    private boolean shiroRole;
+    @Value("${onex.shiro.permissions: true}")
+    private boolean shiroPermissions;
+    @Value("${onex.shiro.token.renewal: true}")
+    private boolean tokenRenewal;
+    @Value("${onex.shiro.token.expire: 604800}")
+    private long tokenExpire;
+
+    /**
      * 授权(验证权限时调用)
      * 只有当需要检测用户权限的时候才会调用此方法,例如RequiresPermissions/checkRole/checkPermission
      */
@@ -53,33 +62,20 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         UserDetail user = (UserDetail) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        if (TOKEN_ANON.equalsIgnoreCase(user.getToken())) {
+        if (user.isAnon()) {
             // 匿名用户
             Set<String> roles = new HashSet<>();
             roles.add(UcConst.ROLE_CODE_ANON);
             info.setRoles(roles);
-        } else if (UcConst.TOKEN_GUEST.equalsIgnoreCase(user.getToken())) {
-            // 游客token,不做验证
-            // 塞入游客角色
-            Set<String> roles = new HashSet<>();
-            roles.add(UcConst.ROLE_CODE_GUEST);
-            info.setRoles(roles);
-            // 塞入游客具有的权限列表
-            List<String> roleCodes = new ArrayList<>();
-            roleCodes.add(UcConst.ROLE_CODE_GUEST);
-            info.setStringPermissions(shiroService.getPermissionsByRoles(roleCodes));
         } else {
-            // 根据登录配置中的roleBase和permissionBase设置SimpleAuthorizationInfo
-            LoginChannelCfg loginCfg = user.getLoginCfg();
-            if (loginCfg != null) {
-                if (loginCfg.isRoleBase()) {
-                    // 塞入角色列表
-                    info.setRoles(shiroService.getUserRoleCodes(user));
-                }
-                if (loginCfg.isPermissionsBase()) {
-                    // 塞入权限列表
-                    info.setStringPermissions(shiroService.getUserPermissions(user));
-                }
+            // 根据配置文件中的role和permission设置SimpleAuthorizationInfo
+            if (shiroRole) {
+                // 塞入角色列表
+                info.setRoles(shiroService.getUserRoleCodes(user));
+            }
+            if (shiroPermissions) {
+                // 塞入权限列表
+                info.setStringPermissions(shiroService.getUserPermissions(user));
             }
         }
         return info;
@@ -95,16 +91,9 @@ public class ShiroRealm extends AuthorizingRealm {
         if (TOKEN_ANON.equalsIgnoreCase(accessToken)) {
             // 匿名访问
             UserDetail userDetail = new UserDetail();
-            userDetail.setToken(TOKEN_ANON);
+            userDetail.setId(-1L);
             userDetail.setType(-100);
             return new SimpleAuthenticationInfo(userDetail, TOKEN_ANON, getName());
-        }
-        if (TOKEN_GUEST.equalsIgnoreCase(accessToken)) {
-            // 游客访问
-            UserDetail userDetail = new UserDetail();
-            userDetail.setToken(TOKEN_GUEST);
-            userDetail.setType(-100);
-            return new SimpleAuthenticationInfo(userDetail, TOKEN_GUEST, getName());
         }
         // 根据accessToken，查询用户信息
         TokenEntity token = shiroService.getUserIdAndTypeByToken(accessToken);
@@ -127,20 +116,13 @@ public class ShiroRealm extends AuthorizingRealm {
         // 转换成UserDetail对象
         UserDetail userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
 
-        // 将登录配置塞入user
-        LoginChannelCfg loginCfg = shiroService.getLoginCfg(token.getType());
-        userDetail.setLoginCfg(loginCfg);
-
-        // 将token塞入user
-        userDetail.setToken(accessToken);
-
         // 获取用户对应的部门数据权限
         /*List<Long> deptIdList = shiroService.getDataScopeList(userDetail.getId());
         userDetail.setDeptIdList(deptIdList);*/
 
         // 更新token
-        if (loginCfg.isRenewalToken()) {
-            shiroService.renewalToken(accessToken, loginCfg.getExpire());
+        if (tokenRenewal) {
+            shiroService.renewalToken(accessToken, tokenExpire);
         }
 
         return new SimpleAuthenticationInfo(userDetail, accessToken, getName());

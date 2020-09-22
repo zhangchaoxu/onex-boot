@@ -16,18 +16,17 @@
         <shiro.version>1.6.0</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.2.0</easypoi.version>
-        <aliyun.core.version>4.5.7</aliyun.core.version>
+        <aliyun.core.version>4.5.10</aliyun.core.version>
         <aliyun.oss.version>3.11.0</aliyun.oss.version>
         <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
-        <aliyun.imageaudit.version>1.0.6</aliyun.imageaudit.version>
         <jpush.version>3.4.6</jpush.version>
         <jwt.version>3.10.3</jwt.version>
-        <thumbnailator.version>0.4.11</thumbnailator.version>
-        <weixin.pay.version>3.8.0</weixin.pay.version>
-        <weixin.miniapp.version>3.8.0</weixin.miniapp.version>
-        <weixin.mp.version>3.8.0</weixin.mp.version>
-        <alipay.sdk.version>4.10.97.ALL</alipay.sdk.version>
-        <dynamic.datasource.version>3.2.0</dynamic.datasource.version>
+        <thumbnailator.version>0.4.12</thumbnailator.version>
+        <weixin.pay.version>3.9.0</weixin.pay.version>
+        <weixin.miniapp.version>3.9.0</weixin.miniapp.version>
+        <weixin.mp.version>3.9.0</weixin.mp.version>
+        <alipay.sdk.version>4.10.140.ALL</alipay.sdk.version>
+        <dynamic.datasource.version>3.2.1</dynamic.datasource.version>
     </properties>
 
     <dependencies>
@@ -82,12 +81,6 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>${aliyun.oss.version}</version>
-        </dependency>
-        <!-- aliyun imageaudit -->
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-imageaudit</artifactId>
-            <version>${aliyun.imageaudit.version}</version>
         </dependency>
         <!-- jpush -->
         <dependency>

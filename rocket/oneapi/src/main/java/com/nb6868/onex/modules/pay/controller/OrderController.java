@@ -3,13 +3,15 @@ package com.nb6868.onex.modules.pay.controller;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.exception.OnexException;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
-import com.nb6868.onex.common.annotation.AnonAccess;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.util.ExcelUtils;
 import com.nb6868.onex.modules.pay.dto.OrderDTO;
@@ -66,6 +68,7 @@ public class OrderController {
     @RequiresPermissions("pay:order:info")
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         OrderDTO data = orderService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<OrderDTO>().success(data);
     }
@@ -130,7 +133,7 @@ public class OrderController {
     @ApiOperation(value = "微信订单支付回调通知")
     @LogOperation("微信订单支付回调通知")
     @PostMapping("/wxNotify")
-    @AnonAccess
+    @AccessControl
     public String wxNotify(@RequestBody String xmlData) {
         try {
             orderService.handleWxNotifyResult(WxPayOrderNotifyResult.fromXML(xmlData));
@@ -146,7 +149,7 @@ public class OrderController {
     @ApiOperation(value = "支付宝订单支付回调通知")
     @LogOperation("支付宝订单支付回调通知")
     @PostMapping("/alipayNotify")
-    @AnonAccess
+    @AccessControl
     public String alipayNotify(@RequestBody String xmlData) {
         // todo
         return "";

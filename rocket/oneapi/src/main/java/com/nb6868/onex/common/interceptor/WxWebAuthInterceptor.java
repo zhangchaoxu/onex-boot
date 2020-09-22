@@ -8,7 +8,7 @@ import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.common.annotation.WxWebAuth;
 import com.nb6868.onex.modules.sys.service.ParamService;
 import com.nb6868.onex.modules.uc.UcConst;
-import com.nb6868.onex.modules.wx.config.WxProp;
+import com.nb6868.onex.modules.uc.wx.WxProp;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * 微信页面授权拦截器
- *
+ * <p>
  * see {https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html}
  *
  * @author Charles zhangchaoxu@gmail.com
@@ -50,7 +50,7 @@ public class WxWebAuthInterceptor extends HandlerInterceptorAdapter {
                     WxMpService wxService = getWxService(UcConst.WX_CFG_MP);
                     if (StringUtils.isBlank(code)) {
                         String url = HttpContextUtils.getFullUrl(request);
-                        String oauth2buildAuthorizationUrl = wxService.oauth2buildAuthorizationUrl(url, annotation.scope(), "wx#wechat_redirect");
+                        String oauth2buildAuthorizationUrl = wxService.getOAuth2Service().buildAuthorizationUrl(url, annotation.scope(), "wx#wechat_redirect");
                         try {
                             response.sendRedirect(oauth2buildAuthorizationUrl);
                             return false;
@@ -61,7 +61,7 @@ public class WxWebAuthInterceptor extends HandlerInterceptorAdapter {
                     } else {
                         // 有code,则执行获取流程
                         try {
-                            WxMpOAuth2AccessToken auth2AccessToken = wxService.oauth2getAccessToken(code);
+                            WxMpOAuth2AccessToken auth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
                             // todo 判断WechatWebAuthorization.scope
                             // todo 存入user_oauth表
                             request.getSession().setAttribute(UcConst.WX_SESSION_OPEN_ID, auth2AccessToken.getOpenId());
@@ -80,7 +80,7 @@ public class WxWebAuthInterceptor extends HandlerInterceptorAdapter {
                                         url.append(key).append("=").append(params.get(key));
                                     }
                                 }
-                                String oauth2buildAuthorizationUrl = wxService.oauth2buildAuthorizationUrl(url.toString(), annotation.scope(), "wx#wechat_redirect");
+                                String oauth2buildAuthorizationUrl = wxService.getOAuth2Service().buildAuthorizationUrl(url.toString(), annotation.scope(), "wx#wechat_redirect");
                                 try {
                                     response.sendRedirect(oauth2buildAuthorizationUrl);
                                     return false;

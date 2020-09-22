@@ -1,11 +1,5 @@
 package com.nb6868.onex.modules.cms.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.imageaudit.model.v20191230.ScanTextRequest;
-import com.aliyuncs.imageaudit.model.v20191230.ScanTextResponse;
-import com.aliyuncs.profile.DefaultProfile;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.nb6868.onex.booster.exception.ErrorCode;
@@ -22,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +72,7 @@ public class ArticleServiceImpl extends CrudServiceImpl<ArticleDao, ArticleEntit
         // 调用阿里云-绿网-内容安全,鉴别文字内容
     }
 
-    public static void testScanText(String scenes, String content) {
+    /*public static void testScanText(String scenes, String content) {
         com.aliyuncs.imageaudit.model.v20191230.ScanTextRequest scanTextRequest = new com.aliyuncs.imageaudit.model.v20191230.ScanTextRequest();
         List<ScanTextRequest.Tasks> taskss = new ArrayList<>();
         List<ScanTextRequest.Labels> labelss = new ArrayList<>();
@@ -103,11 +96,7 @@ public class ArticleServiceImpl extends CrudServiceImpl<ArticleDao, ArticleEntit
             return;
         }
         System.out.println(JSON.toJSONString(resp.getData()));
-    }
-
-    public static void main(String[] args) {
-        testScanText("abuse", "你丫大傻逼，想要看裸女写真吗，加群1234567");
-    }
+    }*/
 
     @Override
     public boolean updateSiteCode(Long siteId, String newSiteCode) {
@@ -119,4 +108,8 @@ public class ArticleServiceImpl extends CrudServiceImpl<ArticleDao, ArticleEntit
         return update(new UpdateWrapper<ArticleEntity>().eq("article_category_id", siteId).set("article_category_code", newSiteCode));
     }
 
+    @Override
+    public Integer countByArticleCategoryId(Long articleCategoryId) {
+        return query().eq("article_category_id", articleCategoryId).count();
+    }
 }

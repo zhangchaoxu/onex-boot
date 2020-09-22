@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * 多租户 Tenant 演示
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TenantTest {
 
     @Resource

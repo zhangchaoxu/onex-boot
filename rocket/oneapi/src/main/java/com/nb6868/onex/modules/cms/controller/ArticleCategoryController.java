@@ -1,7 +1,9 @@
 package com.nb6868.onex.modules.cms.controller;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
@@ -17,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ public class ArticleCategoryController {
     @RequiresPermissions("cms:articleCategory:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         ArticleCategoryDTO data = articleCategoryService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
     }
@@ -89,28 +91,10 @@ public class ArticleCategoryController {
     @LogOperation("删除")
     @RequiresPermissions("cms:articleCategory:delete")
     public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        // 判断是否有文章
-        if (articleService.query().eq("article_category_id", id).count() > 0) {
-            return new Result<>().error("该类别存在文章内容,不允许删除");
-        }
-
+        // 检查是否存在子类和文章
+        AssertUtils.isTrue(articleCategoryService.childrenCount(id) > 0, "存在子类,不允许删除");
+        AssertUtils.isTrue(articleService.countByArticleCategoryId(id) > 0, "存在文章,不允许删除");
         articleCategoryService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
-    @DeleteMapping("deleteBatch")
-    @ApiOperation("批量删除")
-    @LogOperation("批量删除")
-    @RequiresPermissions("cms:articleCategory:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        // 判断是否有文章
-        if (articleService.query().in("article_category_id", ids).count() > 0) {
-            return new Result<>().error("该类别存在文章内容,不允许删除");
-        }
-
-        articleCategoryService.logicDeleteByIds(ids);
-
         return new Result<>();
     }
 

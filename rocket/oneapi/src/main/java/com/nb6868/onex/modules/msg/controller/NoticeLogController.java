@@ -1,7 +1,9 @@
 package com.nb6868.onex.modules.msg.controller;
 
+import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.booster.validator.group.AddGroup;
 import com.nb6868.onex.booster.validator.group.DefaultGroup;
 import com.nb6868.onex.booster.validator.group.UpdateGroup;
@@ -60,6 +62,7 @@ public class NoticeLogController {
     @RequiresPermissions("msg:noticeLog:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id){
         NoticeLogDTO data = noticeLogService.getDtoById(id);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
     }

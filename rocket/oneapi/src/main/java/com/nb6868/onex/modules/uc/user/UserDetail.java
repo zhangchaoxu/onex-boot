@@ -1,6 +1,5 @@
 package com.nb6868.onex.modules.uc.user;
 
-import com.nb6868.onex.modules.uc.dto.LoginChannelCfg;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,14 +25,18 @@ public class UserDetail implements Serializable {
     private Long tenantId;
     private String tenantName;
     private String password;
-    private String token;
     private Integer status;
     private Integer type;
-    private String regionCd;
-    private LoginChannelCfg loginCfg;
     /**
      * 部门数据权限
      */
     private List<Long> deptIdList;
+
+    /**
+     * 是否匿名用户
+     */
+    public boolean isAnon() {
+        return getId() != null && -1L == getId();
+    }
 
 }
