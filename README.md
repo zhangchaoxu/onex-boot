@@ -58,6 +58,7 @@ OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如
 * [悟空CRM](https://gitee.com/wukongcrm/72crm-java)
 * [vant](https://youzan.github.io/vant/)
 * [UniApp](https://uniapp.dcloud.io/)
+* [JeeCMS](http://www.jeecms.com/)
 
 ## 数据来源
 * [行政区域](https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov/)
