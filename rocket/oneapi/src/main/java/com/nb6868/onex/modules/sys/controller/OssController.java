@@ -4,6 +4,7 @@ import com.nb6868.onex.booster.exception.ErrorCode;
 import com.nb6868.onex.booster.pojo.Kv;
 import com.nb6868.onex.booster.pojo.PageData;
 import com.nb6868.onex.booster.pojo.Result;
+import com.nb6868.onex.booster.util.Base64DecodeMultipartFile;
 import com.nb6868.onex.booster.validator.AssertUtils;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.modules.sys.dto.OssDTO;
@@ -86,10 +87,32 @@ public class OssController {
         return new Result<>().success(Kv.init().set("src", url).set("oss", oss));
     }
 
+    @PostMapping("uploadBase64")
+    @ApiOperation(value = "base64方式上传单个文件")
+    public Result<?> uploadBase64(@RequestParam(required = false, defaultValue = "OSS_CFG_PUB") String paramCode,
+                                  @RequestParam String fileBase64,
+                                  @RequestParam(required = false) String prefix) {
+        // 将base64转成file
+        MultipartFile file = Base64DecodeMultipartFile.base64Convert(fileBase64);
+        AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+
+        // 上传文件
+        String url = OssFactory.build(paramCode).upload(file);
+        //保存文件信息
+        OssEntity oss = new OssEntity();
+        oss.setUrl(url);
+        oss.setFilename(file.getOriginalFilename());
+        oss.setSize(file.getSize());
+        oss.setContentType(file.getContentType());
+        ossService.save(oss);
+
+        return new Result<>().success(Kv.init().set("src", url).set("oss", oss));
+    }
+
     @PostMapping("uploadMulti")
     @ApiOperation(value = "上传多个文件")
     public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_CFG_PUB") String paramCode,
-                                 @RequestParam("file") @NotEmpty(message = "文件不能为空")  MultipartFile[] files,
+                                 @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files,
                                  @RequestParam(required = false) String prefix) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();

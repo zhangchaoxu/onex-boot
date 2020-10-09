@@ -11,8 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class XCoderApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(XCoderApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(XCoderApplication.class, args);
+    }
 
 }
