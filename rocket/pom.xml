@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
-    <groupId>com.nb6868.onex</groupId>
-    <artifactId>rocket</artifactId>
-    <version>1.0.0</version>
-    <name>OneX Rocket</name>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.4.RELEASE</version>
+        <version>2.4.0</version>
+        <relativePath/>
     </parent>
+
+    <packaging>pom</packaging>
+    <groupId>com.nb6868.onex</groupId>
+    <artifactId>rocket</artifactId>
+    <version>1.1.0</version>
+    <name>OneX</name>
+    <description>OneX Rocket</description>
 
     <modules>
         <module>booster</module>
@@ -25,8 +27,8 @@
         <java.version>1.8</java.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <commons.io.version>2.6</commons.io.version>
-        <mybatisplus.version>3.4.0</mybatisplus.version>
-        <druid.version>1.1.23</druid.version>
+        <mybatisplus.version>3.4.1</mybatisplus.version>
+        <druid.version>1.2.3</druid.version>
         <jsoup.version>1.13.1</jsoup.version>
         <swagger.version>2.9.2</swagger.version>
     </properties>
@@ -114,6 +116,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <!-- druid -->
         <dependency>
@@ -154,6 +157,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
