@@ -78,7 +78,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 添加允许的方法和来源
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowCredentials(true)
+                .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .maxAge(3600);
     }
