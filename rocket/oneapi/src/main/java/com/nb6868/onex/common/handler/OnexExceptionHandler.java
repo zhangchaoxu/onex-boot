@@ -274,7 +274,6 @@ public class OnexExceptionHandler {
      */
     private void saveLog(Exception ex) {
         ErrorEntity log = new ErrorEntity();
-
         // 请求相关信息
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         if (null != request) {
@@ -289,8 +288,11 @@ public class OnexExceptionHandler {
         }
         // 异常信息
         log.setContent(ExceptionUtils.getErrorStackTrace(ex));
-
-        //保存
-        errorService.save(log);
+        // 保存
+        try {
+            errorService.save(log);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
