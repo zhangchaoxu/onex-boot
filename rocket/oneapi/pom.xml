@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rocket</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -21,11 +21,11 @@
         <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
         <jpush.version>3.4.7</jpush.version>
         <jwt.version>3.11.0</jwt.version>
-        <thumbnailator.version>0.4.12</thumbnailator.version>
-        <weixin.pay.version>3.9.0</weixin.pay.version>
-        <weixin.miniapp.version>3.9.0</weixin.miniapp.version>
-        <weixin.mp.version>3.9.0</weixin.mp.version>
-        <alipay.sdk.version>4.10.184.ALL</alipay.sdk.version>
+        <thumbnailator.version>0.4.13</thumbnailator.version>
+        <weixin.pay.version>4.0.0</weixin.pay.version>
+        <weixin.miniapp.version>4.0.0</weixin.miniapp.version>
+        <weixin.mp.version>4.0.0</weixin.mp.version>
+        <alipay.sdk.version>4.10.192.ALL</alipay.sdk.version>
         <dynamic.datasource.version>3.2.1</dynamic.datasource.version>
     </properties>
 

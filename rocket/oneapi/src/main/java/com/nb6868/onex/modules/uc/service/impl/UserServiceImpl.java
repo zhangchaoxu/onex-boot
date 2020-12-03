@@ -28,7 +28,7 @@ import com.nb6868.onex.modules.uc.user.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -357,7 +357,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
         if (type == 1) {
             // 更新
             // 检查是否需要修改密码,对于null的不会更新字段
-            toSaveEntity.setPassword(StringUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.encode(dto.getPassword()));
+            toSaveEntity.setPassword(ObjectUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.encode(dto.getPassword()));
         } else {
             // 新增
             toSaveEntity.setPassword(PasswordUtils.encode(dto.getPassword()));

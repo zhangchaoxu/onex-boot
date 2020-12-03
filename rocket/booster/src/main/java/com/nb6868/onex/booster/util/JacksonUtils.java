@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -120,7 +120,7 @@ public class JacksonUtils {
      * @return 转换的对象实例
      */
     public static <T> T jsonToPojo(String json, Class<T> pojoClass, T defaultVal) {
-        if (StringUtils.isEmpty(json)) {
+        if (ObjectUtils.isEmpty(json)) {
             return defaultVal;
         }
         try {
@@ -149,7 +149,7 @@ public class JacksonUtils {
      * @return 转换的Map实例
      */
     public static Map<String, Object> jsonToMap(String json, Map<String, Object> defaultVal) {
-        if (StringUtils.isEmpty(json)) {
+        if (ObjectUtils.isEmpty(json)) {
             return defaultVal;
         }
         try {
@@ -167,7 +167,7 @@ public class JacksonUtils {
      * @return 转换的Node实例
      */
     public static JsonNode jsonToNode(String json) {
-        if (StringUtils.isEmpty(json)) {
+        if (ObjectUtils.isEmpty(json)) {
             return null;
         }
         try {
@@ -195,7 +195,7 @@ public class JacksonUtils {
      * @return 转换的Node实例
      */
     public static <T> T jsonToPojoByTypeReference(String json, TypeReference<T> typeReference, T defaultValue) {
-        if (StringUtils.isEmpty(json)) {
+        if (ObjectUtils.isEmpty(json)) {
             return defaultValue;
         }
         try {

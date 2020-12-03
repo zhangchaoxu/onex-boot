@@ -10,7 +10,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletRequest;
@@ -34,12 +34,12 @@ public class ShiroFilter extends AuthenticatingFilter {
         return new AuthenticationToken() {
             @Override
             public String getPrincipal() {
-                return StringUtils.isEmpty(token) ? UcConst.TOKEN_ANON : token;
+                return ObjectUtils.isEmpty(token) ? UcConst.TOKEN_ANON : token;
             }
 
             @Override
             public String getCredentials() {
-                return StringUtils.isEmpty(token) ? UcConst.TOKEN_ANON : token;
+                return ObjectUtils.isEmpty(token) ? UcConst.TOKEN_ANON : token;
             }
         };
     }

@@ -40,6 +40,7 @@ import java.util.function.Function;
  * 泛型：M 是 mapper 对象，T 是实体 ， PK 是主键泛型
  * see {https://gitee.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/impl/ServiceImpl.java}
  *
+ * @author hubin
  * @author Charles zhangchaoxu@gmail.com
  */
 @SuppressWarnings("unchecked")
@@ -186,7 +187,6 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
     }
 
     // [+] ServiceImpl
-
     @Autowired
     protected M baseMapper;
 
@@ -195,9 +195,14 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
         return baseMapper;
     }
 
-    protected Class<?> entityClass = currentModelClass();
+    protected Class<T> entityClass = currentModelClass();
 
-    protected Class<?> mapperClass = currentMapperClass();
+    @Override
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
+
+    protected Class<T> mapperClass = currentMapperClass();
 
     /**
      * 判断数据库操作是否成功

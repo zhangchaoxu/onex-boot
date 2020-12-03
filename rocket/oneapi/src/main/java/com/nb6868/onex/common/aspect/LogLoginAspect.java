@@ -17,7 +17,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -71,10 +71,10 @@ public class LogLoginAspect {
                 LoginRequest loginRequest = (LoginRequest) arg;
                 type = loginRequest.getType();
                 // 从登录请求中获取用户信息
-                if (StringUtils.isEmpty(user.getUsername())) {
-                    if (!StringUtils.isEmpty(loginRequest.getUsername())) {
+                if (ObjectUtils.isEmpty(user.getUsername())) {
+                    if (!ObjectUtils.isEmpty(loginRequest.getUsername())) {
                         log.setCreateName(loginRequest.getUsername());
-                    }  if (!StringUtils.isEmpty(loginRequest.getMobile())) {
+                    }  if (!ObjectUtils.isEmpty(loginRequest.getMobile())) {
                         log.setCreateName(loginRequest.getMobile());
                     }
                 }
