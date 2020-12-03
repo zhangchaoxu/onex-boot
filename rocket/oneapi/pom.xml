@@ -16,7 +16,7 @@
         <shiro.version>1.7.0</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.2.0</easypoi.version>
-        <aliyun.core.version>4.5.16</aliyun.core.version>
+        <aliyun.core.version>4.5.17</aliyun.core.version>
         <aliyun.oss.version>3.11.1</aliyun.oss.version>
         <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
         <jpush.version>3.4.7</jpush.version>

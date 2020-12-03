@@ -22,8 +22,8 @@
     "babel-plugin-component": "^1.1.1",
     "crypto-js": "^4.0.0",
     "element-theme": "^2.0.1",
-    "element-theme-chalk": "^2.13.2",
-    "element-ui": "^2.13.2",
+    "element-theme-chalk": "^2.14.1",
+    "element-ui": "^2.14.1",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-load-plugins": "^2.0.3",
@@ -43,7 +43,7 @@
     "vue-json-viewer": "^2.2.16",
     "vue-router": "^3.4.8",
     "vuex": "^3.5.1",
-    "@antv/g2plot": "^2.0.9",
+    "@antv/g2plot": "^2.2.12",
     "@chenfengyuan/vue-qrcode": "^1.0.2"
   },
   "devDependencies": {
