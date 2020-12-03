@@ -24,7 +24,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -73,15 +72,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
-    @Override
+    /*@Override
     public void addCorsMappings(CorsRegistry registry) {
         // 添加允许的方法和来源
+        // Access-Control-Allow-Origin和Access-Control-Allow-Credentials有约束,Credentials true,Origin必须指定具体来源,不能用*通配;
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedHeaders("*")
+                // .allowCredentials(true)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .maxAge(3600);
-    }
+    }*/
 
     /**
      * 文件路径在yml配置文件中定义
@@ -108,7 +109,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         MethodValidationPostProcessor methodValidationPostProcessor = new MethodValidationPostProcessor();
         methodValidationPostProcessor.setValidator(Validation.byProvider(HibernateValidator.class).configure()
-                // 只要出现校验失败的情况，就立即结束校验，不再进行后续的校验，Provider需为HibernateValidate
+                // 校验失败,立即结束,不再进行后续的校验,Provider需为HibernateValidate
                 .failFast(true)
                 .messageInterpolator(new ResourceBundleMessageInterpolator(new MessageSourceResourceBundleLocator(messageSource)))
                 .buildValidatorFactory()
