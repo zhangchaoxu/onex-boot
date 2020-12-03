@@ -17,25 +17,45 @@ import java.util.Date;
 @Component
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
-    /**创建时间*/
+    /**
+     * 创建时间
+     */
     private final static String CREATE_TIME = "createTime";
-    /**创建者id*/
+    /**
+     * 创建者id
+     */
     private final static String CREATE_ID = "createId";
-    /**创建者名字*/
+    /**
+     * 创建者名字
+     */
     private final static String CREATE_NAME = "createName";
-    /**更新时间*/
+    /**
+     * 更新时间
+     */
     private final static String UPDATE_TIME = "updateTime";
-    /**更新者id*/
+    /**
+     * 更新者id
+     */
     private final static String UPDATE_ID = "updateId";
-    /**更新者名字*/
+    /**
+     * 更新者名字
+     */
     private final static String UPDATE_NAME = "updateName";
-    /**所在部门id*/
+    /**
+     * 所在部门id
+     */
     private final static String DEPT_ID = "deptId";
-    /**租户id*/
+    /**
+     * 租户id
+     */
     private final static String TENANT_ID = "tenantId";
-    /**租户名称*/
+    /**
+     * 租户名称
+     */
     private final static String TENANT_NAME = "tenantName";
-    /**删除标记*/
+    /**
+     * 删除标记
+     */
     private final static String DELETED = "deleted";
 
     /**
@@ -47,9 +67,8 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         Date date = new Date();
 
         strictInsertFill(metaObject, DELETED, Integer.class, 0);
-        strictInsertFill(metaObject, CREATE_ID, Long.class, user.getId());
-        strictInsertFill(metaObject, CREATE_NAME, String.class, user.getUsername());
         strictInsertFill(metaObject, CREATE_TIME, Date.class, date);
+        strictInsertFill(metaObject, UPDATE_TIME, Date.class, date);
         if (metaObject.hasGetter(DEPT_ID) && metaObject.getValue(DEPT_ID) == null && user.getDeptId() != null) {
             strictInsertFill(metaObject, DEPT_ID, Long.class, user.getDeptId());
         }
@@ -57,9 +76,12 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
             strictInsertFill(metaObject, TENANT_ID, Long.class, user.getTenantId());
             strictInsertFill(metaObject, TENANT_NAME, String.class, user.getTenantName());
         }
-        strictInsertFill(metaObject, UPDATE_ID, Long.class, user.getId());
-        strictInsertFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
-        strictInsertFill(metaObject, UPDATE_TIME, Date.class, date);
+        if (!user.isAnon()) {
+            strictInsertFill(metaObject, CREATE_ID, Long.class, user.getId());
+            strictInsertFill(metaObject, CREATE_NAME, String.class, user.getUsername());
+            strictInsertFill(metaObject, UPDATE_ID, Long.class, user.getId());
+            strictInsertFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
+        }
     }
 
     /**
@@ -68,9 +90,12 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         UserDetail user = SecurityUser.getUser();
-        strictUpdateFill(metaObject, UPDATE_ID, Long.class, user.getId());
-        strictUpdateFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
-        strictUpdateFill(metaObject, UPDATE_TIME, Date.class, new Date());
+        Date date = new Date();
+        strictUpdateFill(metaObject, UPDATE_TIME, Date.class, date);
+        if (!user.isAnon()) {
+            strictUpdateFill(metaObject, UPDATE_ID, Long.class, user.getId());
+            strictUpdateFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
+        }
     }
 
 }
