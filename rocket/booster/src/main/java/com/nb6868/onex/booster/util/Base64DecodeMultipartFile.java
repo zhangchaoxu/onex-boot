@@ -60,7 +60,6 @@ public class Base64DecodeMultipartFile implements MultipartFile {
         new FileOutputStream(dest).write(imgContent);
     }
 
-
     /**
      * base64转multipartFile
      *
@@ -68,9 +67,7 @@ public class Base64DecodeMultipartFile implements MultipartFile {
      * @return MultipartFile
      */
     public static MultipartFile base64Convert(String base64) {
-
         String[] baseStrs = base64.split(",");
-
         BASE64Decoder decoder = new BASE64Decoder();
         byte[] b = new byte[0];
         try {

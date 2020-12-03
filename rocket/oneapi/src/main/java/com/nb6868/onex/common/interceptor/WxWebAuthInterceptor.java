@@ -9,16 +9,16 @@ import com.nb6868.onex.common.annotation.WxWebAuth;
 import com.nb6868.onex.modules.sys.service.ParamService;
 import com.nb6868.onex.modules.uc.UcConst;
 import com.nb6868.onex.modules.uc.wx.WxProp;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
-import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Component
-public class WxWebAuthInterceptor extends HandlerInterceptorAdapter {
+public class WxWebAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -61,7 +61,7 @@ public class WxWebAuthInterceptor extends HandlerInterceptorAdapter {
                     } else {
                         // 有code,则执行获取流程
                         try {
-                            WxMpOAuth2AccessToken auth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
+                            WxOAuth2AccessToken auth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
                             // todo 判断WechatWebAuthorization.scope
                             // todo 存入user_oauth表
                             request.getSession().setAttribute(UcConst.WX_SESSION_OPEN_ID, auth2AccessToken.getOpenId());

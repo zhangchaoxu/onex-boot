@@ -29,8 +29,6 @@ public class WebSocketServer {
     private final static CopyOnWriteArraySet<WebSocketServer> webSockets = new CopyOnWriteArraySet<>();
     private final static Map<Long, Session> sessionPool = new HashMap<>();
 
-
-
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "userId") Long userId) {
         this.session = session;
