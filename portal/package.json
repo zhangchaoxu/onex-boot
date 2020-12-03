@@ -1,6 +1,6 @@
 {
   "name": "portal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "OneX admin portal based on ElementUI",
   "author": "Charles <zhangchaoxu@gmail.com>",
   "license": "Apache License Version 2.0",
@@ -39,11 +39,11 @@
     "screenfull": "^5.0.2",
     "svg-sprite-loader": "^5.0.0",
     "vue": "^2.6.12",
-    "vue-i18n": "^8.22.1",
+    "vue-i18n": "^8.22.2",
     "vue-json-viewer": "^2.2.16",
-    "vue-router": "^3.4.8",
+    "vue-router": "^3.4.9",
     "vuex": "^3.5.1",
-    "@antv/g2plot": "^2.2.12",
+    "@antv/g2plot": "^2.3.1",
     "@chenfengyuan/vue-qrcode": "^1.0.2"
   },
   "devDependencies": {

@@ -13,20 +13,20 @@
     <packaging>jar</packaging>
 
     <properties>
+        <dynamic.datasource.version>3.2.1</dynamic.datasource.version>
         <shiro.version>1.7.0</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.2.0</easypoi.version>
         <aliyun.core.version>4.5.17</aliyun.core.version>
         <aliyun.oss.version>3.11.1</aliyun.oss.version>
         <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
-        <jpush.version>3.4.7</jpush.version>
         <jwt.version>3.11.0</jwt.version>
         <thumbnailator.version>0.4.13</thumbnailator.version>
         <weixin.pay.version>4.0.0</weixin.pay.version>
         <weixin.miniapp.version>4.0.0</weixin.miniapp.version>
         <weixin.mp.version>4.0.0</weixin.mp.version>
         <alipay.sdk.version>4.10.192.ALL</alipay.sdk.version>
-        <dynamic.datasource.version>3.2.1</dynamic.datasource.version>
+        <jpush.version>3.4.7</jpush.version>
     </properties>
 
     <dependencies>
