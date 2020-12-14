@@ -26,14 +26,16 @@ spring:
       enabled: true
   # 自定义404
   mvc:
-    #出现错误时, 直接抛出异常
+    # 出现错误时, 直接抛出异常
     throw-exception-if-no-handler-found: true
   # freemarker
   freemarker:
     suffix: .html
     request-context-attribute: ctx
-  resources:
-    add-mappings: false #不要为工程中的资源文件建立映射
+  web:
+    resources:
+      # 不为工程中的资源文件建立映射
+      add-mappings: false
   # fix easypoi duplicated bean issue
   main:
     allow-bean-definition-overriding: true
@@ -75,6 +77,7 @@ mybatis-plus:
 
 # onex 配置
 onex:
+  token-policy: uuid
   # shiro相关
   shiro:
     # token策略
