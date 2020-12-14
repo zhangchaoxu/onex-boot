@@ -56,7 +56,7 @@ config.externals({ jquery: 'jQuery' })
 ```     
 * 4.2 对于Mybatis中去除前缀后的同名表,Mapper\(Dao\)也一样通过namespace解决
 ```java
-@MapperScan(basePackages="com.nb6868.onex.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)
+@MapperScan(basePackages="com.nb6868.onexboot.api.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)
 ``` 
 * 4.3 对于Mybatis中去除前缀后的同名表,Entity可以通过Alias`@Alias("ShopOrderEntity")`解决
 

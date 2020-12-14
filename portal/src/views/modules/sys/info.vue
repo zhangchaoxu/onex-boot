@@ -6,7 +6,7 @@
           <table>
             <tr>
               <th>系统名称</th>
-              <td>onex-oneapi</td>
+              <td>onex-api</td>
             </tr>
             <tr>
               <th>版本信息</th>
