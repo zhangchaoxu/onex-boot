@@ -65,8 +65,8 @@ BtPanel-网站
 
 6. 网站添加接口代理     
 BtPanel-网站(sub.foo.com)-设置-反向代理     
-添加目录为/oneapi,目标地址为http://127.0.0.1:8800的代理      
-目的是将sub.foo.com/oneapi的访问代理到http://127.0.0.1:8800/oneapi
+添加目录为/api,目标地址为http://127.0.0.1:8800的代理      
+目的是将sub.foo.com/api的访问代理到http://127.0.0.1:8800/api
 
 7. 网站添加全局代理     
 BtPanel-网站(sub.foo.com)-设置-反向代理  
@@ -88,8 +88,8 @@ location /
 
 
 2. 部署接口
-将接口编译后的jar文件上传至/www/wwwroot/oneapi目录    
-将[start.sh](start.sh)上传至/www/wwwroot/oneapi目录    
+将接口编译后的jar文件上传至/www/wwwroot/api目录    
+将[start.sh](start.sh)上传至/www/wwwroot/api目录    
 修改start.sh文件的可执行权限
 
 ## 数据库自动备份(Optional)

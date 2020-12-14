@@ -90,7 +90,7 @@ location / {
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
-                        <mainClass>com.nb6868.onex.OneApiApplication</mainClass>
+                        <mainClass>apiApplication</mainClass>
                     </manifest>
                     <manifestEntries>
                         <!-- 若有其他比如自定义jar,空格隔开加后面 -->
@@ -165,13 +165,13 @@ Spring Boot内置了Tomcat，可配置Tomcat的端口号、初始化线程数、
 
 #### windows部署
 
-`java -jar oneapi.jar --spring.profiles.active=prod`
+`java -jar api.jar --spring.profiles.active=prod`
 
 #### linux部署
 
 建议使用shell执行,可以指定运行环境、端口、context等 
 ```
-nohup java -Dspring.profiles.active=prod -jar oneapi.jar --server.port=8080 --server.servlet.context-path=/oneapi 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
+nohup java -Dspring.profiles.active=prod -jar api.jar --server.port=8080 --server.servlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 ```
 
 如果使用cronolog做日志分割，可能需要先安装cronolog`yum install -y cronolog httpd`
@@ -187,8 +187,8 @@ kill -9 $process
 sleep 1
 fi
 echo "start erp process....."
-nohup java -Dspring.profiles.active=prod -jar oneapi.jar --server.port=8080 --server.se
-rvlet.context-path=/oneapi 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
+nohup java -Dspring.profiles.active=prod -jar api.jar --server.port=8080 --server.se
+rvlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 echo "start erp success!"
 ```
 
