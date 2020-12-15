@@ -32,7 +32,7 @@
     <dependencies>
         <!-- common -->
         <dependency>
-            <groupId>com.nb6868.onex</groupId>
+            <groupId>com.nb6868</groupId>
             <artifactId>common</artifactId>
             <version>1.2.0</version>
         </dependency>
