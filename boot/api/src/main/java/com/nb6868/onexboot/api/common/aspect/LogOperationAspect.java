@@ -40,7 +40,7 @@ public class LogOperationAspect {
     @Autowired
     private OperationService logOperationService;
 
-    @Pointcut("@annotation(com.nb6868.onexboot.common.annotation.LogOperation)")
+    @Pointcut("@annotation(com.nb6868.onexboot.api.common.annotation.LogOperation)")
     public void pointcut() {
     }
 
@@ -106,9 +106,9 @@ public class LogOperationAspect {
         for (Object arg : args) {
             // 只处理能处理的
             if (arg == null || arg instanceof HttpServletRequest || arg instanceof HttpServletResponse || arg instanceof ModelMap) {
+                // 不处理的特例
                 break;
-            }
-            if (arg instanceof MultipartFile) {
+            } else if (arg instanceof MultipartFile) {
                 actualParam.add(Kv.init().set("type", "file").set("name", ((MultipartFile) arg).getOriginalFilename()));
             } else if (arg instanceof MultipartFile[]) {
                 MultipartFile[] files = (MultipartFile[]) arg;

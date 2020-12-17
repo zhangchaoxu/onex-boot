@@ -8,15 +8,18 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * One Api Application
+ * OneX Api Application
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @ComponentScan(nameGenerator = SpringBeanNameGenerator.class)
 @MapperScan(basePackages="com.nb6868.onexboot.api.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)
+// 启动异步处理
+@EnableAsync
 public class ApiApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
