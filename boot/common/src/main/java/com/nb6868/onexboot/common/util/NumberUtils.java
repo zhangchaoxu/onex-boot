@@ -3,7 +3,13 @@ package com.nb6868.onexboot.common.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * 数字工具类
+ *
+ * @author Charles zhangchaoxu@gmail.com
+ */
 public class NumberUtils {
+
     /**
      * 获取区间内一个随机2位小数
      * @param min 最小值
@@ -11,8 +17,10 @@ public class NumberUtils {
      * @return 随机数
      */
     public static BigDecimal getRandom(BigDecimal min, BigDecimal max) {
-        int maxInt = max.multiply(new BigDecimal("100")).intValue(), minInt = min.multiply(new BigDecimal("100")).intValue();
+        int maxInt = max.multiply(new BigDecimal(100)).intValue();
+        int minInt = min.multiply(new BigDecimal(100)).intValue();
         int ran = (int) (Math.random() * (maxInt - minInt) + minInt);
-        return new BigDecimal(ran).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        return new BigDecimal(ran).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
     }
+
 }

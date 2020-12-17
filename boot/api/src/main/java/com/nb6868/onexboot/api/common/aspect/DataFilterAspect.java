@@ -29,7 +29,7 @@ import java.util.Map;
 @Component
 public class DataFilterAspect {
 
-    @Pointcut("@annotation(com.nb6868.onexboot.common.annotation.DataFilter)")
+    @Pointcut("@annotation(com.nb6868.onexboot.api.common.annotation.DataFilter)")
     public void dataFilterCut() {
 
     }
@@ -78,15 +78,12 @@ public class DataFilterAspect {
             if (StringUtils.isNotBlank(tableAlias)) {
                 tableAlias += ".";
             }
-
             StringBuilder sqlFilter = new StringBuilder();
-
             //查询条件前缀
             String prefix = dataFilter.prefix();
             if (StringUtils.isNotBlank(prefix)) {
                 sqlFilter.append(" ").append(prefix);
             }
-
             sqlFilter.append(" (");
             // 过滤租户
             if (dataFilter.tenantFilter() && !ObjectUtils.isEmpty(user.getTenantId())) {
@@ -96,13 +93,11 @@ public class DataFilterAspect {
             if (dataFilter.userFilter()) {
                 sqlFilter.append(tableAlias).append(dataFilter.userId()).append("=").append(user.getId());
             }
-            // 过滤用户
+            // 过滤创建者
             if (dataFilter.creatorFilter()) {
                 sqlFilter.append(tableAlias).append(dataFilter.creatorId()).append("=").append(user.getId());
             }
-
             sqlFilter.append(")");
-
             return sqlFilter.toString();
         } else {
             return null;

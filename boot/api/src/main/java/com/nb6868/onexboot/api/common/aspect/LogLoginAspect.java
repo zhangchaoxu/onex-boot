@@ -34,7 +34,7 @@ public class LogLoginAspect {
     @Autowired
     private LoginService loginService;
 
-    @Pointcut("@annotation(com.nb6868.onexboot.common.annotation.LogLogin)")
+    @Pointcut("@annotation(com.nb6868.onexboot.api.common.annotation.LogLogin)")
     public void pointcut() {
     }
 
