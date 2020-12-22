@@ -1,10 +1,10 @@
 package com.nb6868.onexboot.api.common.handler;
 
+import com.nb6868.onexboot.api.modules.log.entity.ErrorEntity;
+import com.nb6868.onexboot.api.modules.log.service.ErrorService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.api.modules.log.entity.ErrorEntity;
-import com.nb6868.onexboot.api.modules.log.service.ErrorService;
 import com.nb6868.onexboot.common.util.ExceptionUtils;
 import com.nb6868.onexboot.common.util.HttpContextUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
@@ -35,10 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 异常处理器
@@ -181,15 +178,9 @@ public class OnexExceptionHandler {
         // 需要在Controller中加上Validated注解,需要在接口方法参数中加上NotNull NotEmpty等校验注解
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         // 返回所有错误;分割
-        StringBuilder msg = new StringBuilder();
-        if (!constraintViolations.isEmpty()) {
-            if (constraintViolations.size() == 1) {
-                msg.append(constraintViolations.iterator().next().getMessage());
-            } else {
-                constraintViolations.forEach(objectConstraintViolation -> msg.append(objectConstraintViolation.getMessage()).append(";"));
-            }
-        }
-        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, msg.toString());
+        StringJoiner errorMsg = new StringJoiner(";");
+        constraintViolations.forEach(objectConstraintViolation -> errorMsg.add(objectConstraintViolation.getMessage()));
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, errorMsg.toString());
     }
 
     /**
@@ -206,15 +197,9 @@ public class OnexExceptionHandler {
         // 获取所有的错误
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         // 返回所有错误;分割
-        StringBuilder msg = new StringBuilder();
-        if (!errors.isEmpty()) {
-            if (errors.size() == 1) {
-                msg.append(errors.get(0).getDefaultMessage());
-            } else {
-                errors.forEach(x -> msg.append(x.getDefaultMessage()).append(";"));
-            }
-        }
-        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, msg.toString());
+        StringJoiner errorMsg = new StringJoiner(";");
+        errors.forEach(x -> errorMsg.add(x.getDefaultMessage()));
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, errorMsg.toString());
     }
 
     /**

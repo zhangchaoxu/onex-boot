@@ -1,7 +1,10 @@
 package com.nb6868.onexboot.common.util;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * 消息获取工具
@@ -10,10 +13,28 @@ import org.springframework.context.i18n.LocaleContextHolder;
  */
 public class MessageUtils {
 
-    private final static MessageSource messageSource;
+    private final static ReloadableResourceBundleMessageSource messageSource;
+    private final static MessageSourceResourceBundleLocator messageSourceSourceBundleLocator;
 
+    /**
+     * 文件路径在yml配置文件中定义
+     */
     static {
-        messageSource = (MessageSource) SpringContextUtils.getBean("messageSource");
+        messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setCacheSeconds(-1);
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
+        messageSource.setBasenames("i18n/messages");
+
+        //
+        messageSourceSourceBundleLocator = new MessageSourceResourceBundleLocator(messageSource);
+    }
+
+    public static MessageSourceResourceBundleLocator getMessageSourceSourceBundleLocator() {
+        return messageSourceSourceBundleLocator;
+    }
+
+    public static ReloadableResourceBundleMessageSource getMessageSource() {
+        return messageSource;
     }
 
     public static String getMessage(int code) {
