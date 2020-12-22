@@ -43,6 +43,8 @@ http.interceptors.request.use(config => {
   }
   return config
 }, error => {
+  console.log(error)
+  Vue.prototype.$message.error('接口请求异常')
   return Promise.reject(error)
 })
 
@@ -50,6 +52,7 @@ http.interceptors.request.use(config => {
  * 响应拦截
  */
 http.interceptors.response.use(response => {
+  console.log(response)
   if (response.data.code === 401) {
     // 清空登录信息，跳转登录页面
     redirectLogin()
@@ -59,9 +62,8 @@ http.interceptors.response.use(response => {
   response.data.toast = response.data.code + ':' + response.data.msg
   return response
 }, error => {
-  if (error.toString() === 'Error: Network Error') {
-    Vue.prototype.$message.error('接口无法访问')
-  }
+  console.log(error)
+  Vue.prototype.$message.error('接口响应异常')
   return Promise.reject(error)
 })
 

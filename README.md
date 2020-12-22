@@ -10,11 +10,11 @@ OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如
 ## 项目组成
 项目前后端分离
 
-* [rocket](https://github.com/zhangchaoxu/onex/tree/master/rocket)  SpringBoot实现的Restful接口
-* [portal](https://github.com/zhangchaoxu/onex/tree/master/portal) Vue实现的后端管理页面
-* [uniapp](https://github.com/zhangchaoxu/onex/tree/master/uniapp) UniApp实现的的移动端页面
-* [xcoder](https://github.com/zhangchaoxu/onex/tree/master/xcoder) 代码生成器
-* [wiki](https://github.com/zhangchaoxu/onex/tree/master/wiki) 文档说明
+* [boot](https://github.com/zhangchaoxu/onex-boot/tree/master/boot)  SpringBoot实现的Restful接口
+* [portal](https://github.com/zhangchaoxu/onex-boot/tree/master/portal) Vue实现的后端管理页面
+* [wiki](https://github.com/zhangchaoxu/onex-boot/tree/master/wiki) 文档说明
+  
+* [onex-coder](https://github.com/zhangchaoxu/onex-coder) 代码生成器
 
 ## 已实现功能模块
 ### 用户权限管理模块
@@ -27,7 +27,7 @@ OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如
 包含登录、操作、错误的日志记录,支持日志的查询,基于注解实现便捷的操作日志记录;
 
 ### 系统模块
-包含阿里云或者本地的存储管理、字典管理、系统参数管理、区域管理、日历管理等;
+包含阿里云/本地的存储管理、字典管理、系统参数管理、区域管理、日历管理等;
 
 ### 定时任务模块
 包括定时任务管理，定时任务的启停和日志,可在后台启停任务,修改任务的执行周期,便于系统中定时任务需求的集成;
