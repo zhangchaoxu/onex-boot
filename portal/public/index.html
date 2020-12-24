@@ -16,8 +16,6 @@
     <!-- 站点配置 -->
     <script>
         window.SITE_CONFIG = {};
-        window.SITE_CONFIG['nodeEnv'] = '<%= process.env.VUE_APP_NODE_ENV %>';
-        window.SITE_CONFIG['apiURL'] = '';                      // api请求地址
         window.SITE_CONFIG['wsURL'] = '';                       // websocket请求地址
         window.SITE_CONFIG['storeState'] = {};                  // vuex本地储存初始化状态（用于不刷新页面的情况下，也能重置初始化项目中所有状态）
         window.SITE_CONFIG['contentTabDefault'] = {             // 内容标签页默认属性对象
@@ -36,25 +34,6 @@
         window.SITE_CONFIG['dynamicMenuRoutes'] = [];            // 动态(菜单)路由列表
         window.SITE_CONFIG['dynamicMenuRoutesHasAdded'] = false; // 动态(菜单)路由是否已经添加的状态标示（用于判断是否需要重新拉取数据并进行动态添加操作）
     </script>
-
-    <!-- 开发环境 -->
-    <% if (process.env.VUE_APP_NODE_ENV === 'dev') { %>
-    <script>
-        window.SITE_CONFIG['apiURL'] = 'http://127.0.0.1:8181/api';
-        window.SITE_CONFIG['wsURL'] = 'ws://127.0.0.1:8181/api';
-    </script>
-    <% } %>
-    <!-- 测试环境 -->
-    <% if (process.env.VUE_APP_NODE_ENV === 'prod:uat') { %>
-    <script>window.SITE_CONFIG['apiURL'] = 'http://127.0.0.1:8181/api';</script>
-    <% } %>
-    <!-- 生产环境 -->
-    <% if (process.env.VUE_APP_NODE_ENV === 'prod') { %>
-    <script>
-        window.SITE_CONFIG['apiURL'] = 'http://onex-api.nb6868.com:8181/api';
-        window.SITE_CONFIG['wsURL'] = 'ws://onex-api.nb6868.com:8181/api';
-    </script>
-    <% } %>
 </head>
 <body>
 <div id="app"></div>

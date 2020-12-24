@@ -22,11 +22,11 @@ import java.math.RoundingMode;
  */
 @RestController
 @Validated
-@Api(tags = "首页接口")
+@Api(tags = "首页")
 public class IndexController {
 
     @GetMapping("/")
-    @ApiOperation("welcome")
+    @ApiOperation("index")
     @AccessControl
     public Result<?> index() {
         return new Result<>().success("api success");

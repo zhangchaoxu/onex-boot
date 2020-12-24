@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.common.dao;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,7 +17,7 @@ import java.util.Collection;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public interface BaseDao<T> extends com.baomidou.mybatisplus.core.mapper.BaseMapper<T> {
+public interface BaseDao<T> extends BaseMapper<T> {
     /**
      * 通过id软删除
      * see {LogicDeleteByIdWithFill}

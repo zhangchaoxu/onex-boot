@@ -15,7 +15,6 @@ import java.util.List;
  *
  * @author Charles
  */
-@Component
 public class MySqlInjector extends DefaultSqlInjector {
 
     @Override

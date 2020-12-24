@@ -30,7 +30,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("sys/captcha")
 @Validated
-@Api(tags = "首页接口")
+@Api(tags = "验证码")
 public class CaptchaController {
 
     @Autowired
@@ -42,8 +42,8 @@ public class CaptchaController {
      */
     @GetMapping("base64")
     @ApiOperation(value = "图形验证码(base64格式)")
-    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", defaultValue = "150"),
+            @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", defaultValue = "50"),
             @ApiImplicitParam(paramType = "query", dataType="string", name = "uuid")})
     public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width,
                             @RequestParam(required = false, defaultValue = "50") int height,

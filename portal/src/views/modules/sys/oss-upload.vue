@@ -40,7 +40,7 @@ export default {
     init () {
       this.visible = true
       this.token = Cookies.get('token')
-      this.url = `${window.SITE_CONFIG['apiURL']}/sys/oss/upload`
+      this.url = `${process.env.VUE_APP_API_URL}/sys/oss/upload`
       this.num = 0
       this.fileList = []
     },

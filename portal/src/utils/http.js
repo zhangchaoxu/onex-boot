@@ -6,7 +6,7 @@ import { redirectLogin } from '@/utils'
 import isPlainObject from 'lodash/isPlainObject'
 
 const http = axios.create({
-  baseURL: window.SITE_CONFIG['apiURL'],
+  baseURL: process.env.VUE_APP_API_URL,
   timeout: 1000 * 180,
   withCredentials: true
 })
@@ -52,7 +52,6 @@ http.interceptors.request.use(config => {
  * 响应拦截
  */
 http.interceptors.response.use(response => {
-  console.log(response)
   if (response.data.code === 401) {
     // 清空登录信息，跳转登录页面
     redirectLogin()
