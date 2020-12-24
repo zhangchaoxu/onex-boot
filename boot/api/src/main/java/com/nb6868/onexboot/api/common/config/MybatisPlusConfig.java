@@ -41,4 +41,13 @@ public class MybatisPlusConfig {
         return configuration -> configuration.setUseDeprecatedExecutor(false);
     }
 
+    /**
+     * sql注入器
+     * @return
+     */
+    @Bean
+    public MySqlInjector sqlInjector() {
+        return new MySqlInjector();
+    }
+
 }

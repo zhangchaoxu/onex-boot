@@ -1,16 +1,13 @@
 {
   "name": "portal",
-  "version": "1.1.0",
-  "description": "OneX admin portal based on ElementUI",
+  "version": "1.2.0",
+  "description": "OneX Boot Admin Portal based on ElementUI",
   "author": "Charles <zhangchaoxu@gmail.com>",
   "license": "Apache License Version 2.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:test": "vue-cli-service build --mode test",
-    "build:prod": "vue-cli-service build --mode production",
-    "build:uat": "vue-cli-service build --mode production.uat",
     "lint": "vue-cli-service lint",
     "et": "node_modules/.bin/et",
     "et:init": "node_modules/.bin/et -i",

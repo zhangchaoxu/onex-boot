@@ -20,12 +20,12 @@ public class MessageUtils {
      * 文件路径在yml配置文件中定义
      */
     static {
+        // init message source
         messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setCacheSeconds(-1);
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         messageSource.setBasenames("i18n/messages");
-
-        //
+        // init message source bundle locator
         messageSourceSourceBundleLocator = new MessageSourceResourceBundleLocator(messageSource);
     }
 

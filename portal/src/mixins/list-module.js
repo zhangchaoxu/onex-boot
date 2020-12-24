@@ -223,7 +223,7 @@ export default {
         'token': Cookies.get('token'),
         ...this.dataForm
       })
-      window.location.href = `${window.SITE_CONFIG['apiURL']}${this.mixinListModuleOptions.exportURL}?${params}`
+      window.location.href = `${process.env.VUE_APP_API_URL}${this.mixinListModuleOptions.exportURL}?${params}`
     },
     // [+] 搜索条件相关
     // 时间区间选择器变化

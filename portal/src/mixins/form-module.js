@@ -188,7 +188,7 @@ export default {
     },
     // 设置文件上传地址
     setUploadUrl () {
-      this.uploadUrl = `${window.SITE_CONFIG['apiURL']}/sys/oss/upload?token=${Cookies.get('token')}`
+      this.uploadUrl = `${process.env.VUE_APP_API_URL}/sys/oss/upload?token=${Cookies.get('token')}`
     },
     // 图片上传前检查
     beforeImageUpload (file) {

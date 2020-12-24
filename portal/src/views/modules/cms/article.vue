@@ -72,7 +72,7 @@
                 <el-table-column :label="$t('handle')" fixed="right" header-align="center" align="center" width="150">
                     <template slot-scope="scope">
                         <el-button v-if="$hasPermission('cms:article:info')" type="text" size="small"
-                                   @click="openLinkHandle(`${window.SITE_CONFIG['apiURL']}/cms/html/article/info?id=${scope.row.id}`)">{{ $t('preview') }}</el-button>
+                                   @click="openLinkHandle(`${process.env.VUE_APP_API_URL}/cms/html/article/info?id=${scope.row.id}`)">{{ $t('preview') }}</el-button>
                         <el-button v-if="$hasPermission('cms:article:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">{{ $t('update') }}</el-button>
                         <el-button v-if="$hasPermission('cms:article:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">{{ $t('delete') }}</el-button>
                     </template>

@@ -75,7 +75,7 @@ export default {
     // 上传地址
     uploadUrl: {
       type: String,
-      default: `${window.SITE_CONFIG['apiURL']}/sys/oss/upload?token=${Cookies.get('token')}`
+      default: `${process.env.VUE_APP_API_URL}/sys/oss/upload?token=${Cookies.get('token')}`
     },
     // 是否激活
     disabled: {
