@@ -25,8 +25,8 @@
         <weixin.pay.version>4.0.0</weixin.pay.version>
         <weixin.miniapp.version>4.0.0</weixin.miniapp.version>
         <weixin.mp.version>4.0.0</weixin.mp.version>
-        <alipay.sdk.version>4.10.209.ALL</alipay.sdk.version>
-        <jpush.version>3.4.7</jpush.version>
+        <alipay.sdk.version>4.10.218.ALL</alipay.sdk.version>
+        <jpush.version>3.4.8</jpush.version>
     </properties>
 
     <dependencies>
