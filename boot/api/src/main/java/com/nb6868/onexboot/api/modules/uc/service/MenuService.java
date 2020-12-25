@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 菜单管理
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface MenuService extends CrudService<MenuEntity, MenuDTO> {
 

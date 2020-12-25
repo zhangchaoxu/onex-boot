@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 是否允许匿名访问
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

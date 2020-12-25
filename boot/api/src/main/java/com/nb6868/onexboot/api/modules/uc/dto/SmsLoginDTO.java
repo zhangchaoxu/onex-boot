@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 短信登录表单
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

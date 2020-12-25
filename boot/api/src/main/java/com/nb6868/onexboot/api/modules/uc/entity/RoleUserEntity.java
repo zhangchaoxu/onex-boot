@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 角色用户关系
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -6,7 +6,7 @@ import org.apache.shiro.subject.Subject;
 /**
  * 用户
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public class SecurityUser {
 

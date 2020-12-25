@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 用户
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
 public interface UserDao extends BaseDao<UserEntity> {

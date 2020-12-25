@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 角色与菜单对应关系
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface RoleMenuService extends BaseService<RoleMenuEntity> {
 

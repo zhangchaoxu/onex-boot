@@ -13,7 +13,7 @@ import java.io.Serializable;
 /**
  * 登录请求
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

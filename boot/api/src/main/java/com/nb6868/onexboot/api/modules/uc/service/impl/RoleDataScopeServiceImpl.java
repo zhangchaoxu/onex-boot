@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * 角色数据权限
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class RoleDataScopeServiceImpl extends BaseServiceImpl<RoleDataScopeDao, RoleDataScopeEntity> implements RoleDataScopeService {

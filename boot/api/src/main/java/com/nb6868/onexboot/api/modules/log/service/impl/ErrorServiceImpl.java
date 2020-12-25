@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 异常日志
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class ErrorServiceImpl extends CrudServiceImpl<ErrorDao, ErrorEntity, ErrorDTO> implements ErrorService {

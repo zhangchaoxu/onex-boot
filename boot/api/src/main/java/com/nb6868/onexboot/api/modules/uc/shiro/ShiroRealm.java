@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * Shiro认证
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Component
 public class ShiroRealm extends AuthorizingRealm {

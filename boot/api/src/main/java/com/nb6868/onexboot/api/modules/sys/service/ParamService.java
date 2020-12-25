@@ -8,7 +8,7 @@ import com.nb6868.onexboot.api.modules.sys.entity.ParamEntity;
 /**
  * 参数管理
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface ParamService extends CrudService<ParamEntity, ParamDTO> {
 

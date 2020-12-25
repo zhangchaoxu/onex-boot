@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * cros filter
  *
- * @author Charles
+ * @author Charles zhangchaoxu@gmail.com
  */
 public class CrosFilter implements Filter {
 

@@ -7,7 +7,7 @@ import com.nb6868.onexboot.api.modules.log.entity.LoginEntity;
 /**
  * 登录日志
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface LoginService extends CrudService<LoginEntity, LoginDTO> {
 

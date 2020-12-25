@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * 角色与菜单对应关系
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDao, RoleMenuEntity> implements RoleMenuService {

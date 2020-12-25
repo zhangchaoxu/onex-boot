@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 登录日志
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class LoginServiceImpl extends CrudServiceImpl<LoginDao, LoginEntity, LoginDTO> implements LoginService {

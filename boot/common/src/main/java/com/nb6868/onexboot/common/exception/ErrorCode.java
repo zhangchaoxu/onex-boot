@@ -6,7 +6,7 @@ package com.nb6868.onexboot.common.exception;
  *
  * 1000以上，由5位数字组成，前2位为模块编码，后3位为业务编码
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface ErrorCode {
 

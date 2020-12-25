@@ -14,7 +14,7 @@ import java.io.Serializable;
  * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/login/wx.login.html
  * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

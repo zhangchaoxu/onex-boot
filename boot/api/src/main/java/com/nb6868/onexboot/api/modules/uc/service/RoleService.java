@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 角色
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface RoleService extends CrudService<RoleEntity, RoleDTO> {
 

@@ -7,7 +7,7 @@ import com.nb6868.onexboot.common.service.CrudService;
 /**
  * 异常日志
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface ErrorService extends CrudService<ErrorEntity, ErrorDTO> {
 

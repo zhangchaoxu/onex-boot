@@ -14,7 +14,7 @@ import java.io.Serializable;
  * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html
  * https://ding-doc.dingtalk.com/doc#/serverapi2/etaarr/278e10e6
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

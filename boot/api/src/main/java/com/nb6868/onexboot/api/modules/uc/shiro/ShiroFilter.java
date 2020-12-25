@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * Shiro过滤器
  * 代码的执行流程preHandle->isAccessAllowed->isLoginAttempt->executeLogin
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public class ShiroFilter extends AuthenticatingFilter {
 

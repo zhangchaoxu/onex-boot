@@ -7,7 +7,7 @@ import com.nb6868.onexboot.common.service.CrudService;
 /**
  * 操作日志
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface OperationService extends CrudService<OperationEntity, OperationDTO> {
 

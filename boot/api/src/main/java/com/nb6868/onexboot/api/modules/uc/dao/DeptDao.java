@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * 部门管理
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
 public interface DeptDao extends BaseDao<DeptEntity> {

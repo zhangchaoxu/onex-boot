@@ -9,7 +9,7 @@ import org.springframework.util.ObjectUtils;
 /**
  * 校验工具类
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public class AssertUtils {
 

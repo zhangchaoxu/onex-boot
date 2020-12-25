@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 通过验证码修改密码请求
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
