@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * token
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> implements TokenService {

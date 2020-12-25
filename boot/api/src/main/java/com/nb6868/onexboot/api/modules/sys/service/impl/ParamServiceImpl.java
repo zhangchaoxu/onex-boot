@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 参数管理
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, ParamDTO> implements ParamService {

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 参数管理
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
 public interface ParamDao extends BaseDao<ParamEntity> {

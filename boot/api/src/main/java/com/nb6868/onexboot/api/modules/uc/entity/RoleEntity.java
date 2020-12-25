@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 角色
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

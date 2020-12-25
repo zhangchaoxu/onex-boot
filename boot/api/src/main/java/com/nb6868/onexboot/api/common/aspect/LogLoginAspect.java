@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 /**
  * 登录日志，切面处理类
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Aspect
 @Component

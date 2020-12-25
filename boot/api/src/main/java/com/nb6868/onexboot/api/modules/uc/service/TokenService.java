@@ -7,7 +7,7 @@ import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 /**
  * 用户Token
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface TokenService extends BaseService<TokenEntity> {
 

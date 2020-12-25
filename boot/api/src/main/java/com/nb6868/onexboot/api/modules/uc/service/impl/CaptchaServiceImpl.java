@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * 验证码
  * [SpecCaptcha](https://github.com/whvcse/EasyCaptcha)
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class CaptchaServiceImpl implements CaptchaService {

@@ -63,6 +63,7 @@ public class AliyunSmsService extends AbstractSmsService {
         // 参数
         request.putQueryParameter("TemplateParam", params);
 
+        // todo 阿里云调用失败还是返回成功
         // 最后发送结果
         Const.ResultEnum status = Const.ResultEnum.FAIL;
         String result = "";

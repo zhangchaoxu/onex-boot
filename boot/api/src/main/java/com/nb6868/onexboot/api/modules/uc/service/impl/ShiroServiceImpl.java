@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * shiro
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class ShiroServiceImpl implements ShiroService {

@@ -16,7 +16,7 @@ import java.util.TimeZone;
 /**
  * JSON 工具类。
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
 public class JacksonUtils {

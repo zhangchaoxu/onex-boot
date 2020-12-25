@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * shiro相关接口
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 public interface ShiroService {
 

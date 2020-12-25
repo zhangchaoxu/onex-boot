@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 操作日志
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class OperationServiceImpl extends CrudServiceImpl<OperationDao, OperationEntity, OperationDTO> implements OperationService {

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 菜单
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

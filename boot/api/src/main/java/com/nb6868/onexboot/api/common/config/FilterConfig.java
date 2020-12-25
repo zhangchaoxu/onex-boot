@@ -13,7 +13,7 @@ import javax.servlet.Filter;
  * Filter配置
  * 过滤器的顺序按照order来，cros->shiro->xss
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
 public class FilterConfig {

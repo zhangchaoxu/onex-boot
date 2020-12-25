@@ -22,7 +22,7 @@ export default {
       // 接口提交参数
       dataFormSubmitParam: {},
       // 默认属性
-      dataFormMode: '', // 表单模式,save/update/view
+      dataFormMode: 'save', // 表单模式,save/update/view
       dataForm: {}, // 表单
       visible: false, // 表单visible状态
       title: '', // 表单标题

@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * 登录日志注解
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

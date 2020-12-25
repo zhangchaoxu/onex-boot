@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 角色管理
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
 public interface RoleDao extends BaseDao<RoleEntity> {

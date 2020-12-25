@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * 行政区域
  *
- * @author Charles (zhanngchaoxu@gmail.com)
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class RegionServiceImpl extends CrudServiceImpl<RegionDao, RegionEntity, RegionDTO> implements RegionService {
