@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.nb6868.onexboot.common.injector.MySqlInjector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,6 +37,8 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
+
+    @SuppressWarnings("deprecation")
     @Bean
     public ConfigurationCustomizer configurationCustomizer() {
         return configuration -> configuration.setUseDeprecatedExecutor(false);
@@ -43,7 +46,7 @@ public class MybatisPlusConfig {
 
     /**
      * sql注入器
-     * @return
+     * @return inject
      */
     @Bean
     public MySqlInjector sqlInjector() {
