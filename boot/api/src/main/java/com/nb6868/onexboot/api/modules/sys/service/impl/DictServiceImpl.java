@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.nb6868.onexboot.common.pojo.Const;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +43,11 @@ public class DictServiceImpl extends CrudServiceImpl<DictDao, DictEntity, DictDT
                 baseMapper.update(new DictEntity(), new UpdateWrapper<DictEntity>().eq("pid", dto.getId()).set("type", dto.getType()));
             }
         }
+    }
+
+    @Override
+    public List<DictEntity> listByType(String type, boolean includePid) {
+        return query().eq("type", type).ne(!includePid, "pid", 0).orderByAsc("sort").list();
     }
 
 }
