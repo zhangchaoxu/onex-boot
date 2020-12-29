@@ -21,4 +21,13 @@ public interface DictService extends CrudService<DictEntity, DictDTO> {
      */
     List<DictEntity> listByType(String type, boolean includePid);
 
+    /**
+     * 通过type和value获取名称
+     */
+    String getNameByTypeAndValue(String type, String value);
+
+    /**
+     * 通过type和value获取名称
+     */
+    String getNameByTypeAndValue(String type, Integer value);
 }
