@@ -5,6 +5,9 @@ import qs from 'qs'
 import { redirectLogin } from '@/utils'
 import isPlainObject from 'lodash/isPlainObject'
 
+/**
+ * axios
+ */
 const http = axios.create({
   baseURL: process.env.VUE_APP_API_URL,
   timeout: 1000 * 180,
