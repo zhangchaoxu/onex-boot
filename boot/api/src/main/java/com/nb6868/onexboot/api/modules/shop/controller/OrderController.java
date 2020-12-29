@@ -93,7 +93,7 @@ public class OrderController {
         List<OrderItemDTO> orderItemList = orderItemService.getDtoListByOrderId(id);
         data.setOrderItemList(orderItemList);
 
-        return new Result<OrderDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PutMapping("update")

@@ -64,7 +64,7 @@ public class CartController {
         CartDTO data = cartService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<CartDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

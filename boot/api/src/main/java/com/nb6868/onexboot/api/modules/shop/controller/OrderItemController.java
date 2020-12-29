@@ -67,7 +67,7 @@ public class OrderItemController {
         OrderItemDTO data = orderItemService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<OrderItemDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

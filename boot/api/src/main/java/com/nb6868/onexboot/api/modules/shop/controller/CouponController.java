@@ -67,7 +67,7 @@ public class CouponController {
         CouponDTO data = couponService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<CouponDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

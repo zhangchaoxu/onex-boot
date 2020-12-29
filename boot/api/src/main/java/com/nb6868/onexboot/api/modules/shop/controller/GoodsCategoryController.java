@@ -83,7 +83,7 @@ public class GoodsCategoryController {
 
         data.setParentMenuList(categoryService.getParentMenuList(data.getPid()));
 
-        return new Result<GoodsCategoryDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

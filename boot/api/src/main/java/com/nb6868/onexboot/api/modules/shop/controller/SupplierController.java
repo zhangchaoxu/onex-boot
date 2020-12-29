@@ -66,7 +66,7 @@ public class SupplierController {
         SupplierDTO data = supplierService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<SupplierDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

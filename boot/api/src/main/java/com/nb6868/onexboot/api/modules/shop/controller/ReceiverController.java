@@ -68,7 +68,7 @@ public class ReceiverController {
         ReceiverDTO data = receiverService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<ReceiverDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

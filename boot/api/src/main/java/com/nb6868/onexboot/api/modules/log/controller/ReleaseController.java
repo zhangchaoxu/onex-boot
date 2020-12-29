@@ -72,7 +72,7 @@ public class ReleaseController {
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         ReleaseDTO data = releaseService.getDtoById(id);
 
-        return new Result<ReleaseDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

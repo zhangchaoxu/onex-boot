@@ -66,7 +66,7 @@ public class BrandController {
         BrandDTO data = brandService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<BrandDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")
