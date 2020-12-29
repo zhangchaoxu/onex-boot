@@ -36,7 +36,7 @@ import java.util.Map;
 public class AdController {
 
     @Autowired
-    private AdService adService;
+    AdService adService;
 
     @DataFilter(tableAlias = "sys_ad", tenantFilter = true)
     @GetMapping("list")
@@ -65,7 +65,7 @@ public class AdController {
         AdDTO data = adService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<AdDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

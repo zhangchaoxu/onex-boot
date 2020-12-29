@@ -66,7 +66,7 @@ public class StockLogController {
         StockLogDTO data = stockLogService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<StockLogDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

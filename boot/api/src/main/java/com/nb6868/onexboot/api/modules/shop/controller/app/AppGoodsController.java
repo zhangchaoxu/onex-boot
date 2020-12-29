@@ -45,6 +45,6 @@ public class AppGoodsController {
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         GoodsDTO data = goodsService.getDtoById(id);
 
-        return new Result<GoodsDTO>().success(data);
+        return new Result<>().success(data);
     }
 }

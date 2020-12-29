@@ -67,7 +67,7 @@ public class OrderLogController {
         OrderLogDTO data = orderLogService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<OrderLogDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

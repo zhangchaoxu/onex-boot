@@ -63,7 +63,7 @@ public class UserRankController {
         UserRankDTO data = userrankService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<UserRankDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

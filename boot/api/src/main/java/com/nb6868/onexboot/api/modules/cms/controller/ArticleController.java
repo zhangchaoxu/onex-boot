@@ -62,7 +62,7 @@ public class ArticleController {
         ArticleDTO data = articleService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<ArticleDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

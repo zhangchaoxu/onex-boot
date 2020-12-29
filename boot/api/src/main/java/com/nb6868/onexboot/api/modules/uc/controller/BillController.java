@@ -67,7 +67,7 @@ public class BillController {
         BillDTO data = billService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<BillDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

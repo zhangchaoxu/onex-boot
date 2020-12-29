@@ -30,7 +30,6 @@ import com.nb6868.onexboot.common.validator.ValidatorUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import com.nb6868.onexboot.common.validator.group.UpdateGroup;
-import com.nb6868.onexboot.api.modules.uc.dto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
@@ -62,11 +61,11 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    UserService userService;
     @Autowired
-    private RoleUserService roleUserService;
+    RoleUserService roleUserService;
     @Autowired
-    private DeptService deptService;
+    DeptService deptService;
 
     @DataFilter(tableAlias = "uc_user", tenantFilter = true)
     @GetMapping("list")
