@@ -207,6 +207,7 @@ public class UserController {
     @PostMapping("login")
     @ApiOperation(value = "登录")
     @LogLogin
+    @AccessControl
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
         return new Result<>().success(userService.login(loginRequest));
     }
@@ -216,6 +217,7 @@ public class UserController {
      */
     @PostMapping("register")
     @ApiOperation(value = "注册")
+    @AccessControl
     public Result<?> register(@Validated @RequestBody RegisterRequest request) {
         return userService.register(request);
     }
