@@ -6,12 +6,12 @@ import CryptoJS from 'crypto-js'
  * @param key 加密key
  * @returns {string}
  */
-export function aesEncrypt(raw, key) {
-    key = key || '1234567890adbcde'
-    return CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(raw), CryptoJS.enc.Utf8.parse(key), {
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.Pkcs7
-    }).toString()
+export function aesEncrypt (raw, key) {
+  key = key || '1234567890adbcde'
+  return CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(raw), CryptoJS.enc.Utf8.parse(key), {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7
+  }).toString()
 }
 
 /**
@@ -20,10 +20,10 @@ export function aesEncrypt(raw, key) {
  * @param key 加密key
  * @returns {string}
  */
-export function aesDecrypt(cipher, key) {
-    key = key || '1234567890adbcde'
-    return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(cipher, CryptoJS.enc.Utf8.parse(key), {
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.Pkcs7
-    })).toString()
+export function aesDecrypt (cipher, key) {
+  key = key || '1234567890adbcde'
+  return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(cipher, CryptoJS.enc.Utf8.parse(key), {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7
+  })).toString()
 }
