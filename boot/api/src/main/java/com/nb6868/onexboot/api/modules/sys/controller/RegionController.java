@@ -32,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("sys/region")
 @Validated
-@Api(tags="行政区域")
+@Api(tags = "行政区域")
 public class RegionController {
     @Autowired
     private RegionService regionService;
@@ -40,7 +40,7 @@ public class RegionController {
     @GetMapping("tree")
     @ApiOperation("树表")
     @RequiresPermissions("sys:region:list")
-    public Result<?> tree(@ApiIgnore @RequestParam Map<String, Object> params){
+    public Result<?> tree(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<RegionTreeDTO> list = regionService.treeList(params);
 
         return new Result<>().success(list);
@@ -49,7 +49,7 @@ public class RegionController {
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("sys:region:list")
-    public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params){
+    public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<RegionDTO> list = regionService.listDto(params);
 
         return new Result<>().success(list);
@@ -58,7 +58,7 @@ public class RegionController {
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("sys:region:page")
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params){
+    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<RegionDTO> page = regionService.pageDto(params);
 
         return new Result<>().success(page);
@@ -67,7 +67,7 @@ public class RegionController {
     @GetMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("sys:region:info")
-    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id){
+    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         RegionDTO data = regionService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -78,7 +78,7 @@ public class RegionController {
     @ApiOperation("保存")
     @LogOperation("保存")
     @RequiresPermissions("sys:region:save")
-    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RegionDTO dto){
+    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RegionDTO dto) {
         regionService.saveDto(dto);
 
         return new Result<>().success(dto);
@@ -88,7 +88,7 @@ public class RegionController {
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("sys:region:update")
-    public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody RegionDTO dto){
+    public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody RegionDTO dto) {
         regionService.updateDto(dto);
 
         return new Result<>().success(dto);
@@ -98,7 +98,7 @@ public class RegionController {
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("sys:region:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id){
+    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
         regionService.logicDeleteById(id);
 
         return new Result<>();
@@ -108,7 +108,7 @@ public class RegionController {
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("sys:region:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids){
+    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         regionService.logicDeleteByIds(ids);
 
         return new Result<>();
