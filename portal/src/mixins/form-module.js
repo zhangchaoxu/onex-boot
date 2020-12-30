@@ -3,7 +3,7 @@
  */
 import Cookies from 'js-cookie'
 import debounce from 'lodash/debounce'
-import { aesEncrypt } from '@/utils'
+import { aesEncrypt } from '@/utils/crypto'
 import { isURL } from '@/utils/validate'
 import { beforeImageUpload } from '@/utils/upload'
 
