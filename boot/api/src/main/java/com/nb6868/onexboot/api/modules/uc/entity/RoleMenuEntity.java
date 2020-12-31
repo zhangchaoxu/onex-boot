@@ -16,13 +16,9 @@ import lombok.EqualsAndHashCode;
 public class RoleMenuEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
     /**
-     * 角色ID
-     */
-    private Long roleId;
-    /**
      * 角色编码
      */
-    private String roleCode;
+    private String roleId;
     /**
      * 菜单ID
      */

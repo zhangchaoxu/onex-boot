@@ -94,7 +94,7 @@ public class UserController {
         UserDTO data = userService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 用户角色列表
-        data.setRoleIdList(roleUserService.getRoleIdList(id));
+        data.setRoleIdList(roleUserService.getRoleIdListByUserId(id));
         // 部门树
         data.setDeptChain(deptService.getParentChain(data.getDeptId()));
         return new Result<>().success(data);
