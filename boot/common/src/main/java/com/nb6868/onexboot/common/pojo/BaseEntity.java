@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * 基础实体类
  * 包含基础数据
- * 对字段的修改见 FieldMetaObjectHandler
+ * 对字段的修改见 AutoFillMetaObjectHandler
  *
  * @author Charles zhangchaoxu@gmail.com
  */
