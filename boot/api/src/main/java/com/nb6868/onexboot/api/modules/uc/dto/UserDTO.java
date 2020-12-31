@@ -85,7 +85,7 @@ public class UserDTO extends BaseDTO {
     private Integer type;
 
     @ApiModelProperty(value = "角色ID列表")
-    private List<Long> roleIdList;
+    private List<String> roleIdList;
 
     @ApiModelProperty(value = "角色Ids")
     private String roleIds;

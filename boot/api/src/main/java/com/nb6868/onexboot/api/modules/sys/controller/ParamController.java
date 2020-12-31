@@ -167,7 +167,7 @@ public class ParamController {
 
     @GetMapping("clearCache")
     @ApiOperation("清空缓存")
-    @AccessControl
+    @RequiresPermissions("sys:param:clearCache")
     public Result<?> clearCache(@RequestParam(required = false) String key) {
         paramService.clearCache(key);
         return new Result<>().success();
