@@ -1,4 +1,4 @@
-package com.nb6868.onexboot.api;
+package com.nb6868.onexboot.api.region;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import lombok.Data;
