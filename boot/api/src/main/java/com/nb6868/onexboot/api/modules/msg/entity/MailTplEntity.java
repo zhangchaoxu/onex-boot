@@ -16,7 +16,6 @@ import org.apache.ibatis.type.Alias;
 @TableName("msg_mail_tpl")
 @Alias("msg_mail_tpl")
 public class MailTplEntity extends BaseEntity {
-	private static final long serialVersionUID = 1L;
 
     /**
      * 名称
