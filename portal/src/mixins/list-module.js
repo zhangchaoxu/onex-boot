@@ -284,7 +284,7 @@ export default {
     },
     // html格式化
     htmlFmt (row, column, cellValue) {
-      return cellValue ? cellValue.replace(/<[^>]*>/g, '') : '无内容'
+      return cellValue ? cellValue.replace(/<[^>]*>/g, '') : ''
     },
     // [-] 表格内容格式化
     // 格式化下拉菜单

@@ -35,7 +35,7 @@ export default {
   filters: {
     // html格式化
     htmlFilter (cellValue) {
-      return cellValue ? cellValue.replace(/<[^>]*>/g, '') : '无内容'
+      return cellValue ? cellValue.replace(/<[^>]*>/g, '') : ''
     },
     // 日期格式化
     dateDayFilter (cellValue) {
