@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+/**
+ * 任务日志
+ *
+ * @author Charles zhangchaoxu@gmail.com
+ */
 @Service
 public class TaskLogServiceImpl extends BaseServiceImpl<TaskLogDao, TaskLogEntity> implements TaskLogService {
 
@@ -28,7 +33,7 @@ public class TaskLogServiceImpl extends BaseServiceImpl<TaskLogDao, TaskLogEntit
 	}
 
 	private QueryWrapper<TaskLogEntity> getWrapper(Map<String, Object> params){
-		String jobId = (String)params.get("jobId");
+		String jobId = (String) params.get("jobId");
 
 		QueryWrapper<TaskLogEntity> wrapper = new QueryWrapper<>();
 		wrapper.eq(StringUtils.isNotBlank(jobId), "job_id", jobId);

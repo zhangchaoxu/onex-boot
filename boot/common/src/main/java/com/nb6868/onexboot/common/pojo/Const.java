@@ -6,18 +6,7 @@ package com.nb6868.onexboot.common.pojo;
  * @author Charles zhangchaoxu@gmail.com
  */
 public interface Const {
-    /**
-     * OK
-     */
-    String OK = "OK";
-    /**
-     * 用户标识
-     */
-    String USER_KEY = "userId";
-    /**
-     * 菜单根节点标识
-     */
-    Long MENU_ROOT = 0L;
+
     /**
      * 部门根节点标识
      */
@@ -46,10 +35,6 @@ public interface Const {
      * 限定一条记录
      */
     String LIMIT_ONE = "LIMIT 1";
-    /**
-     * 创建时间字段名
-     */
-    String ID = "id";
 
     /**
      * 数据权限过滤
@@ -77,15 +62,6 @@ public interface Const {
      * 排序方式
      */
     String ORDER = "order";
-
-    /**
-     * 短信配置KEY
-     */
-    String SMS_CONFIG_KEY = "SMS_CONFIG_KEY";
-    /**
-     * 邮件配置KEY
-     */
-    String MAIL_CONFIG_KEY = "MAIL_CONFIG_KEY";
     /**
      * 消息推送配置KEY
      */

@@ -20,17 +20,17 @@ import java.util.List;
 public class RoleUserServiceImpl extends BaseServiceImpl<RoleUserDao, RoleUserEntity> implements RoleUserService {
 
     @Override
-    public boolean saveOrUpdate(Long userId, List<Long> roleIds) {
+    public boolean saveOrUpdate(Long userId, List<String> roleIds) {
         // 先删除角色用户关系
         deleteByUserIds(Collections.singletonList(userId));
 
         // 用户没有一个角色权限的情况
-        if(CollectionUtils.isEmpty(roleIds)){
+        if (CollectionUtils.isEmpty(roleIds)) {
             return false;
         }
 
         // 保存角色用户关系
-        for(Long roleId : roleIds){
+        for (String roleId : roleIds) {
             RoleUserEntity sysRoleUserEntity = new RoleUserEntity();
             sysRoleUserEntity.setUserId(userId);
             sysRoleUserEntity.setRoleId(roleId);
@@ -42,7 +42,7 @@ public class RoleUserServiceImpl extends BaseServiceImpl<RoleUserDao, RoleUserEn
     }
 
     @Override
-    public boolean deleteByRoleIds(List<Long> roleIds) {
+    public boolean deleteByRoleIds(List<String> roleIds) {
         return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("role_id", roleIds));
     }
 
@@ -52,8 +52,8 @@ public class RoleUserServiceImpl extends BaseServiceImpl<RoleUserDao, RoleUserEn
     }
 
     @Override
-    public List<Long> getRoleIdList(Long userId) {
-        return listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId), o -> Long.valueOf(String.valueOf(o)));
+    public List<String> getRoleIdListByUserId(Long userId) {
+        return listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId), String::valueOf);
     }
 
 }

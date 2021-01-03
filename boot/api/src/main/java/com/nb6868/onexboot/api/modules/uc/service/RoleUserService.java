@@ -17,13 +17,13 @@ public interface RoleUserService extends BaseService<RoleUserEntity> {
      * @param userId      用户ID
      * @param roleIds  角色ID列表
      */
-    boolean saveOrUpdate(Long userId, List<Long> roleIds);
+    boolean saveOrUpdate(Long userId, List<String> roleIds);
 
     /**
      * 根据角色ids，删除角色用户关系
      * @param roleIds 角色ids
      */
-    boolean deleteByRoleIds(List<Long> roleIds);
+    boolean deleteByRoleIds(List<String> roleIds);
 
     /**
      * 根据用户id，删除角色用户关系
@@ -35,5 +35,5 @@ public interface RoleUserService extends BaseService<RoleUserEntity> {
      * 角色ID列表
      * @param userId  用户ID
      */
-    List<Long> getRoleIdList(Long userId);
+    List<String> getRoleIdListByUserId(Long userId);
 }

@@ -18,34 +18,49 @@ public class RegionEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 上级区域编码,0为跟目录
+     * 上级区域编号,0为一级
      */
     private Long pid;
     /**
-     * 区域名称
+     * 名称
      */
     private String name;
     /**
-     * 区域邮编
+     * 拼音
+     */
+    private String pinyin;
+    /**
+     * 拼音前缀
+     */
+    private String pinyinPrefix;
+    /**
+     * 区号
      */
     private String code;
     /**
-     * 区域级别
+     * 邮编
      */
-    private Integer level;
+    private String postcode;
     /**
-     * 区域级别名称
+     * 原始名称
      */
-    private String levelName;
+    private String extName;
     /**
-     * 中心点
+     * 原始编号
      */
-    private String center;
+    private String extId;
     /**
-     * 边界坐标点
+     * 层级深度
+     */
+    private Integer deep;
+    /**
+     * 中心点,GCJ-02.格式："lng lat" or "EMPTY"
+     */
+    private String geo;
+    /**
+     * 边界坐标点,GCJ-02
      */
     private String polyline;
-
     /**
      * 下级节点数量
      */
