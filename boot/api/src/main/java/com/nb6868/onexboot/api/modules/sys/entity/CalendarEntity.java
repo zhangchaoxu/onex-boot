@@ -1,10 +1,12 @@
 package com.nb6868.onexboot.api.modules.sys.entity;
 
-import com.nb6868.onexboot.common.pojo.BaseEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,8 +17,14 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("sys_calendar")
-public class CalendarEntity extends BaseEntity {
+public class CalendarEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 主键,日期
+	 */
+	@TableId(type = IdType.INPUT)
+	private Date dayDate;
 
     /**
      * 年
@@ -39,6 +47,14 @@ public class CalendarEntity extends BaseEntity {
      * 星期
      */
 	private Integer week;
+	/**
+	 * 薪资倍数
+	 */
+	private Integer wage;
+	/**
+	 * 节假日名称
+	 */
+	private String holidayName;
     /**
      * 农历年
      */
@@ -63,8 +79,5 @@ public class CalendarEntity extends BaseEntity {
      * 星座
      */
 	private String star;
-    /**
-     * 日期
-     */
-	private Date dayDate;
+
 }

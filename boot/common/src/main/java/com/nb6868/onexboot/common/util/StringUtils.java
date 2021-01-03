@@ -3,6 +3,7 @@ package com.nb6868.onexboot.common.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.StringJoiner;
 
 /**
  * 字符处理工具类
@@ -65,6 +66,29 @@ public class StringUtils {
             }
         }
         return stringList;
+    }
+
+    /**
+     * 用分隔符拼接数组
+     * @param list 数组
+     * @return 拼接后的字符串
+     */
+    public static String joinList(Object[] list) {
+        return joinList(list, ",");
+    }
+
+    /**
+     * 用分隔符拼接数组
+     * @param list 数组
+     * @param separator 字符串
+     * @return 拼接后的字符串
+     */
+    public static String joinList(Object[] list, String separator) {
+        StringJoiner stringJoiner = new StringJoiner(separator);
+        for (Object str : list) {
+            stringJoiner.add(str.toString());
+        }
+        return stringJoiner.toString();
     }
 
     /**
