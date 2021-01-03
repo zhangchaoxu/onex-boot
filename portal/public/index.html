@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <meta name="renderer" content="webkit">
     <link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico">
+    <!-- 开发环境 -->
+    <% if (process.env.VUE_APP_AMAP_KEY !== '') { %>
     <!-- 高德地图JSAPI -->
-    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.15&key=6c9a8cbcf4f6e5168867dbdff9d6befd'></script>
+    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.15&key=<%= (process.env.VUE_APP_AMAP_KEY %>'></script>
     <!-- 高德UI组件库 -->
     <script src="//webapi.amap.com/ui/1.1/main.js"></script>
+    <% } %>
     <!-- 按需导入jquery
     <script src="//cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     -->
