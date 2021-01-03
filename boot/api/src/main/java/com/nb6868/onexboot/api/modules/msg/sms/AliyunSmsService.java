@@ -8,15 +8,17 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
+import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
+import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
+import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
+import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
-import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
-import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
@@ -26,6 +28,7 @@ import java.util.Map;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
 public class AliyunSmsService extends AbstractSmsService {
 
     private IAcsClient client;
@@ -45,7 +48,18 @@ public class AliyunSmsService extends AbstractSmsService {
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
         init(smsProps);
 
-        //组装请求对象
+        MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
+        MailLogEntity mailLog = new MailLogEntity();
+        mailLog.setMailTo(phoneNumbers);
+        mailLog.setTplId(mailTpl.getId());
+        mailLog.setTplCode(mailTpl.getCode());
+        mailLog.setTplType(mailTpl.getType());
+        mailLog.setContentParams(params);
+        mailLog.setConsumeStatus(0);
+        // 封装短信实际内容
+        mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), JacksonUtils.jsonToMap(params)));
+
+        // 组装请求对象
         CommonRequest request = new CommonRequest();
         //request.setSysProtocol(ProtocolType.HTTPS);
         request.setSysMethod(MethodType.POST);
@@ -75,17 +89,19 @@ public class AliyunSmsService extends AbstractSmsService {
                 Map<String, Object> json = JacksonUtils.jsonToMap(result);
                 status = "OK".equalsIgnoreCase(json.get("Code").toString()) ? Const.ResultEnum.SUCCESS : Const.ResultEnum.FAIL;
             }
-        } catch (ClientException ce) {
-            ce.printStackTrace();
-            throw new OnexException(ErrorCode.SEND_SMS_ERROR);
+        } catch (ClientException e) {
+            // 接口调用失败
+            log.error("AliyunSms", e);
+            mailLog.setStatus(status.value());
+            mailLog.setResult(e.getMessage());
+            mailLogService.save(mailLog);
+            return false;
         }
 
-        // 封装短信实际内容
-        String content = mailTpl.getContent();
-        content = TemplateUtils.getTemplateContent("smsContent", content, JacksonUtils.jsonToMap(params));
+
+
 
         // 保存短信记录
-        MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setMailTo(phoneNumbers);
         mailLog.setStatus(status.value());
@@ -100,4 +116,8 @@ public class AliyunSmsService extends AbstractSmsService {
         return status == Const.ResultEnum.SUCCESS;
     }
 
+    @Override
+    public boolean sendBatchSms(MailTplEntity mailTpl, String[] phoneNumbers, String params) {
+        return sendSms(mailTpl, StringUtils.joinList(phoneNumbers), params);
+    }
 }
