@@ -2,31 +2,31 @@ package com.nb6868.onexboot.api.modules.uc.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
-import com.nb6868.onexboot.api.modules.uc.dto.UserDTO;
-import com.nb6868.onexboot.api.modules.uc.dto.UserOauthDTO;
+import com.nb6868.onexboot.api.modules.sys.service.ParamService;
+import com.nb6868.onexboot.api.modules.uc.UcConst;
+import com.nb6868.onexboot.api.modules.uc.dto.*;
+import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
+import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
+import com.nb6868.onexboot.api.modules.uc.service.TokenService;
+import com.nb6868.onexboot.api.modules.uc.service.UserOauthService;
+import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import com.nb6868.onexboot.api.modules.uc.wx.WxApiService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.ConvertUtils;
+import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import com.nb6868.onexboot.common.validator.group.UpdateGroup;
-import com.nb6868.onexboot.api.modules.sys.service.ParamService;
-import com.nb6868.onexboot.api.modules.uc.dto.OauthLoginByCodeRequest;
-import com.nb6868.onexboot.api.modules.uc.dto.OauthWxMaLoginByCodeAndUserInfoRequest;
-import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
-import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
-import com.nb6868.onexboot.api.modules.uc.service.TokenService;
-import com.nb6868.onexboot.api.modules.uc.service.UserOauthService;
-import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -139,6 +139,8 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> oauthWxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
+        LoginChannelCfg loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + "WECHAT_MA_USER_INFO", LoginChannelCfg.class, null);
+        AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
         // 获得登录配置
         JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
         AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
@@ -171,7 +173,7 @@ public class UserOauthController {
         }
         // 登录成功
         Kv kv = Kv.init();
-        //kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
+        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
         kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(kv);
     }
@@ -184,6 +186,8 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> oauthWxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
+        LoginChannelCfg loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + "WECHAT_MA_CODE", LoginChannelCfg.class, null);
+        AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
         // 获得登录配置
         JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
         AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
@@ -208,7 +212,45 @@ public class UserOauthController {
         }
         // 登录成功
         Kv kv = Kv.init();
-        // kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
+        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
+        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(kv);
+    }
+
+    /**
+     * Oauth授权登录
+     */
+    @PostMapping("/wxMaLoginByPhone")
+    @ApiOperation("Oauth微信小程序手机号授权登录")
+    @LogLogin
+    @AccessControl
+    public Result<?> wxMaLoginByPhone(@Validated @RequestBody OauthWxMaLoginByCodeAndPhone request) throws WxErrorException {
+        LoginChannelCfg loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + "WECHAT_MA_PHONE", LoginChannelCfg.class, null);
+        AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        // 获得登录配置
+        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
+        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+
+        // 微信登录(小程序)
+        WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+        WxMaJscode2SessionResult jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
+        // 解密用户手机号
+        WxMaPhoneNumberInfo phoneNumberInfo = wxService.getUserService().getPhoneNoInfo(jscode2SessionResult.getSessionKey(), request.getEncryptedData(), request.getIv());
+        UserEntity user = userService.getByMobile(phoneNumberInfo.getCountryCode(), phoneNumberInfo.getPurePhoneNumber());
+        if (user == null) {
+            // todo 用户不存在,按照实际业务需求创建用户或者提示用户不存在
+            user = new UserEntity();
+            user.setMobileArea(phoneNumberInfo.getCountryCode());
+            user.setMobile(phoneNumberInfo.getPurePhoneNumber());
+            user.setUsername(phoneNumberInfo.getPurePhoneNumber());
+            user.setPassword(PasswordUtils.encode(phoneNumberInfo.getPurePhoneNumber()));
+            user.setStatus(UcConst.UserStatusEnum.ENABLED.value());
+            user.setType(UcConst.UserTypeEnum.USER.value());
+            userService.save(user);
+        }
+        // 登录成功
+        Kv kv = Kv.init();
+        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
         kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(kv);
     }
