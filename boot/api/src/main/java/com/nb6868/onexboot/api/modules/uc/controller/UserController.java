@@ -94,7 +94,7 @@ public class UserController {
         UserDTO data = userService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 用户角色列表
-        data.setRoleIdList(roleUserService.getRoleIdList(id));
+        data.setRoleIdList(roleUserService.getRoleIdListByUserId(id));
         // 部门树
         data.setDeptChain(deptService.getParentChain(data.getDeptId()));
         return new Result<>().success(data);
@@ -207,6 +207,7 @@ public class UserController {
     @PostMapping("login")
     @ApiOperation(value = "登录")
     @LogLogin
+    @AccessControl
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
         return new Result<>().success(userService.login(loginRequest));
     }
@@ -216,6 +217,7 @@ public class UserController {
      */
     @PostMapping("register")
     @ApiOperation(value = "注册")
+    @AccessControl
     public Result<?> register(@Validated @RequestBody RegisterRequest request) {
         return userService.register(request);
     }

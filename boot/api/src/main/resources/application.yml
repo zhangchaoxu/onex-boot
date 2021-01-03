@@ -5,7 +5,7 @@ server:
     threads:
       max: 1000
       min-spare: 30
-  port: 8181
+  port: 18181
   servlet:
     context-path: /api
     session:

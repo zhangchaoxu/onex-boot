@@ -14,12 +14,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("uc_role_data_scope")
 public class RoleDataScopeEntity extends BaseEntity {
-    private static final long serialVersionUID = 1L;
 
     /**
      * 角色ID
      */
-    private Long roleId;
+    private String roleId;
     /**
      * 部门ID
      */

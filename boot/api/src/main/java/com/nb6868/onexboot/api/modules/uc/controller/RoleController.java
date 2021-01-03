@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,7 @@ public class RoleController {
 	@GetMapping("info")
 	@ApiOperation("信息")
 	@RequiresPermissions("uc:role:info")
-	public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id){
+	public Result<?> info(@NotNull(message = "{id.require}") @RequestParam String id){
 		RoleDTO data = roleService.getDtoById(id);
 		AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -72,7 +73,7 @@ public class RoleController {
 		data.setMenuIdList(menuIdList);
 
 		// 查询角色对应的数据权限
-		List<Long> deptIdList = roleDataScopeService.getDeptIdListByUserId(id);
+		List<Long> deptIdList = roleDataScopeService.getDeptIdListByRoleId(id);
 		data.setDeptIdList(deptIdList);
 
 		return new Result<>().success(data);
@@ -102,7 +103,7 @@ public class RoleController {
 	@ApiOperation("删除")
 	@LogOperation("删除")
 	@RequiresPermissions("uc:role:delete")
-	public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
+	public Result<?> delete(@NotEmpty(message = "{id.require}") @RequestParam String id) {
 		// 删除数据
 		roleService.logicDeleteById(id);
 		// 删除角色菜单关联关系

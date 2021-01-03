@@ -1,24 +1,27 @@
-package com.nb6868.onexboot.api.modules.uc.entity;
+package com.nb6868.onexboot.common.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 角色
+ * 基础实体类
+ * 包含基础数据
+ * 对字段的修改见 AutoFillMetaObjectHandler
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@TableName("uc_role")
-public class RoleEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public abstract class BaseEntityIdString implements Serializable {
 
+    /**
+     * 主键id
+     */
+    @TableId(type = IdType.INPUT)
+    private String id;
     /**
      * 创建者id
      */
@@ -48,19 +51,5 @@ public class RoleEntity implements Serializable {
     @TableLogic
     @JsonIgnore
     private Integer deleted;
-
-    /**
-     * 编码
-     */
-    @TableId(type = IdType.INPUT)
-    private String id;
-    /**
-     * 名称
-     */
-    private String name;
-    /**
-     * 备注
-     */
-    private String remark;
 
 }

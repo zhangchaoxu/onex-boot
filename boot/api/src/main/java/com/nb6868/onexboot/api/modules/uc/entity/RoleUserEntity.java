@@ -17,9 +17,9 @@ public class RoleUserEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色ID
+     * 角色编码
      */
-    private Long roleId;
+    private String roleId;
     /**
      * 用户ID
      */

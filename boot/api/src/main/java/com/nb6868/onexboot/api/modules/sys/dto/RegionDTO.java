@@ -17,28 +17,37 @@ import lombok.EqualsAndHashCode;
 public class RegionDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "区域编码")
-	private Long id;
-
-	@ApiModelProperty(value = "上级区域编码,0为根目录")
+	@ApiModelProperty(value = "上级区域编号,0为一级")
 	private Long pid;
 
-	@ApiModelProperty(value = "区域名称")
+	@ApiModelProperty(value = "名称")
 	private String name;
 
-	@ApiModelProperty(value = "区域邮编")
+	@ApiModelProperty(value = "原始名称")
+	private String extName;
+
+	@ApiModelProperty(value = "原始编号")
+	private String extId;
+
+	@ApiModelProperty(value = "拼音")
+	private String pinyin;
+
+	@ApiModelProperty(value = "拼音前缀")
+	private String pinyinPrefix;
+
+	@ApiModelProperty(value = "区号")
 	private String code;
 
-	@ApiModelProperty(value = "区域级别")
-	private Integer level;
+	@ApiModelProperty(value = "邮编")
+	private String postcode;
 
-	@ApiModelProperty(value = "区域级别名称")
-	private String levelName;
+	@ApiModelProperty(value = "层级深度")
+	private Integer deep;
 
-	@ApiModelProperty(value = "中心点")
-	private String center;
+	@ApiModelProperty(value = "中心点GCJ-02.格式：\"lng lat\" or \"EMPTY\"")
+	private String geo;
 
-	@ApiModelProperty(value = "边界坐标点")
+	@ApiModelProperty(value = "边界坐标点GCJ-02")
 	private String polyline;
 
     @ApiModelProperty(value = "子节点数量")
