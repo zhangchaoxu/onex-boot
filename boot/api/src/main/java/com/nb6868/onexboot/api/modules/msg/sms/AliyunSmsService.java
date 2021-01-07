@@ -12,7 +12,6 @@ import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
@@ -77,43 +76,26 @@ public class AliyunSmsService extends AbstractSmsService {
         // 参数
         request.putQueryParameter("TemplateParam", params);
 
-        // todo 阿里云调用失败还是返回成功
-        // 最后发送结果
-        Const.ResultEnum status = Const.ResultEnum.FAIL;
-        String result = "";
-        CommonResponse response;
         try {
-            response = client.getCommonResponse(request);
+            CommonResponse response = client.getCommonResponse(request);
+            String result = response.getData();
             if (response.getHttpStatus() == 200) {
-                result = response.getData();
                 Map<String, Object> json = JacksonUtils.jsonToMap(result);
-                status = "OK".equalsIgnoreCase(json.get("Code").toString()) ? Const.ResultEnum.SUCCESS : Const.ResultEnum.FAIL;
+                mailLog.setStatus("OK".equalsIgnoreCase(json.get("Code").toString()) ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
+            } else {
+                mailLog.setStatus(Const.ResultEnum.FAIL.value());
             }
+            mailLog.setResult(result);
+            mailLogService.save(mailLog);
+            return mailLog.getStatus() == Const.ResultEnum.SUCCESS.value();
         } catch (ClientException e) {
             // 接口调用失败
             log.error("AliyunSms", e);
-            mailLog.setStatus(status.value());
+            mailLog.setStatus(Const.ResultEnum.FAIL.value());
             mailLog.setResult(e.getMessage());
             mailLogService.save(mailLog);
             return false;
         }
-
-
-
-
-        // 保存短信记录
-        MailLogEntity mailLog = new MailLogEntity();
-        mailLog.setMailTo(phoneNumbers);
-        mailLog.setStatus(status.value());
-        mailLog.setResult(result);
-        mailLog.setContent(content);
-        mailLog.setTplId(mailTpl.getId());
-        mailLog.setTplCode(mailTpl.getCode());
-        mailLog.setTplType(mailTpl.getType());
-        mailLog.setContentParams(params);
-        mailLog.setConsumeStatus(0);
-        mailLogService.save(mailLog);
-        return status == Const.ResultEnum.SUCCESS;
     }
 
     @Override
