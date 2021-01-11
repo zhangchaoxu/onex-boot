@@ -1,6 +1,0 @@
-# https://docs.gitbook.com/integrations/github/content-configuration
-structure:
-  # index
-  readme: README.md
-  # summary
-  summary: wiki/SUMMARY.md
