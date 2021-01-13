@@ -7,6 +7,7 @@ import com.nb6868.onexboot.common.util.DateUtils;
 import com.sun.management.OperatingSystemMXBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,12 +24,14 @@ import java.math.RoundingMode;
 @RestController
 @Validated
 @Api(tags = "首页")
+@Slf4j
 public class IndexController {
 
     @GetMapping("/")
     @ApiOperation("index")
     @AccessControl
     public Result<?> index() {
+        log.info("test index log");
         return new Result<>().success("api success");
     }
 

@@ -37,11 +37,9 @@ public class QrCodeUtils {
      */
     protected String imageFormat = "PNG";
 
-    public static final MatrixToImageConfig DEFAULT_CONFIG = new MatrixToImageConfig();
-
     protected final String text;
 
-    protected MatrixToImageConfig matrixToImageConfig = DEFAULT_CONFIG;
+    protected MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig();
 
     protected QrCodeUtils(String text) {
         this.text = text;

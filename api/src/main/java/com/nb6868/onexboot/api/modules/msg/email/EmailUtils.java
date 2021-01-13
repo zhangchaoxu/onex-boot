@@ -26,7 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 /**
- * 邮件工具类
+ * 电子邮件工具类
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -35,9 +35,9 @@ import java.util.Properties;
 public class EmailUtils {
 
     @Autowired
-    private MailLogService mailLogService;
+    MailLogService mailLogService;
     @Autowired
-    private MailTplService mailTplService;
+    MailTplService mailTplService;
 
     /**
      * 实现邮件发送器

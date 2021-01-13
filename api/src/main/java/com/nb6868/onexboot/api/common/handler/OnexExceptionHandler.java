@@ -19,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.ObjectError;
@@ -214,6 +215,20 @@ public class OnexExceptionHandler {
         // 保存日志
         saveLog(e);
         return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, "dev".equalsIgnoreCase(env) ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
+    }
+
+    /**
+     * HttpMessageNotReadableException
+     * RequestBody中的数据格式转换失败报错,比如定义的int传值是string
+     *
+     * @param e exception
+     * @return result
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Object handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
+        log.error(e.getMessage(), e);
+        saveLog(e);
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, "参数错误");
     }
 
     /**
