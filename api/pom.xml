@@ -27,6 +27,7 @@
         <weixin.mp.version>4.0.0</weixin.mp.version>
         <alipay.sdk.version>4.11.8.ALL</alipay.sdk.version>
         <jpush.version>3.4.8</jpush.version>
+        <zxing.version>3.4.1</zxing.version>
     </properties>
 
     <dependencies>
@@ -123,6 +124,12 @@
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
+        </dependency>
+        <!-- zxing qrcode generator -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxing.version}</version>
         </dependency>
     </dependencies>
 
