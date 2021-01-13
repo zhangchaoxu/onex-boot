@@ -92,4 +92,3 @@ onex:
     role: false
     # 基于权限分配
     permissions: true
-
