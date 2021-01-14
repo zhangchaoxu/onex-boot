@@ -1,14 +1,13 @@
 package com.nb6868.onexboot.api.modules.uc.service.impl;
 
-import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.service.*;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
+import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginChannelCfg;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.service.*;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
+import com.nb6868.onexboot.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -80,23 +79,13 @@ public class ShiroServiceImpl implements ShiroService {
     }
 
     @Override
-    public Set<String> getUserRoleCodes(UserDetail user) {
-        List<String> roleList;
-        if (user.getType() == UcConst.UserTypeEnum.ADMIN.value()) {
-            roleList = roleService.getRoleCodeList();
-        } else {
-            roleList = roleService.getRoleCodeListByUserId(user.getId());
-        }
-
+    public Set<String> getUserRoles(UserDetail user) {
+        List<String> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleIdList() : roleService.getRoleIdListByUserId(user.getId());
         // 用户角色列表
         Set<String> set = new HashSet<>();
         for (String role : roleList) {
-            if (StringUtils.isBlank(role)) {
-                continue;
-            }
             set.addAll(StringUtils.splitToList(role));
         }
-
         return set;
     }
 

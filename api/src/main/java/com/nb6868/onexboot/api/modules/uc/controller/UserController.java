@@ -104,7 +104,7 @@ public class UserController {
     @ApiOperation("登录用户信息")
     public Result<?> userInfo() {
         UserDTO data = ConvertUtils.sourceToTarget(SecurityUser.getUser(), UserDTO.class);
-        return new Result<UserDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PutMapping("password")
