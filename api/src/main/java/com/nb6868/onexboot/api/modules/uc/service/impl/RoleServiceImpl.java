@@ -43,7 +43,7 @@ public class RoleServiceImpl extends CrudServiceImpl<RoleDao, RoleEntity, RoleDT
     public QueryWrapper<RoleEntity> getWrapper(String method, Map<String, Object> params) {
         QueryWrapper<RoleEntity> qw = new WrapperUtils<RoleEntity>(new QueryWrapper<>(), params)
                 .like("name", "name")
-                .like("code", "code")
+                .eq("id", "id")
                 .getQueryWrapper();
 
         // 普通管理员，只能查询所属部门及子部门的数据
