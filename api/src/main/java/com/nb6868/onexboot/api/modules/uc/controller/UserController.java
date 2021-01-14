@@ -13,7 +13,7 @@ import com.nb6868.onexboot.api.modules.uc.entity.RoleUserEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.excel.UserExcel;
 import com.nb6868.onexboot.api.modules.uc.service.DeptService;
-import com.nb6868.onexboot.api.modules.uc.service.RoleUserService;
+import com.nb6868.onexboot.api.modules.uc.service.RoleService;
 import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.common.exception.ErrorCode;
@@ -63,7 +63,7 @@ public class UserController {
     @Autowired
     UserService userService;
     @Autowired
-    RoleUserService roleUserService;
+    RoleService roleService;
     @Autowired
     DeptService deptService;
 
@@ -94,7 +94,7 @@ public class UserController {
         UserDTO data = userService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 用户角色列表
-        data.setRoleIdList(roleUserService.getRoleIdListByUserId(id));
+        data.setRoleIdList(roleService.getRoleIdListByUserId(id));
         // 部门树
         data.setDeptChain(deptService.getParentChain(data.getDeptId()));
         return new Result<>().success(data);
@@ -266,10 +266,7 @@ public class UserController {
                 dto.setStatus(1);
                 try {
                     userService.saveDto(dto);
-                    // 插入用户与角色关系表
-                    RoleUserEntity roleUser = new RoleUserEntity();
-                    roleUser.setUserId(dto.getId());
-                    roleUserService.save(roleUser);
+                    // todo 插入用户与角色关系表
                     result.add(new MsgResult().success("导入成功"));
                 } catch (Exception e) {
                     result.add(new MsgResult().error(ErrorCode.ERROR_REQUEST, e.getMessage()));

@@ -75,7 +75,7 @@ public class BusinessController {
         // 通过id获取相关产品信息
         List<BusinessProductDTO> productList = businessProductService.getDtoListByBusinessId(id);
         data.setProductList(productList);
-        return new Result<BusinessDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

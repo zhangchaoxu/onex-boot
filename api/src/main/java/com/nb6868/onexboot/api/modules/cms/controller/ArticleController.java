@@ -52,7 +52,7 @@ public class ArticleController {
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<ArticleDTO> page = articleService.pageDto(params);
 
-        return new Result<PageData<ArticleDTO>>().success(page);
+        return new Result<>().success(page);
     }
 
     @GetMapping("info")

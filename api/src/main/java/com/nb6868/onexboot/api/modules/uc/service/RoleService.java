@@ -16,13 +16,13 @@ public interface RoleService extends CrudService<RoleEntity, RoleDTO> {
     /**
      * 查询所有角色列表
      */
-    List<String> getRoleCodeList();
+    List<String> getRoleIdList();
 
     /**
      * 根据用户查询角色列表
      *
      * @param userId 用户id
      */
-    List<String> getRoleCodeListByUserId(Long userId);
+    List<String> getRoleIdListByUserId(Long userId);
 
 }

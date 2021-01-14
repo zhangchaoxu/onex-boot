@@ -64,7 +64,7 @@ public class BusinessLogController {
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         BusinessLogDTO data = businessLogService.getDtoById(id);
 
-        return new Result<BusinessLogDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

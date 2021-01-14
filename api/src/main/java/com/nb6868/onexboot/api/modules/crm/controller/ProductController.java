@@ -78,7 +78,7 @@ public class ProductController {
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         ProductDTO data = productService.getDtoById(id);
 
-        return new Result<ProductDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")
