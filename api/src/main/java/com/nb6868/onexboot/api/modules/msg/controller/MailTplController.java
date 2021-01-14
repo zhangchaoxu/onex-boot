@@ -20,7 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +37,15 @@ import java.util.Map;
 public class MailTplController {
 
     @Autowired
-    private MailTplService mailTplService;
+    MailTplService mailTplService;
+
+    @GetMapping("list")
+    @ApiOperation("列表")
+    @RequiresPermissions("msg:mailTpl:list")
+    public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
+        List<?> list = mailTplService.listDto(params);
+        return new Result<>().success(list);
+    }
 
     @GetMapping("page")
     @ApiOperation("分页")
@@ -84,18 +92,8 @@ public class MailTplController {
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("msg:mailTpl:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
+    public Result<?> delete(@NotBlank(message = "{id.require}") @RequestParam String id) {
         mailTplService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
-    @DeleteMapping("deleteBatch")
-    @ApiOperation("批量删除")
-    @LogOperation("批量删除")
-    @RequiresPermissions("msg:mailTpl:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        mailTplService.logicDeleteByIds(ids);
 
         return new Result<>();
     }

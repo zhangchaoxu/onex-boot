@@ -55,7 +55,8 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
     public QueryWrapper<MailLogEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<MailLogEntity>(new QueryWrapper<>(), params)
                 .eq("tplId", "tpl_id")
-                .eq("tplCode", "tpl_code")
+                .eq("tplChannel", "tpl_channel")
+                .eq("tplType", "tpl_type")
                 .eq("mailTo", "mail_to")
                 .eq("status", "status")
                 .like("content", "content")
@@ -67,7 +68,7 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
      */
     @Override
     public boolean consumeById(Long id) {
-        return update().eq("id", id).set("consume_status", 1).update(new MailLogEntity());
+        return update().eq("id", id).set("consume_status", Const.BooleanEnum.TRUE.value()).update(new MailLogEntity());
     }
 
     @Override
@@ -75,7 +76,7 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
         return query().eq("tpl_id", tplId)
                 .eq("mail_to", mailTo)
                 .eq("status", 1)
-                .eq("consume_status", 0)
+                .eq("consume_status", Const.BooleanEnum.FALSE.value())
                 .orderByDesc("create_time")
                 .last(Const.LIMIT_ONE)
                 .one();
@@ -86,7 +87,7 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
         return query().eq("tpl_code", tplCode)
                 .eq("mail_to", mailTo)
                 .eq("status", 1)
-                .eq("consume_status", 0)
+                .eq("consume_status", Const.BooleanEnum.FALSE.value())
                 .orderByDesc("create_time")
                 .last(Const.LIMIT_ONE)
                 .one();

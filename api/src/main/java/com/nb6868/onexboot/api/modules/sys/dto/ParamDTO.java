@@ -33,6 +33,9 @@ public class ParamDTO extends BaseDTO {
     @ApiModelProperty(value = "备注")
     private String remark;
 
+    @ApiModelProperty(value = "类型")
+    private Integer type;
+
     /**
      * 将content转为json对象，便于前台解析
      */
