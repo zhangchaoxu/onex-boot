@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.msg.dto;
 
-import com.nb6868.onexboot.common.pojo.BaseDTO;
+import com.nb6868.onexboot.common.pojo.BaseIdStringDTO;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "消息模板")
-public class MailTplDTO extends BaseDTO {
+public class MailTplDTO extends BaseIdStringDTO {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "名称")
@@ -28,9 +28,13 @@ public class MailTplDTO extends BaseDTO {
 	@NotBlank(message = "编码不能为空", groups = DefaultGroup.class)
 	private String code;
 
-	@ApiModelProperty(value = "类型 短信sms 电邮email 微信模板消息wx_template 站内信 notice")
+	@ApiModelProperty(value = "渠道 短信sms 电邮email 微信模板消息wx_template 站内信notice")
+	@NotBlank(message = "渠道不能为空", groups = DefaultGroup.class)
+	private String channel;
+
+	@ApiModelProperty(value = "类型")
 	@NotBlank(message = "类型不能为空", groups = DefaultGroup.class)
-	private String type;
+	private Integer type;
 
 	@ApiModelProperty(value = "标题")
 	private String title;

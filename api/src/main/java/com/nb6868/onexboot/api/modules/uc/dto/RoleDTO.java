@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nb6868.onexboot.common.pojo.BaseIdStringDTO;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,8 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,32 +18,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "角色")
-public class RoleDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "创建者")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long createId;
-
-    @ApiModelProperty(value = "创建时间")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Date createTime;
-
-    @ApiModelProperty(value = "更新者")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long updateId;
-
-    @ApiModelProperty(value = "更新时间")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Date updateTime;
-
-    @ApiModelProperty(value = "删除标记")
-    @JsonIgnore
-    private Integer deleted;
-
-    @ApiModelProperty(value = "编码")
-    @NotBlank(message = "{code.require}", groups = DefaultGroup.class)
-    private String id;
+public class RoleDTO extends BaseIdStringDTO {
 
     @ApiModelProperty(value = "名称")
     @NotBlank(message = "{name.require}", groups = DefaultGroup.class)

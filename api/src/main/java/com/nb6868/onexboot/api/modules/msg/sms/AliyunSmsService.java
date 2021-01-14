@@ -51,10 +51,10 @@ public class AliyunSmsService extends AbstractSmsService {
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setMailTo(phoneNumbers);
         mailLog.setTplId(mailTpl.getId());
-        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
+        mailLog.setTplChannel(mailTpl.getChannel());
         mailLog.setContentParams(params);
-        mailLog.setConsumeStatus(0);
+        mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
         // 封装短信实际内容
         mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), JacksonUtils.jsonToMap(params)));
 
