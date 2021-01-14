@@ -51,9 +51,4 @@ public class RoleUserServiceImpl extends BaseServiceImpl<RoleUserDao, RoleUserEn
         return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("user_id", userIds));
     }
 
-    @Override
-    public List<String> getRoleIdListByUserId(Long userId) {
-        return listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId), String::valueOf);
-    }
-
 }

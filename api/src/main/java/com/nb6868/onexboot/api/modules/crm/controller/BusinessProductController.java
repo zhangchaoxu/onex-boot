@@ -64,7 +64,7 @@ public class BusinessProductController {
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         BusinessProductDTO data = businessProductService.getDtoById(id);
 
-        return new Result<BusinessProductDTO>().success(data);
+        return new Result<>().success(data);
     }
 
     @PostMapping("save")

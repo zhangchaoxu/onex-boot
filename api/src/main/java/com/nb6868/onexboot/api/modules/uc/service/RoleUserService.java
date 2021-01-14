@@ -31,9 +31,4 @@ public interface RoleUserService extends BaseService<RoleUserEntity> {
      */
     boolean deleteByUserIds(List<Long> userIds);
 
-    /**
-     * 角色ID列表
-     * @param userId  用户ID
-     */
-    List<String> getRoleIdListByUserId(Long userId);
 }

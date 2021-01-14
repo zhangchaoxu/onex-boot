@@ -5,6 +5,7 @@ import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dao.RoleDao;
 import com.nb6868.onexboot.api.modules.uc.dto.RoleDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.RoleEntity;
+import com.nb6868.onexboot.api.modules.uc.entity.RoleUserEntity;
 import com.nb6868.onexboot.api.modules.uc.service.*;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
@@ -56,13 +57,13 @@ public class RoleServiceImpl extends CrudServiceImpl<RoleDao, RoleEntity, RoleDT
     }
 
     @Override
-    public List<String> getRoleCodeList() {
-        return listObjs(new QueryWrapper<RoleEntity>().select("code"), Object::toString);
+    public List<String> getRoleIdList() {
+        return listObjs(new QueryWrapper<RoleEntity>().select("id"), Object::toString);
     }
 
     @Override
-    public List<String> getRoleCodeListByUserId(Long userId) {
-        return getBaseMapper().getRoleCodeListByUserId(userId);
+    public List<String> getRoleIdListByUserId(Long userId) {
+        return roleUserService.listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId), String::valueOf);
     }
 
     @Override
