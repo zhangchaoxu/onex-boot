@@ -7,8 +7,8 @@ import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.excel.ParamExcel;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginAdminCfg;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginChannelCfg;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginConfigAdmin;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.PageData;
@@ -85,20 +85,18 @@ public class ParamController {
         Kv kv = Kv.init();
         for (String code : codeList) {
             String content = paramService.getContent(code);
-            if (UcConst.LOGIN_ADMIN_CFG.equalsIgnoreCase(code)) {
+            if (UcConst.LOGIN_CONFIG_ADMIN.equalsIgnoreCase(code)) {
                 // 用户登录信息
-                LoginAdminCfg loginAdminCfg = JacksonUtils.jsonToPojo(content, LoginAdminCfg.class);
-                if (null != loginAdminCfg) {
-                    if (loginAdminCfg.isLoginByUsernameAndPassword()) {
-                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USER_PWD.name(), LoginChannelCfg.class);
-                        loginAdminCfg.setLoginByUsernameAndPasswordCfg(channelCfg);
+                LoginConfigAdmin loginConfigAdmin = JacksonUtils.jsonToPojo(content, LoginConfigAdmin.class);
+                if (null != loginConfigAdmin) {
+                    if (loginConfigAdmin.isUsernamePasswordLogin()) {
+                        loginConfigAdmin.setUsernamePasswordLoginConfig(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name(), LoginTypeConfig.class));
                     }
-                    if (loginAdminCfg.isLoginByMobileAndSmsCode()) {
-                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMS.name(), LoginChannelCfg.class);
-                        loginAdminCfg.setLoginByMobileAndSmsCodeCfg(channelCfg);
+                    if (loginConfigAdmin.isMobileSmscodeLogin()) {
+                        loginConfigAdmin.setMobileSmscodeLoginConfig(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name(), LoginTypeConfig.class));
                     }
                 }
-                kv.set(code, loginAdminCfg);
+                kv.set(code, loginConfigAdmin);
             } else {
                 kv.set(code, JacksonUtils.jsonToMap(content));
             }

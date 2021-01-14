@@ -22,7 +22,7 @@ public interface UcConst {
     /**
      * 管理平台登录配置
      */
-    String LOGIN_ADMIN_CFG = "LOGIN_ADMIN_CFG";
+    String LOGIN_CONFIG_ADMIN = "LOGIN_CONFIG_ADMIN";
 
     /**
      * 登录配置前缀
@@ -195,11 +195,11 @@ public interface UcConst {
          */
         LOGOUT,
         // 后台帐号密码登录
-        ADMIN_USER_PWD,
+        ADMIN_USERNAME_PASSWORD,
         // 后台手机密码登录
         ADMIN_MOBILE_PWD,
         // 后台手机短信登录
-        ADMIN_MOBILE_SMS,
+        ADMIN_MOBILE_SMSCODE,
         // 后台微信登录
         ADMIN_WECHAT,
         // 后台钉钉扫码登录

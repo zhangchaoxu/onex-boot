@@ -26,6 +26,8 @@ public class LoginServiceImpl extends CrudServiceImpl<LoginDao, LoginEntity, Log
                 .eq("status", "status")
                 // 用户
                 .like("createName", "create_name")
+                // 操作IP
+                .like("ip", "ip")
                 // 创建时间区间
                 .ge("startCreateTime", "create_time")
                 .le("endCreateTime", "create_time")

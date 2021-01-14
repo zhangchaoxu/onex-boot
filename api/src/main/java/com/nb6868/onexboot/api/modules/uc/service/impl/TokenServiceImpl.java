@@ -2,15 +2,15 @@ package com.nb6868.onexboot.api.modules.uc.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.uc.dao.TokenDao;
-import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.service.impl.BaseServiceImpl;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginChannelCfg;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.service.TokenService;
+import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.service.impl.BaseServiceImpl;
+import com.nb6868.onexboot.common.util.IdUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * token
@@ -21,7 +21,7 @@ import java.util.UUID;
 public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> implements TokenService {
 
     @Override
-    public String createToken(Long userId, LoginChannelCfg loginConfig) {
+    public String createToken(Long userId, LoginTypeConfig loginConfig) {
         // 当前时间
         Date now = new Date();
         // 过期时间
@@ -36,7 +36,7 @@ public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> imp
         // 不管逻辑，永远都是重新生成一个token
         TokenEntity tokenEntity = new TokenEntity();
         tokenEntity.setUserId(userId);
-        tokenEntity.setToken(UUID.randomUUID().toString().replaceAll("-", ""));
+        tokenEntity.setToken(IdUtils.simpleUUID());
         tokenEntity.setUpdateTime(now);
         tokenEntity.setExpireTime(expireTime);
         tokenEntity.setType(loginConfig.getType());
@@ -59,20 +59,17 @@ public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> imp
 
     @Override
     public boolean renewalToken(String token, Long expire) {
-        // UPDATE uc_token SET expire_time = DATE_ADD(NOW(), interval #{expire} second) WHERE token = #{token} and deleted = 0
         return update().setSql("expire_time = DATE_ADD(NOW(), interval " + expire + " second)").eq("token", token).update(new TokenEntity());
     }
 
     @Override
     public boolean deleteToken(String token) {
-        // 修改token
-        getBaseMapper().deleteByWrapperWithFill(new TokenEntity(), new QueryWrapper<TokenEntity>().eq("token", token));
-        return true;
+        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().eq("token", token));
     }
 
     @Override
-    public boolean deleteTokenByUserId(Long userId, Integer type) {
-        return update().set("deleted", 1).eq("user_id", userId).eq("type", type).update(new TokenEntity());
+    public boolean deleteTokenByUserId(Long userId, String type) {
+        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().eq("user_id", userId).eq("type", type));
     }
 
 }

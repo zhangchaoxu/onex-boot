@@ -15,9 +15,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "后台登录配置")
-public class LoginAdminCfg implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class LoginConfigAdmin implements Serializable {
 
     @ApiModelProperty(value = "开放注册")
     private boolean register;
@@ -26,27 +24,27 @@ public class LoginAdminCfg implements Serializable {
     private boolean forgetPassword;
 
     @ApiModelProperty(value = "开放帐号密码登录")
-    private boolean loginByUsernameAndPassword;
+    private boolean usernamePasswordLogin;
 
     @ApiModelProperty(value = "帐号密码登录配置")
-    private LoginChannelCfg loginByUsernameAndPasswordCfg;
+    private LoginTypeConfig usernamePasswordLoginConfig;
 
     @ApiModelProperty(value = "开放手机验证码登录")
-    private boolean loginByMobileAndSmsCode;
+    private boolean mobileSmscodeLogin;
 
     @ApiModelProperty(value = "手机验证码登录配置")
-    private LoginChannelCfg loginByMobileAndSmsCodeCfg;
+    private LoginTypeConfig mobileSmscodeLoginConfig;
 
     @ApiModelProperty(value = "开放微信扫码登录")
-    private boolean loginByWechatScan;
-
-    @ApiModelProperty(value = "开放钉钉扫码登录")
-    private boolean loginByDingtalkScan;
+    private boolean wechatScanLogin;
 
     @ApiModelProperty(value = "微信扫码登录配置")
-    private LoginChannelCfg loginByWechatScanCfg;
+    private LoginTypeConfig wechatScanLoginConfig;
+
+    @ApiModelProperty(value = "开放钉钉扫码登录")
+    private boolean dingtalkScanLogin;
 
     @ApiModelProperty(value = "钉钉扫码登录配置")
-    private LoginChannelCfg loginByDingtalkScanCfg;
+    private LoginTypeConfig dingtalkScanLoginConfig;
 
 }
