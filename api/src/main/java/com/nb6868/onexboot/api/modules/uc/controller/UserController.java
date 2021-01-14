@@ -224,7 +224,7 @@ public class UserController {
 
     @PostMapping("logout")
     @ApiOperation(value = "退出")
-    @LogLogin(type = UcConst.LoginTypeEnum.LOGOUT)
+    @LogLogin(type = "LOGOUT")
     public Result<?> logout(HttpServletRequest request) {
         String token = HttpContextUtils.getRequestParameter(request, UcConst.TOKEN_HEADER);
 

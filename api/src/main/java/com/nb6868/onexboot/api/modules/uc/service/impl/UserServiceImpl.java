@@ -98,7 +98,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     @Override
     public Kv login(LoginRequest loginRequest) {
         // 获得登录配置
-        LoginChannelCfg loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + loginRequest.getType(), LoginChannelCfg.class, null);
+        LoginChannelCfg loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType(), LoginChannelCfg.class, null);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         if (loginChannelCfg.isCaptcha()) {
@@ -110,7 +110,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
 
         // 登录用户
         UserEntity user;
-        if (UcConst.LoginTypeEnum.ADMIN_USER_PWD.value() == loginRequest.getType() || UcConst.LoginTypeEnum.APP_USER_PWD.value() == loginRequest.getType()) {
+        if (UcConst.LoginTypeEnum.ADMIN_USER_PWD.name() == loginRequest.getType() || UcConst.LoginTypeEnum.APP_USER_PWD.name() == loginRequest.getType()) {
             // 帐号密码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.UsernamePasswordGroup.class);
             user = getByUsername(loginRequest.getUsername());
@@ -124,7 +124,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                 // 密码不匹配
                 throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
             }
-        }  else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMS.value() == loginRequest.getType() || UcConst.LoginTypeEnum.APP_MOBILE_SMS.value() == loginRequest.getType()) {
+        }  else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMS.name() == loginRequest.getType() || UcConst.LoginTypeEnum.APP_MOBILE_SMS.name() == loginRequest.getType()) {
             // 手机号验证码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.MobileSmsCodeGroup.class);
             user = getByMobile(loginRequest.getMobile());
@@ -148,7 +148,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                 // 将短信消费掉
                 mailLogService.consumeById(lastSmsLog.getId());
             }
-        } else if (UcConst.LoginTypeEnum.APP_APPLE.value() == loginRequest.getType()) {
+        } else if (UcConst.LoginTypeEnum.APP_APPLE.name() == loginRequest.getType()) {
             // 苹果登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.AppleGroup.class);
             // jwt解析identityToken, 获取userIdentifier

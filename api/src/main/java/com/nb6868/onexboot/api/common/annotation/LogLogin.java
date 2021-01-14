@@ -1,7 +1,5 @@
 package com.nb6868.onexboot.api.common.annotation;
 
-import com.nb6868.onexboot.api.modules.uc.UcConst;
-
 import java.lang.annotation.*;
 
 /**
@@ -17,6 +15,5 @@ public @interface LogLogin {
     /**
      * 登录类型
      */
-    UcConst.LoginTypeEnum type() default UcConst.LoginTypeEnum.NULL;
-
+    String type() default "";
 }

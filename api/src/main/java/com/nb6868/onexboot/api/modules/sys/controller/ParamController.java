@@ -90,21 +90,13 @@ public class ParamController {
                 LoginAdminCfg loginAdminCfg = JacksonUtils.jsonToPojo(content, LoginAdminCfg.class);
                 if (null != loginAdminCfg) {
                     if (loginAdminCfg.isLoginByUsernameAndPassword()) {
-                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + UcConst.LoginTypeEnum.ADMIN_USER_PWD.value(), LoginChannelCfg.class);
+                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USER_PWD.name(), LoginChannelCfg.class);
                         loginAdminCfg.setLoginByUsernameAndPasswordCfg(channelCfg);
                     }
                     if (loginAdminCfg.isLoginByMobileAndSmsCode()) {
-                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMS.value(), LoginChannelCfg.class);
+                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMS.name(), LoginChannelCfg.class);
                         loginAdminCfg.setLoginByMobileAndSmsCodeCfg(channelCfg);
                     }
-                    /*if (loginAdminCfg.isLoginByWechatScan()) {
-                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT.value(), LoginChannelCfg.class);
-                        loginAdminCfg.setLoginByWechatScanCfg(channelCfg);
-                    }
-                    if (loginAdminCfg.isLoginByDingtalkScan()) {
-                        LoginChannelCfg channelCfg = paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.value(), LoginChannelCfg.class);
-                        loginAdminCfg.setLoginByDingtalkScanCfg(channelCfg);
-                    }*/
                 }
                 kv.set(code, loginAdminCfg);
             } else {

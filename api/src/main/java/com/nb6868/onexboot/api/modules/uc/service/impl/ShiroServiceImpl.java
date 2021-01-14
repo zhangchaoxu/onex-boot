@@ -106,7 +106,7 @@ public class ShiroServiceImpl implements ShiroService {
 
     @Override
     public LoginChannelCfg getLoginCfg(Integer type) {
-        return paramService.getContentObject(UcConst.LOGIN_CHANNEL_CFG_PREFIX + type, LoginChannelCfg.class);
+        return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginChannelCfg.class);
     }
 
     @Override
