@@ -20,7 +20,7 @@ public class WxApiService {
     ParamService paramService;
 
     public WxProp getWxProp(String paramCode) {
-        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class, null);
+        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, "微信配置错误");
         return wxProp;
     }

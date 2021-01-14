@@ -9,17 +9,18 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
 /**
- * 登录渠道配置信息
+ * 登录方式配置
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "登录渠道配置信息")
+@ApiModel(value = "登录方式配置")
 public class LoginTypeConfig implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "登录类型")
+    /**
+     * 具体见UcConst.LoginType
+     */
+    @ApiModelProperty(value = "登录方式")
     private String type;
 
     @JsonIgnore
@@ -58,16 +59,16 @@ public class LoginTypeConfig implements Serializable {
     private String magicCaptcha;
 
     @JsonIgnore
-    @ApiModelProperty(value = "自动创建用户")
-    private boolean autoCreate = false;
-
-    @JsonIgnore
     @ApiModelProperty(value = "最多登录次数")
     private Integer tryTimesMax;
 
     @JsonIgnore
     @ApiModelProperty(value = "超过最大登录次数后锁定时间")
     private Long loginErrorLockTime;
+
+    @JsonIgnore
+    @ApiModelProperty(value = "自动创建用户")
+    private boolean autoCreate = false;
 
     @JsonIgnore
     @ApiModelProperty(value = "自动创建用户的角色ids")

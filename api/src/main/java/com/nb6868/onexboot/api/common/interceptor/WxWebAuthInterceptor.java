@@ -106,8 +106,9 @@ public class WxWebAuthInterceptor implements HandlerInterceptor {
 
     private WxMpService getWxService(String paramCode) {
         // 从参数表获取参数配置
-        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class, null);
+        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
+
         // 初始化service
         WxMpService wxService = new WxMpServiceImpl();
         WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();

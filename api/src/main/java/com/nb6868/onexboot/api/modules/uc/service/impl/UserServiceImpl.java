@@ -98,13 +98,13 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     @Override
     public Kv login(LoginRequest loginRequest) {
         // 获得登录配置
-        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType(), LoginTypeConfig.class, null);
-        AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        LoginTypeConfig loginTypeConfig = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType(), LoginTypeConfig.class);
+        AssertUtils.isNull(loginTypeConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
-        if (loginChannelCfg.isCaptcha()) {
-            // 验证码激活
+        // 校验验证码
+        if (loginTypeConfig.isCaptcha()) {
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.CaptchaGroup.class);
-            boolean validateCaptcha = loginRequest.getCaptcha().equalsIgnoreCase(loginChannelCfg.getMagicCaptcha()) || captchaService.validate(loginRequest.getUuid(), loginRequest.getCaptcha());
+            boolean validateCaptcha = loginRequest.getCaptcha().equalsIgnoreCase(loginTypeConfig.getMagicCaptcha()) || captchaService.validate(loginRequest.getUuid(), loginRequest.getCaptcha());
             AssertUtils.isFalse(validateCaptcha, ErrorCode.CAPTCHA_ERROR);
         }
 
@@ -142,7 +142,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                 throw new OnexException(ErrorCode.SMS_CODE_ERROR);
             } else {
                 // 验证码正确
-                if (DateUtils.timeDiff(lastSmsLog.getCreateTime()) > loginChannelCfg.getSmsCodeValidTime()) {
+                if (DateUtils.timeDiff(lastSmsLog.getCreateTime()) > loginTypeConfig.getSmsCodeValidTime()) {
                     throw new OnexException(ErrorCode.SMS_CODE_EXPIRED);
                 }
                 // 将短信消费掉
@@ -209,8 +209,8 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
 
         // 登录成功
         Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginChannelCfg));
-        kv.set("expire", loginChannelCfg.getExpire());
+        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginTypeConfig));
+        kv.set("expire", loginTypeConfig.getExpire());
         kv.set("user", user);
         return kv;
     }

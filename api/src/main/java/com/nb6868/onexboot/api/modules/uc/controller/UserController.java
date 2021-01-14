@@ -194,10 +194,8 @@ public class UserController {
         String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, "UTF-8"));
         // json明文转实体
         LoginRequest loginRequest = JacksonUtils.jsonToPojo(loginRaw, LoginRequest.class);
-
         // 效验数据
         ValidatorUtils.validateEntity(loginRequest, DefaultGroup.class);
-
         return new Result<>().success(userService.login(loginRequest));
     }
 
@@ -227,9 +225,7 @@ public class UserController {
     @LogLogin(type = "LOGOUT")
     public Result<?> logout(HttpServletRequest request) {
         String token = HttpContextUtils.getRequestParameter(request, UcConst.TOKEN_HEADER);
-
         userService.logout(token);
-
         return new Result<>();
     }
 

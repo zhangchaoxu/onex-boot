@@ -21,7 +21,7 @@ public final class OssFactory {
 
     public static AbstractOssService build(String paramCode) {
         // 获取云存储配置信息
-        OssProp config = paramsService.getContentObject(paramCode, OssProp.class, null);
+        OssProp config = paramsService.getContentObject(paramCode, OssProp.class);
         AssertUtils.isNull(config, ErrorCode.OSS_CONFIG_ERROR);
 
         if ("aliyun".equalsIgnoreCase(config.getType())) {

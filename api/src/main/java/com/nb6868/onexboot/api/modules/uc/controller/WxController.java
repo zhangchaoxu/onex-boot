@@ -47,8 +47,9 @@ public class WxController {
     @ApiOperation("获得签名")
     @AccessControl
     public Result<?> getJsapiSignature(@RequestParam(required = false, defaultValue = "WX_CONFIG") String paramCode, @RequestParam String url) {
-        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class, null);
+        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
+
         if ("MP".equalsIgnoreCase(wxProp.getType())) {
             WxMpService wxService = getWxMpService(wxProp);
             try {
@@ -76,7 +77,7 @@ public class WxController {
     public Result<?> getOauth2Url(@RequestParam String paramCode, @RequestParam String url,
                                   @RequestParam(required = false, defaultValue = WxConsts.OAuth2Scope.SNSAPI_USERINFO) String scope,
                                   @RequestParam(required = false) String state) {
-        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class, null);
+        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
 
         WxMpService wxService = getWxMpService(wxProp);
@@ -88,7 +89,7 @@ public class WxController {
     @ApiImplicitParams({@ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String")})
     @GetMapping("/info")
     public Result<?> info(@RequestParam String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
-        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class, null);
+        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
 
         // 初始化service
@@ -108,7 +109,7 @@ public class WxController {
             @ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String")
     })
     public Result<?> phone(@RequestParam String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
-        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class, null);
+        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
 
         // 初始化service
