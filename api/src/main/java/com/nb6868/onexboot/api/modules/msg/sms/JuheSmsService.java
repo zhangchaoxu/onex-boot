@@ -53,10 +53,10 @@ public class JuheSmsService extends AbstractSmsService {
         mailLog.setMailTo(phoneNumber);
         mailLog.setContent(content);
         mailLog.setTplId(mailTpl.getId());
-        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
+        mailLog.setTplChannel(mailTpl.getChannel());
         mailLog.setContentParams(params);
-        mailLog.setConsumeStatus(0);
+        mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
 
         // 调用接口发送
         Const.ResultEnum status = Const.ResultEnum.FAIL;

@@ -18,13 +18,13 @@ public class MailLogDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "模板ID")
-	private Long tplId;
+	private String tplId;
 
-	@ApiModelProperty(value = "模板编码")
-	private String tplCode;
+	@ApiModelProperty(value = "模板渠道")
+	private String tplChannel;
 
 	@ApiModelProperty(value = "消息类型")
-	private String tplType;
+	private Integer tplType;
 
 	@ApiModelProperty(value = "发送者")
 	private String mailFrom;

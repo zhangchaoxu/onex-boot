@@ -110,13 +110,14 @@ public class EmailUtils {
 
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setTplId(mailTpl.getId());
-        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
+        mailLog.setTplChannel(mailTpl.getChannel());
         mailLog.setMailFrom(emailProps.getSenderUsername());
         mailLog.setMailTo(request.getMailTo());
         mailLog.setSubject(title);
         mailLog.setContent(content);
         mailLog.setStatus(status.value());
+        mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
         mailLogService.save(mailLog);
 
         return status == Const.ResultEnum.SUCCESS;

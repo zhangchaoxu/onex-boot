@@ -21,15 +21,15 @@ public class MailLogEntity extends BaseEntity {
     /**
      * 模板ID
      */
-	private Long tplId;
+	private String tplId;
     /**
-     * 模板编码
+     * 模板渠道
      */
-	private String tplCode;
+	private String tplChannel;
     /**
      * 消息类型
      */
-	private String tplType;
+	private Integer tplType;
     /**
      * 发送者
      */

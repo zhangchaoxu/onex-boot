@@ -165,10 +165,10 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 mailLog.setResult(result);
                 mailLog.setContent(content);
                 mailLog.setTplId(mailTpl.getId());
-                mailLog.setTplCode(mailTpl.getCode());
                 mailLog.setTplType(mailTpl.getType());
+                mailLog.setTplChannel(mailTpl.getChannel());
                 mailLog.setContentParams(request.getContentParam());
-                mailLog.setConsumeStatus(0);
+                mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
                 save(mailLog);
             }
             return true;
@@ -223,10 +223,10 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 mailLog.setResult(result);
                 mailLog.setContent(content);
                 mailLog.setTplId(mailTpl.getId());
-                mailLog.setTplCode(mailTpl.getCode());
                 mailLog.setTplType(mailTpl.getType());
+                mailLog.setTplChannel(mailTpl.getChannel());
                 mailLog.setContentParams(request.getContentParam());
-                mailLog.setConsumeStatus(0);
+                mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
                 save(mailLog);
             }
             return true;
