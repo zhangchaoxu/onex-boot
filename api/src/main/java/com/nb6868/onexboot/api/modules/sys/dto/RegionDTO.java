@@ -1,10 +1,15 @@
 package com.nb6868.onexboot.api.modules.sys.dto;
 
-import com.nb6868.onexboot.common.pojo.BaseDTO;
+import com.nb6868.onexboot.common.validator.group.AddGroup;
+import com.nb6868.onexboot.common.validator.group.UpdateGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import java.io.Serializable;
 
 /**
  * 行政区域
@@ -14,8 +19,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "行政区域")
-public class RegionDTO extends BaseDTO {
+public class RegionDTO implements Serializable {
     private static final long serialVersionUID = 1L;
+
+	@ApiModelProperty(value = "id")
+	@Null(message = "{id.null}", groups = AddGroup.class)
+	@NotNull(message = "{id.require}", groups = UpdateGroup.class)
+	private Long id;
 
 	@ApiModelProperty(value = "上级区域编号,0为一级")
 	private Long pid;
@@ -50,6 +60,8 @@ public class RegionDTO extends BaseDTO {
 	@ApiModelProperty(value = "边界坐标点GCJ-02")
 	private String polyline;
 
-    @ApiModelProperty(value = "子节点数量")
-    private Integer childNum;
+	@ApiModelProperty(value = "是否有下级")
+	public boolean getHasChildren() {
+		return deep < 3;
+	}
 }
