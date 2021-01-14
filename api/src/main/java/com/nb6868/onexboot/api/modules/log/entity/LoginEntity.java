@@ -18,7 +18,7 @@ public class LoginEntity extends BaseEntity {
     /**
      * 登录类型
      */
-    private Integer type;
+    private String type;
     /**
      * 登录结果
      */

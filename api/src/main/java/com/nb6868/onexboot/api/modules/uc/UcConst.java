@@ -27,7 +27,7 @@ public interface UcConst {
     /**
      * 登录配置前缀
      */
-    String LOGIN_CHANNEL_CFG_PREFIX = "LOGIN_CHANNEL_CFG_";
+    String LOGIN_TYPE_PREFIX = "LOGIN_TYPE_";
 
     /**
      * token header
@@ -186,71 +186,36 @@ public interface UcConst {
     }
 
     /**
-     * 登录操作类型
-     */
-    enum LoginOperationEnum {
-        /**
-         * 用户登录
-         */
-        LOGIN(0),
-        /**
-         * 用户退出
-         */
-        LOGOUT(1);
-
-        private int value;
-
-        LoginOperationEnum(int value) {
-            this.value = value;
-        }
-
-        public int value() {
-            return this.value;
-        }
-    }
-
-    /**
      * 登录类型
      */
     enum LoginTypeEnum {
 
         /**
-         * 详见name
+         * 退出
          */
-        LOGOUT(-1, "退出"),
-        NULL(0, "NULL"),
-        ADMIN_USER_PWD(10, "后台帐号密码登录"),
-        ADMIN_MOBILE_PWD(20, "后台手机密码登录"),
-        ADMIN_MOBILE_SMS(30, "后台手机短信登录"),
-        ADMIN_WECHAT(40, "后台微信登录"),
-        ADMIN_DINGTALK_SCAN(50, "后台钉钉扫码登录"),
-        APP_USER_PWD(100, "APP帐号密码登录"),
-        APP_MOBILE_PWD(101, "APP手机密码登录"),
-        APP_MOBILE_SMS(102, "APP手机短信登录"),
-        APP_WECHAT(103, "APP微信登录"),
-        APP_APPLE(104, "APP苹果登录"),
-        APP_APPLE_MOBILE_SMS(105, "APP苹果登录验证手机号");
-
-        private int value;
-        private String name;
-
-        LoginTypeEnum(int value) {
-            this.value = value;
-        }
-
-        LoginTypeEnum(int value, String name) {
-            this.value = value;
-            this.name = name;
-        }
-
-        public int value() {
-            return this.value;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
+        LOGOUT,
+        // 后台帐号密码登录
+        ADMIN_USER_PWD,
+        // 后台手机密码登录
+        ADMIN_MOBILE_PWD,
+        // 后台手机短信登录
+        ADMIN_MOBILE_SMS,
+        // 后台微信登录
+        ADMIN_WECHAT,
+        // 后台钉钉扫码登录
+        ADMIN_DINGTALK_SCAN,
+        // APP帐号密码登录
+        APP_USER_PWD,
+        // APP手机密码登录
+        APP_MOBILE_PWD,
+        // APP手机短信登录
+        APP_MOBILE_SMS,
+        // APP微信登录
+        APP_WECHAT,
+        // APP苹果登录
+        APP_APPLE,
+        // APP苹果登录验证手机号
+        APP_APPLE_MOBILE_SMS;
     }
 
 }

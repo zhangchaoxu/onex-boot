@@ -1,14 +1,14 @@
 package com.nb6868.onexboot.api.common.aspect;
 
-import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.util.HttpContextUtils;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.modules.log.entity.LoginEntity;
 import com.nb6868.onexboot.api.modules.log.service.LoginService;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginRequest;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
+import com.nb6868.onexboot.common.exception.OnexException;
+import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.util.HttpContextUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -58,13 +58,12 @@ public class LogLoginAspect {
     }
 
     private void saveLog(ProceedingJoinPoint joinPoint, Integer result, String msg) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         LoginEntity log = new LoginEntity();
 
         // 登录用户信息
         UserDetail user = SecurityUser.getUser();
         log.setCreateName(user.getUsername());
-        int type = 0;
+        String type = "";
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
             if (arg instanceof LoginRequest) {
@@ -81,19 +80,19 @@ public class LogLoginAspect {
                 break;
             }
         }
-        if (0 == type) {
+        if (ObjectUtils.isEmpty(type)) {
             try {
+                MethodSignature signature = (MethodSignature) joinPoint.getSignature();
                 Method method = joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
                 LogLogin annotation = method.getAnnotation(LogLogin.class);
                 if (annotation != null) {
                     // 注解上的类型
-                    type = annotation.type().value();
+                    type = annotation.type();
                 }
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
         }
-
         log.setResult(result);
         log.setMsg(msg);
         log.setType(type);

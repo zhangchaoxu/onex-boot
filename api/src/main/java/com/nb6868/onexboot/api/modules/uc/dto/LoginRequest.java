@@ -6,8 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -42,8 +42,8 @@ public class LoginRequest implements Serializable {
     public interface AppleGroup { }
 
     @ApiModelProperty(value = "登录类型", required = true)
-    @NotNull(message = "登录类型不能为空", groups = {DefaultGroup.class})
-    private Integer type;
+    @NotBlank(message = "登录类型不能为空", groups = {DefaultGroup.class})
+    private String type;
 
     @ApiModelProperty(value = "用户名")
     @NotEmpty(message = "用户名不能为空", groups = {UsernamePasswordGroup.class})

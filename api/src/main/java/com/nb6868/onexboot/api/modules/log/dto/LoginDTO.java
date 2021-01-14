@@ -18,7 +18,7 @@ public class LoginDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "登录类型")
-    private Integer type;
+    private String type;
 
     @ApiModelProperty(value = "登录结果 1成功 0失败")
     private Integer result;
