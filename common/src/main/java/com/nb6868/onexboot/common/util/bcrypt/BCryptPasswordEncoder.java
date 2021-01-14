@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.common.util.bcrypt;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.SecureRandom;
 import java.util.regex.Pattern;
@@ -13,11 +12,11 @@ import java.util.regex.Pattern;
  * (exponentially) to hash the passwords. The default value is 10.
  *
  * @author Dave Syer
- *
  */
+@Slf4j
 public class BCryptPasswordEncoder {
-	private Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[./0-9A-Za-z]{53}");
-	private final Log logger = LogFactory.getLog(getClass());
+
+	private final Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[./0-9A-Za-z]{53}");
 
 	private final int strength;
 
@@ -65,12 +64,12 @@ public class BCryptPasswordEncoder {
 
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
 		if (encodedPassword == null || encodedPassword.length() == 0) {
-			logger.warn("Empty encoded password");
+			log.warn("Empty encoded password");
 			return false;
 		}
 
 		if (!BCRYPT_PATTERN.matcher(encodedPassword).matches()) {
-			logger.warn("Encoded password does not look like BCrypt");
+			log.warn("Encoded password does not look like BCrypt");
 			return false;
 		}
 

@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -13,9 +12,8 @@ import java.util.List;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
 public class ConvertUtils {
-
-    private static Logger logger = LoggerFactory.getLogger(ConvertUtils.class);
 
     public static <T> T sourceToTarget(Object source, Class<T> target) {
         if (source == null) {
@@ -26,7 +24,7 @@ public class ConvertUtils {
             targetObject = target.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(source, targetObject);
         } catch (Exception e) {
-            logger.error("convert error ", e);
+            log.error("convert error ", e);
         }
 
         return targetObject;
@@ -45,7 +43,7 @@ public class ConvertUtils {
                 targetList.add(targetObject);
             }
         } catch (Exception e) {
-            logger.error("convert error ", e);
+            log.error("convert error ", e);
         }
 
         return targetList;
