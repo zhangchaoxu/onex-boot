@@ -34,14 +34,6 @@ public interface ParamService extends CrudService<ParamEntity, ParamDTO> {
     <T> T getContentObject(String code, Class<T> clazz);
 
     /**
-     * 根据参数编码，获取value的Object对象
-     * @param code  参数编码
-     * @param clazz  Object对象
-     * @param defaultObject  默认传回值
-     */
-    <T> T getContentObject(String code, Class<T> clazz, T defaultObject);
-
-    /**
      * 根据参数编码，获取value的JsonNode对象
      * @param code
      * @return

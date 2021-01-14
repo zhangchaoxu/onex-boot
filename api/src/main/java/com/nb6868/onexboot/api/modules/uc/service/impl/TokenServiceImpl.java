@@ -21,17 +21,17 @@ import java.util.Date;
 public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> implements TokenService {
 
     @Override
-    public String createToken(Long userId, LoginTypeConfig loginConfig) {
+    public String createToken(Long userId, LoginTypeConfig loginTypeConfig) {
         // 当前时间
         Date now = new Date();
         // 过期时间
-        Date expireTime = new Date(now.getTime() + loginConfig.getExpire() * 1000);
+        Date expireTime = new Date(now.getTime() + loginTypeConfig.getExpire() * 1000);
         // 生成的token
-        if (loginConfig.isMultiLogin()) {
+        if (loginTypeConfig.isMultiLogin()) {
             // 支持多点登录
         } else {
             // 不支持多点登录,注销该用户所有token
-            deleteTokenByUserId(userId, loginConfig.getType());
+            deleteTokenByUserId(userId, loginTypeConfig.getType());
         }
         // 不管逻辑，永远都是重新生成一个token
         TokenEntity tokenEntity = new TokenEntity();
@@ -39,7 +39,7 @@ public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> imp
         tokenEntity.setToken(IdUtils.simpleUUID());
         tokenEntity.setUpdateTime(now);
         tokenEntity.setExpireTime(expireTime);
-        tokenEntity.setType(loginConfig.getType());
+        tokenEntity.setType(loginTypeConfig.getType());
 
         // 保存token
         this.save(tokenEntity);

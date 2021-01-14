@@ -139,7 +139,7 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> oauthWxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
-        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_USER_INFO", LoginTypeConfig.class, null);
+        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_USER_INFO", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
         // 获得登录配置
         JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
@@ -186,7 +186,7 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> oauthWxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
-        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_CODE", LoginTypeConfig.class, null);
+        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_CODE", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
         // 获得登录配置
         JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
@@ -225,7 +225,7 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> wxMaLoginByPhone(@Validated @RequestBody OauthWxMaLoginByCodeAndPhone request) throws WxErrorException {
-        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_PHONE", LoginTypeConfig.class, null);
+        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_PHONE", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
         // 获得登录配置
         JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());

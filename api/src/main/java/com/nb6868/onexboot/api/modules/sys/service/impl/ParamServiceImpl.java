@@ -11,8 +11,6 @@ import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
-import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
 import com.nb6868.onexboot.common.util.ConvertUtils;
@@ -35,7 +33,7 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
 
     /**
      * 本地缓存
-     * 设置一个有效时间10分钟
+     * 设置一个有效时间10 day
      */
     Cache<String, String> localCache = CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.DAYS).build();
 
@@ -92,28 +90,12 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
 
     @Override
     public <T> T getContentObject(String code, Class<T> clazz) {
-        String value = getContent(code);
-        if (StringUtils.isNotBlank(value)) {
-            return JacksonUtils.jsonToPojo(value, clazz);
-        }
-
-        try {
-            return clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new OnexException(ErrorCode.PARAMS_GET_ERROR);
-        }
-    }
-
-    @Override
-    public <T> T getContentObject(String code, Class<T> clazz, T defaultObject) {
-        String value = getContent(code);
-        return JacksonUtils.jsonToPojo(value, clazz);
+        return JacksonUtils.jsonToPojo(getContent(code), clazz);
     }
 
     @Override
     public JsonNode getContentJsonNode(String code) {
-        String value = getContent(code);
-        return JacksonUtils.jsonToNode(value);
+        return JacksonUtils.jsonToNode(getContent(code));
     }
 
     @Override

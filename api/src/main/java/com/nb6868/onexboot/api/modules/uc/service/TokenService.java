@@ -29,10 +29,10 @@ public interface TokenService extends BaseService<TokenEntity> {
      * 生成token
      *
      * @param userId      用户ID
-     * @param loginConfig 登录配置
+     * @param loginTypeConfig 登录配置
      * @return result
      */
-    String createToken(Long userId, LoginTypeConfig loginConfig);
+    String createToken(Long userId, LoginTypeConfig loginTypeConfig);
 
     /**
      * token续期
