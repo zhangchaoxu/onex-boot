@@ -9,7 +9,7 @@ import com.nb6868.onexboot.common.util.bcrypt.BCryptPasswordEncoder;
  */
 public class PasswordUtils {
 
-    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final static BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     /**
      * 加密
@@ -18,28 +18,18 @@ public class PasswordUtils {
      * @return 返回加密字符串
      */
     public static String encode(String raw) {
-        return passwordEncoder.encode(raw);
+        return bCryptPasswordEncoder.encode(raw);
     }
-
 
     /**
      * 比较密码是否相等
      *
      * @param raw     明文密码
      * @param encoded 加密后密码
-     * @return true：成功    false：失败
+     * @return 匹配结果
      */
     public static boolean matches(String raw, String encoded) {
-        return passwordEncoder.matches(raw, encoded);
-    }
-
-
-    public static void main(String[] args) {
-        String str = "admin";
-        String password = encode(str);
-
-        System.out.println(password);
-        System.out.println(matches(str, password));
+        return bCryptPasswordEncoder.matches(raw, encoded);
     }
 
 }
