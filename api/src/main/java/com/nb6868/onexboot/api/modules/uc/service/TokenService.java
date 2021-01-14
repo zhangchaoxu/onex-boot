@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
 import com.nb6868.onexboot.common.service.BaseService;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginChannelCfg;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 
 /**
@@ -32,7 +32,7 @@ public interface TokenService extends BaseService<TokenEntity> {
      * @param loginConfig 登录配置
      * @return result
      */
-    String createToken(Long userId, LoginChannelCfg loginConfig);
+    String createToken(Long userId, LoginTypeConfig loginConfig);
 
     /**
      * token续期
@@ -58,6 +58,6 @@ public interface TokenService extends BaseService<TokenEntity> {
      * @param type   登录类型
      * @return result
      */
-    boolean deleteTokenByUserId(Long userId, Integer type);
+    boolean deleteTokenByUserId(Long userId, String type);
 
 }

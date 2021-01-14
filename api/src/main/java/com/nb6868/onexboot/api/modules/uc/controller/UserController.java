@@ -9,7 +9,6 @@ import com.nb6868.onexboot.api.common.util.AESUtils;
 import com.nb6868.onexboot.api.common.util.ExcelUtils;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dto.*;
-import com.nb6868.onexboot.api.modules.uc.entity.RoleUserEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.excel.UserExcel;
 import com.nb6868.onexboot.api.modules.uc.service.DeptService;
@@ -189,7 +188,8 @@ public class UserController {
     @PostMapping("loginEncrypt")
     @ApiOperation(value = "加密登录")
     @LogLogin
-    public Result<?> loginEncrypt(HttpServletRequest request, @RequestBody String loginEncrypted) {
+    @AccessControl
+    public Result<?> loginEncrypt(@RequestBody String loginEncrypted) {
         // 密文转json明文
         String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, "UTF-8"));
         // json明文转实体

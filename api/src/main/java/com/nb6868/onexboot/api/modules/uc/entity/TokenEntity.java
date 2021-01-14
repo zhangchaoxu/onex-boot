@@ -33,6 +33,6 @@ public class TokenEntity extends BaseEntity {
     /**
      * 类型
      */
-    private Integer type;
+    private String type;
 
 }

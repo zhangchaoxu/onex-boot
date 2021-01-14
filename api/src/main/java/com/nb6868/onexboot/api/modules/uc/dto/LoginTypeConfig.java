@@ -16,11 +16,11 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "登录渠道配置信息")
-public class LoginChannelCfg implements Serializable {
+public class LoginTypeConfig implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "登录类型")
-    private Integer type;
+    private String type;
 
     @JsonIgnore
     @ApiModelProperty(value = "首次登录强制修改密码")
@@ -72,17 +72,5 @@ public class LoginChannelCfg implements Serializable {
     @JsonIgnore
     @ApiModelProperty(value = "自动创建用户的角色ids")
     private String autoCreateUserRoleIds;
-
-    /**
-     * 根据type获得默认配置
-     * @param type
-     * @return
-     */
-    public static LoginChannelCfg getDefaultCfg(int type) {
-        // todo
-        LoginChannelCfg loginCfg = new LoginChannelCfg();
-        loginCfg.setType(type);
-        return loginCfg;
-    }
 
 }

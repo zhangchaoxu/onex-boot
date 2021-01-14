@@ -29,6 +29,6 @@ public class LoginChannel implements Serializable {
     private Boolean enable;
 
     @ApiModelProperty(value = "渠道配置")
-    private LoginChannelCfg cfg;
+    private LoginTypeConfig cfg;
 
 }

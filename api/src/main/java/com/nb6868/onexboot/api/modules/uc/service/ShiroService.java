@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
-import com.nb6868.onexboot.api.modules.uc.dto.LoginChannelCfg;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
@@ -47,7 +47,7 @@ public interface ShiroService {
      * @param type
      * @return
      */
-    LoginChannelCfg getLoginCfg(Integer type);
+    LoginTypeConfig getLoginCfg(Integer type);
 
     /**
      * 根据用户ID，查询用户

@@ -2,7 +2,7 @@ package com.nb6868.onexboot.api.modules.uc.service.impl;
 
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginChannelCfg;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.service.*;
@@ -105,8 +105,8 @@ public class ShiroServiceImpl implements ShiroService {
     }
 
     @Override
-    public LoginChannelCfg getLoginCfg(Integer type) {
-        return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginChannelCfg.class);
+    public LoginTypeConfig getLoginCfg(Integer type) {
+        return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginTypeConfig.class);
     }
 
     @Override
