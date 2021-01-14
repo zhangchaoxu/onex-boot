@@ -17,4 +17,11 @@ public interface RegionService extends CrudService<RegionEntity, RegionDTO> {
 
     List<RegionTreeDTO> treeList(Map<String, Object> params);
 
+    /**
+     * 通过id删除自身及子节点
+     * @param id
+     * @return 结果
+     */
+    boolean deleteById(Long id);
+
 }

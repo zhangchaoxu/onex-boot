@@ -1,10 +1,12 @@
 package com.nb6868.onexboot.api.modules.sys.entity;
 
-import com.nb6868.onexboot.common.pojo.BaseEntity;
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * 行政区域
@@ -14,9 +16,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("sys_region")
-public class RegionEntity extends BaseEntity {
-    private static final long serialVersionUID = 1L;
+public class RegionEntity implements Serializable {
 
+    /**
+     * 区域编号
+     */
+    @TableId(type = IdType.INPUT)
+    private Long id;
     /**
      * 上级区域编号,0为一级
      */
@@ -61,9 +67,5 @@ public class RegionEntity extends BaseEntity {
      * 边界坐标点,GCJ-02
      */
     private String polyline;
-    /**
-     * 下级节点数量
-     */
-    @TableField(exist = false)
-    private Integer childNum;
+
 }
