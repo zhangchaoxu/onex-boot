@@ -11,8 +11,6 @@ import com.nb6868.onexboot.common.validator.group.AddGroup;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import com.nb6868.onexboot.common.validator.group.UpdateGroup;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +39,7 @@ public class MailTplController {
 
     @GetMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("msg:mailTpl:list")
+    @RequiresPermissions("msg:mailTpl:info")
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<?> list = mailTplService.listDto(params);
         return new Result<>().success(list);
@@ -49,9 +47,7 @@ public class MailTplController {
 
     @GetMapping("page")
     @ApiOperation("分页")
-    @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "name", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "code", value = "code", paramType = "query", dataType = "String")})
-    @RequiresPermissions("msg:mailTpl:page")
+    @RequiresPermissions("msg:mailTpl:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<?> page = mailTplService.pageDto(params);
 

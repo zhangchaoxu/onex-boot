@@ -47,12 +47,11 @@ public class MenuController {
     MenuService menuService;
     @Autowired
     RoleMenuService roleMenuService;
-
     @Autowired
-    private ShiroService shiroService;
+    ShiroService shiroService;
 
     @GetMapping("userMenu")
-    @ApiOperation("用户菜单权限")
+    @ApiOperation("登录用户菜单权限")
     public Result<?> userMenu() {
         UserDetail user = SecurityUser.getUser();
         // 获取该用户所有menu
@@ -86,7 +85,7 @@ public class MenuController {
     }
 
     @GetMapping("userTree")
-    @ApiOperation("当前用户菜单")
+    @ApiOperation("登录用户菜单树")
     @ApiImplicitParam(name = "type", value = "菜单类型 0：菜单 1：按钮  null：全部", paramType = "query", dataType = "int")
     public Result<?> userTree(Integer type) {
         UserDetail user = SecurityUser.getUser();
@@ -101,16 +100,16 @@ public class MenuController {
         UserDetail user = SecurityUser.getUser();
         Set<String> set = shiroService.getUserPermissions(user);
 
-        return new Result<Set<String>>().success(set);
+        return new Result<>().success(set);
     }
 
     @GetMapping("roles")
-    @ApiOperation("登录用户权限范围")
+    @ApiOperation("登录用户角色范围")
     public Result<?> roles() {
         UserDetail user = SecurityUser.getUser();
         Set<String> set = shiroService.getUserRoles(user);
 
-        return new Result<Set<String>>().success(set);
+        return new Result<>().success(set);
     }
 
     @GetMapping("tree")
@@ -129,7 +128,7 @@ public class MenuController {
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         MenuDTO data = menuService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
-
+        // 赋值父菜单
         data.setParentMenuList(menuService.getParentList(data.getPid()));
 
         return new Result<>().success(data);
@@ -160,9 +159,10 @@ public class MenuController {
     @LogOperation("删除")
     @RequiresPermissions("uc:menu:delete")
     public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        // 包括自己和子菜单
+        // 获取级联菜单id，包括自身和子菜单
         List<Long> menuIds = menuService.getCascadeChildrenListByIds(Collections.singletonList(id));
-        menuService.logicDeleteByIds(menuIds);
+        // 然后删除
+        boolean result = menuService.logicDeleteByIds(menuIds);
 
         return new Result<>();
     }

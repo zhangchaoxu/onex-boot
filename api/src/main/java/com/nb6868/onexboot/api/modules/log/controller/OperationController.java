@@ -8,8 +8,6 @@ import com.nb6868.onexboot.api.modules.log.service.OperationService;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +38,7 @@ public class OperationController {
     @GetMapping("page")
 
     @ApiOperation("分页")
-    @ApiImplicitParams({@ApiImplicitParam(name = "status", value = "状态  0：失败    1：成功", paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "startCreateTime", value = "开始时间", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "endCreateTime", value = "结束时间", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "createName", value = "用户名", paramType = "query", dataType = "String")})
-    @RequiresPermissions("log:operation:page")
+    @RequiresPermissions("log:operation:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<OperationDTO> page = logOperationService.pageDto(params);
 
