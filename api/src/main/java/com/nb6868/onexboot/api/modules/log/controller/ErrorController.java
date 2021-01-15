@@ -38,7 +38,7 @@ public class ErrorController {
 
     @GetMapping("page")
     @ApiOperation("分页")
-   @RequiresPermissions("log:error:info")
+    @RequiresPermissions("log:error:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<ErrorDTO> page = logErrorService.pageDto(params);
 

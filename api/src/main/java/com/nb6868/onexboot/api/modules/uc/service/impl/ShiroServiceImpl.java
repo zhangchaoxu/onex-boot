@@ -25,17 +25,17 @@ import java.util.Set;
 public class ShiroServiceImpl implements ShiroService {
 
     @Autowired
-    private MenuService menuService;
+    MenuService menuService;
     @Autowired
-    private UserService userService;
+    UserService userService;
     @Autowired
-    private RoleService roleService;
+    RoleService roleService;
     @Autowired
-    private TokenService tokenService;
+    TokenService tokenService;
     @Autowired
-    private ParamService paramService;
+    ParamService paramService;
     @Autowired
-    private RoleDataScopeService roleDataScopeService;
+    RoleDataScopeService roleDataScopeService;
 
     @Value("${redis.open: false}")
     private boolean open;

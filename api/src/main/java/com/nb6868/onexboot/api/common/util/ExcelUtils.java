@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -30,18 +32,18 @@ import java.util.List;
  */
 public class ExcelUtils {
 
+    // [导出相关]
     /**
-     * Excel导出
+     * 下载excel
      *
-     * @param response  response
-     * @param fileName  文件名
-     * @param list      数据List
-     * @param pojoClass 对象Class
+     * @param response
+     * @param exportParams
+     * @param fileName
+     * @param list
+     * @param pojoClass
      */
-    public static void exportExcel(HttpServletResponse response, String fileName, Collection<?> list, Class<?> pojoClass) {
-        fileName += DateUtils.format(new Date(), "yyyyMMddHmmss");
-
-        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
+    public static void downloadExcel(HttpServletResponse response, String fileName, ExportParams exportParams, Class<?> pojoClass, Collection<?> list) {
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
         response.setCharacterEncoding("UTF-8");
         response.setHeader("content-Type", "application/vnd.ms-excel");
         try {
@@ -80,7 +82,32 @@ public class ExcelUtils {
         exportExcel(response, fileName, targetList, targetClass);
     }
 
+    /**
+     * Excel导出
+     *
+     * @param response  response
+     * @param fileName  文件名
+     * @param list      数据List
+     * @param pojoClass 对象Class
+     */
+    public static void exportExcel(HttpServletResponse response, String fileName, Collection<?> list, Class<?> pojoClass) {
+        fileName += DateUtils.format(new Date(), "yyyyMMddHmmss");
 
+        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("content-Type", "application/vnd.ms-excel");
+        try {
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xls");
+            ServletOutputStream out = response.getOutputStream();
+            workbook.write(out);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
+        }
+    }
+
+    // [导入相关]
     /**
      * Excel 导入 数据源IO流,不返回校验结果 导入 字段类型 Integer,Long,Double,Date,String,Boolean
      *
@@ -101,6 +128,15 @@ public class ExcelUtils {
     public static <T> List<T> importExcel(InputStream inputstream, Class<?> pojoClass, ImportParams params) {
         try {
             return ExcelImportUtil.importExcel(inputstream, pojoClass, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new OnexException(ErrorCode.EXCEL_IMPORT_ERROR, e);
+        }
+    }
+
+    public static <T> List<T> importExcel(File file, Class<?> pojoClass, ImportParams params) {
+        try {
+            return importExcel(new FileInputStream(file), pojoClass, params);
         } catch (Exception e) {
             e.printStackTrace();
             throw new OnexException(ErrorCode.EXCEL_IMPORT_ERROR, e);
