@@ -99,4 +99,6 @@ public interface BaseService<T> extends IService<T> {
      */
     boolean hasIdRecord(Serializable id);
 
+
+
 }

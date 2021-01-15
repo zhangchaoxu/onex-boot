@@ -63,6 +63,13 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
     }
 
     @Override
+    public List<?> listDto(Map<String, Object> params, Class<?> target) {
+        List<T> entityList = list(getWrapper("list", params));
+
+        return ConvertUtils.sourceToTarget(entityList, target);
+    }
+
+    @Override
     public List<D> listDto(Wrapper<T> queryWrapper) {
         List<T> entityList = list(queryWrapper);
 

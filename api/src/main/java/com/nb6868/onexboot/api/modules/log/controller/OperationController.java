@@ -36,7 +36,6 @@ public class OperationController {
     OperationService logOperationService;
 
     @GetMapping("page")
-
     @ApiOperation("分页")
     @RequiresPermissions("log:operation:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {

@@ -1,11 +1,14 @@
 package com.nb6868.onexboot.api.modules.crm.controller;
 
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.nb6868.onexboot.api.common.annotation.DataFilter;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.common.util.ExcelUtils;
 import com.nb6868.onexboot.api.modules.crm.dto.BusinessDTO;
 import com.nb6868.onexboot.api.modules.crm.dto.BusinessProductDTO;
 import com.nb6868.onexboot.api.modules.crm.excel.BusinessExcel;
+import com.nb6868.onexboot.api.modules.crm.service.BusinessProductService;
+import com.nb6868.onexboot.api.modules.crm.service.BusinessService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
@@ -13,8 +16,6 @@ import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import com.nb6868.onexboot.common.validator.group.UpdateGroup;
-import com.nb6868.onexboot.api.modules.crm.service.BusinessProductService;
-import com.nb6868.onexboot.api.modules.crm.service.BusinessService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -124,9 +125,13 @@ public class BusinessController {
     @LogOperation("导出")
     @RequiresPermissions("crm:business:export")
     public void export(@ApiIgnore @RequestParam Map<String, Object> params, HttpServletResponse response) {
-        List<BusinessDTO> list = businessService.listDto(params);
+        List<?> entityList = businessService.listDto(params, BusinessExcel.class);
 
-        ExcelUtils.exportExcelToTarget(response, "商机", list, BusinessExcel.class);
+        //List<BusinessExcel> list = businessService.listDto(params);
+
+        //return ConvertUtils.sourceToTarget(entityList, currentDtoClass());
+
+        ExcelUtils.downloadExcel(response, "商机", new ExportParams(), BusinessExcel.class, entityList);
     }
 
 }

@@ -36,6 +36,8 @@ public interface CrudService<T, D> extends BaseService<T> {
      */
     List<D> listDto(Map<String, Object> params);
 
+    List<?> listDto(Map<String, Object> params, Class<?> target);
+
     /**
      * 列表
      * @param queryWrapper 查询条件
