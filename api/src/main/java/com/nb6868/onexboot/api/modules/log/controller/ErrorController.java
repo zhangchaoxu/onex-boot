@@ -34,11 +34,11 @@ import java.util.Map;
 public class ErrorController {
 
     @Autowired
-    private ErrorService logErrorService;
+    ErrorService logErrorService;
 
     @GetMapping("page")
     @ApiOperation("分页")
-   @RequiresPermissions("log:error:page")
+   @RequiresPermissions("log:error:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<ErrorDTO> page = logErrorService.pageDto(params);
 

@@ -34,11 +34,11 @@ import java.util.Map;
 public class LoginController {
 
     @Autowired
-    private LoginService logLoginService;
+    LoginService logLoginService;
 
     @GetMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("log:login:page")
+    @RequiresPermissions("log:login:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<LoginDTO> page = logLoginService.pageDto(params);
 
