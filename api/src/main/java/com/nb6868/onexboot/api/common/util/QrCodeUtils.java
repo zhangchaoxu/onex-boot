@@ -1,34 +1,42 @@
 package com.nb6868.onexboot.api.common.util;
 
-import com.google.zxing.EncodeHintType;
+import com.google.common.collect.Maps;
 import com.google.zxing.Writer;
-import com.google.zxing.WriterException;
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * qrcode 工具类
  * see {https://github.com/kenglxn/QRGen/}
+ * {@link com.github.binarywang.utils.qrcode.QrcodeUtils}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
 public class QrCodeUtils {
 
     protected final HashMap<EncodeHintType, Object> hints = new HashMap<>();
 
     protected Writer qrWriter;
 
+    /**
+     * 二维码长宽尺寸
+     */
     protected int width = 125;
-
     protected int height = 125;
 
     /**
@@ -37,42 +45,35 @@ public class QrCodeUtils {
      */
     protected String imageFormat = "PNG";
 
-    protected final String text;
+    /**
+     * 二维码文字
+     */
+    protected String text;
 
     protected MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig();
 
-    protected QrCodeUtils(String text) {
+    public QrCodeUtils(String text) {
         this.text = text;
         qrWriter = new QRCodeWriter();
     }
 
     /**
      * Create a QR code from the given text.
-     *
-     * @param text the text to encode to a new QRCode, this may fail if the text is too large. <br>
-     * @return the QRCode object    <br>
      */
-    public static QrCodeUtils from(String text) {
+    public static QrCodeUtils text(String text) {
         return new QrCodeUtils(text);
     }
 
     /**
      * Overrides the imageFormat from its default
-     *
-     * @param imageFormat image format
-     * @return the current QRCode object
      */
-    public QrCodeUtils to(String imageFormat) {
+    public QrCodeUtils format(String imageFormat) {
         this.imageFormat = imageFormat;
         return this;
     }
 
     /**
      * Overrides the size of the qr from its default 125x125
-     *
-     * @param width  the width in pixels
-     * @param height the height in pixels
-     * @return the current QRCode object
      */
     public QrCodeUtils withSize(int width, int height) {
         this.width = width;
@@ -81,11 +82,16 @@ public class QrCodeUtils {
     }
 
     /**
+     * set color
+     */
+    public QrCodeUtils withColor(int onColor, int offColor) {
+        matrixToImageConfig = new MatrixToImageConfig(onColor, offColor);
+        return this;
+    }
+
+    /**
      * Overrides the default charset by supplying a {@link com.google.zxing.EncodeHintType#CHARACTER_SET} hint to {@link
      * com.google.zxing.qrcode.QRCodeWriter#encode}
-     *
-     * @param charset the charset as string, e.g. UTF-8
-     * @return the current QRCode object
      */
     public QrCodeUtils withCharset(String charset) {
         return withHint(EncodeHintType.CHARACTER_SET, charset);
@@ -94,9 +100,6 @@ public class QrCodeUtils {
     /**
      * Overrides the default error correction by supplying a {@link com.google.zxing.EncodeHintType#ERROR_CORRECTION} hint to
      * {@link com.google.zxing.qrcode.QRCodeWriter#encode}
-     *
-     * @param level the error correction level to use by {@link com.google.zxing.qrcode.QRCodeWriter#encode}
-     * @return the current QRCode object
      */
     public QrCodeUtils withErrorCorrection(ErrorCorrectionLevel level) {
         return withHint(EncodeHintType.ERROR_CORRECTION, level);
@@ -104,102 +107,85 @@ public class QrCodeUtils {
 
     /**
      * Sets hint to {@link com.google.zxing.qrcode.QRCodeWriter#encode}
-     *
-     * @param hintType the hintType to set
-     * @param value    the concrete value to set
-     * @return the current QRCode object
      */
     public QrCodeUtils withHint(EncodeHintType hintType, Object value) {
         hints.put(hintType, value);
         return this;
     }
 
-    public File file() {
-        File file;
+    public BitMatrix createMatrix(String text) {
         try {
-            file = createTempFile();
-            MatrixToImageWriter.writeToPath(createMatrix(text), imageFormat, file.toPath(), matrixToImageConfig);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create QR image from text due to underlying exception", e);
+            return qrWriter.encode(new String(text.getBytes(StandardCharsets.UTF_8),StandardCharsets.ISO_8859_1), com.google.zxing.BarcodeFormat.QR_CODE, width, height, hints);
+        } catch (WriterException e) {
+            log.error("QrCodeUtils", e);
+            return null;
         }
-
-        return file;
     }
-
-    public File file(String name) {
-        File file;
-        try {
-            file = createTempFile(name);
-            MatrixToImageWriter.writeToPath(createMatrix(text), imageFormat, file.toPath(), matrixToImageConfig);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create QR image from text due to underlying exception", e);
-        }
-
-        return file;
-    }
-
-    protected void writeToStream(OutputStream stream) throws IOException, WriterException {
-        MatrixToImageWriter.writeToStream(createMatrix(text), imageFormat, stream, matrixToImageConfig);
-    }
-
-    public QrCodeUtils withColor(int onColor, int offColor) {
-        matrixToImageConfig = new MatrixToImageConfig(onColor, offColor);
-        return this;
-    }
-
-    //
 
     /**
-     * returns a {@link ByteArrayOutputStream} representation of the QR code
-     *
-     * @return qrcode as stream
+     * write to stream
+     * @param stream
+     * @return
      */
-    public ByteArrayOutputStream stream() {
+    protected boolean writeToStream(OutputStream stream) {
+        try {
+            MatrixToImageWriter.writeToStream(createMatrix(text), imageFormat, stream, matrixToImageConfig);
+        } catch (IOException ioe) {
+            log.error("QrCodeUtils", ioe);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * write to file
+     * @param file
+     * @return
+     */
+    public boolean writeToFile(File file) {
+        try {
+            MatrixToImageWriter.writeToPath(createMatrix(text), imageFormat, file.toPath(), matrixToImageConfig);
+        } catch (IOException ioe) {
+            log.error("QrCodeUtils", ioe);
+            return false;
+        }
+        return true;
+    }
+
+    public ByteArrayOutputStream toStream() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            writeToStream(stream);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create QR image from text due to underlying exception", e);
-        }
+        boolean result = writeToStream(stream);
+        return result ? stream : null;
+    }
 
-        return stream;
+    public File toFile() {
+        File file;
+        try {
+            file = File.createTempFile("QRCode", "." + imageFormat.toLowerCase());
+            file.deleteOnExit();
+        } catch (IOException ioe) {
+            log.error("QrCodeUtils", ioe);
+            return null;
+        }
+        boolean result = writeToFile(file);
+        return result ? file : null;
     }
 
     /**
-     * writes a representation of the QR code to the supplied  {@link OutputStream}
-     *
-     * @param stream the {@link OutputStream} to write QR Code to
+     * 解码二维码内容
      */
-    public void writeTo(OutputStream stream) {
+    public static String decodeQrcode(File file) {
         try {
-            writeToStream(stream);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create QR image from text due to underlying exception", e);
+            BufferedImage image = ImageIO.read(file);
+            Binarizer binarizer = new HybridBinarizer(new BufferedImageLuminanceSource(image));
+            BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
+            Map<DecodeHintType, Object> hints = Maps.newEnumMap(DecodeHintType.class);
+            hints.put(DecodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
+            return new MultiFormatReader().decode(binaryBitmap, hints).getText();
+        } catch (IOException | NotFoundException e) {
+            log.error("QrCodeUtils", e);
+            return null;
         }
-    }
-
-    public BitMatrix createMatrix(String text) throws WriterException {
-        return qrWriter.encode(text, com.google.zxing.BarcodeFormat.QR_CODE, width, height, hints);
-    }
-
-    protected File createTempFile() throws IOException {
-        File file = File.createTempFile("QRCode", "." + imageFormat.toLowerCase());
-        file.deleteOnExit();
-        return file;
-    }
-
-    protected File createTempFile(String name) throws IOException {
-        File file = File.createTempFile(name, "." + imageFormat.toLowerCase());
-        file.deleteOnExit();
-        return file;
-    }
-
-    public Writer getQrWriter() {
-        return qrWriter;
-    }
-
-    public void setQrWriter(Writer qrWriter) {
-        this.qrWriter = qrWriter;
     }
 
 }
