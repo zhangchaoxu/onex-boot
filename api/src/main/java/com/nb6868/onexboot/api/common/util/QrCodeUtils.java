@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * qrcode 工具类
+ * QrCode 工具类
  * see {https://github.com/kenglxn/QRGen/}
  * {@link com.github.binarywang.utils.qrcode.QrcodeUtils}
  *
