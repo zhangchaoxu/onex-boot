@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class JuheSmsService extends AbstractSmsService {
         RestTemplate restTemplate = new RestTemplate();
         String result;
         try {
-            result = restTemplate.getForObject(JUHE_SMS_SEND_URL, String.class, smsProps.getAppKey(), phoneNumber, smsProps.getTplId(), URLEncoder.encode(paramJuhe.toString(), "UTF-8"));
+            result = restTemplate.getForObject(JUHE_SMS_SEND_URL, String.class, smsProps.getAppKey(), phoneNumber, smsProps.getTplId(), URLEncoder.encode(paramJuhe.toString(), StandardCharsets.UTF_8.name()));
         } catch (Exception e) {
             // 接口调用失败
             log.error("JuheSms", e);

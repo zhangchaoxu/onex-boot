@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @Api(tags = "短地址接口")
@@ -34,15 +35,15 @@ public class TShorturlController {
         UserDetail user = SecurityUser.getUser();
         ShorturlEntity entity = shorturlService.getByCode(code);
         if (null == entity) {
-            response.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset='utf-8'");
             response.getWriter().print("not found");
         } else if (entity.getStatus() != 1) {
-            response.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset='utf-8'");
             response.getWriter().print("not open");
         } else {
-            response.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset='utf-8'");
             response.getWriter().print(user.getUsername());
             // 301 redirect

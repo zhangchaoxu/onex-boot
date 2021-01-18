@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -29,7 +30,7 @@ public class TemplateUtils {
         }
         // 模板
         try {
-            Template template = new Template(templateName, new StringReader(raw), null, "utf-8");
+            Template template = new Template(templateName, new StringReader(raw), null, StandardCharsets.UTF_8.name());
             return FreeMarkerTemplateUtils.processTemplateIntoString(template, params);
         } catch (IOException | TemplateException e) {
             e.printStackTrace();

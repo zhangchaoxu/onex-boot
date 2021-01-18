@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -44,10 +45,10 @@ public class ExcelUtils {
      */
     public static void downloadExcel(HttpServletResponse response, String fileName, ExportParams exportParams, Class<?> pojoClass, Collection<?> list) {
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setHeader("content-Type", "application/vnd.ms-excel");
         try {
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xls");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
             ServletOutputStream out = response.getOutputStream();
             workbook.write(out);
             out.flush();
@@ -94,10 +95,10 @@ public class ExcelUtils {
         fileName += DateUtils.format(new Date(), "yyyyMMddHmmss");
 
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setHeader("content-Type", "application/vnd.ms-excel");
         try {
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xls");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
             ServletOutputStream out = response.getOutputStream();
             workbook.write(out);
             out.flush();
