@@ -7,6 +7,7 @@ import org.apache.commons.codec.binary.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 
 /**
  * AES 加解密工具类
@@ -34,7 +35,7 @@ public class AESUtils {
             kgen.init(128);
             Cipher cipher = Cipher.getInstance(ALGORITHMSTR);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(), "AES"));
-            byte[] b = cipher.doFinal(data.getBytes("utf-8"));
+            byte[] b = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             // 采用base64算法进行转码,避免出现中文乱码
             return Base64.encodeBase64String(b);
         } catch (Exception e) {

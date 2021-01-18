@@ -21,7 +21,7 @@ import java.util.Random;
  */
 public class DingTalkSignatureUtil {
 
-    private static final String DEFAULT_ENCODING = "UTF-8";
+    private static final String DEFAULT_ENCODING = StandardCharsets.UTF_8.name();
     private static final String ALGORITHM = "HmacSHA256";
     private static final String NEW_LINE = "\n";
 

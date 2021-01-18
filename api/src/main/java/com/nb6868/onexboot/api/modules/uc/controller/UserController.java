@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -191,7 +192,7 @@ public class UserController {
     @AccessControl
     public Result<?> loginEncrypt(@RequestBody String loginEncrypted) {
         // 密文转json明文
-        String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, "UTF-8"));
+        String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, StandardCharsets.UTF_8.name()));
         // json明文转实体
         LoginRequest loginRequest = JacksonUtils.jsonToPojo(loginRaw, LoginRequest.class);
         // 效验数据

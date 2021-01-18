@@ -23,6 +23,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -51,7 +52,7 @@ public class EmailUtils {
         sender.setPort(props.getSenderHostPort());
         sender.setUsername(props.getSenderUsername());
         sender.setPassword(props.getSenderPassword());
-        sender.setDefaultEncoding("Utf-8");
+        sender.setDefaultEncoding(StandardCharsets.UTF_8.name());
         Properties p = new Properties();
         p.setProperty("mail.smtp.timeout", "10000");
         p.setProperty("mail.smtp.auth", "false");
@@ -79,7 +80,7 @@ public class EmailUtils {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             //设置utf-8编码
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
             messageHelper.setFrom(emailProps.getSenderUsername());
             //收件人
             messageHelper.setTo(StringUtils.split(request.getMailTo(), ","));
