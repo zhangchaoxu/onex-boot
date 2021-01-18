@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.api.common.util;
 
 import com.google.common.collect.Maps;
-import com.google.zxing.Writer;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
@@ -9,12 +8,14 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class QrCodeUtils {
     /**
      * Overrides the imageFormat from its default
      */
-    public QrCodeUtils format(String imageFormat) {
+    public QrCodeUtils withImageFormat(String imageFormat) {
         this.imageFormat = imageFormat;
         return this;
     }
@@ -82,27 +83,11 @@ public class QrCodeUtils {
     }
 
     /**
-     * set color
+     * Sets image config to {@link com.google.zxing.client.j2se.MatrixToImageConfig}
      */
-    public QrCodeUtils withColor(int onColor, int offColor) {
-        matrixToImageConfig = new MatrixToImageConfig(onColor, offColor);
+    public QrCodeUtils withImageConfig(MatrixToImageConfig imageConfig) {
+        this.matrixToImageConfig = imageConfig;
         return this;
-    }
-
-    /**
-     * Overrides the default charset by supplying a {@link com.google.zxing.EncodeHintType#CHARACTER_SET} hint to {@link
-     * com.google.zxing.qrcode.QRCodeWriter#encode}
-     */
-    public QrCodeUtils withCharset(String charset) {
-        return withHint(EncodeHintType.CHARACTER_SET, charset);
-    }
-
-    /**
-     * Overrides the default error correction by supplying a {@link com.google.zxing.EncodeHintType#ERROR_CORRECTION} hint to
-     * {@link com.google.zxing.qrcode.QRCodeWriter#encode}
-     */
-    public QrCodeUtils withErrorCorrection(ErrorCorrectionLevel level) {
-        return withHint(EncodeHintType.ERROR_CORRECTION, level);
     }
 
     /**
@@ -124,8 +109,6 @@ public class QrCodeUtils {
 
     /**
      * write to stream
-     * @param stream
-     * @return
      */
     protected boolean writeToStream(OutputStream stream) {
         try {
@@ -139,8 +122,6 @@ public class QrCodeUtils {
 
     /**
      * write to file
-     * @param file
-     * @return
      */
     public boolean writeToFile(File file) {
         try {
