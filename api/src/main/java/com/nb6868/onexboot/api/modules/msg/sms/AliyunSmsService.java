@@ -23,7 +23,8 @@ import java.util.Map;
 
 /**
  * 阿里云短信服务
- * see {https://help.aliyun.com/document_detail/101414.html}
+ * see https://help.aliyun.com/document_detail/101414.html
+ * see https://help.aliyun.com/document_detail/101485.htm
  *
  * @author Charles zhangchaoxu@gmail.com
  */
