@@ -2,8 +2,6 @@ package com.nb6868.onexboot.api.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.nb6868.onexboot.api.modules.sys.dao.ParamDao;
 import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.entity.ParamEntity;
@@ -15,13 +13,13 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 参数管理
@@ -31,11 +29,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, ParamDTO> implements ParamService {
 
-    /**
-     * 本地缓存
-     * 设置一个有效时间10 day
-     */
-    Cache<String, String> localCache = CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.DAYS).build();
+    @Autowired
+    Cache paramCache;
 
     @Override
     public QueryWrapper<ParamEntity> getWrapper(String method, Map<String, Object> params) {
@@ -47,17 +42,14 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean saveDto(ParamDTO dto) {
-        localCache.put("param_" + dto.getCode(), dto.getContent());
-        return super.saveDto(dto);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean updateDto(ParamDTO dto) {
-        localCache.put("param_" + dto.getCode(), dto.getContent());
-        return super.updateDto(dto);
+    protected void afterSaveOrUpdateDto(boolean ret, ParamDTO dto, ParamEntity existedEntity, int type) {
+        super.afterSaveOrUpdateDto(ret, dto, existedEntity, type);
+        // 删除原缓存
+        if (existedEntity != null) {
+            paramCache.evictIfPresent(existedEntity.getCode());
+        }
+        // 插入新缓存
+        paramCache.put(dto.getCode(), dto.getContent());
     }
 
     @Override
@@ -71,19 +63,13 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
         return ConvertUtils.sourceToTarget(entity, ParamDTO.class);
     }
 
-
     @Override
     public String getContent(String code) {
-        // 先从缓存中读取
-        String content = localCache.getIfPresent("param_" + code);
-        if (StringUtils.isEmpty(content)) {
+        // 先从缓存读取
+        String content = paramCache.get(code, String.class);
+        if (ObjectUtils.isEmpty(content)) {
             content = query().select("content").eq("code",code).last(Const.LIMIT_ONE).oneOpt().map(ParamEntity::getContent).orElse(null);
-            // 塞回缓存
-            if (StringUtils.isNotEmpty(content)) {
-                localCache.put("param_" + code, content);
-            } else {
-                localCache.invalidate("param_" + code);
-            }
+            paramCache.put(code, content);
         }
         return content;
     }
@@ -105,10 +91,10 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
 
     @Override
     public boolean clearCache(String key) {
-        if (StringUtils.isNotBlank(key)) {
-            localCache.invalidate(key);
+        if (ObjectUtils.isEmpty(key)) {
+            paramCache.invalidate();
         } else {
-            localCache.invalidateAll();
+            paramCache.evictIfPresent(key);
         }
         return true;
     }

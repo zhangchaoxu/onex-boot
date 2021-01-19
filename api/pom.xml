@@ -37,6 +37,11 @@
             <artifactId>common</artifactId>
             <version>1.3.0</version>
         </dependency>
+        <!-- springboot cache -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
         <!-- dynamic.datasource -->
         <dependency>
             <groupId>com.baomidou</groupId>
