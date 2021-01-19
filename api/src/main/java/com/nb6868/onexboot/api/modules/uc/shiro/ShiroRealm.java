@@ -53,33 +53,6 @@ public class ShiroRealm extends AuthorizingRealm {
     private long tokenExpire;
 
     /**
-     * 授权(验证权限时调用)
-     * 只有当需要检测用户权限的时候才会调用此方法,例如RequiresPermissions/checkRole/checkPermission
-     */
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        UserDetail user = (UserDetail) principals.getPrimaryPrincipal();
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        if (user.isAnon()) {
-            // 匿名用户
-            Set<String> roles = new HashSet<>();
-            roles.add(UcConst.ROLE_CODE_ANON);
-            info.setRoles(roles);
-        } else {
-            // 根据配置文件中的role和permission设置SimpleAuthorizationInfo
-            if (shiroRole) {
-                // 塞入角色列表
-                info.setRoles(shiroService.getUserRoles(user));
-            }
-            if (shiroPermissions) {
-                // 塞入权限列表
-                info.setStringPermissions(shiroService.getUserPermissions(user));
-            }
-        }
-        return info;
-    }
-
-    /**
      * 认证(登录时调用)
      * 先doGetAuthenticationInfo,再doGetAuthorizationInfo
      */
@@ -105,10 +78,10 @@ public class ShiroRealm extends AuthorizingRealm {
 
         if (userEntity == null) {
             // 账号不存在
-            throw new OnexException(MessageUtils.getMessage(ErrorCode.ACCOUNT_NOT_EXIST));
+            throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
         } else if (userEntity.getStatus() != UcConst.UserStatusEnum.ENABLED.value()) {
             // 账号锁定
-            throw new LockedAccountException(MessageUtils.getMessage(ErrorCode.ACCOUNT_LOCK));
+            throw new OnexException(ErrorCode.ACCOUNT_LOCK);
         }
 
         // 转换成UserDetail对象
@@ -124,6 +97,33 @@ public class ShiroRealm extends AuthorizingRealm {
         }
 
         return new SimpleAuthenticationInfo(userDetail, accessToken, getName());
+    }
+
+    /**
+     * 授权(验证权限时调用)
+     * 只有当需要检测用户权限的时候才会调用此方法,例如RequiresPermissions/checkRole/checkPermission
+     */
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        UserDetail user = (UserDetail) principals.getPrimaryPrincipal();
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        if (user.isAnon()) {
+            // 匿名用户
+            Set<String> roles = new HashSet<>();
+            roles.add(UcConst.ROLE_CODE_ANON);
+            info.setRoles(roles);
+        } else {
+            // 根据配置文件中的role和permission设置SimpleAuthorizationInfo
+            if (shiroRole) {
+                // 塞入角色列表
+                info.setRoles(shiroService.getUserRoles(user));
+            }
+            if (shiroPermissions) {
+                // 塞入权限列表
+                info.setStringPermissions(shiroService.getUserPermissions(user));
+            }
+        }
+        return info;
     }
 
 }
