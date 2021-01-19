@@ -59,6 +59,7 @@ OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如
 * [vant](https://youzan.github.io/vant/)
 * [UniApp](https://uniapp.dcloud.io/)
 * [JeeCMS](http://www.jeecms.com/)
+* [MCMS](https://github.com/ming-soft/MCMS)
 
 ## 数据来源
 * [行政区域](https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov/)
