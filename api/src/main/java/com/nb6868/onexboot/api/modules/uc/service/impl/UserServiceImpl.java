@@ -316,7 +316,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updatePassword(Long id, String newPassword) {
-        return update().eq("id", id).set("password", new BCryptPasswordEncoder().encode(newPassword)).update(new UserEntity());
+        return update().eq("id", id).set("password", PasswordUtils.encode(newPassword)).update(new UserEntity());
     }
 
     @Override
