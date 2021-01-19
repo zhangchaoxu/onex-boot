@@ -25,4 +25,7 @@ token: 21666299b80a4275a15f4b7dcea42df8
   "buyerMobile": "13252421988"
 }
 
+#### GET param content
+GET http://localhost:18181/api/sys/param/getContentByCodes?codes=SYS_CFG
+
 

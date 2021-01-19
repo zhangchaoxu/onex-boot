@@ -1,14 +1,13 @@
 package com.nb6868.onexboot.api.modules.uc.service.impl;
 
-import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.api.modules.uc.service.CaptchaService;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.nb6868.onexboot.common.exception.OnexException;
 import com.wf.captcha.*;
 import com.wf.captcha.base.Captcha;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.TimeUnit;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 验证码
@@ -19,11 +18,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
-    /**
-     * 本地缓存
-     * 设置一个有效时间10分钟
-     */
-    Cache<String, String> localCache = CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.MINUTES).build();
+    @Autowired
+    Cache captchaCache;
 
     @Override
     public Captcha createCaptcha(String uuid, int width, int height, String type) {
@@ -49,7 +45,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         }
 
         // 保存到缓存
-        setCache(uuid, captcha.text().toLowerCase());
+        captchaCache.put(uuid, captcha.text().toLowerCase());
         return captcha;
     }
 
@@ -62,22 +58,14 @@ public class CaptchaServiceImpl implements CaptchaService {
      */
     @Override
     public boolean validate(String uuid, String code) {
-        // 获取验证码
-        String captcha = getCache(uuid);
-        // 效验成功
+        // 从缓存获取验证码
+        String captcha = captchaCache.get(uuid, String.class);
+        if (ObjectUtils.isEmpty(captcha)) {
+            return false;
+        }
+        // 取出后,从缓存中删除
+        captchaCache.evictIfPresent(uuid);
         return code.equalsIgnoreCase(captcha);
     }
 
-    private void setCache(String key, String value) {
-        localCache.put(key, value);
-    }
-
-    private String getCache(String key) {
-        String captcha = localCache.getIfPresent(key);
-        // 删除验证码
-        if (captcha != null) {
-            localCache.invalidate(key);
-        }
-        return captcha;
-    }
 }
