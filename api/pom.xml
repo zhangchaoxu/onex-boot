@@ -17,9 +17,7 @@
         <shiro.version>1.7.0</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.2.0</easypoi.version>
-        <aliyun.core.version>4.5.17</aliyun.core.version>
         <aliyun.oss.version>3.11.2</aliyun.oss.version>
-        <aliyun.dysmsapi.version>2.1.0</aliyun.dysmsapi.version>
         <jwt.version>3.12.0</jwt.version>
         <thumbnailator.version>0.4.13</thumbnailator.version>
         <weixin.pay.version>4.0.0</weixin.pay.version>
@@ -69,18 +67,6 @@
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-spring-boot-starter</artifactId>
             <version>${easypoi.version}</version>
-        </dependency>
-        <!-- aliyun -->
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>${aliyun.core.version}</version>
-        </dependency>
-        <!-- aliyun sms -->
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
-            <version>${aliyun.dysmsapi.version}</version>
         </dependency>
         <!-- aliyun oss -->
         <dependency>
@@ -138,7 +124,7 @@
         </dependency>
     </dependencies>
 
-    <!-- 单个jar
+    <!-- 单个jar -->
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -157,9 +143,9 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>-->
+    </build>
 
-    <!-- 分离jar/lib/resources -->
+    <!-- 分离jar/lib/resources
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -232,6 +218,6 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build> -->
 
 </project>

@@ -90,7 +90,6 @@ public class AliyunSmsService extends AbstractSmsService {
             mailLogService.save(mailLog);
             return mailLog.getStatus() == Const.ResultEnum.SUCCESS.value();
         } catch (ClientException e) {
-            // 接口调用失败
             log.error("AliyunSms", e);
             mailLog.setStatus(Const.ResultEnum.FAIL.value());
             mailLog.setResult(e.getMessage());
