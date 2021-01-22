@@ -78,7 +78,7 @@ public class JuheSmsService extends AbstractSmsService {
         mailLog.setResult(result);
         mailLog.setStatus((int) json.get("error_code") == 0 ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
         mailLogService.save(mailLog);
-        return (int) json.get("error_code") == 0;
+        return mailLog.getStatus() == Const.ResultEnum.SUCCESS.value();
     }
 
     @Override
