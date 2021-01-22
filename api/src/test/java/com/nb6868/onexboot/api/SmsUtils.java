@@ -1,14 +1,31 @@
 package com.nb6868.onexboot.api;
 
+import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
+import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.util.ParamParseUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class AliyunSmsUtils {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class SmsUtils {
+
+    @Autowired
+    MailLogService mailLogService;
 
     @Test
     void sendSms() {
+        MailSendRequest mailSendRequest = new MailSendRequest();
+        mailSendRequest.setMailTo("13252421988");
+        mailSendRequest.setTplCode("1273468852126146561");
+        mailSendRequest.setContentParam("{\"code\":\"" + 123456 + "\"}");
+        mailLogService.send(mailSendRequest);
+    }
+
+    @Test
+    void sendAliyunSms() {
         RestTemplate restTemplate = new RestTemplate();
         String accessKeyId = "";
         String accessSecret = "";
@@ -43,5 +60,6 @@ public class AliyunSmsUtils {
         String result = restTemplate.getForObject(builder.build(true).toUri(), String.class);
         System.out.println(result);
     }
+
 
 }
