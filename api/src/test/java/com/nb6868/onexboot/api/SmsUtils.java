@@ -18,6 +18,7 @@ public class SmsUtils {
     @Test
     void sendSms() {
         MailSendRequest mailSendRequest = new MailSendRequest();
+        mailSendRequest.setTplType("sms");
         mailSendRequest.setMailTo("13252421988");
         mailSendRequest.setTplCode("1273468852126146561");
         mailSendRequest.setContentParam("{\"code\":\"" + 123456 + "\"}");
