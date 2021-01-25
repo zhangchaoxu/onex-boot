@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 消息模板
@@ -36,7 +37,7 @@ public class MailTplDTO extends BaseDTO {
 	private String platform;
 
 	@ApiModelProperty(value = "类型")
-	@NotBlank(message = "类型不能为空", groups = DefaultGroup.class)
+	@NotNull(message = "类型不能为空", groups = DefaultGroup.class)
 	private Integer type;
 
 	@ApiModelProperty(value = "标题")
