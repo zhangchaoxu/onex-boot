@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 /**
  * 消息记录
  *
@@ -29,6 +31,9 @@ public class MailLogDTO extends BaseDTO {
 	@ApiModelProperty(value = "收件人")
 	private String mailTo;
 
+	@ApiModelProperty(value = "抄送")
+	private String mailCc;
+
 	@ApiModelProperty(value = "标题")
 	private String subject;
 
@@ -46,5 +51,8 @@ public class MailLogDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "发送结果")
 	private String result;
+
+	@ApiModelProperty(value = "有效期结束时间")
+	private Date validEndTime;
 
 }

@@ -2,9 +2,12 @@ package com.nb6868.onexboot.api.modules.msg.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nb6868.onexboot.common.pojo.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
+
+import java.util.Date;
 
 /**
  * 消息记录
@@ -30,6 +33,10 @@ public class MailLogEntity extends BaseEntity {
      * 发送者
      */
 	private String mailFrom;
+	/**
+	 * 抄送
+	 */
+	private String mailCc;
     /**
      * 收件人
      */
@@ -58,4 +65,9 @@ public class MailLogEntity extends BaseEntity {
      * 发送结果
      */
 	private String result;
+
+	/**
+	 * 有效期结束时间
+	 */
+	private Date validEndTime;
 }

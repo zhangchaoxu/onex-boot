@@ -21,7 +21,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "邮件发送请求")
 public class MailSendRequest implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "模板编码", required = true)
     @NotBlank(message = "模板编码不能为空", groups = AddGroup.class)
