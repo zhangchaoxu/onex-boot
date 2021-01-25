@@ -2,15 +2,14 @@ package com.nb6868.onexboot.api.modules.msg.email;
 
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
+import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
+import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
+import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
-import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
-import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
-import com.nb6868.onexboot.api.modules.msg.service.MailTplService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +30,12 @@ import java.util.Properties;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-@Log4j2
+@Slf4j
 @Component
 public class EmailUtils {
 
     @Autowired
     MailLogService mailLogService;
-    @Autowired
-    MailTplService mailTplService;
 
     /**
      * 实现邮件发送器
@@ -63,19 +60,18 @@ public class EmailUtils {
     /**
      * 发送邮件
      *
+     * @param mailTpl 发送模板
      * @param request 邮件发送请求
-     * @return true：成功   false：失败
+     * @return 发送结果
      */
-    public boolean sendMail(MailSendRequest request) {
-        MailTplEntity mailTpl = mailTplService.getByTypeAndCode(request.getTplType(), request.getTplCode());
-        AssertUtils.isNull(mailTpl, "找不到对应的消息模板:" + request.getTplCode());
-
-        String title = TemplateUtils.getTemplateContent("mailTitle", mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
-        String content = TemplateUtils.getTemplateContent("mailContent", mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()));
-
+    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
+        // 电子邮件
         EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class, null);
         AssertUtils.isNull(emailProps, "模板为定义正确的电子邮件配置");
-
+        // 组装标题和内容
+        String title = TemplateUtils.getTemplateContent("mailTitle", mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
+        String content = TemplateUtils.getTemplateContent("mailContent", mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()));
+        // 创建发送器
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
@@ -110,9 +106,8 @@ public class EmailUtils {
         }
 
         MailLogEntity mailLog = new MailLogEntity();
-        mailLog.setTplId(mailTpl.getId());
+        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
-        mailLog.setTplChannel(mailTpl.getChannel());
         mailLog.setMailFrom(emailProps.getSenderUsername());
         mailLog.setMailTo(request.getMailTo());
         mailLog.setSubject(title);

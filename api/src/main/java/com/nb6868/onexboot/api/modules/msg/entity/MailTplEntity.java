@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.modules.msg.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.nb6868.onexboot.common.pojo.BaseIdStringEntity;
+import com.nb6868.onexboot.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
@@ -15,8 +15,12 @@ import org.apache.ibatis.type.Alias;
 @EqualsAndHashCode(callSuper = false)
 @TableName("msg_mail_tpl")
 @Alias("msg_mail_tpl")
-public class MailTplEntity extends BaseIdStringEntity {
+public class MailTplEntity extends BaseEntity {
 
+	/**
+	 * 编码
+	 */
+	private String code;
     /**
      * 名称
      */
@@ -25,6 +29,10 @@ public class MailTplEntity extends BaseIdStringEntity {
      * 渠道 短信sms 电邮email 微信模板消息wx_template 站内信notice
      */
 	private String channel;
+	/**
+	 * 平台
+	 */
+	private String platform;
 	/**
 	 * 类型 1验证码 2状态通知 3营销消息
 	 */

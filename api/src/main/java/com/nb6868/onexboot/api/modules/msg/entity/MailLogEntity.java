@@ -19,13 +19,9 @@ public class MailLogEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
     /**
-     * 模板ID
+     * 模板编码
      */
-	private String tplId;
-    /**
-     * 模板渠道
-     */
-	private String tplChannel;
+	private String tplCode;
     /**
      * 消息类型
      */

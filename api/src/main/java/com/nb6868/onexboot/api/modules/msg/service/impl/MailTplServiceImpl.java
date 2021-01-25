@@ -32,12 +32,8 @@ public class MailTplServiceImpl extends CrudServiceImpl<MailTplDao, MailTplEntit
     }
 
     @Override
-    public MailTplEntity getByTypeAndCode(String type, String code) {
-        return query()
-                .eq("type", type)
-                .eq("code", code)
-                .last(Const.LIMIT_ONE)
-                .one();
+    public MailTplEntity getByCode(String code) {
+        return query().eq("code", code).last(Const.LIMIT_ONE).one();
     }
 
     @Override
