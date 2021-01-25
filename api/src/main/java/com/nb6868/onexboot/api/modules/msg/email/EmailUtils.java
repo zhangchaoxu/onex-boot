@@ -8,14 +8,14 @@ import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
+import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -45,10 +45,10 @@ public class EmailUtils {
      */
     private JavaMailSenderImpl createMailSender(EmailProps props) {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setHost(props.getSenderHost());
-        sender.setPort(props.getSenderHostPort());
-        sender.setUsername(props.getSenderUsername());
-        sender.setPassword(props.getSenderPassword());
+        sender.setHost(props.getHost());
+        sender.setPort(props.getPort());
+        sender.setUsername(props.getUsername());
+        sender.setPassword(props.getPassword());
         sender.setDefaultEncoding(StandardCharsets.UTF_8.name());
         Properties p = new Properties();
         p.setProperty("mail.smtp.timeout", "10000");
@@ -65,35 +65,35 @@ public class EmailUtils {
      * @return 发送结果
      */
     public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
-        // 电子邮件
+        // 电子邮件配置
         EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class, null);
         AssertUtils.isNull(emailProps, "模板为定义正确的电子邮件配置");
         // 组装标题和内容
         String title = TemplateUtils.getTemplateContent("mailTitle", mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
         String content = TemplateUtils.getTemplateContent("mailContent", mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()));
-        // 创建发送器
+        // 创建发送器和邮件消息
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             //设置utf-8编码
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
-            messageHelper.setFrom(emailProps.getSenderUsername());
-            //收件人
+            messageHelper.setFrom(emailProps.getUsername());
+            // 收件人
             messageHelper.setTo(StringUtils.split(request.getMailTo(), ","));
-            //抄送
+            // 抄送
             messageHelper.setCc(StringUtils.split(request.getMailCc(), ","));
             // 主题
             messageHelper.setSubject(title);
             //邮件正文
             messageHelper.setText(content, true);
             // 附件
-            if (ObjectUtils.isNotEmpty(request.getAttachments())) {
+            if (!ObjectUtils.isEmpty(request.getAttachments())) {
                 for (File attachment : request.getAttachments()) {
                     messageHelper.addAttachment(MimeUtility.encodeWord(attachment.getName()), attachment);
                 }
             }
         } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new OnexException("构建邮件发送器失败");
+            throw new OnexException("发送电子邮件失败");
         }
 
         Const.ResultEnum status = Const.ResultEnum.SUCCESS;
@@ -108,7 +108,7 @@ public class EmailUtils {
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
-        mailLog.setMailFrom(emailProps.getSenderUsername());
+        mailLog.setMailFrom(mailSender.getUsername());
         mailLog.setMailTo(request.getMailTo());
         mailLog.setSubject(title);
         mailLog.setContent(content);

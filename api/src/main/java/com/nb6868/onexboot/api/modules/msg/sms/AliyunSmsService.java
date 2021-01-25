@@ -8,10 +8,11 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.ParamParseUtils;
-import com.nb6868.onexboot.common.util.SpringContextUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -26,22 +27,17 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
+@Component
 public class AliyunSmsService extends AbstractSmsService {
 
-    private final java.text.SimpleDateFormat simpleDateFormat;
-
-    public AliyunSmsService() {
-        // 这里一定要设置GMT时区
-        simpleDateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        simpleDateFormat.setTimeZone(new java.util.SimpleTimeZone(0, "GMT"));
-    }
+    @Autowired
+    MailLogService mailLogService;
 
     @Override
     public boolean sendSms(MailTplEntity mailTpl, String phoneNumbers, String params) {
         SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
-        MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setMailTo(phoneNumbers);
         mailLog.setTplCode(mailTpl.getCode());
@@ -52,6 +48,8 @@ public class AliyunSmsService extends AbstractSmsService {
         mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), JacksonUtils.jsonToMap(params)));
 
         Map<String, String> paras = new HashMap<>();
+        java.text.SimpleDateFormat simpleDateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        simpleDateFormat.setTimeZone(new java.util.SimpleTimeZone(0, "GMT"));
         // 1. 系统参数
         paras.put("SignatureMethod", "HMAC-SHA1");
         paras.put("SignatureNonce", java.util.UUID.randomUUID().toString());

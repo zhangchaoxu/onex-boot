@@ -39,7 +39,7 @@ public class MailTplController {
 
     @GetMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("msg:mailTpl:info")
+    @RequiresPermissions("msg:mailTpl:list")
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<?> list = mailTplService.listDto(params);
         return new Result<>().success(list);
@@ -47,7 +47,7 @@ public class MailTplController {
 
     @GetMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("msg:mailTpl:info")
+    @RequiresPermissions("msg:mailTpl:page")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<?> page = mailTplService.pageDto(params);
 

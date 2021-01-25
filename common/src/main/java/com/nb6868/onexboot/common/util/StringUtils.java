@@ -1,9 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * 字符处理工具类
@@ -66,6 +63,25 @@ public class StringUtils {
             }
         }
         return stringList;
+    }
+
+    /**
+     * 拆分文本
+     *
+     * @param sequence  字符串
+     * @param separator 分隔符
+     * @return 拆分文本
+     */
+    public static String[] split(final CharSequence sequence, String separator) {
+        if (isNotBlank(sequence)) {
+            return sequence.toString().trim().split(separator);
+        } else {
+            return new String[]{};
+        }
+    }
+
+    public static String[] split(final CharSequence sequence) {
+        return split(sequence, SEPARATOR);
     }
 
     /**
