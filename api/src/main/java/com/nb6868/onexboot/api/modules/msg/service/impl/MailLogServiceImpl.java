@@ -14,18 +14,15 @@ import com.nb6868.onexboot.api.modules.msg.email.EmailUtils;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
-import com.nb6868.onexboot.api.modules.msg.sms.AbstractSmsService;
+import com.nb6868.onexboot.api.modules.msg.service.MailTplService;
 import com.nb6868.onexboot.api.modules.msg.sms.SmsFactory;
-import com.nb6868.onexboot.api.modules.msg.sms.SmsProps;
 import com.nb6868.onexboot.api.modules.uc.wx.WxProp;
-import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.modules.msg.service.MailTplService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
@@ -54,8 +51,7 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
     @Override
     public QueryWrapper<MailLogEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<MailLogEntity>(new QueryWrapper<>(), params)
-                .eq("tplId", "tpl_id")
-                .eq("tplChannel", "tpl_channel")
+                .eq("tplCode", "tpl_code")
                 .eq("tplType", "tpl_type")
                 .eq("mailTo", "mail_to")
                 .eq("status", "status")
@@ -72,21 +68,10 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
     }
 
     @Override
-    public MailLogEntity findLastLog(Long tplId, String mailTo) {
-        return query().eq("tpl_id", tplId)
-                .eq("mail_to", mailTo)
-                .eq("status", 1)
-                .eq("consume_status", Const.BooleanEnum.FALSE.value())
-                .orderByDesc("create_time")
-                .last(Const.LIMIT_ONE)
-                .one();
-    }
-
-    @Override
     public MailLogEntity findLastLogByTplCode(String tplCode, String mailTo) {
         return query().eq("tpl_code", tplCode)
                 .eq("mail_to", mailTo)
-                .eq("status", 1)
+                .eq("status", Const.BooleanEnum.TRUE.value())
                 .eq("consume_status", Const.BooleanEnum.FALSE.value())
                 .orderByDesc("create_time")
                 .last(Const.LIMIT_ONE)
@@ -98,28 +83,17 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
      */
     @Override
     public boolean send(MailSendRequest request) {
+        MailTplEntity mailTpl = mailTplService.getByCode(request.getTplCode());
+        AssertUtils.isNull(mailTpl, "未定义的消息模板:" + request.getTplCode());
         if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.EMAIL.name())) {
-            // 电子邮件
-            return emailUtils.sendMail(request);
+            // 邮件
+            return emailUtils.sendMail(mailTpl, request);
         } else if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.SMS.name())) {
             // 短信
-            MailTplEntity mailTpl = mailTplService.getByTypeAndCode(request.getTplType(), request.getTplCode());
-            AssertUtils.isNull(mailTpl, "找不到对应的消息模板:" + request.getTplCode());
-
-            // 短信配置
-            SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
-            AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
-
-            // 获取短信服务
-            AbstractSmsService service = SmsFactory.build(smsProps.getPlatform());
-            // 发送短信
-            service.sendSms(mailTpl, request.getMailTo(), request.getContentParam());
-            return true;
+            // 获取短信服务，发送短信
+            return SmsFactory.build(mailTpl.getPlatform()).sendSms(mailTpl, request.getMailTo(), request.getContentParam());
         } else if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.WX_MP_TEMPLATE.name())) {
             // 微信模板消息
-            MailTplEntity mailTpl = mailTplService.getByTypeAndCode(request.getTplType(), request.getTplCode());
-            AssertUtils.isNull(mailTpl, "找不到对应的消息模板:" + request.getTplCode());
-
             WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
             AssertUtils.isNull(wxProp, "消息模板配置错误");
 
@@ -165,9 +139,8 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 mailLog.setStatus(status.value());
                 mailLog.setResult(result);
                 mailLog.setContent(content);
-                mailLog.setTplId(mailTpl.getId());
+                mailLog.setTplCode(mailTpl.getCode());
                 mailLog.setTplType(mailTpl.getType());
-                mailLog.setTplChannel(mailTpl.getChannel());
                 mailLog.setContentParams(request.getContentParam());
                 mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
                 save(mailLog);
@@ -175,9 +148,6 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
             return true;
         } else if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.WX_MA_SUBSCRIBE.name())) {
             // 微信小程序模板消息
-            MailTplEntity mailTpl = mailTplService.getByTypeAndCode(request.getTplType(), request.getTplCode());
-            AssertUtils.isNull(mailTpl, "找不到对应的消息模板:" + request.getTplCode());
-
             WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
             AssertUtils.isNull(wxProp, "消息模板配置错误");
 
@@ -223,9 +193,8 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 mailLog.setStatus(status.value());
                 mailLog.setResult(result);
                 mailLog.setContent(content);
-                mailLog.setTplId(mailTpl.getId());
+                mailLog.setTplCode(mailTpl.getCode());
                 mailLog.setTplType(mailTpl.getType());
-                mailLog.setTplChannel(mailTpl.getChannel());
                 mailLog.setContentParams(request.getContentParam());
                 mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
                 save(mailLog);

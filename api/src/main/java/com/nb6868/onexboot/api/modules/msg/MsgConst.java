@@ -35,7 +35,7 @@ public interface MsgConst {
     enum MailTypeEnum {
 
         /**
-         * 极光推送
+         * 支持的消息类型定义
          */
         SMS("短信"),
         EMAIL("电子邮件"),

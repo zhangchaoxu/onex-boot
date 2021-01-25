@@ -17,11 +17,8 @@ import lombok.EqualsAndHashCode;
 public class MailLogDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "模板ID")
-	private String tplId;
-
-	@ApiModelProperty(value = "模板渠道")
-	private String tplChannel;
+	@ApiModelProperty(value = "模板编码")
+	private String tplCode;
 
 	@ApiModelProperty(value = "消息类型")
 	private Integer tplType;

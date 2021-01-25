@@ -53,9 +53,8 @@ public class JuheSmsService extends AbstractSmsService {
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setMailTo(phoneNumber);
         mailLog.setContent(content);
-        mailLog.setTplId(mailTpl.getId());
+        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
-        mailLog.setTplChannel(mailTpl.getChannel());
         mailLog.setContentParams(params);
         mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
 

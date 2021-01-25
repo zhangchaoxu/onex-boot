@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,15 +44,14 @@ public class AliyunSmsService extends AbstractSmsService {
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setMailTo(phoneNumbers);
-        mailLog.setTplId(mailTpl.getId());
+        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
-        mailLog.setTplChannel(mailTpl.getChannel());
         mailLog.setContentParams(params);
         mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
         // 封装短信实际内容
         mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), JacksonUtils.jsonToMap(params)));
 
-        java.util.Map<String, String> paras = new java.util.HashMap<>();
+        Map<String, String> paras = new HashMap<>();
         // 1. 系统参数
         paras.put("SignatureMethod", "HMAC-SHA1");
         paras.put("SignatureNonce", java.util.UUID.randomUUID().toString());
@@ -69,8 +69,9 @@ public class AliyunSmsService extends AbstractSmsService {
         paras.put("TemplateCode", smsProps.getTplId());
         paras.put("OutId", "123");
         // 3. 去除签名关键字Key
-        if (paras.containsKey("Signature"))
+        if (paras.containsKey("Signature")) {
             paras.remove("Signature");
+        }
         String sortedQueryString = ParamParseUtils.paramToQueryString(paras);
         String sign = ParamParseUtils.sign(smsProps.getAppSecret() + "&", "GET" + "&" + ParamParseUtils.urlEncode("/") + "&" + ParamParseUtils.urlEncode(sortedQueryString), "HmacSHA1");
 
@@ -79,6 +80,7 @@ public class AliyunSmsService extends AbstractSmsService {
         RestTemplate restTemplate = new RestTemplate();
         String result;
         try {
+            // 直接get RestTemplate会将参数直接做urlencode,需要使用UriComponentsBuilder先build一下
             result = restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl("http://dysmsapi.aliyuncs.com/?Signature=" + ParamParseUtils.urlEncode(sign) + "&" + sortedQueryString).build(true).toUri(), String.class);
         } catch (Exception e) {
             // 接口调用失败

@@ -14,7 +14,6 @@ import java.io.Serializable;
 @Data
 @ApiModel(value = "电子邮件配置信息")
 public class EmailProps implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "发送平台")
     private String platform;
