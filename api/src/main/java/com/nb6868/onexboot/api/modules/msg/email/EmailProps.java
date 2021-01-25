@@ -15,19 +15,16 @@ import java.io.Serializable;
 @ApiModel(value = "电子邮件配置信息")
 public class EmailProps implements Serializable {
 
-    @ApiModelProperty(value = "发送平台")
-    private String platform;
-
-    @ApiModelProperty(value = "发件Host")
-    private String senderHost;
+    @ApiModelProperty(value = "发件人Host")
+    private String host;
 
     @ApiModelProperty(value = "发件端口")
-    private int senderHostPort;
+    private int port;
 
     @ApiModelProperty(value = "发件邮箱")
-    private String senderUsername;
+    private String username;
 
     @ApiModelProperty(value = "发件密码")
-    private String senderPassword;
+    private String password;
 
 }
