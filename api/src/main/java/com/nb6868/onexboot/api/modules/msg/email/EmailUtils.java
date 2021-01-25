@@ -7,6 +7,7 @@ import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
@@ -65,7 +66,7 @@ public class EmailUtils {
      * @return 发送结果
      */
     public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
-        // 电子邮件配置
+        // 序列化电子邮件配置
         EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class, null);
         AssertUtils.isNull(emailProps, "模板为定义正确的电子邮件配置");
         // 组装标题和内容
@@ -75,18 +76,12 @@ public class EmailUtils {
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
-            //设置utf-8编码
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
             messageHelper.setFrom(emailProps.getUsername());
-            // 收件人
             messageHelper.setTo(StringUtils.split(request.getMailTo(), ","));
-            // 抄送
             messageHelper.setCc(StringUtils.split(request.getMailCc(), ","));
-            // 主题
             messageHelper.setSubject(title);
-            //邮件正文
             messageHelper.setText(content, true);
-            // 附件
             if (!ObjectUtils.isEmpty(request.getAttachments())) {
                 for (File attachment : request.getAttachments()) {
                     messageHelper.addAttachment(MimeUtility.encodeWord(attachment.getName()), attachment);
@@ -110,12 +105,16 @@ public class EmailUtils {
         mailLog.setTplType(mailTpl.getType());
         mailLog.setMailFrom(mailSender.getUsername());
         mailLog.setMailTo(request.getMailTo());
+        mailLog.setMailCc(request.getMailCc());
         mailLog.setSubject(title);
         mailLog.setContent(content);
         mailLog.setStatus(status.value());
         mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
+        // 设置有效时间
+        if (mailTpl.getTimeLimit() > 0) {
+            mailLog.setValidEndTime(DateUtils.addDateSeconds(DateUtils.now(), mailTpl.getTimeLimit()));
+        }
         mailLogService.save(mailLog);
-
         return status == Const.ResultEnum.SUCCESS;
     }
 
