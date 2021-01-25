@@ -23,10 +23,6 @@ import java.util.List;
 public class MailSendRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "消息类型", required = true)
-    @NotBlank(message = "消息类型不能为空", groups = AddGroup.class)
-    private String tplType;
-
     @ApiModelProperty(value = "模板编码", required = true)
     @NotBlank(message = "模板编码不能为空", groups = AddGroup.class)
     private String tplCode;

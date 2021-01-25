@@ -85,14 +85,14 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
     public boolean send(MailSendRequest request) {
         MailTplEntity mailTpl = mailTplService.getByCode(request.getTplCode());
         AssertUtils.isNull(mailTpl, "未定义的消息模板:" + request.getTplCode());
-        if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.EMAIL.name())) {
+        if (MsgConst.MailTypeEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 邮件
             return emailUtils.sendMail(mailTpl, request);
-        } else if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.SMS.name())) {
+        } else if (MsgConst.MailTypeEnum.SMS.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 短信
             // 获取短信服务，发送短信
             return SmsFactory.build(mailTpl.getPlatform()).sendSms(mailTpl, request.getMailTo(), request.getContentParam());
-        } else if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.WX_MP_TEMPLATE.name())) {
+        } else if (MsgConst.MailTypeEnum.WX_MP_TEMPLATE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信模板消息
             WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
             AssertUtils.isNull(wxProp, "消息模板配置错误");
@@ -146,7 +146,7 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 save(mailLog);
             }
             return true;
-        } else if (request.getTplType().equalsIgnoreCase(MsgConst.MailTypeEnum.WX_MA_SUBSCRIBE.name())) {
+        } else if (MsgConst.MailTypeEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信小程序模板消息
             WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
             AssertUtils.isNull(wxProp, "消息模板配置错误");
