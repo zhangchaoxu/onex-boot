@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "后台登录配置")
-public class LoginConfigAdmin implements Serializable {
+public class LoginAdminConfig implements Serializable {
 
     @ApiModelProperty(value = "开放注册")
     private boolean register;

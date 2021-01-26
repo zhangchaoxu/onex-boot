@@ -7,7 +7,7 @@ import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.excel.ParamExcel;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginConfigAdmin;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginAdminConfig;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Kv;
@@ -77,6 +77,23 @@ public class ParamController {
         return new Result<>().success(JacksonUtils.jsonToMap(content));
     }
 
+    @GetMapping("getLoginAdmin")
+    @ApiOperation("获得后台登录配置")
+    @AccessControl
+    public Result<?> getLoginAdmin() {
+        LoginAdminConfig loginConfigAdmin = paramService.getContentObject(UcConst.LOGIN_ADMIN, LoginAdminConfig.class);
+        AssertUtils.isNull(loginConfigAdmin, "未找到后台登录配置");
+
+        if (loginConfigAdmin.isUsernamePasswordLogin()) {
+            loginConfigAdmin.setUsernamePasswordLoginConfig(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name(), LoginTypeConfig.class));
+        }
+        if (loginConfigAdmin.isMobileSmscodeLogin()) {
+            loginConfigAdmin.setMobileSmscodeLoginConfig(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name(), LoginTypeConfig.class));
+        }
+
+        return new Result<>().success(loginConfigAdmin);
+    }
+
     @GetMapping("getContentByCodes")
     @ApiOperation("通过code获取对应参数的content")
     @AccessControl
@@ -85,21 +102,7 @@ public class ParamController {
         Kv kv = Kv.init();
         for (String code : codeList) {
             String content = paramService.getContent(code);
-            if (UcConst.LOGIN_CONFIG_ADMIN.equalsIgnoreCase(code)) {
-                // 用户登录信息
-                LoginConfigAdmin loginConfigAdmin = JacksonUtils.jsonToPojo(content, LoginConfigAdmin.class);
-                if (null != loginConfigAdmin) {
-                    if (loginConfigAdmin.isUsernamePasswordLogin()) {
-                        loginConfigAdmin.setUsernamePasswordLoginConfig(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name(), LoginTypeConfig.class));
-                    }
-                    if (loginConfigAdmin.isMobileSmscodeLogin()) {
-                        loginConfigAdmin.setMobileSmscodeLoginConfig(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name(), LoginTypeConfig.class));
-                    }
-                }
-                kv.set(code, loginConfigAdmin);
-            } else {
-                kv.set(code, JacksonUtils.jsonToMap(content));
-            }
+            kv.set(code, JacksonUtils.jsonToMap(content));
         }
         return new Result<>().success(kv);
     }
