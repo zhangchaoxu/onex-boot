@@ -15,14 +15,10 @@ public interface UcConst {
      * 匿名用户token
      */
     String TOKEN_ANON = "00000000000000000000000000000000";
-
-
-    String LOGIN_CFG_ADMIN = "LOGIN_CFG_ADMIN";
-
     /**
      * 管理平台登录配置
      */
-    String LOGIN_CONFIG_ADMIN = "LOGIN_CONFIG_ADMIN";
+    String LOGIN_ADMIN = "LOGIN_ADMIN";
 
     /**
      * 登录配置前缀
