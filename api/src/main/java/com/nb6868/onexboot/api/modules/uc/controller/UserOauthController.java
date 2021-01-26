@@ -255,4 +255,24 @@ public class UserOauthController {
         return new Result<>().success(kv);
     }
 
+    /**
+     * 钉钉扫码授权登录，通过code登录
+     * see https://ding-doc.dingtalk.com/document/app/scan-qr-code-to-log-on-to-third-party-websites
+     */
+    @PostMapping("/dingtalkLoginByCode")
+    @ApiOperation("钉钉扫码授权登录")
+    @LogLogin
+    @AccessControl
+    public Result<?> dingtalkLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
+        LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "ADMIN_DINGTALK_SCAN", LoginTypeConfig.class);
+        AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+
+        // 获得登录配置
+        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
+        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+
+        // todo 钉钉接口处理流程
+        return new Result<>();
+    }
+
 }
