@@ -22,10 +22,6 @@ import java.io.Serializable;
 public class OauthLoginByCodeRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "登录类型", required = true)
-    @NotBlank(message = "登录类型")
-    private String type;
-
     @ApiModelProperty(value = "配置信息编码", required = true)
     @NotBlank(message = "配置信息编码")
     private String paramCode = UcConst.WX_CFG_MP;
