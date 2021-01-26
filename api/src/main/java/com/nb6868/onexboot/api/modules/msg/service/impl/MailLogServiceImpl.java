@@ -53,7 +53,8 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
         return new WrapperUtils<MailLogEntity>(new QueryWrapper<>(), params)
                 .eq("tplCode", "tpl_code")
                 .eq("tplType", "tpl_type")
-                .eq("mailTo", "mail_to")
+                .like("mailTo", "mail_to")
+                .like("mailCc", "mail_cc")
                 .eq("status", "status")
                 .like("content", "content")
                 .getQueryWrapper();

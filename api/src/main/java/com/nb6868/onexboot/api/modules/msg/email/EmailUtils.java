@@ -5,7 +5,6 @@ import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
-import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
@@ -18,11 +17,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -67,39 +64,15 @@ public class EmailUtils {
      */
     public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
         // 序列化电子邮件配置
-        EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class, null);
-        AssertUtils.isNull(emailProps, "模板为定义正确的电子邮件配置");
+        EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class);
+        AssertUtils.isNull(emailProps, "电子邮件配置参数异常");
         // 组装标题和内容
         String title = TemplateUtils.getTemplateContent("mailTitle", mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
         String content = TemplateUtils.getTemplateContent("mailContent", mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()));
         // 创建发送器和邮件消息
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
-        try {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
-            messageHelper.setFrom(emailProps.getUsername());
-            messageHelper.setTo(StringUtils.split(request.getMailTo(), ","));
-            messageHelper.setCc(StringUtils.split(request.getMailCc(), ","));
-            messageHelper.setSubject(title);
-            messageHelper.setText(content, true);
-            if (!ObjectUtils.isEmpty(request.getAttachments())) {
-                for (File attachment : request.getAttachments()) {
-                    messageHelper.addAttachment(MimeUtility.encodeWord(attachment.getName()), attachment);
-                }
-            }
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new OnexException("发送电子邮件失败");
-        }
-
-        Const.ResultEnum status = Const.ResultEnum.SUCCESS;
-        //发送邮件
-        try {
-            mailSender.send(mimeMessage);
-        } catch (Exception e) {
-            status = Const.ResultEnum.FAIL;
-            log.error("send error", e);
-        }
-
+        // 保存邮件记录
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
@@ -108,14 +81,34 @@ public class EmailUtils {
         mailLog.setMailCc(request.getMailCc());
         mailLog.setSubject(title);
         mailLog.setContent(content);
-        mailLog.setStatus(status.value());
         mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
         // 设置有效时间
         if (mailTpl.getTimeLimit() > 0) {
             mailLog.setValidEndTime(DateUtils.addDateSeconds(DateUtils.now(), mailTpl.getTimeLimit()));
         }
+        try {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
+            messageHelper.setFrom(emailProps.getUsername());
+            messageHelper.setTo(StringUtils.split(request.getMailTo()));
+            messageHelper.setCc(StringUtils.split(request.getMailCc()));
+            messageHelper.setSubject(title);
+            messageHelper.setText(content, true);
+            // 附件
+            if (!ObjectUtils.isEmpty(request.getAttachments())) {
+                for (File attachment : request.getAttachments()) {
+                    messageHelper.addAttachment(MimeUtility.encodeWord(attachment.getName()), attachment);
+                }
+            }
+            //发送邮件
+            mailSender.send(mimeMessage);
+            // 保存记录
+            mailLog.setStatus(Const.ResultEnum.SUCCESS.value());
+        } catch (Exception e) {
+            log.error("send error", e);
+            mailLog.setStatus(Const.ResultEnum.FAIL.value());
+        }
         mailLogService.save(mailLog);
-        return status == Const.ResultEnum.SUCCESS;
+        return mailLog.getStatus() == Const.ResultEnum.SUCCESS.value();
     }
 
 }
