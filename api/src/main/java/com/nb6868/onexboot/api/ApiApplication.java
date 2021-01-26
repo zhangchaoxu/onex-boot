@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * @author Charles zhangchaoxu@gmail.com
  */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
-@ComponentScan(nameGenerator = SpringBeanNameGenerator.class)
+@ComponentScan(basePackages = {"com.nb6868.onexboot.common.**", "com.nb6868.onexboot.api.**"}, nameGenerator = SpringBeanNameGenerator.class)
 @MapperScan(basePackages="com.nb6868.onexboot.api.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)
 @EnableAsync
 public class ApiApplication extends SpringBootServletInitializer {
