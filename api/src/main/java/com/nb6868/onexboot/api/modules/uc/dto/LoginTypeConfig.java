@@ -36,10 +36,6 @@ public class LoginTypeConfig implements Serializable {
     private long expire = 604800L;
 
     @JsonIgnore
-    @ApiModelProperty(value = "短信验证码有效毫秒长")
-    private long smsCodeValidTime = 300000L;
-
-    @JsonIgnore
     @ApiModelProperty(value = "自动延期")
     private boolean renewalToken = true;
 

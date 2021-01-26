@@ -142,7 +142,8 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                 throw new OnexException(ErrorCode.SMS_CODE_ERROR);
             } else {
                 // 验证码正确
-                if (DateUtils.timeDiff(lastSmsLog.getCreateTime()) > loginTypeConfig.getSmsCodeValidTime()) {
+                // 校验过期时间
+                if (lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date())) {
                     throw new OnexException(ErrorCode.SMS_CODE_EXPIRED);
                 }
                 // 将短信消费掉
