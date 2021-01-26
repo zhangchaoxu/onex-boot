@@ -141,9 +141,6 @@ public class UserOauthController {
     public Result<?> oauthWxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_USER_INFO", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
-        // 获得登录配置
-        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
-        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录
         WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
@@ -188,9 +185,6 @@ public class UserOauthController {
     public Result<?> oauthWxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_CODE", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
-        // 获得登录配置
-        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
-        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
         WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
@@ -227,9 +221,6 @@ public class UserOauthController {
     public Result<?> wxMaLoginByPhone(@Validated @RequestBody OauthWxMaLoginByCodeAndPhone request) throws WxErrorException {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_PHONE", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
-        // 获得登录配置
-        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
-        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
         WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
@@ -266,10 +257,6 @@ public class UserOauthController {
     public Result<?> dingtalkLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "ADMIN_DINGTALK_SCAN", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
-
-        // 获得登录配置
-        JsonNode oauthCfg = paramService.getContentJsonNode(request.getParamCode());
-        AssertUtils.isNull(oauthCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // todo 钉钉接口处理流程
         return new Result<>();

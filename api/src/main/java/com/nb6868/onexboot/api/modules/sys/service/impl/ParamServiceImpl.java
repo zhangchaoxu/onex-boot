@@ -6,12 +6,8 @@ import com.nb6868.onexboot.api.modules.sys.dao.ParamDao;
 import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.entity.ParamEntity;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
-import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
-import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
-import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +15,7 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,11 +31,9 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
 
     @Override
     public QueryWrapper<ParamEntity> getWrapper(String method, Map<String, Object> params) {
-        UserDetail user = SecurityUser.getUser();
         return new WrapperUtils<ParamEntity>(new QueryWrapper<>(), params)
                 .like("code", "code")
-                .getQueryWrapper()
-                .eq(user.getType() != UcConst.UserTypeEnum.ADMIN.value(), "type", 1);
+                .getQueryWrapper();
     }
 
     @Override
@@ -53,14 +48,8 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
     }
 
     @Override
-    public ParamDTO getByCode(String code) {
-        UserDetail user = SecurityUser.getUser();
-        ParamEntity entity = query()
-                // .eq(user.getType() != UserTypeEnum.ADMIN.value(), "type", 1)
-                .eq("code", code)
-                .last(Const.LIMIT_ONE)
-                .one();
-        return ConvertUtils.sourceToTarget(entity, ParamDTO.class);
+    public ParamEntity getByCode(String code) {
+        return query().eq("code", code).last(Const.LIMIT_ONE).one();
     }
 
     @Override
@@ -75,8 +64,8 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
     }
 
     @Override
-    public <T> T getContentObject(String code, Class<T> clazz) {
-        return JacksonUtils.jsonToPojo(getContent(code), clazz);
+    public Map<String, Object> getContentMap(String code) {
+        return JacksonUtils.jsonToMap(getContent(code));
     }
 
     @Override
@@ -85,8 +74,14 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
     }
 
     @Override
-    public void updateContentByCode(String code, String content) {
-        update().set("content", content).eq("code", code);
+    public Map<String, Object> getCombineContentMap(String code) {
+        ParamEntity entity = getByCode(code);
+        return null == entity ? new HashMap<>() : JacksonUtils.combineJson(entity.getContent(), entity.getContentPri());
+    }
+
+    @Override
+    public <T> T getContentObject(String code, Class<T> clazz) {
+        return JacksonUtils.jsonToPojo(getContent(code), clazz);
     }
 
     @Override

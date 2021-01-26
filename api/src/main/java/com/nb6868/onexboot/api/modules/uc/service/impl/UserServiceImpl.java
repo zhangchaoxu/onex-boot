@@ -218,10 +218,10 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
 
     @Override
     public Result<?> register(RegisterRequest request) {
-        LoginAdminConfig loginCfg = paramService.getContentObject(UcConst.LOGIN_ADMIN, LoginAdminConfig.class);
-        AssertUtils.isEmpty(loginCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        Map<String, Object> loginAdminConfig = paramService.getContentMap(UcConst.LOGIN_ADMIN);
+        AssertUtils.isNull(loginAdminConfig, "未找到后台登录配置");
 
-        AssertUtils.isFalse(loginCfg.isRegister(), "未开放注册");
+        AssertUtils.isFalse((boolean) loginAdminConfig.get("register"), "未开放注册");
 
         // 操作结果
         int resultCode = 0;
@@ -258,10 +258,10 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
 
     @Override
     public Result<?> changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
-        LoginAdminConfig loginAdminConfig = paramService.getContentObject(UcConst.LOGIN_ADMIN, LoginAdminConfig.class);
-        AssertUtils.isEmpty(loginAdminConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        Map<String, Object> loginAdminConfig = paramService.getContentMap(UcConst.LOGIN_ADMIN);
+        AssertUtils.isNull(loginAdminConfig, "未找到后台登录配置");
 
-        AssertUtils.isFalse(loginAdminConfig.isForgetPassword(), "未开放修改密码功能");
+        AssertUtils.isFalse((boolean) loginAdminConfig.get("forgetPassword"), "未开放修改密码功能");
 
         // 操作结果
         int resultCode = 0;

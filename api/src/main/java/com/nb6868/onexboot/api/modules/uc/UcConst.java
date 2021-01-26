@@ -196,8 +196,8 @@ public interface UcConst {
         ADMIN_MOBILE_PWD,
         // 后台手机短信登录
         ADMIN_MOBILE_SMSCODE,
-        // 后台微信登录
-        ADMIN_WECHAT,
+        // 后台微信扫码登录
+        ADMIN_WECHAT_SCAN,
         // 后台钉钉扫码登录
         ADMIN_DINGTALK_SCAN,
         // APP帐号密码登录

@@ -21,13 +21,17 @@ public class ParamEntity extends BaseEntity {
      */
     private String code;
     /**
-     * 类型   0：系统参数   1：非系统参数
+     * 类型
      */
     private Integer type;
     /**
-     * 参数值
+     * 内容
      */
     private String content;
+    /**
+     * 内容私有
+     */
+    private String contentPri;
     /**
      * 备注
      */
