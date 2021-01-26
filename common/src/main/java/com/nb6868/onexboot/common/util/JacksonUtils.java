@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -204,6 +205,21 @@ public class JacksonUtils {
             log.error(e.getMessage());
             return defaultValue;
         }
+    }
+
+    /**
+     * 合并两个json
+     * @param content1
+     * @param content2
+     * @return
+     */
+    public static Map<String, Object> combineJson(String content1, String content2) {
+        Map<String, Object> map1 = jsonToMap(content1, new HashMap<>());
+        Map<String, Object> map2 = jsonToMap(content2, new HashMap<>());
+        Map<String, Object> combineMap = new HashMap<>();
+        combineMap.putAll(map1);
+        combineMap.putAll(map2);
+        return combineMap;
     }
 
 
