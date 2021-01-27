@@ -3,7 +3,7 @@ package com.nb6868.onexboot.api.modules.sys.controller;
 import com.nb6868.onexboot.api.modules.uc.service.CaptchaService;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.StringUtils;
+import com.nb6868.onexboot.common.util.IdUtils;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,10 +20,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
- * 验证码接口
+ * 图形验证码
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -37,49 +36,50 @@ public class CaptchaController {
     CaptchaService captchaService;
 
     /**
-     * base64的图形验证码
+     * 验证码机制是将验证码的内容和对应的uuid的对应关系存入缓存,然后验证的时候从缓存中去匹配
+     * uuid不应该由前端生成,否则容易伪造和被攻击
      * 包含uuid和图片信息
      */
     @GetMapping("base64")
     @ApiOperation(value = "图形验证码(base64格式)")
     @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", defaultValue = "150"),
-            @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", defaultValue = "50"),
-            @ApiImplicitParam(paramType = "query", dataType="string", name = "uuid")})
+            @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", defaultValue = "50")})
     public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width,
-                            @RequestParam(required = false, defaultValue = "50") int height,
-                            @RequestParam(required = false) String uuid) {
-        if (StringUtils.isBlank(uuid)) {
-            uuid = UUID.randomUUID().toString();
-        }
+                            @RequestParam(required = false, defaultValue = "50") int height) {
+        String uuid = IdUtils.randomUUID();
         // 随机取出一种
         String[] captchaTypes = {"arithmetic", "spec"};
         Captcha captcha = captchaService.createCaptcha(uuid, width, height, captchaTypes[(int) (Math.random() * captchaTypes.length)]);
-        // 将uuid和图片的base64返回给前端
+        // 将uuid和图片base64返回给前端
         return new Result<>().success(Kv.init().set("uuid", uuid).set("image", captcha.toBase64()));
     }
 
     /**
-     * 流形式的图形验证码
+     * @deprecated
      * uuid由参数决定
      */
     @GetMapping("stream")
-    @ApiOperation(value = "图形验证(数据流)", produces="application/octet-stream")
-    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", required = true),
-            @ApiImplicitParam(paramType = "query", dataType="string", name = "uuid", required = true)})
-    public void captcha(HttpServletResponse response,
+    @ApiOperation(value = "图形验证码(数据流)", produces="application/octet-stream")
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", defaultValue = "150"),
+            @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", defaultValue = "50"),
+            @ApiImplicitParam(paramType = "query", dataType="String", name = "uuid", required = true)})
+    public void stream(HttpServletResponse response,
                         @RequestParam(required = false, defaultValue = "150") int width,
                         @RequestParam(required = false, defaultValue = "50") int height,
-                        @NotNull(message = "uuid不能为空") @RequestParam String uuid) throws IOException {
+                        @NotNull(message = "uuid不能为空") @RequestParam String uuid) {
         // 随机取出一种
         String[] captchaTypes = {"arithmetic", "spec"};
         Captcha captcha = captchaService.createCaptcha(uuid, width, height, captchaTypes[(int) (Math.random() * captchaTypes.length)]);
 
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
-        ServletOutputStream out = response.getOutputStream();
-        captcha.out(out);
-        out.close();
+        try {
+            ServletOutputStream out = response.getOutputStream();
+            captcha.out(out);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 /**
  * 验证码
- * [SpecCaptcha](https://github.com/whvcse/EasyCaptcha)
+ * see [SpecCaptcha](https://github.com/whvcse/EasyCaptcha)
  *
  * @author Charles zhangchaoxu@gmail.com
  */
