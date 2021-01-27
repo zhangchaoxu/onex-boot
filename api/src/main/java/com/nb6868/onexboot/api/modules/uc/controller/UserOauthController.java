@@ -20,8 +20,9 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.AliSignUtils;
+import com.nb6868.onexboot.common.util.ConvertUtils;
+import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
@@ -260,14 +261,26 @@ public class UserOauthController {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "ADMIN_DINGTALK_SCAN", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
+        // 1. 根据sns临时授权码获取用户信息
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> requestBody = new HashMap();
         requestBody.put("tmp_auth_code", request.getCode());
         String timestamp = String.valueOf(System.currentTimeMillis());
         String signature = AliSignUtils.signature(timestamp, "", "HmacSHA256");
-        restTemplate.postForObject("https://oapi.dingtalk.com/sns/getuserinfo_bycode?accessKey={1}&timestamp={2}&signature={3}",
+        String result = restTemplate.postForObject("https://oapi.dingtalk.com/sns/getuserinfo_bycode?accessKey={1}&timestamp={2}&signature={3}",
                 requestBody, String.class,
                 request.getParamCode(), timestamp, signature);
+        Map<String, Object> json = JacksonUtils.jsonToMap(result);
+        if ((int) json.get("errcode") == 0) {
+            Map<String, String> userInfo = (Map<String, String>)json.get("user_info");
+            String nick = (String)userInfo.get("nick");
+            String unionid = (String)userInfo.get("unionid");
+            String openid = (String)userInfo.get("openid");
+
+        } else {
+            return new Result<>().error((String) json.get("errmsg"));
+        }
+
         // todo 钉钉接口处理流程
         return new Result<>();
     }
