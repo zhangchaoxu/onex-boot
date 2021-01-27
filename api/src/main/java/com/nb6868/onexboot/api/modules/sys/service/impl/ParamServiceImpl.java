@@ -39,10 +39,12 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
         super.afterSaveOrUpdateDto(ret, dto, existedEntity, type);
         // 删除原缓存
         if (existedEntity != null) {
-            paramCache.evictIfPresent(existedEntity.getCode());
+            paramCache.evictIfPresent("content_" + existedEntity.getCode());
+            paramCache.evictIfPresent("content_combine_" + existedEntity.getCode());
         }
         // 插入新缓存
-        paramCache.put(dto.getCode(), dto.getContent());
+        paramCache.put("content_" + dto.getCode(), dto.getContent());
+        paramCache.put("content_combine_" + dto.getCode(), JacksonUtils.mapToJson(JacksonUtils.combineJson(dto.getContentPri(), dto.getContent()), ""));
     }
 
     @Override
@@ -86,20 +88,7 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
 
     @Override
     public <T> T getCombineContentObject(String code, Class<T> clazz) {
-        // 先从缓存读取
-        String contentCombine = null;//paramCache.get("content_combine_" + code, String.class);
-        if (ObjectUtils.isEmpty(contentCombine)) {
-            ParamEntity entity = query().select("content", "content_pri").eq("code",code).last(Const.LIMIT_ONE).one();
-            if (entity == null) {
-                return null;
-            } else {
-                T pojo = JacksonUtils.combineJsonToPojo(entity.getContent(), entity.getContentPri(),  clazz);
-                paramCache.put("content_combine_" + code, JacksonUtils.pojoToJson(pojo));
-                return pojo;
-            }
-        } else {
-            return JacksonUtils.jsonToPojo(contentCombine, clazz);
-        }
+        return JacksonUtils.mapToPojo(getContentMap(code), clazz);
     }
 
     @Override
@@ -112,7 +101,8 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
         if (ObjectUtils.isEmpty(key)) {
             paramCache.invalidate();
         } else {
-            paramCache.evictIfPresent(key);
+            paramCache.evictIfPresent("content_" + key);
+            paramCache.evictIfPresent("content_combine_" + key);
         }
         return true;
     }
