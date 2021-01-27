@@ -23,7 +23,7 @@ public interface UcConst {
     /**
      * 登录配置前缀
      */
-    String LOGIN_TYPE_PREFIX = "LOGIN_TYPE_";
+    String LOGIN_TYPE_PREFIX = "LOGIN_";
 
     /**
      * token header
@@ -33,12 +33,12 @@ public interface UcConst {
     /**
      * 微信公众号配置项默认key
      */
-    String WX_CFG_MP = "WX_CFG_MP";
+    String WX_MP = "WX_MP";
 
     /**
      * 微信小程序配置项默认key
      */
-    String WX_CFG_MA = "WX_CFG_MA";
+    String WX_MA = "WX_MA";
 
     /**
      * 微信session中的openid

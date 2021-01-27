@@ -23,7 +23,7 @@ public class HtmlController {
     @ApiOperation("绑定微信")
     @GetMapping("wx/bind")
     @AccessControl
-    public String wxBind(ModelMap map, @RequestParam(required = false, defaultValue = UcConst.WX_CFG_MP) String paramCode, @RequestParam(required = false) String code) {
+    public String wxBind(ModelMap map, @RequestParam(required = false, defaultValue = UcConst.WX_MP) String paramCode, @RequestParam(required = false) String code) {
         return "uc/wx-bind";
     }
 
