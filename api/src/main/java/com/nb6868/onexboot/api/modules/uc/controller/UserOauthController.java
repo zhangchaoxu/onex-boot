@@ -4,7 +4,6 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
@@ -22,6 +21,7 @@ import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.ConvertUtils;
+import com.nb6868.onexboot.common.util.AliSignUtils;
 import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
@@ -34,10 +34,12 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -258,6 +260,14 @@ public class UserOauthController {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "ADMIN_DINGTALK_SCAN", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, String> requestBody = new HashMap();
+        requestBody.put("tmp_auth_code", request.getCode());
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String signature = AliSignUtils.signature(timestamp, "", "HmacSHA256");
+        restTemplate.postForObject("https://oapi.dingtalk.com/sns/getuserinfo_bycode?accessKey={1}&timestamp={2}&signature={3}",
+                requestBody, String.class,
+                request.getParamCode(), timestamp, signature);
         // todo 钉钉接口处理流程
         return new Result<>();
     }

@@ -2,7 +2,7 @@ package com.nb6868.onexboot.api;
 
 import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
-import com.nb6868.onexboot.common.util.ParamParseUtils;
+import com.nb6868.onexboot.common.util.AliSignUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,10 +51,10 @@ public class SmsUtils {
         // 3. 去除签名关键字Key
         if (paras.containsKey("Signature"))
             paras.remove("Signature");
-        String sortedQueryString = ParamParseUtils.paramToQueryString(paras);
-        String sign = ParamParseUtils.sign(accessSecret + "&", "GET" + "&" + ParamParseUtils.urlEncode("/") + "&" + ParamParseUtils.urlEncode(sortedQueryString), "HmacSHA1");
+        String sortedQueryString = AliSignUtils.paramToQueryString(paras);
+        String sign = AliSignUtils.signature("GET" + "&" + AliSignUtils.urlEncode("/") + "&" + AliSignUtils.urlEncode(sortedQueryString),accessSecret + "&",  "HmacSHA1");
         // 最终打印出合法GET请求的URL
-        String url = "http://dysmsapi.aliyuncs.com/?Signature=" + ParamParseUtils.urlEncode(sign) + "&" + sortedQueryString;
+        String url = "http://dysmsapi.aliyuncs.com/?Signature=" + sign + "&" + sortedQueryString;
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         System.out.println(url);
         String result = restTemplate.getForObject(builder.build(true).toUri(), String.class);
