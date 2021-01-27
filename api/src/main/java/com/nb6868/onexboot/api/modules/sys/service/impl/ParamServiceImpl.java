@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.api.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.nb6868.onexboot.api.modules.sys.dao.ParamDao;
 import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.entity.ParamEntity;
@@ -15,7 +14,6 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,10 +53,10 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
     @Override
     public String getContent(String code) {
         // 先从缓存读取
-        String content = paramCache.get(code, String.class);
+        String content = paramCache.get("content_" + code, String.class);
         if (ObjectUtils.isEmpty(content)) {
             content = query().select("content").eq("code",code).last(Const.LIMIT_ONE).oneOpt().map(ParamEntity::getContent).orElse(null);
-            paramCache.put(code, content);
+            paramCache.put("content_" + code, content);
         }
         return content;
     }
@@ -69,14 +67,39 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
     }
 
     @Override
-    public JsonNode getContentJsonNode(String code) {
-        return JacksonUtils.jsonToNode(getContent(code));
+    public Map<String, Object> getCombineContentMap(String code) {
+        // 先从缓存读取
+        String contentCombine = paramCache.get("content_combine_" + code, String.class);
+        if (ObjectUtils.isEmpty(contentCombine)) {
+            ParamEntity entity = query().select("content", "content_pri").eq("code",code).last(Const.LIMIT_ONE).one();
+            if (entity == null) {
+                return null;
+            } else {
+                Map<String, Object> map = JacksonUtils.combineJson(entity.getContentPri(), entity.getContent());
+                paramCache.put("content_combine_" + code, JacksonUtils.pojoToJson(map));
+                return map;
+            }
+        } else {
+            return JacksonUtils.jsonToMap(contentCombine);
+        }
     }
 
     @Override
-    public Map<String, Object> getCombineContentMap(String code) {
-        ParamEntity entity = getByCode(code);
-        return null == entity ? new HashMap<>() : JacksonUtils.combineJson(entity.getContent(), entity.getContentPri());
+    public <T> T getCombineContentObject(String code, Class<T> clazz) {
+        // 先从缓存读取
+        String contentCombine = null;//paramCache.get("content_combine_" + code, String.class);
+        if (ObjectUtils.isEmpty(contentCombine)) {
+            ParamEntity entity = query().select("content", "content_pri").eq("code",code).last(Const.LIMIT_ONE).one();
+            if (entity == null) {
+                return null;
+            } else {
+                T pojo = JacksonUtils.combineJsonToPojo(entity.getContent(), entity.getContentPri(),  clazz);
+                paramCache.put("content_combine_" + code, JacksonUtils.pojoToJson(pojo));
+                return pojo;
+            }
+        } else {
+            return JacksonUtils.jsonToPojo(contentCombine, clazz);
+        }
     }
 
     @Override

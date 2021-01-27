@@ -1,6 +1,5 @@
 package com.nb6868.onexboot.api.modules.sys.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.entity.ParamEntity;
 import com.nb6868.onexboot.common.service.CrudService;
@@ -36,13 +35,6 @@ public interface ParamService extends CrudService<ParamEntity, ParamDTO> {
     Map<String, Object> getContentMap(String code);
 
     /**
-     * 根据参数编码，获取参数的Map
-     *
-     * @param code  参数编码
-     */
-    JsonNode getContentJsonNode(String code);
-
-    /**
      * 根据参数编码，获取合并后的map
      *
      * @param code  参数编码
@@ -55,6 +47,13 @@ public interface ParamService extends CrudService<ParamEntity, ParamDTO> {
      * @param clazz  Object对象
      */
     <T> T getContentObject(String code, Class<T> clazz);
+
+    /**
+     * 根据参数编码，获取合并后的Object对象
+     * @param code  参数编码
+     * @param clazz  Object对象
+     */
+    <T> T getCombineContentObject(String code, Class<T> clazz);
 
     /**
      * 清空缓存

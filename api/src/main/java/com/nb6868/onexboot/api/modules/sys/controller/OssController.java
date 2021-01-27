@@ -52,7 +52,7 @@ public class OssController {
 
     @GetMapping("presignedUrl")
     @ApiOperation(value = "获得授权访问地址")
-    public Result<?> presignedUrl(@RequestParam(required = false, defaultValue = "OSS_CFG_PRI") String paramCode,
+    public Result<?> presignedUrl(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode,
                                   @RequestParam String objectName,
                                   @RequestParam(required = false, defaultValue = "36000") long expiration) {
         String url = OssFactory.build(paramCode).generatePresignedUrl(objectName, expiration);
@@ -62,14 +62,14 @@ public class OssController {
 
     @GetMapping("getSts")
     @ApiOperation(value = "获得STS临时访问token")
-    public Result<?> getSts(@RequestParam(required = false, defaultValue = "OSS_CFG_PUB") String paramCode) {
+    public Result<?> getSts(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode) {
         Kv kv = OssFactory.build(paramCode).getSts();
         return new Result<>().success(kv);
     }
 
     @PostMapping("upload")
     @ApiOperation(value = "上传单个文件")
-    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_CFG_PUB") String paramCode,
+    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramCode,
                             @RequestParam("file") MultipartFile file,
                             @RequestParam(required = false) String prefix) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
@@ -89,7 +89,7 @@ public class OssController {
 
     @PostMapping("uploadBase64")
     @ApiOperation(value = "base64方式上传单个文件")
-    public Result<?> uploadBase64(@RequestParam(required = false, defaultValue = "OSS_CFG_PUB") String paramCode,
+    public Result<?> uploadBase64(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramCode,
                                   @RequestParam String fileBase64,
                                   @RequestParam(required = false) String prefix) {
         // 将base64转成file
@@ -111,7 +111,7 @@ public class OssController {
 
     @PostMapping("uploadMulti")
     @ApiOperation(value = "上传多个文件")
-    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_CFG_PUB") String paramCode,
+    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramCode,
                                  @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files,
                                  @RequestParam(required = false) String prefix) {
         List<String> srcList = new ArrayList<>();

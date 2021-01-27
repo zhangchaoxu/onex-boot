@@ -162,6 +162,23 @@ public class JacksonUtils {
     }
 
     /**
+     * JSON字符串转Map。
+     *
+     * @return 转换的Map实例
+     */
+    public static String mapToJson(Map<String, Object> map, String defaultVal) {
+        if (ObjectUtils.isEmpty(map)) {
+            return defaultVal;
+        }
+        try {
+            return JacksonUtils.getMapper().writeValueAsString(map);
+        } catch (final IOException e) {
+            log.error(e.getMessage());
+            return defaultVal;
+        }
+    }
+
+    /**
      * JSON字符串转Nide。
      *
      * @param json       JSON串
@@ -208,19 +225,41 @@ public class JacksonUtils {
     }
 
     /**
-     * 合并两个json
-     * @param content1
-     * @param content2
+     * 合并两个json,注意source会覆盖target中同名字段
+     *
+     * @param source
+     * @param target
      * @return
      */
-    public static Map<String, Object> combineJson(String content1, String content2) {
-        Map<String, Object> map1 = jsonToMap(content1, new HashMap<>());
-        Map<String, Object> map2 = jsonToMap(content2, new HashMap<>());
-        Map<String, Object> combineMap = new HashMap<>();
-        combineMap.putAll(map1);
-        combineMap.putAll(map2);
-        return combineMap;
+    public static Map<String, Object> combineJson(String source, String target) {
+        if (ObjectUtils.isEmpty(source)) {
+            return jsonToMap(target, new HashMap<>(0));
+        } else if (ObjectUtils.isEmpty(target)) {
+            return jsonToMap(source, new HashMap<>(0));
+        } else {
+            Map<String, Object> targetMap = jsonToMap(target, new HashMap<>());
+            Map<String, Object> sourceMap = jsonToMap(source, new HashMap<>());
+            targetMap.putAll(sourceMap);
+            return targetMap;
+        }
     }
 
+    /**
+     * 合并两个json,注意source会覆盖target中同名字段
+     * @param source
+     * @param target
+     * @return
+     */
+    public static <T> T combineJsonToPojo(String source, String target, Class<T> pojoClass) {
+        if (ObjectUtils.isEmpty(source)) {
+            return jsonToPojo(target, pojoClass);
+        } else if (ObjectUtils.isEmpty(target)) {
+            return jsonToPojo(source, pojoClass);
+        } else {
+            Map<String, Object> map = combineJson(source, target);
+            String json = pojoToJson(map);
+            return jsonToPojo(json, pojoClass);
+        }
+    }
 
 }
