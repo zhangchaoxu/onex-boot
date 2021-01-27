@@ -23,7 +23,7 @@
         <weixin.pay.version>4.0.0</weixin.pay.version>
         <weixin.miniapp.version>4.0.0</weixin.miniapp.version>
         <weixin.mp.version>4.0.0</weixin.mp.version>
-        <alipay.sdk.version>4.11.21.ALL</alipay.sdk.version>
+        <alipay.sdk.version>4.11.33.ALL</alipay.sdk.version>
         <jpush.version>3.4.8</jpush.version>
         <zxing.version>3.4.1</zxing.version>
     </properties>
@@ -98,12 +98,12 @@
             <artifactId>weixin-java-mp</artifactId>
             <version>${weixin.mp.version}</version>
         </dependency>
-        <!-- alipay sdk -->
+        <!-- alipay sdk
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
             <version>${alipay.sdk.version}</version>
-        </dependency>
+        </dependency>-->
         <!-- jwt -->
         <dependency>
             <groupId>com.auth0</groupId>
