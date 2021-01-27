@@ -162,7 +162,7 @@ public class JacksonUtils {
     }
 
     /**
-     * JSON字符串转Map。
+     * Map转JSON字符串
      *
      * @return 转换的Map实例
      */
@@ -176,6 +176,27 @@ public class JacksonUtils {
             log.error(e.getMessage());
             return defaultVal;
         }
+    }
+
+    /**
+     * Map转Pojo
+     *
+     * @return 转换的Map实例
+     */
+    public static <T> T mapToPojo(Map<String, Object> map, Class<T> pojoClass, T defaultVal) {
+        if (ObjectUtils.isEmpty(map)) {
+            return defaultVal;
+        }
+        return jsonToPojo(pojoToJson(map), pojoClass, defaultVal);
+    }
+
+    /**
+     * Map转Pojo
+     *
+     * @return 转换的Map实例
+     */
+    public static <T> T mapToPojo(Map<String, Object> map, Class<T> pojoClass) {
+        return mapToPojo(map, pojoClass, null);
     }
 
     /**
