@@ -44,8 +44,7 @@ public class CaptchaController {
     @ApiOperation(value = "图形验证码(base64格式)")
     @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", name = "图片宽度", defaultValue = "150"),
             @ApiImplicitParam(paramType = "query", dataType = "int", name = "图片高度", defaultValue = "50")})
-    public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width,
-                            @RequestParam(required = false, defaultValue = "50") int height) {
+    public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width, @RequestParam(required = false, defaultValue = "50") int height) {
         String uuid = IdUtils.randomUUID();
         // 随机取出一种
         String[] captchaTypes = {"arithmetic", "spec"};

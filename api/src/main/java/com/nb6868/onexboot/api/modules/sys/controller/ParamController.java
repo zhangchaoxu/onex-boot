@@ -133,7 +133,7 @@ public class ParamController {
 
     @GetMapping("getLoginAdmin")
     @ApiOperation("获得后台登录配置")
-    @AccessControl
+    //@AccessControl
     public Result<?> getLoginAdmin() {
         Map<String, Object> loginAdminConfig = paramService.getContentMap(UcConst.LOGIN_ADMIN);
         AssertUtils.isNull(loginAdminConfig, "未找到后台登录配置");
