@@ -7,7 +7,7 @@ import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.ParamParseUtils;
+import com.nb6868.onexboot.common.util.AliSignUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
@@ -74,14 +74,14 @@ public class AliyunSmsService extends AbstractSmsService {
         paras.put("OutId", String.valueOf(mailLog.getId()));
         // 去除签名关键字Key
         paras.remove("Signature");
-        String sortedQueryString = ParamParseUtils.paramToQueryString(paras);
+        String sortedQueryString = AliSignUtils.paramToQueryString(paras);
         // 参数签名
-        String sign = ParamParseUtils.sign(smsProps.getAppSecret() + "&", "GET" + "&" + ParamParseUtils.urlEncode("/") + "&" + ParamParseUtils.urlEncode(sortedQueryString), "HmacSHA1");
+        String sign = AliSignUtils.signature( "GET" + "&" + AliSignUtils.urlEncode("/") + "&" + AliSignUtils.urlEncode(sortedQueryString),smsProps.getAppSecret() + "&", "HmacSHA1");
 
         // 调用接口发送
         try {
             // 直接get RestTemplate会将参数直接做urlencode,需要使用UriComponentsBuilder先build一下
-            URI uri = UriComponentsBuilder.fromHttpUrl("http://dysmsapi.aliyuncs.com/?Signature=" + ParamParseUtils.urlEncode(sign) + "&" + sortedQueryString).build(true).toUri();
+            URI uri = UriComponentsBuilder.fromHttpUrl("http://dysmsapi.aliyuncs.com/?Signature=" + sign + "&" + sortedQueryString).build(true).toUri();
             String result = new RestTemplate().getForObject(uri, String.class);
             Map<String, Object> json = JacksonUtils.jsonToMap(result);
             mailLog.setResult(result);

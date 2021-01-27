@@ -13,13 +13,17 @@ import java.util.StringJoiner;
 import java.util.TreeMap;
 
 /**
- * 网络请求参数解析工具
+ * 阿里签名工具类
+ * 支持: 阿里云、钉钉
  *
  * @author zhangchaoxu@gmail.com
  */
 @Slf4j
-public class ParamParseUtils {
+public class AliSignUtils {
 
+    /**
+     * 特殊urlEncode
+     */
     @SneakyThrows
     public static String urlEncode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8.name())
@@ -30,18 +34,23 @@ public class ParamParseUtils {
     }
 
     /**
-     * 加密,最后base64
-     * @param key 密钥
+     * 加密
+     *
      * @param data 明文
-     * @param algorithm 算法 HmacSHA1/HmacSHA256
+     * @param key 密钥
+     * @param algorithm 算法 如:HmacSHA1/HmacSHA256
      * @return 密文
      */
-    public static String sign(String key, String data, String algorithm) {
+    public static String signature(String data, String key, String algorithm) {
         try {
+            // 加密
             javax.crypto.Mac mac = javax.crypto.Mac.getInstance(algorithm);
             mac.init(new javax.crypto.spec.SecretKeySpec(key.getBytes(StandardCharsets.UTF_8.name()), algorithm));
             byte[] signData = mac.doFinal(data.getBytes(StandardCharsets.UTF_8.name()));
-            return java.util.Base64.getEncoder().encodeToString(signData);
+            // base64
+            String base64 = java.util.Base64.getEncoder().encodeToString(signData);
+            // 最后urlEncode
+            return urlEncode(base64);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
             e.printStackTrace();
             log.error("ParamParseUtils", e);
