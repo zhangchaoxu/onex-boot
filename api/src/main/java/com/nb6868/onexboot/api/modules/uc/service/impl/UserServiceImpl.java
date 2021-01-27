@@ -98,7 +98,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     @Override
     public Kv login(LoginRequest loginRequest) {
         // 获得登录配置
-        LoginTypeConfig loginTypeConfig = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType(), LoginTypeConfig.class);
+        LoginTypeConfig loginTypeConfig = paramService.getCombineContentObject(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType(), LoginTypeConfig.class);
         AssertUtils.isNull(loginTypeConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 校验验证码
