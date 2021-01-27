@@ -47,7 +47,7 @@ public class WxWebAuthInterceptor implements HandlerInterceptor {
                 if (ObjectUtils.isEmpty(openid)) {
                     // 通过是否有code来判断是否回调
                     String code = request.getParameter("code");
-                    WxMpService wxService = getWxService(UcConst.WX_CFG_MP);
+                    WxMpService wxService = getWxService(UcConst.WX_MP);
                     if (StringUtils.isBlank(code)) {
                         String url = HttpContextUtils.getFullUrl(request);
                         String oauth2buildAuthorizationUrl = wxService.getOAuth2Service().buildAuthorizationUrl(url, annotation.scope(), "wx#wechat_redirect");

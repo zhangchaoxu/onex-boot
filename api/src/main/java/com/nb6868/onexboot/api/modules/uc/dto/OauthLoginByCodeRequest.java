@@ -24,7 +24,7 @@ public class OauthLoginByCodeRequest implements Serializable {
 
     @ApiModelProperty(value = "配置信息编码", required = true)
     @NotBlank(message = "配置信息编码")
-    private String paramCode = UcConst.WX_CFG_MP;
+    private String paramCode = UcConst.WX_MP;
 
     @ApiModelProperty(value = "用户登录凭证", required = true)
     @NotBlank(message = "code")

@@ -23,7 +23,7 @@ public class OauthWxMaLoginByCodeAndPhone implements Serializable {
 
     @ApiModelProperty(value = "配置信息编码", required = true)
     @NotBlank(message = "配置信息编码不能为空")
-    private String paramCode = UcConst.WX_CFG_MA;
+    private String paramCode = UcConst.WX_MA;
 
     @ApiModelProperty(value = "登录凭证wx.login获取", required = true)
     @NotBlank(message = "code不能为空")
