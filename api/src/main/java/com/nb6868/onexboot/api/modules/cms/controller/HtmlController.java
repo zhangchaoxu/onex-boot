@@ -29,7 +29,7 @@ import java.util.Map;
 public class HtmlController {
 
     @Autowired
-    private ArticleService articleService;
+    ArticleService articleService;
 
     @ApiOperation("文章详情页面")
     @GetMapping("article/info")
