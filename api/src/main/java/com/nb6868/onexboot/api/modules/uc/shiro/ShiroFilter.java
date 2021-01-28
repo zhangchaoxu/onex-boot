@@ -29,19 +29,22 @@ public class ShiroFilter extends AuthenticatingFilter {
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
         // 请求token
-        final String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, UcConst.TOKEN_HEADER);
-        // 当请求token为空的时候,赋予匿名访问Token
-        return new AuthenticationToken() {
-            @Override
-            public String getPrincipal() {
-                return ObjectUtils.isEmpty(token) ? UcConst.TOKEN_ANON : token;
-            }
+        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, UcConst.TOKEN_HEADER);
+        if (ObjectUtils.isEmpty(token)) {
+            return null;
+        } else {
+            return new AuthenticationToken() {
+                @Override
+                public String getPrincipal() {
+                    return token;
+                }
 
-            @Override
-            public String getCredentials() {
-                return ObjectUtils.isEmpty(token) ? UcConst.TOKEN_ANON : token;
-            }
-        };
+                @Override
+                public String getCredentials() {
+                    return token;
+                }
+            };
+        }
     }
 
     @Override
@@ -52,8 +55,16 @@ public class ShiroFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        // 会调用createToken,提交给realm进行登入
-        return executeLogin(request, response);
+        // 请求token
+        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, UcConst.TOKEN_HEADER);
+        if (ObjectUtils.isEmpty(token)) {
+            // 如果token不存在，直接返回401
+            responseUnauthorized(request, response, null);
+            return false;
+        } else {
+            // 会调用createToken,提交给realm进行登入
+            return executeLogin(request, response);
+        }
     }
 
     /**
@@ -61,18 +72,31 @@ public class ShiroFilter extends AuthenticatingFilter {
      *
      * Realm.doGetAuthenticationInfo抛出的异常会在这里捕获处理
      */
-    @SneakyThrows
     @Override
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
+        responseUnauthorized(request, response, e);
+        return false;
+    }
+
+    /**
+     * 响应未授权
+     */
+    @SneakyThrows
+    protected void responseUnauthorized(ServletRequest request, ServletResponse response, Exception e) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setContentType("application/json;charset=utf-8");
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpResponse.setHeader("Access-Control-Allow-Origin", ((HttpServletRequest) request).getHeader(HttpHeaders.ORIGIN));
+
         // 处理登录失败的异常
-        Throwable throwable = e.getCause() == null ? e : e.getCause();
-        String json = JacksonUtils.pojoToJson(new Result<>().error(ErrorCode.UNAUTHORIZED, throwable.getMessage()));
-        httpResponse.getWriter().print(json);
-        return false;
+        if (e == null) {
+            String json = JacksonUtils.pojoToJson(new Result<>().error(ErrorCode.UNAUTHORIZED));
+            httpResponse.getWriter().print(json);
+        } else {
+            Throwable throwable = e.getCause() == null ? e : e.getCause();
+            String json = JacksonUtils.pojoToJson(new Result<>().error(ErrorCode.UNAUTHORIZED), throwable.getMessage());
+            httpResponse.getWriter().print(json);
+        }
     }
 
 }
