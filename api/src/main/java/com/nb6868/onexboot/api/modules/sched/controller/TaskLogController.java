@@ -1,12 +1,11 @@
 package com.nb6868.onexboot.api.modules.sched.controller;
 
 import com.nb6868.onexboot.api.modules.sched.dto.TaskLogDTO;
+import com.nb6868.onexboot.api.modules.sched.service.TaskLogService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.modules.sched.dto.TaskLogDTO;
-import com.nb6868.onexboot.api.modules.sched.service.TaskLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -33,13 +32,13 @@ import java.util.Map;
 public class TaskLogController {
 
     @Autowired
-    private TaskLogService scheduleJobLogService;
+    private TaskLogService taskLogService;
 
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("sched:taskLog:page")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<TaskLogDTO> page = scheduleJobLogService.page(params);
+        PageData<TaskLogDTO> page = taskLogService.page(params);
 
         return new Result<>().success(page);
     }
@@ -48,7 +47,7 @@ public class TaskLogController {
     @ApiOperation("信息")
     @RequiresPermissions("sched:task:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        TaskLogDTO data = scheduleJobLogService.get(id);
+        TaskLogDTO data = taskLogService.get(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
