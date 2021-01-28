@@ -2,6 +2,7 @@ package com.nb6868.onexboot.api.common.config;
 
 import com.nb6868.onexboot.api.modules.uc.shiro.ShiroFilter;
 import com.nb6868.onexboot.api.modules.uc.shiro.ShiroRealm;
+import com.nb6868.onexboot.api.modules.uc.shiro.SimpleShiroFilter;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -50,12 +51,16 @@ public class ShiroConfig {
         // shiro过滤
         Map<String, Filter> filters = new HashMap<>();
         filters.put("shiro", new ShiroFilter());
+        filters.put("simpleShiro", new SimpleShiroFilter());
         shiroFilter.setFilters(filters);
         /*
          * 自定义url规则 {http://shiro.apache.org/web.html#urls-}
-         * 注意无法区分接口请求方法是post/get/put
+         * *注意*
+         * 1. 无法区分接口请求方法是post/get/put
+         * 2. anon接口不过shiro,无法记录访问用户信息
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
+        // 匿名访问地址
         filterMap.put("/static/**", "anon");
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/druid/**", "anon");
@@ -76,6 +81,9 @@ public class ShiroConfig {
         filterMap.put("/uc/user/login", "anon");
         filterMap.put("/uc/user/register", "anon");
         filterMap.put("/uc/userOauth/oauthLoginByCode", "anon");
+
+        // simple shiro
+        filterMap.put("/sys/param/getLoginAdmin", "simpleShiro");
 
         // 除上述anon外,其它都需要过oauth2
         filterMap.put("/**", "shiro");
