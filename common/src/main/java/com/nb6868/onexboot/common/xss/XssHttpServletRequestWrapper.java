@@ -1,9 +1,9 @@
 package com.nb6868.onexboot.common.xss;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -21,6 +21,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
+
     HttpServletRequest orgRequest;
 
     public XssHttpServletRequestWrapper(HttpServletRequest request) {
@@ -30,18 +31,18 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        //非json类型，直接返回
+        // 非json类型，直接返回
         if(!MediaType.APPLICATION_JSON_VALUE.equalsIgnoreCase(super.getHeader(HttpHeaders.CONTENT_TYPE))){
             return super.getInputStream();
         }
 
-        //为空，直接返回
+        // 为空，直接返回
         String json = IOUtils.toString(super.getInputStream(), StandardCharsets.UTF_8);
-        if (StringUtils.isBlank(json)) {
+        if (ObjectUtils.isEmpty(json)) {
             return super.getInputStream();
         }
 
-        //xss过滤
+        // xss过滤
         json = xssEncode(json);
         final ByteArrayInputStream bis = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
         return new ServletInputStream() {
@@ -56,9 +57,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             }
 
             @Override
-            public void setReadListener(ReadListener readListener) {
-
-            }
+            public void setReadListener(ReadListener readListener) { }
 
             @Override
             public int read() {
@@ -70,10 +69,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
         String value = super.getParameter(xssEncode(name));
-        if (StringUtils.isNotBlank(value)) {
-            value = xssEncode(value);
-        }
-        return value;
+        return ObjectUtils.isEmpty(value) ? value : xssEncode(value);
     }
 
     @Override
@@ -106,10 +102,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getHeader(String name) {
         String value = super.getHeader(xssEncode(name));
-        if (StringUtils.isNotBlank(value)) {
-            value = xssEncode(value);
-        }
-        return value;
+        return ObjectUtils.isEmpty(value) ? value : xssEncode(value);
     }
 
     private String xssEncode(String input) {
