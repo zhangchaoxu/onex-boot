@@ -5,6 +5,10 @@ server:
     basedir: /home/temp
 
 spring:
+  ## 定时任务
+  quartz:
+    ## 启动开关
+    auto-startup: true
   datasource:
     druid:
       #MySQL

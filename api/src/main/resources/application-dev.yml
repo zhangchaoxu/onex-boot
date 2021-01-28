@@ -1,4 +1,8 @@
 spring:
+  ## 定时任务
+  quartz:
+    ## 启动开关
+    auto-startup: false
   datasource:
     druid:
       #MySQL
