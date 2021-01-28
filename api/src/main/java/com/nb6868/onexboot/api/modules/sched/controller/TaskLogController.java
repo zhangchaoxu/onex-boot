@@ -32,13 +32,13 @@ import java.util.Map;
 public class TaskLogController {
 
     @Autowired
-    private TaskLogService taskLogService;
+    TaskLogService taskLogService;
 
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("sched:taskLog:page")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<TaskLogDTO> page = taskLogService.page(params);
+        PageData<TaskLogDTO> page = taskLogService.pageDto(params);
 
         return new Result<>().success(page);
     }
@@ -47,7 +47,7 @@ public class TaskLogController {
     @ApiOperation("信息")
     @RequiresPermissions("sched:task:info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        TaskLogDTO data = taskLogService.get(id);
+        TaskLogDTO data = taskLogService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
