@@ -42,10 +42,12 @@ spring:
   # spring cache
   cache:
     type: simple
-  # quartz定时任务
+  # quartz 定时任务
   quartz:
-    ## 数据库方式
+    ## 任务存储方式
     job-store-type: jdbc
+    ## 启动开关
+    auto-startup: false
 
 # mybatis plus
 # see {https://mybatis.plus/config/}
