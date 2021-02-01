@@ -29,10 +29,11 @@ import java.util.Map;
 @Slf4j
 public class AliyunSmsService extends AbstractSmsService {
 
-    // 格式化时间参数
+    /** 格式化时间参数 **/
     private final java.text.SimpleDateFormat simpleDateFormat;
 
     public AliyunSmsService() {
+        // 设置时间参数格式化和时区
         simpleDateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         simpleDateFormat.setTimeZone(new java.util.SimpleTimeZone(0, "GMT"));
     }
@@ -42,7 +43,7 @@ public class AliyunSmsService extends AbstractSmsService {
         SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
-        // 参数变量允许为空字符串,但是不允许为null,否则会提示isv.INVALID_JSON_PARAM
+        // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
         Map<String, Object> paramMap = JacksonUtils.jsonToMap(params);
         paramMap.forEach((key, value) -> {
@@ -54,6 +55,7 @@ public class AliyunSmsService extends AbstractSmsService {
                 paramMap.put(key, value.toString().substring(0, 19) + "…");
             }
         });
+
         // 消息记录
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
@@ -92,7 +94,7 @@ public class AliyunSmsService extends AbstractSmsService {
 
         // 调用接口发送
         try {
-            // 直接get RestTemplate会将参数直接做urlencode,需要使用UriComponentsBuilder先build一下
+            // 直接get RestTemplate会将参数直接做UrlEncode,需要使用UriComponentsBuilder先build一下
             URI uri = UriComponentsBuilder.fromHttpUrl("http://dysmsapi.aliyuncs.com/?Signature=" + sign + "&" + sortedQueryString).build(true).toUri();
             String result = new RestTemplate().getForObject(uri, String.class);
             Map<String, Object> json = JacksonUtils.jsonToMap(result);
