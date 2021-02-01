@@ -166,6 +166,15 @@ public class JacksonUtils {
      *
      * @return 转换的Map实例
      */
+    public static String mapToJson(Map<String, Object> map) {
+        return mapToJson(map, null);
+    }
+
+    /**
+     * Map转JSON字符串
+     *
+     * @return 转换的Map实例
+     */
     public static String mapToJson(Map<String, Object> map, String defaultVal) {
         if (ObjectUtils.isEmpty(map)) {
             return defaultVal;

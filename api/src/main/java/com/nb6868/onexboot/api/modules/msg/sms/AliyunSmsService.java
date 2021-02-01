@@ -6,8 +6,8 @@ import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.AliSignUtils;
+import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
@@ -42,6 +42,18 @@ public class AliyunSmsService extends AbstractSmsService {
         SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
+        // 参数变量允许为空字符串,但是不允许为null,否则会提示isv.INVALID_JSON_PARAM
+        // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
+        Map<String, Object> paramMap = JacksonUtils.jsonToMap(params);
+        paramMap.forEach((key, value) -> {
+            if (null == value) {
+                // 不允许为空,为空则替换为
+                paramMap.put(key, "");
+            } else if (value.toString().length() > 20) {
+                // 超过20的，截取长度
+                paramMap.put(key, value.toString().substring(0, 19) + "…");
+            }
+        });
         // 消息记录
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
@@ -50,7 +62,7 @@ public class AliyunSmsService extends AbstractSmsService {
         mailLog.setTplType(mailTpl.getType());
         mailLog.setContentParams(params);
         mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), JacksonUtils.jsonToMap(params)));
+        mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), paramMap));
         mailLog.setStatus(Const.ResultEnum.FAIL.value());
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
@@ -68,7 +80,7 @@ public class AliyunSmsService extends AbstractSmsService {
         paras.put("RegionId", "cn-hangzhou");
         paras.put("PhoneNumbers", phoneNumbers);
         paras.put("SignName", smsProps.getSign());
-        paras.put("TemplateParam", params);
+        paras.put("TemplateParam", JacksonUtils.mapToJson(paramMap));
         paras.put("TemplateCode", smsProps.getTplId());
         // 外部流水扩展字段
         paras.put("OutId", String.valueOf(mailLog.getId()));
