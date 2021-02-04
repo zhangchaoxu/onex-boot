@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.common.util;
 
 import com.nb6868.onexboot.common.util.StringUtils;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -30,7 +31,11 @@ public class TemplateUtils {
         }
         // 模板
         try {
-            Template template = new Template(templateName, new StringReader(raw), null, StandardCharsets.UTF_8.name());
+            // 配置忽略未定义变量
+            Configuration configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+            configuration.setDefaultEncoding(StandardCharsets.UTF_8.name());
+            configuration.setClassicCompatible(true);
+            Template template = new Template(templateName, new StringReader(raw), configuration, StandardCharsets.UTF_8.name());
             return FreeMarkerTemplateUtils.processTemplateIntoString(template, params);
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
