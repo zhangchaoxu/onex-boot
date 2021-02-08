@@ -25,6 +25,14 @@ public class GetUserInfoByCodeResponse implements Serializable {
      */
     private UserInfo user_info;
 
+    /**
+     * 是否执行成功
+     */
+    public boolean isSuccess() {
+        return errcode == 0;
+    }
+
+    @Data
     static class UserInfo implements Serializable {
         /**
          * 用户在钉钉上面的昵称

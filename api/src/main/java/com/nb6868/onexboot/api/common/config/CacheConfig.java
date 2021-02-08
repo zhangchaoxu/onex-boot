@@ -39,7 +39,6 @@ public class CacheConfig {
         return stockDetail;
     }
 
-
     /**
      * 验证码缓存管理器
      */
@@ -47,6 +46,16 @@ public class CacheConfig {
     public ConcurrentMapCacheFactoryBean captchaCache(){
         ConcurrentMapCacheFactoryBean stockDetail = new ConcurrentMapCacheFactoryBean();
         stockDetail.setName("captcha");
+        return stockDetail;
+    }
+
+    /**
+     * Token缓存管理器
+     */
+    @Bean("dingtalkTokenCache")
+    public ConcurrentMapCacheFactoryBean dingtalkTokenCache(){
+        ConcurrentMapCacheFactoryBean stockDetail = new ConcurrentMapCacheFactoryBean();
+        stockDetail.setName("dingtalkToken");
         return stockDetail;
     }
 
