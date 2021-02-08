@@ -9,6 +9,8 @@ import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
+import com.nb6868.onexboot.api.modules.uc.dingtalk.DingTalkApi;
+import com.nb6868.onexboot.api.modules.uc.dingtalk.GetUserInfoByCodeResponse;
 import com.nb6868.onexboot.api.modules.uc.dto.*;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
@@ -20,9 +22,7 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.AliSignUtils;
 import com.nb6868.onexboot.common.util.ConvertUtils;
-import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
@@ -35,12 +35,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -262,27 +260,13 @@ public class UserOauthController {
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 1. 根据sns临时授权码获取用户信息
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> requestBody = new HashMap();
-        requestBody.put("tmp_auth_code", request.getCode());
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        String signature = AliSignUtils.signature(timestamp, "", "HmacSHA256");
-        String result = restTemplate.postForObject("https://oapi.dingtalk.com/sns/getuserinfo_bycode?accessKey={1}&timestamp={2}&signature={3}",
-                requestBody, String.class,
-                request.getParamCode(), timestamp, signature);
-        Map<String, Object> json = JacksonUtils.jsonToMap(result);
-        if ((int) json.get("errcode") == 0) {
-            Map<String, String> userInfo = (Map<String, String>)json.get("user_info");
-            String nick = (String)userInfo.get("nick");
-            String unionid = (String)userInfo.get("unionid");
-            String openid = (String)userInfo.get("openid");
-
+        GetUserInfoByCodeResponse userInfoByCodeResponse = DingTalkApi.getUserInfoByCode("", "", request.getCode());
+        if (userInfoByCodeResponse.isSuccess()) {
+            // todo 钉钉接口处理流程
+            return new Result<>().success(userInfoByCodeResponse.getUser_info());
         } else {
-            return new Result<>().error((String) json.get("errmsg"));
+            return new Result<>().error(userInfoByCodeResponse.getErrcode() + ":" + userInfoByCodeResponse.getErrmsg());
         }
-
-        // todo 钉钉接口处理流程
-        return new Result<>();
     }
 
 }
