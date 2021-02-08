@@ -126,7 +126,7 @@
 
     <!-- 单个jar -->
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${project.parent.artifactId}-${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

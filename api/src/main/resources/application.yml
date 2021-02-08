@@ -7,7 +7,7 @@ server:
       min-spare: 30
   port: 18181
   servlet:
-    context-path: /api
+    context-path: /onex-boot-api
     session:
       cookie:
         http-only: true

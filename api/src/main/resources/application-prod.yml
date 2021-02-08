@@ -15,7 +15,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://127.0.0.1:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
       username: onex
-      password: onex
+      password: kbEijzjWBybL8B2N
       initial-size: 10
       max-active: 100
       min-idle: 10
