@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 根据unionid获取用户userid, 返回体
+ * 根据userid获取用户详情, 返回体
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -35,15 +35,33 @@ public class GetUserDetailByUseridResponse implements Serializable {
     @Data
     static class Result implements Serializable {
         /**
-         * 联系类型：
-         * 0：企业内部员工
-         * 1：企业外部联系人
+         * 唯一id
          */
-        private int contact_type;
+        private String unionid;
         /**
          * 用户的userid
          */
         private String userid;
+        /**
+         * 名称
+         */
+        private String name;
+        /**
+         * 头像
+         */
+        private String avatar;
+        /**
+         * 手机号
+         */
+        private String mobile;
+        /**
+         * 工号
+         */
+        private String job_number;
+        /**
+         * 邮箱
+         */
+        private String email;
     }
 
 }
