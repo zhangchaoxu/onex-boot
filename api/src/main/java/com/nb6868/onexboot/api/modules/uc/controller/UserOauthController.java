@@ -135,11 +135,11 @@ public class UserOauthController {
     /**
      * 微信小程序Oauth授权登录
      */
-    @PostMapping("/oauthWxMaLoginByCodeAndUserInfo")
+    @PostMapping("/wxMaLoginByCodeAndUserInfo")
     @ApiOperation("Oauth授权登录")
     @LogLogin
     @AccessControl
-    public Result<?> oauthWxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
+    public Result<?> wxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_USER_INFO", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
@@ -183,7 +183,7 @@ public class UserOauthController {
     @ApiOperation("Oauth微信小程序授权登录")
     @LogLogin
     @AccessControl
-    public Result<?> oauthWxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
+    public Result<?> wxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
         LoginTypeConfig loginChannelCfg = paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_CODE", LoginTypeConfig.class);
         AssertUtils.isNull(loginChannelCfg, ErrorCode.UNKNOWN_LOGIN_TYPE);
 

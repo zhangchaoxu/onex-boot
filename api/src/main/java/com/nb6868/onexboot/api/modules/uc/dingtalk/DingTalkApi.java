@@ -44,7 +44,7 @@ public class DingTalkApi {
     private final static String GET_USER_DETAIL_BY_USERID = "https://oapi.dingtalk.com/topapi/v2/user/get?access_token={1}";
 
     /**
-     * 机器人消息发送
+     * 自定义机器人消息发送
      * https://ding-doc.dingtalk.com/document/app/custom-robot-access
      */
     private final static String ROBOT_SEND = "https://oapi.dingtalk.com/robot/send?access_token={1}&timestamp={2}&sign={3}";
@@ -91,7 +91,7 @@ public class DingTalkApi {
     }
 
     /**
-     * 根据unionid获取用户userid
+     * 自定义机器人消息发送
      */
     public static BaseResponse sendRobotMsg(String accessToken, String signKey, Kv requestBody) {
         RestTemplate restTemplate = new RestTemplate();

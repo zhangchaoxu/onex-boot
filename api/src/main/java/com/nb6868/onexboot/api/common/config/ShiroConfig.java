@@ -80,7 +80,12 @@ public class ShiroConfig {
         filterMap.put("/uc/user/loginEncrypt", "anon");
         filterMap.put("/uc/user/login", "anon");
         filterMap.put("/uc/user/register", "anon");
-        filterMap.put("/uc/userOauth/oauthLoginByCode", "anon");
+        filterMap.put("/uc/userOauth/wxMaLoginByCodeAndUserInfo", "anon");
+        filterMap.put("/uc/userOauth/wxMaLoginByCode", "anon");
+        filterMap.put("/uc/userOauth/wxMaLoginByPhone", "anon");
+        filterMap.put("/uc/userOauth/dingtalkLoginByCode", "anon");
+        // 发送消息
+        filterMap.put("msg/mailLog/sendCode", "anon");
 
         // simple shiro
         filterMap.put("/sys/param/getLoginAdmin", "simpleShiro");
