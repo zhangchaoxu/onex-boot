@@ -10,27 +10,12 @@ import java.io.Serializable;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
-public class GetUserIdByUnionidResponse implements Serializable {
+public class GetUserIdByUnionidResponse extends BaseResponse {
 
-    /**
-     * 返回码
-     */
-    private int errcode;
-    /**
-     * 返回描述
-     */
-    private String errmsg;
     /**
      * 用户信息
      */
     private Result result;
-
-    /**
-     * 是否执行成功
-     */
-    public boolean isSuccess() {
-        return errcode == 0;
-    }
 
     @Data
     static class Result implements Serializable {
