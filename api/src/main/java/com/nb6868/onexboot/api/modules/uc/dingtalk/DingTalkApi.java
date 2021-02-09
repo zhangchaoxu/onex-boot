@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.dingtalk;
 
+import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.util.AliSignUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -43,6 +44,12 @@ public class DingTalkApi {
     private final static String GET_USER_DETAIL_BY_USERID = "https://oapi.dingtalk.com/topapi/v2/user/get?access_token={1}";
 
     /**
+     * 机器人消息发送
+     * https://ding-doc.dingtalk.com/document/app/custom-robot-access
+     */
+    private final static String ROBOT_SEND = "https://oapi.dingtalk.com/robot/send?access_token={1}&timestamp={2}&sign={3}";
+
+    /**
      * 通过临时授权码获取授权用户的个人信息
      */
     public static GetUserInfoByCodeResponse getUserInfoByCode(String accessKey, String appSecret, String code) {
@@ -81,6 +88,16 @@ public class DingTalkApi {
         requestBody.put("userid", userid);
         requestBody.put("language", "zh_CN");//  通讯录语言 zh_CN/en_US
         return restTemplate.postForObject(GET_USER_DETAIL_BY_USERID, requestBody, GetUserDetailByUseridResponse.class, "accessToken");
+    }
+
+    /**
+     * 根据unionid获取用户userid
+     */
+    public static BaseResponse sendRobotMsg(String accessToken, String signKey, Kv requestBody) {
+        RestTemplate restTemplate = new RestTemplate();
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String signature = AliSignUtils.signature(timestamp + "\n" + signKey, signKey, "HmacSHA256");
+        return restTemplate.postForObject(ROBOT_SEND, requestBody, GetUserDetailByUseridResponse.class, accessToken, timestamp, signature);
     }
 
 }

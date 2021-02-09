@@ -10,27 +10,12 @@ import java.io.Serializable;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
-public class GetUserInfoByCodeResponse implements Serializable {
+public class GetUserInfoByCodeResponse extends BaseResponse {
 
-    /**
-     * 返回码
-     */
-    private int errcode;
-    /**
-     * 返回描述
-     */
-    private String errmsg;
     /**
      * 用户信息
      */
     private UserInfo user_info;
-
-    /**
-     * 是否执行成功
-     */
-    public boolean isSuccess() {
-        return errcode == 0;
-    }
 
     @Data
     static class UserInfo implements Serializable {
