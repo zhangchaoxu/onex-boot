@@ -17,9 +17,8 @@ public class DingtalkApiTest {
         Kv kv = Kv.init();
         kv.set("msgtype", "text")
                 .set("text", Kv.init().set("content", "测试消息内容"))
-                .set("at", Kv.init().set("atMobiles", new String[]{"13252421988"}));
-        BaseResponse response = DingTalkApi.sendRobotMsg("88a97f990d209ea485dd8361e08aa2e00028cd49334e9007a303ab95f87635a7",
-                "SEC0bd907295fb0683a82a2b17d93d73b647eba50386cd5164013b905dbb44ff4ff", kv);
+                .set("at", Kv.init().set("atMobiles", new String[]{"13012345678"}));
+        BaseResponse response = DingTalkApi.sendRobotMsg("", "", kv);
         System.out.println(response);
     }
 }

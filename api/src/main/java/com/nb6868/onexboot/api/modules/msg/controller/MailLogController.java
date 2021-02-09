@@ -101,8 +101,8 @@ public class MailLogController {
         if (mailTpl.getTimeLimit() > 0) {
             // 有时间限制
             // 先校验该收件人是否timeLimit秒内发送过
-            MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(dto.getTplCode(), dto.getMailTo());
-            if (null != lastSmsLog && DateUtils.timeDiff(lastSmsLog.getCreateTime()) < mailTpl.getTimeLimit() * 1000) {
+            MailLogEntity lastMailLog = mailLogService.findLastLogByTplCode(dto.getTplCode(), dto.getMailTo());
+            if (null != lastMailLog && DateUtils.timeDiff(lastMailLog.getCreateTime()) < mailTpl.getTimeLimit() * 1000) {
                 // 限定时间内已经发送过了
                 return new Result<>().error("发送请求过于频繁");
             }
