@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.dingtalk;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 企业内部应用的access_token
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class AccessTokenResponse extends BaseResponse {
 
     /**

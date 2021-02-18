@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.dingtalk;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class GetUserInfoByCodeResponse extends BaseResponse {
 
     /**
@@ -18,6 +20,7 @@ public class GetUserInfoByCodeResponse extends BaseResponse {
     private UserInfo user_info;
 
     @Data
+    @EqualsAndHashCode(callSuper = false)
     static class UserInfo implements Serializable {
         /**
          * 用户在钉钉上面的昵称
