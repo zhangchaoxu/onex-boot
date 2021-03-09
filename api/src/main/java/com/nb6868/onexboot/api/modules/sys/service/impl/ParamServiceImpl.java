@@ -88,7 +88,7 @@ public class ParamServiceImpl extends CrudServiceImpl<ParamDao, ParamEntity, Par
 
     @Override
     public <T> T getCombineContentObject(String code, Class<T> clazz) {
-        return JacksonUtils.mapToPojo(getContentMap(code), clazz);
+        return JacksonUtils.mapToPojo(getCombineContentMap(code), clazz);
     }
 
     @Override
