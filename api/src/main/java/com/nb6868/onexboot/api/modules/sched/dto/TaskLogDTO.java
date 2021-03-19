@@ -27,7 +27,7 @@ public class TaskLogDTO extends BaseDTO {
     private String params;
 
     @ApiModelProperty(value = "任务状态    0：失败    1：成功")
-    private Integer status;
+    private Integer state;
 
     @ApiModelProperty(value = "失败信息")
     private String error;

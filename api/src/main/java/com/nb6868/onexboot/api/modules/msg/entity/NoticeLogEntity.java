@@ -47,7 +47,7 @@ public class NoticeLogEntity extends BaseEntity {
     /**
      * 发送状态  0:失败  1: 成功
      */
-    private Integer status;
+    private Integer state;
     /**
      * 是否已读  0:未读 1: 已读
      */

@@ -105,7 +105,7 @@ public class ContractServiceImpl extends CrudServiceImpl<ContractDao, ContractEn
 
         // 添加合同后,客户成交状态标成已成交
         if (0 == type) {
-            customerService.update().eq("id", dto.getCustomerId()).eq("deal_status", 0).set("deal_status", 1).update(new CustomerEntity());
+            customerService.update().eq("id", dto.getCustomerId()).eq("deal_state", 0).set("deal_state", 1).update(new CustomerEntity());
         }
     }
 

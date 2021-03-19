@@ -30,7 +30,7 @@ public class OperationExcel {
     @Excel(name = "IP")
     private String ip;
     @Excel(name = "状态", replace = {"失败_0", "成功_1"})
-    private Integer status;
+    private Integer state;
     @Excel(name = "操作时间", format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 

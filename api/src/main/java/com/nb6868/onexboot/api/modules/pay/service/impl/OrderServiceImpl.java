@@ -55,7 +55,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         WxPayService wxPayService = PayUtils.getWxPayServiceByParam(payOrder.getChannelParam());
         notifyResult.checkResult(wxPayService, wxPayService.getConfig().getSignType(), true);
         // 检查支付订单状态
-        if (payOrder.getStatus() == PayConst.PayStatusEnum.NO_PAY.value()) {
+        if (payOrder.getState() == PayConst.PayStateEnum.NO_PAY.value()) {
             // 根据不同的table,更新不同的模块类型
             boolean orderPayNotify = false;
             if ("shop_order".equalsIgnoreCase(payOrder.getOrderTable())) {
@@ -66,7 +66,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
             }
             // 支付订单生成,待处理->支付成功/支付成功->业务处理完成
             update().eq("id", payOrder.getId())
-                    .set("status", orderPayNotify ? PayConst.PayStatusEnum.BIZ_HANDLED.value() : PayConst.PayStatusEnum.PAID.value())
+                    .set("state", orderPayNotify ? PayConst.PayStateEnum.BIZ_HANDLED.value() : PayConst.PayStateEnum.PAID.value())
                     .set("end_time", DateUtils.parse(notifyResult.getTimeEnd(), "yyyyMMddHHmmss"))
                     .set("transaction_id", notifyResult.getTransactionId())
                     .set("total_fee", notifyResult.getTotalFee())

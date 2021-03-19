@@ -30,7 +30,7 @@ public class CartDTO extends BaseTenantDTO {
 	private BigDecimal qty;
 
 	@ApiModelProperty(value = "状态0 未下单 1 已下单")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "勾选状态0 未勾选 1 已勾选")
 	private Integer checked;

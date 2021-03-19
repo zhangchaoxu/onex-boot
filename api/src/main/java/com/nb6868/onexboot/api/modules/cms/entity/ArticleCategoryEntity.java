@@ -32,7 +32,7 @@ public class ArticleCategoryEntity extends BaseEntity {
     /**
      * 状态
      */
-    private Integer status;
+    private Integer state;
     /**
      * 类型
      */

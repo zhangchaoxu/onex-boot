@@ -53,7 +53,7 @@ public interface UcConst {
     /**
      * 用户状态
      */
-    enum UserStatusEnum {
+    enum UserStateEnum {
 
         /**
          * 详见name
@@ -65,11 +65,11 @@ public interface UcConst {
         private int value;
         private String name;
 
-        UserStatusEnum(int value) {
+        UserStateEnum(int value) {
             this.value = value;
         }
 
-        UserStatusEnum(int value, String name) {
+        UserStateEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }

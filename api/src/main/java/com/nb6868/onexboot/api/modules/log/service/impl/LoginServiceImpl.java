@@ -23,7 +23,7 @@ public class LoginServiceImpl extends CrudServiceImpl<LoginDao, LoginEntity, Log
     public QueryWrapper<LoginEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<LoginEntity>(new QueryWrapper<>(), params)
                 // 状态
-                .eq("status", "status")
+                .eq("state", "state")
                 // 用户
                 .like("createName", "create_name")
                 // 操作IP

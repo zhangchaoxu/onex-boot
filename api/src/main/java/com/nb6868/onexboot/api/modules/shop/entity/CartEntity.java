@@ -33,7 +33,7 @@ public class CartEntity extends BaseTenantEntity {
     /**
      * 状态0 未下单 1 已下单
      */
-    private Integer status;
+    private Integer state;
     /**
      * 勾选状态0 未勾选 1 已勾选
      */

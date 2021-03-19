@@ -63,7 +63,7 @@ public class LogOperationAspect {
         }
     }
 
-    private void saveLog(ProceedingJoinPoint joinPoint, String requestParam, long time, Integer status) {
+    private void saveLog(ProceedingJoinPoint joinPoint, String requestParam, long time, Integer state) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         OperationEntity log = new OperationEntity();
 
@@ -81,7 +81,7 @@ public class LogOperationAspect {
         // 登录用户信息
         UserDetail user = SecurityUser.getUser();
         log.setCreateName(user.getUsername());
-        log.setStatus(status);
+        log.setState(state);
         log.setRequestTime(time);
 
         // 请求相关信息

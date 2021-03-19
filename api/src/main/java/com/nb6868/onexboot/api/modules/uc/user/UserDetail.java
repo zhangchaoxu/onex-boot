@@ -25,7 +25,7 @@ public class UserDetail implements Serializable {
     private Long tenantId;
     private String tenantName;
     private String password;
-    private Integer status;
+    private Integer state;
     private Integer type;
     /**
      * 部门数据权限

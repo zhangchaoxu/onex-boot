@@ -38,7 +38,7 @@ public class TShorturlController {
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset='utf-8'");
             response.getWriter().print("not found");
-        } else if (entity.getStatus() != 1) {
+        } else if (entity.getState() != 1) {
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset='utf-8'");
             response.getWriter().print("not open");

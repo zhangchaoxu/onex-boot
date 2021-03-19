@@ -64,7 +64,4 @@ public class OrderOneClickRequest extends BaseDTO {
 	@NotNull(message = "商品id不能为空", groups = DefaultGroup.class)
 	private Long goodsId;
 
-	@ApiModelProperty(value = "推荐人ID")
-	private Long benefitUserId;
-
 }

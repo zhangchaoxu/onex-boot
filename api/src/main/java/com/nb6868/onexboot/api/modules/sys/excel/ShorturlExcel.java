@@ -25,7 +25,7 @@ public class ShorturlExcel {
     @Excel(name = "备注")
     private String remark;
     @Excel(name = "状态 0 不开放 1 开放")
-    private Integer status;
+    private Integer state;
     @Excel(name = "创建者")
     private Long createId;
     @Excel(name = "创建时间")

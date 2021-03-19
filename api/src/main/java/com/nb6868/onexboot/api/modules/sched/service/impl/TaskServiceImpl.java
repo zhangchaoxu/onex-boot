@@ -39,7 +39,7 @@ public class TaskServiceImpl extends CrudServiceImpl<TaskDao, TaskEntity, TaskDT
     public QueryWrapper<TaskEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<TaskEntity>(new QueryWrapper<>(), params)
                 .like("name", "name")
-                .eq("status", "status")
+                .eq("state", "state")
                 .getQueryWrapper();
     }
 
@@ -74,8 +74,8 @@ public class TaskServiceImpl extends CrudServiceImpl<TaskDao, TaskEntity, TaskDT
 	}
 
 	@Override
-	public boolean changeStatus(List<Long> ids, int status) {
-		return SqlHelper.retBool(getBaseMapper().update(new TaskEntity(), new UpdateWrapper<TaskEntity>().set("status", status).in("id", ids)));
+	public boolean changeState(List<Long> ids, int state) {
+		return SqlHelper.retBool(getBaseMapper().update(new TaskEntity(), new UpdateWrapper<TaskEntity>().set("state", state).in("id", ids)));
 	}
 
     @Override
@@ -93,7 +93,7 @@ public class TaskServiceImpl extends CrudServiceImpl<TaskDao, TaskEntity, TaskDT
             ScheduleUtils.pauseJob(scheduler, id);
         }
 
-		changeStatus(ids, SchedConst.TaskStatus.PAUSE.getValue());
+		changeState(ids, SchedConst.TaskState.PAUSE.getValue());
     }
 
     @Override
@@ -103,7 +103,7 @@ public class TaskServiceImpl extends CrudServiceImpl<TaskDao, TaskEntity, TaskDT
             ScheduleUtils.resumeJob(scheduler, id);
         }
 
-		changeStatus(ids, SchedConst.TaskStatus.NORMAL.getValue());
+		changeState(ids, SchedConst.TaskState.NORMAL.getValue());
     }
 
 }

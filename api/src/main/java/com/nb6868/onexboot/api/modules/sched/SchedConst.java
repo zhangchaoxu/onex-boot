@@ -19,7 +19,7 @@ public interface SchedConst {
     /**
      * 定时任务状态
      */
-    enum TaskStatus {
+    enum TaskState {
         /**
          * 暂停
          */
@@ -31,7 +31,7 @@ public interface SchedConst {
 
         private int value;
 
-        TaskStatus(int value) {
+        TaskState(int value) {
             this.value = value;
         }
 

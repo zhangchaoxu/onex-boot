@@ -39,7 +39,7 @@ public class NoticeLogDTO extends BaseDTO {
 	private String content;
 
 	@ApiModelProperty(value = "发送状态  0:失败  1: 成功")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "是否已读  0:未读 1: 已读")
 	private Integer readed;

@@ -35,7 +35,7 @@ public class SupplierEntity extends BaseTenantEntity {
     /**
      * 状态0 未审核 1 已审核
      */
-	private Integer status;
+	private Integer state;
     /**
      * 内容
      */

@@ -46,7 +46,7 @@ public class UserRankDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "状态  0：停用   1：正常", required = true)
 	@Range(min = 0, max = 1, message = "状态取值0-1", groups = DefaultGroup.class)
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "租户id")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)

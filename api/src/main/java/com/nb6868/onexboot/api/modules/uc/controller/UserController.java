@@ -153,12 +153,12 @@ public class UserController {
         return new Result<>();
     }
 
-    @PutMapping("changeStatus")
+    @PutMapping("changeState")
     @ApiOperation("更新状态")
     @LogOperation("更新状态")
     @RequiresPermissions("uc:user:update")
-    public Result<?> changeStatus(@RequestBody UserDTO dto) {
-        userService.changeStatus(dto);
+    public Result<?> changeState(@RequestBody UserDTO dto) {
+        userService.changeState(dto);
 
         return new Result<>();
     }
@@ -260,7 +260,7 @@ public class UserController {
             if (validateResult.isSuccess()) {
                 // 额外赋值
                 dto.setDeptId(deptId);
-                dto.setStatus(1);
+                dto.setState(1);
                 try {
                     userService.saveDto(dto);
                     // todo 插入用户与角色关系表

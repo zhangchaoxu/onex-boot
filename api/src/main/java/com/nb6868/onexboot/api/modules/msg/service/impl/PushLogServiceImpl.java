@@ -25,7 +25,7 @@ public class PushLogServiceImpl extends CrudServiceImpl<PushLogDao, PushLogEntit
                 .like(ParamUtils.isNotEmpty(params.get("content")), "content", params.get("content"))
                 .like(ParamUtils.isNotEmpty(params.get("params")), "params", params.get("params"))
                 .like(ParamUtils.isNotEmpty(params.get("result")), "result", params.get("result"))
-                .eq(ParamUtils.isNotEmpty(params.get("status")), "status", params.get("status"))
+                .eq(ParamUtils.isNotEmpty(params.get("state")), "state", params.get("state"))
                 .eq(ParamUtils.isNotEmpty(params.get("alias")), "alias", params.get("alias"))
                 .eq(ParamUtils.isNotEmpty(params.get("tags")), "tags", params.get("tags"));
     }

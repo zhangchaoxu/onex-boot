@@ -48,6 +48,6 @@ public class PushLogEntity extends BaseEntity {
     /**
      * 发送状态  0：失败  1：成功
      */
-    private Integer status;
+    private Integer state;
 
 }

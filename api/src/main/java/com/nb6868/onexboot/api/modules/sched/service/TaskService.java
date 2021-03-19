@@ -16,7 +16,7 @@ public interface TaskService extends CrudService<TaskEntity, TaskDTO> {
 	/**
 	 * 修改状态
 	 */
-	boolean changeStatus(List<Long> ids, int status);
+	boolean changeState(List<Long> ids, int state);
 
 	/**
 	 * 立即执行

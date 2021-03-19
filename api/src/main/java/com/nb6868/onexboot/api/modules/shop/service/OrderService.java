@@ -1,16 +1,14 @@
 package com.nb6868.onexboot.api.modules.shop.service;
 
 import com.nb6868.onexboot.api.modules.pay.dto.PayRequest;
-import com.nb6868.onexboot.api.modules.shop.entity.OrderEntity;
-import com.nb6868.onexboot.common.pojo.ChangeStatusRequest;
-import com.nb6868.onexboot.common.service.CrudService;
 import com.nb6868.onexboot.api.modules.shop.dto.OrderChangeReceiverRequest;
 import com.nb6868.onexboot.api.modules.shop.dto.OrderDTO;
 import com.nb6868.onexboot.api.modules.shop.dto.OrderOneClickRequest;
+import com.nb6868.onexboot.api.modules.shop.entity.OrderEntity;
+import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
+import com.nb6868.onexboot.common.service.CrudService;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 订单
@@ -68,7 +66,7 @@ public interface OrderService extends CrudService<OrderEntity, OrderDTO> {
     /**
      * 取消并退款
      */
-    boolean cancelAndRefund(ChangeStatusRequest request);
+    boolean cancelAndRefund(ChangeStateRequest request);
 
     /**
      * 退款
@@ -81,19 +79,5 @@ public interface OrderService extends CrudService<OrderEntity, OrderDTO> {
      * @param payOrder 支付订单
      */
     boolean payNotify(com.nb6868.onexboot.api.modules.pay.entity.OrderEntity payOrder);
-
-    /**
-     * 计算订单收益
-     *
-     * @param payOrder 支付订单
-     */
-    boolean calculateIncome(Long orderId);
-
-    /**
-     * 计算订单收益排名
-     *
-     * @param payOrder 支付订单
-     */
-    List<Map> benefitRanking(Long goodsId);
 
 }

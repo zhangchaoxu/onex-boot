@@ -52,6 +52,6 @@ public class SiteDTO extends BaseDTO {
 
     @ApiModelProperty(value = "状态", required = true)
     @Range(min = 0, max = 1, message = "状态取值0-1", groups = DefaultGroup.class)
-    private Integer status;
+    private Integer state;
 
 }

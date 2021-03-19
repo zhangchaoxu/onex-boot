@@ -44,10 +44,10 @@ public class MailLogDTO extends BaseDTO {
 	private String content;
 
 	@ApiModelProperty(value = "消费状态 0 :  未消费 1 ：已消费")
-	private Integer consumeStatus;
+	private Integer consumeState;
 
 	@ApiModelProperty(value = "发送状态  0：失败  1：成功")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "发送结果")
 	private String result;

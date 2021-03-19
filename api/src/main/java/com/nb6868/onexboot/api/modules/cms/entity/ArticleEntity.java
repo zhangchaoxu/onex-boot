@@ -30,7 +30,7 @@ public class ArticleEntity extends BaseEntity {
     /**
      * 状态0 未发布 1 已发布
      */
-    private Integer status;
+    private Integer state;
     /**
      * 类型
      */

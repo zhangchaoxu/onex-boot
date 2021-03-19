@@ -37,7 +37,7 @@ public class CustomerEntity extends BaseEntity {
     /**
      * 成交状态 0未成交 1已成交
      */
-    private Integer dealStatus;
+    private Integer dealState;
     /**
      * 联系人
      */
@@ -57,7 +57,7 @@ public class CustomerEntity extends BaseEntity {
     /**
      * 状态0 未激活 1 激活
      */
-    private Integer status;
+    private Integer state;
     /**
      * 区域名称,如浙江省,宁波市,鄞州区
      */

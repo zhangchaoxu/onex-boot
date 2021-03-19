@@ -47,7 +47,7 @@ public class GoodsExcel {
     @Excel(name = "规格")
     private String specs;
     @Excel(name = "状态")
-    private Integer status;
+    private Integer state;
     @Excel(name = "点击数")
     private Integer hits;
     @Excel(name = "图片")

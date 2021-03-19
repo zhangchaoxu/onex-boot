@@ -45,7 +45,7 @@ public class AppCartController {
     @ApiOperation("列表")
     public Result<?> list() {
         Map<String, Object> params = new HashMap<>();
-        params.put("status", 1);
+        params.put("state", 1);
         List<CartDTO> list = cartService.listDto(params);
 
         return new Result<>().success(list);
@@ -57,7 +57,7 @@ public class AppCartController {
         UserDetail user = SecurityUser.getUser();
         cartService.update().set("checked", 1)
                 .eq("checked", 0)
-                .eq("status", 0)
+                .eq("state", 0)
                 .eq("user_id", user.getId())
                 .update(new CartEntity());
         // 是否有必要重新计算价格?
@@ -70,7 +70,7 @@ public class AppCartController {
         UserDetail user = SecurityUser.getUser();
         cartService.update().set("checked", 0)
                 .eq("checked", 1)
-                .eq("status", 0)
+                .eq("state", 0)
                 .eq("user_id", user.getId())
                 .update(new CartEntity());
         return new Result<>();
@@ -84,7 +84,7 @@ public class AppCartController {
         // 检查是否允许修改这么多数量
         cartService.update().set("checked", 0)
                 .eq("checked", 1)
-                .eq("status", 0)
+                .eq("state", 0)
                 .eq("user_id", user.getId())
                 .update(new CartEntity());
         // 是否有必要重新计算价格?

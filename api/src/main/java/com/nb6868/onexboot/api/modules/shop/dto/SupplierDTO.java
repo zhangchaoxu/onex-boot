@@ -31,7 +31,7 @@ public class SupplierDTO extends BaseDTO {
 	private Integer sort;
 
 	@ApiModelProperty(value = "状态0 未审核 1 已审核")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "内容")
 	private String content;

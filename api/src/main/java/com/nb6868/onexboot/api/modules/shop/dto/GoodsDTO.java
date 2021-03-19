@@ -97,7 +97,7 @@ public class GoodsDTO extends BaseTenantDTO {
 	private String specs;
 
 	@ApiModelProperty(value = "状态")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "点击数")
 	private Integer hits;

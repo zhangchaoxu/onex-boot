@@ -117,7 +117,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
             if (user == null) {
                 // 帐号不存在
                throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-            } else if (user.getStatus() != UcConst.UserStatusEnum.ENABLED.value()) {
+            } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
                 // 帐号锁定
                 throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
             } else if (!PasswordUtils.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -131,7 +131,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
             if (user == null) {
                 // 帐号不存在
                 throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-            } else if (user.getStatus() != UcConst.UserStatusEnum.ENABLED.value()) {
+            } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
                 // 帐号锁定
                 throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
             }
@@ -183,7 +183,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
                     if (user == null) {
                         // 帐号不存在
                         throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-                    } else if (user.getStatus() != UcConst.UserStatusEnum.ENABLED.value()) {
+                    } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
                         // 帐号锁定
                         throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
                     }
@@ -196,7 +196,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
         /*if (user == null && loginChannelCfg.isAutoCreate()) {
             // 没有该用户，并且需要自动创建用户
             user = new UserDTO();
-            user.setStatus(UcConst.UserStatusEnum.ENABLED.value());
+            user.setState(UcConst.UserStateEnum.ENABLED.value());
             user.setMobile(loginRequest.getMobile());
             user.setUsername(loginRequest.getMobile());
             user.setType(UcConst.UserTypeEnum.USER.value());
@@ -270,7 +270,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
         if (user == null) {
             // 帐号不存在
             resultCode = ErrorCode.ACCOUNT_NOT_EXIST;
-        } else if (user.getStatus() != UcConst.UserStatusEnum.ENABLED.value()) {
+        } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
             // 帐号锁定
             resultCode = ErrorCode.ACCOUNT_DISABLE;
         } else {
@@ -310,8 +310,8 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     }
 
     @Override
-    public boolean changeStatus(UserDTO dto) {
-        return update().set("status", dto.getStatus()).eq("id", dto.getId()).update(new UserEntity());
+    public boolean changeState(UserDTO dto) {
+        return update().set("status", dto.getState()).eq("id", dto.getId()).update(new UserEntity());
     }
 
     @Override

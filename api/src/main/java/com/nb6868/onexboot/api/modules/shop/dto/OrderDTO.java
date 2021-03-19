@@ -23,10 +23,10 @@ public class OrderDTO extends BaseTenantDTO {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "状态 0：待付款  1：待发货  2:待收货  3：待评价  -1：退款   -2：售后")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "支付状态 0 待支付 1已支付 -1已退款")
-	private Integer payStatus;
+	private Integer payState;
 
 	@ApiModelProperty(value = "订单号")
 	private String no;
@@ -39,15 +39,6 @@ public class OrderDTO extends BaseTenantDTO {
 
 	@ApiModelProperty(value = "卖方用户id")
 	private Long sellUserId;
-
-	@ApiModelProperty(value = "收益用户id")
-	private Long benefitUserId;
-
-	@ApiModelProperty(value = "收益金额")
-	private BigDecimal benefitPrice;
-
-	@ApiModelProperty(value = "收益状态 0 未发放 1 已发放 -1 已回收")
-	private Integer benefitStatus;
 
 	@ApiModelProperty(value = "用户备注")
 	private String userRemark;
@@ -129,7 +120,7 @@ public class OrderDTO extends BaseTenantDTO {
 	 * 订单是否可取消
 	 */
 	public boolean isSysCancelable() {
-		return status == ShopConst.OrderStatusEnum.PLACED.value();
+		return state == ShopConst.OrderStateEnum.PLACED.value();
 	}
 
 	/**
@@ -137,7 +128,7 @@ public class OrderDTO extends BaseTenantDTO {
 	 * 订单是否可取消
 	 */
 	public boolean isUserCancelable() {
-		return status == ShopConst.OrderStatusEnum.PLACED.value();
+		return state == ShopConst.OrderStateEnum.PLACED.value();
 	}
 
 	/**
@@ -145,7 +136,7 @@ public class OrderDTO extends BaseTenantDTO {
 	 * 订单状态处于未支付,并且时间允许
 	 */
 	public boolean isPayable() {
-		return status == ShopConst.OrderStatusEnum.PLACED.value();
+		return state == ShopConst.OrderStateEnum.PLACED.value();
 	}
 
 }

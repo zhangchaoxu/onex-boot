@@ -63,9 +63,9 @@ public class AliyunSmsService extends AbstractSmsService {
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
         mailLog.setContentParams(params);
-        mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
+        mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), paramMap));
-        mailLog.setStatus(Const.ResultEnum.FAIL.value());
+        mailLog.setState(Const.ResultEnum.FAIL.value());
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
 
@@ -99,16 +99,16 @@ public class AliyunSmsService extends AbstractSmsService {
             String result = new RestTemplate().getForObject(uri, String.class);
             Map<String, Object> json = JacksonUtils.jsonToMap(result);
             mailLog.setResult(result);
-            mailLog.setStatus("OK".equalsIgnoreCase(json.get("Code").toString()) ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
+            mailLog.setState("OK".equalsIgnoreCase(json.get("Code").toString()) ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
         } catch (Exception e) {
             // 接口调用失败
             log.error("AliyunSms", e);
-            mailLog.setStatus(Const.ResultEnum.FAIL.value());
+            mailLog.setState(Const.ResultEnum.FAIL.value());
             mailLog.setResult(e.getMessage());
         }
 
         mailLogService.updateById(mailLog);
-        return mailLog.getStatus() == Const.ResultEnum.SUCCESS.value();
+        return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
     }
 
     @Override

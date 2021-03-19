@@ -13,7 +13,7 @@ public interface ShopConst {
     /**
      * 订单状态类型
      */
-    enum OrderStatusEnum {
+    enum OrderStateEnum {
 
         /**
          * 详见name
@@ -28,11 +28,11 @@ public interface ShopConst {
         private int value;
         private String name;
 
-        OrderStatusEnum(int value) {
+        OrderStateEnum(int value) {
             this.value = value;
         }
 
-        OrderStatusEnum(int value, String name) {
+        OrderStateEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }
@@ -45,11 +45,11 @@ public interface ShopConst {
             return this.name;
         }
 
-        public static Optional<OrderStatusEnum> getOptionalByValue(int value) {
+        public static Optional<OrderStateEnum> getOptionalByValue(int value) {
             return Arrays.stream(values()).filter(bl -> bl.value() == value).findFirst();
         }
 
-        public static OrderStatusEnum getByValue(int value) {
+        public static OrderStateEnum getByValue(int value) {
             return Arrays.stream(values()).filter(bl -> bl.value() == value).findFirst().orElse(UNKNOWN);
         }
 
@@ -58,7 +58,7 @@ public interface ShopConst {
     /**
      * 订单支付状态类型
      */
-    enum OrderPayStatusEnum {
+    enum OrderPayStateEnum {
 
         /**
          * 详见name
@@ -73,11 +73,11 @@ public interface ShopConst {
         private int value;
         private String name;
 
-        OrderPayStatusEnum(int value) {
+        OrderPayStateEnum(int value) {
             this.value = value;
         }
 
-        OrderPayStatusEnum(int value, String name) {
+        OrderPayStateEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }
@@ -90,11 +90,11 @@ public interface ShopConst {
             return this.name;
         }
 
-        public static Optional<OrderPayStatusEnum> getOptionalByValue(int value) {
+        public static Optional<OrderPayStateEnum> getOptionalByValue(int value) {
             return Arrays.stream(values()).filter(bl -> bl.value() == value).findFirst();
         }
 
-        public static OrderPayStatusEnum getByValue(int value) {
+        public static OrderPayStateEnum getByValue(int value) {
             return Arrays.stream(values()).filter(bl -> bl.value() == value).findFirst().orElse(UNKNOWN);
         }
 

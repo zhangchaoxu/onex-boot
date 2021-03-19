@@ -23,7 +23,7 @@ public class TenantExcel {
     @Excel(name = "有效期结束")
     private Date validEndTime;
     @Excel(name = "状态 0 无效 1 有效")
-    private Integer status;
+    private Integer state;
     @Excel(name = "创建者id")
     private Long createId;
     @Excel(name = "创建时间")

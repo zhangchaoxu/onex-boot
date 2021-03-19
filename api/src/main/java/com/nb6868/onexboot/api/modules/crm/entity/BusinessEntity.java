@@ -58,7 +58,7 @@ public class BusinessEntity extends BaseEntity {
     /**
      * 状态1 阶段1 2 阶段2 3 阶段3 10 赢单 -10 输单 0 无效
      */
-    private Integer status;
+    private Integer state;
     /**
      * 商机金额
      */

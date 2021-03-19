@@ -41,7 +41,7 @@ public class CustomerDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "成交状态 0未成交 1已成交")
 	@Range(min = 0, max = 1, message = "成交状态取值01", groups = DefaultGroup.class)
-	private Integer dealStatus;
+	private Integer dealState;
 
 	@ApiModelProperty(value = "联系人")
 	private String contacts;
@@ -59,7 +59,7 @@ public class CustomerDTO extends BaseDTO {
 	private String remark;
 
 	@ApiModelProperty(value = "状态0 未激活 1 激活")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "区域名称,如浙江省,宁波市,鄞州区")
 	private String regionName;

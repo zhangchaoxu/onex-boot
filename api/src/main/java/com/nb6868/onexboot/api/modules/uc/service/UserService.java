@@ -56,7 +56,7 @@ public interface UserService extends CrudService<UserEntity, UserDTO> {
     /**
      * 修改状态
      */
-    boolean changeStatus(UserDTO dto);
+    boolean changeState(UserDTO dto);
 
     /**
      * 修改密码

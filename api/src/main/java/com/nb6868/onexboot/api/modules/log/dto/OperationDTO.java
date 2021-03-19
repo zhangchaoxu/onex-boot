@@ -39,7 +39,7 @@ public class OperationDTO extends BaseDTO {
     private String ip;
 
     @ApiModelProperty(value = "状态  0：失败   1：成功")
-    private Integer status;
+    private Integer state;
 
     @ApiModelProperty(value = "用户名")
     private String createName;

@@ -57,7 +57,7 @@ public class ScheduleUtils {
             scheduler.scheduleJob(jobDetail, trigger);
 
             //暂停任务
-            if (scheduleJob.getStatus() == SchedConst.TaskStatus.PAUSE.getValue()) {
+            if (scheduleJob.getState() == SchedConst.TaskState.PAUSE.getValue()) {
                 pauseJob(scheduler, scheduleJob.getId());
             }
         } catch (SchedulerException e) {
@@ -82,7 +82,7 @@ public class ScheduleUtils {
             trigger.getJobDataMap().put(SchedConst.JOB_PARAM_KEY, scheduleJob);
             scheduler.rescheduleJob(triggerKey, trigger);
             //暂停任务
-            if (scheduleJob.getStatus() == SchedConst.TaskStatus.PAUSE.getValue()) {
+            if (scheduleJob.getState() == SchedConst.TaskState.PAUSE.getValue()) {
                 pauseJob(scheduler, scheduleJob.getId());
             }
         } catch (SchedulerException e) {

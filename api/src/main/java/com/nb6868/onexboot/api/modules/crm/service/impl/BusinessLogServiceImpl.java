@@ -57,8 +57,8 @@ public class BusinessLogServiceImpl extends CrudServiceImpl<BusinessLogDao, Busi
             AssertUtils.isNull(business, ErrorCode.ERROR_REQUEST, "商机不存在");
 
             // 修改商机状态
-            if (!business.getStatus().equals(dto.getStatus())) {
-                businessService.changeStatus(business.getId(), dto.getStatus());
+            if (!business.getState().equals(dto.getState())) {
+                businessService.changeState(business.getId(), dto.getState());
             }
             if (dto.getNextFollowDate() != null) {
                 businessService.changeFollowDate(business.getId(), dto.getNextFollowDate());

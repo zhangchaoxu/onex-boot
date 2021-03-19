@@ -19,9 +19,9 @@ import java.util.Map;
 @Mapper
 public interface BusinessDao extends BaseDao<BusinessEntity> {
 
-    @Select("SELECT crm_business.status, count(crm_business.status) as status_count " +
+    @Select("SELECT crm_business.state, count(crm_business.state) as state_count " +
             "FROM crm_business " +
-            "${ew.customSqlSegment} GROUP BY crm_business.status")
-    List<Map<String, Object>> listStatusCount(@Param(Constants.WRAPPER) Wrapper<BusinessEntity> ew);
+            "${ew.customSqlSegment} GROUP BY crm_business.state")
+    List<Map<String, Object>> listStateCount(@Param(Constants.WRAPPER) Wrapper<BusinessEntity> ew);
 
 }
