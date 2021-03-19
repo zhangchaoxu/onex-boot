@@ -49,7 +49,7 @@ public class BusinessDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "状态1 阶段1 2 阶段2 3 阶段3 10 赢单 -10 输单 0 无效")
 	@Range(min = -10, max = 10, message = "状态取值异常", groups = DefaultGroup.class)
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "商机金额")
 	private BigDecimal amount;

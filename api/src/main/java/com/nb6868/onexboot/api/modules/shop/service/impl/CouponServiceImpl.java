@@ -36,7 +36,7 @@ public class CouponServiceImpl extends CrudServiceImpl<CouponDao, CouponEntity, 
         return new WrapperUtils<CouponEntity>(new QueryWrapper<>(), params)
                 .like("name", "shop_coupon.name")
                 .eq("type", "shop_coupon.type")
-                .eq("status", "shop_coupon.status")
+                .eq("state", "shop_coupon.state")
                 .like("storeName", "shop_store.name")
                 .eq("tenantId", "tenant_id")
                 .apply(Const.SQL_FILTER)

@@ -43,7 +43,7 @@ public class GoodsServiceImpl extends CrudServiceImpl<GoodsDao, GoodsEntity, Goo
         return new WrapperUtils<GoodsEntity>(new QueryWrapper<>(), params)
                 .like("name", "name")
                 .eq("sn", "sn")
-                .eq("status", "status")
+                .eq("state", "state")
                 .eq("top", "top")
                 .eq("type", "type")
                 .eq("delivery", "delivery")

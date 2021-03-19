@@ -22,7 +22,7 @@ public class CustomerExcel {
     @Excel(name = "客户来源")
     private String source;
     @Excel(name = "成交状态", replace = {"未成交_0", "已成交_1"})
-    private Integer dealStatus;
+    private Integer dealState;
     @Excel(name = "联系人")
     private String contacts;
     @Excel(name = "联系电话")
@@ -32,7 +32,7 @@ public class CustomerExcel {
     @Excel(name = "内容")
     private String content;
     @Excel(name = "状态", replace = {"未激活_0", "激活_1"})
-    private Integer status;
+    private Integer state;
     @Excel(name = "区域")
     private String regionName;
     @Excel(name = "区域编码")

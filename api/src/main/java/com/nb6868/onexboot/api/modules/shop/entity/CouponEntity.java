@@ -45,7 +45,7 @@ public class CouponEntity extends BaseTenantEntity {
     /**
      * 状态 0 未激活 1 已激活
      */
-	private Integer status;
+	private Integer state;
     /**
      * 兑换积分
      */

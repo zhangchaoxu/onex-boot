@@ -55,7 +55,7 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 .eq("tplType", "tpl_type")
                 .like("mailTo", "mail_to")
                 .like("mailCc", "mail_cc")
-                .eq("status", "status")
+                .eq("state", "state")
                 .like("content", "content")
                 .getQueryWrapper();
     }
@@ -65,15 +65,15 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
      */
     @Override
     public boolean consumeById(Long id) {
-        return update().eq("id", id).set("consume_status", Const.BooleanEnum.TRUE.value()).update(new MailLogEntity());
+        return update().eq("id", id).set("consume_state", Const.BooleanEnum.TRUE.value()).update(new MailLogEntity());
     }
 
     @Override
     public MailLogEntity findLastLogByTplCode(String tplCode, String mailTo) {
         return query().eq("tpl_code", tplCode)
                 .eq("mail_to", mailTo)
-                .eq("status", Const.BooleanEnum.TRUE.value())
-                .eq("consume_status", Const.BooleanEnum.FALSE.value())
+                .eq("state", Const.BooleanEnum.TRUE.value())
+                .eq("consume_state", Const.BooleanEnum.FALSE.value())
                 .orderByDesc("create_time")
                 .last(Const.LIMIT_ONE)
                 .one();
@@ -126,11 +126,11 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                     templateMessage.addData(new WxMpTemplateData(key, contentParam.get(key).toString()));
                 }
 
-                Const.ResultEnum status = Const.ResultEnum.FAIL;
+                Const.ResultEnum state = Const.ResultEnum.FAIL;
                 String result;
                 try {
                     result = wxService.getTemplateMsgService().sendTemplateMsg(templateMessage);
-                    status = Const.ResultEnum.SUCCESS;
+                    state = Const.ResultEnum.SUCCESS;
                 } catch (WxErrorException e) {
                     e.printStackTrace();
                     result = e.getError().getJson();
@@ -138,13 +138,13 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 // 保存记录
                 MailLogEntity mailLog = new MailLogEntity();
                 mailLog.setMailTo(openId);
-                mailLog.setStatus(status.value());
+                mailLog.setState(state.value());
                 mailLog.setResult(result);
                 mailLog.setContent(content);
                 mailLog.setTplCode(mailTpl.getCode());
                 mailLog.setTplType(mailTpl.getType());
                 mailLog.setContentParams(request.getContentParam());
-                mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
+                mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
                 save(mailLog);
             }
             return true;
@@ -180,11 +180,11 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                     templateMessage.addData(new WxMaSubscribeMessage.Data(key, contentParam.get(key).toString()));
                 }
 
-                Const.ResultEnum status = Const.ResultEnum.FAIL;
+                Const.ResultEnum state = Const.ResultEnum.FAIL;
                 String result = "success";
                 try {
                     wxService.getMsgService().sendSubscribeMsg(templateMessage);
-                    status = Const.ResultEnum.SUCCESS;
+                    state = Const.ResultEnum.SUCCESS;
                 } catch (WxErrorException e) {
                     e.printStackTrace();
                     result = e.getError().getJson();
@@ -192,13 +192,13 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
                 // 保存记录
                 MailLogEntity mailLog = new MailLogEntity();
                 mailLog.setMailTo(openId);
-                mailLog.setStatus(status.value());
+                mailLog.setState(state.value());
                 mailLog.setResult(result);
                 mailLog.setContent(content);
                 mailLog.setTplCode(mailTpl.getCode());
                 mailLog.setTplType(mailTpl.getType());
                 mailLog.setContentParams(request.getContentParam());
-                mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
+                mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
                 save(mailLog);
             }
             return true;

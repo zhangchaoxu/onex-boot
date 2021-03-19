@@ -29,6 +29,6 @@ public class TenantDTO extends BaseDTO {
 	private Date validEndTime;
 
 	@ApiModelProperty(value = "状态 0 无效 1 有效")
-	private Integer status;
+	private Integer state;
 
 }

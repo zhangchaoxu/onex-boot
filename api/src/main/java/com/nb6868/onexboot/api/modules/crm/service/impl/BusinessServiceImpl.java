@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.crm.dao.BusinessDao;
 import com.nb6868.onexboot.api.modules.crm.dto.BusinessDTO;
 import com.nb6868.onexboot.api.modules.crm.dto.BusinessProductDTO;
+import com.nb6868.onexboot.api.modules.crm.entity.BusinessEntity;
+import com.nb6868.onexboot.api.modules.crm.entity.BusinessLogEntity;
+import com.nb6868.onexboot.api.modules.crm.entity.ContractEntity;
 import com.nb6868.onexboot.api.modules.crm.entity.CustomerEntity;
 import com.nb6868.onexboot.api.modules.crm.service.*;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
@@ -13,10 +16,6 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.modules.crm.service.*;
-import com.nb6868.onexboot.api.modules.crm.entity.BusinessEntity;
-import com.nb6868.onexboot.api.modules.crm.entity.BusinessLogEntity;
-import com.nb6868.onexboot.api.modules.crm.entity.ContractEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class BusinessServiceImpl extends CrudServiceImpl<BusinessDao, BusinessEn
                 .eq("customerId", "customer_id")
                 .like("name", "name")
                 .like("source", "source")
-                .eq("status", "status")
+                .eq("state", "state")
                 .eq("tenantId", "tenant_id")
                 .apply(Const.SQL_FILTER)
                 .getQueryWrapper();
@@ -90,7 +89,7 @@ public class BusinessServiceImpl extends CrudServiceImpl<BusinessDao, BusinessEn
         log.setBusinessId(dto.getId());
         log.setCustomerId(dto.getCustomerId());
         log.setLogDate(new Date());
-        log.setStatus(dto.getStatus());
+        log.setState(dto.getState());
         businessLogService.save(log);
 
         // 插入产品
@@ -116,8 +115,8 @@ public class BusinessServiceImpl extends CrudServiceImpl<BusinessDao, BusinessEn
     }
 
     @Override
-    public boolean changeStatus(Long id, int newStatus) {
-        return update().set("status", newStatus).eq("id", id).update(new BusinessEntity());
+    public boolean changeState(Long id, int newState) {
+        return update().set("state", newState).eq("id", id).update(new BusinessEntity());
     }
 
     public boolean changeFollowDate(Long id, Date followDate) {
@@ -125,8 +124,8 @@ public class BusinessServiceImpl extends CrudServiceImpl<BusinessDao, BusinessEn
     }
 
     @Override
-    public List<Map<String, Object>> listStatusCount(Map<String, Object> params) {
-        return getBaseMapper().listStatusCount(getWrapper("listStatusCount", params));
+    public List<Map<String, Object>> listStateCount(Map<String, Object> params) {
+        return getBaseMapper().listStateCount(getWrapper("listStateCount", params));
     }
 
 }

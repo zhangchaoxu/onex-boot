@@ -36,6 +36,6 @@ public class ShorturlDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "状态 0 不开放 1 开放")
 	@Range(min = 0, max = 1, message = "状态取值0-2", groups = DefaultGroup.class)
-	private Integer status;
+	private Integer state;
 
 }

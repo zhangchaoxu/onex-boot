@@ -23,7 +23,7 @@ public class OperationServiceImpl extends CrudServiceImpl<OperationDao, Operatio
     public QueryWrapper<OperationEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<OperationEntity>(new QueryWrapper<>(), params)
                 // 状态
-                .eq("status", "status")
+                .eq("state", "state")
                 // 用户
                 .like("createName", "create_name")
                 // 请求uri

@@ -25,10 +25,10 @@ public class CustomerServiceImpl extends CrudServiceImpl<CustomerDao, CustomerEn
     public QueryWrapper<CustomerEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<CustomerEntity>(new QueryWrapper<>(), params)
                 .like("name", "name")
-                .eq("status", "status")
+                .eq("state", "state")
                 .eq("level", "level")
                 .like("source", "source")
-                .eq("dealStatus", "deal_status")
+                .eq("dealState", "deal_state")
                 .eq("tenantId", "tenant_id")
                 .and("search", queryWrapper -> {
                     String search = (String) params.get("search");

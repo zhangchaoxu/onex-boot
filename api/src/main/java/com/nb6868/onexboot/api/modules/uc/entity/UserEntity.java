@@ -83,7 +83,7 @@ public class UserEntity extends BaseTenantEntity {
     /**
      * 状态  0：停用   1：正常
      */
-    private Integer status;
+    private Integer state;
     /**
      * 积分
      */

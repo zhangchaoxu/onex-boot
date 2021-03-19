@@ -78,7 +78,7 @@ public class UserDTO extends BaseDTO {
 
     @ApiModelProperty(value = "状态  0：停用    1：正常", required = true)
     @Range(min = 0, max = 1, message = "状态值取值0-1", groups = DefaultGroup.class)
-    private Integer status;
+    private Integer state;
 
     @ApiModelProperty(value = "用户类别")
     @Range(min = 0, max = 100, message = "用户类别取值0-100", groups = DefaultGroup.class)

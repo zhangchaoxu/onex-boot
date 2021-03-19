@@ -40,7 +40,7 @@ public class BusinessExcel {
     @Excel(name = "跟进时间")
     private Date followDate;
     @Excel(name = "状态1 阶段1 2 阶段2 3 阶段3 10 赢单 -10 输单 0 无效")
-    private Integer status;
+    private Integer state;
     @Excel(name = "商机金额")
     private BigDecimal amont;
     @Excel(name = "预计成交时间")

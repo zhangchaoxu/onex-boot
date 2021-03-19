@@ -27,7 +27,7 @@ public class NoticeLogExcel {
     @Excel(name = "正文")
     private String content;
     @Excel(name = "发送状态  0:失败  1: 成功")
-    private Integer status;
+    private Integer state;
     @Excel(name = "是否已读  0:未读 1: 已读")
     private Integer read;
     @Excel(name = "创建者")

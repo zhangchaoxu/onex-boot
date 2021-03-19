@@ -56,11 +56,11 @@ public class MailLogEntity extends BaseEntity {
     /**
      * 消费状态 0 :  未消费 1 ：已消费
      */
-	private Integer consumeStatus;
+	private Integer consumeState;
     /**
      * 发送状态  0：失败  1：成功
      */
-	private Integer status;
+	private Integer state;
     /**
      * 发送结果
      */

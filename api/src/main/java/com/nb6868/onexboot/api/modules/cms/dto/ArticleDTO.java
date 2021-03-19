@@ -26,7 +26,7 @@ public class ArticleDTO extends BaseDTO {
 	private Integer sort;
 
 	@ApiModelProperty(value = "状态0 未发布 1 已发布")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "类型")
 	private Integer type;

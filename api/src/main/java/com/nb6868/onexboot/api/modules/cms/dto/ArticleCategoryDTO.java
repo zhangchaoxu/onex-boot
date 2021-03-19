@@ -27,7 +27,7 @@ public class ArticleCategoryDTO extends BaseDTO {
 	private Integer sort;
 
 	@ApiModelProperty(value = "状态")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "类型")
 	private Integer type;

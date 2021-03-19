@@ -26,7 +26,7 @@ public class NoticeLogServiceImpl extends CrudServiceImpl<NoticeLogDao, NoticeLo
     @Override
     public QueryWrapper<NoticeLogEntity> getWrapper(String method, Map<String, Object> params) {
         return new WrapperUtils<NoticeLogEntity>(new QueryWrapper<>(), params)
-                .eq("status", "status")
+                .eq("state", "state")
                 .eq("read", "read")
                 .like("content", "content")
                 .apply(Const.SQL_FILTER)

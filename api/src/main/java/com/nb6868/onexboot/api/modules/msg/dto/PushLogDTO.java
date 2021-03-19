@@ -39,6 +39,6 @@ public class PushLogDTO extends BaseDTO {
 	private String result;
 
 	@ApiModelProperty(value = "发送状态  0：失败  1：成功")
-	private Integer status;
+	private Integer state;
 
 }

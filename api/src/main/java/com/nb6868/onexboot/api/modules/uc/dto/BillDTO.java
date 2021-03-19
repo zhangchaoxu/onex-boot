@@ -51,7 +51,7 @@ public class BillDTO extends BaseDTO {
 	private Long orderId;
 
 	@ApiModelProperty(value = "状态  0：异常   1：正常")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "租户id")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)

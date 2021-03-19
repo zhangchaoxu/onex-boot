@@ -47,7 +47,7 @@ public class CouponDTO extends BaseTenantDTO {
 
 	@ApiModelProperty(value = "状态 0 未激活 1 已激活", required = true)
 	@Range(min = 0, max = 1, message = "状态取值0-1", groups = DefaultGroup.class)
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "兑换积分", required = true)
 	@Range(min = 0,  message = "兑换积分取值限制", groups = DefaultGroup.class)

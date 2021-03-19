@@ -31,7 +31,7 @@ public class TaskEntity extends BaseEntity {
     /**
      * 任务状态  0：暂停  1：正常
      */
-    private Integer status;
+    private Integer state;
     /**
      * 备注
      */

@@ -36,7 +36,7 @@ public class ChannelDTO extends BaseDTO {
 	private String remark;
 
 	@ApiModelProperty(value = "状态 0未启用 1启用")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "租户id")
 	private Long tenantId;

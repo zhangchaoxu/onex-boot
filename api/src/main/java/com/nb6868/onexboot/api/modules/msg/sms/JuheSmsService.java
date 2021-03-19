@@ -56,10 +56,10 @@ public class JuheSmsService extends AbstractSmsService {
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
         mailLog.setContentParams(params);
-        mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
+        mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
 
         // 调用接口发送
-        Const.ResultEnum status = Const.ResultEnum.FAIL;
+        Const.ResultEnum state = Const.ResultEnum.FAIL;
         RestTemplate restTemplate = new RestTemplate();
         String result;
         try {
@@ -67,7 +67,7 @@ public class JuheSmsService extends AbstractSmsService {
         } catch (Exception e) {
             // 接口调用失败
             log.error("JuheSms", e);
-            mailLog.setStatus(status.value());
+            mailLog.setState(state.value());
             mailLog.setResult(e.getMessage());
             mailLogService.save(mailLog);
             return false;
@@ -75,9 +75,9 @@ public class JuheSmsService extends AbstractSmsService {
 
         Map<String, Object> json = JacksonUtils.jsonToMap(result);
         mailLog.setResult(result);
-        mailLog.setStatus((int) json.get("error_code") == 0 ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
+        mailLog.setState((int) json.get("error_code") == 0 ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
         mailLogService.save(mailLog);
-        return mailLog.getStatus() == Const.ResultEnum.SUCCESS.value();
+        return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
     }
 
     @Override

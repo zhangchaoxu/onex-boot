@@ -81,7 +81,7 @@ public class EmailUtils {
         mailLog.setMailCc(request.getMailCc());
         mailLog.setSubject(title);
         mailLog.setContent(content);
-        mailLog.setConsumeStatus(Const.BooleanEnum.FALSE.value());
+        mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         // 设置有效时间
         if (mailTpl.getTimeLimit() > 0) {
             mailLog.setValidEndTime(DateUtils.addDateSeconds(DateUtils.now(), mailTpl.getTimeLimit()));
@@ -102,13 +102,13 @@ public class EmailUtils {
             //发送邮件
             mailSender.send(mimeMessage);
             // 保存记录
-            mailLog.setStatus(Const.ResultEnum.SUCCESS.value());
+            mailLog.setState(Const.ResultEnum.SUCCESS.value());
         } catch (Exception e) {
             log.error("send error", e);
-            mailLog.setStatus(Const.ResultEnum.FAIL.value());
+            mailLog.setState(Const.ResultEnum.FAIL.value());
         }
         mailLogService.save(mailLog);
-        return mailLog.getStatus() == Const.ResultEnum.SUCCESS.value();
+        return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
     }
 
 }

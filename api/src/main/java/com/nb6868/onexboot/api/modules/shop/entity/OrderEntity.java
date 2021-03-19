@@ -26,11 +26,11 @@ public class OrderEntity extends BaseTenantEntity {
     /**
      * 状态 0：待付款  1：待发货  2:待收货  3：待评价  -1：退款   -2：售后
      */
-    private Integer status;
+    private Integer state;
     /**
      * 支付状态 0 待支付 1已支付 -1已退款
      */
-    private Integer payStatus;
+    private Integer payState;
     /**
      * 订单号
      */
@@ -58,7 +58,7 @@ public class OrderEntity extends BaseTenantEntity {
     /**
      * 收益状态 0 未发放 1 已发放 -1 已回收
      */
-    private Integer benefitStatus;
+    private Integer benefitState;
     /**
      * 用户备注
      */
@@ -161,7 +161,7 @@ public class OrderEntity extends BaseTenantEntity {
      * 订单是否可取消
      */
     public boolean isSysCancelable() {
-        return status == ShopConst.OrderStatusEnum.PLACED.value();
+        return state == ShopConst.OrderStateEnum.PLACED.value();
     }
 
     /**
@@ -169,7 +169,7 @@ public class OrderEntity extends BaseTenantEntity {
      */
     public boolean isSysRefundable() {
         // 订单已支付,并且订单时间未超90天
-        return payStatus == ShopConst.OrderPayStatusEnum.PAID.value() && DateUtils.addDateDays(orderTime, 90).after(DateUtils.now());
+        return payState == ShopConst.OrderPayStateEnum.PAID.value() && DateUtils.addDateDays(orderTime, 90).after(DateUtils.now());
     }
 
     /**
@@ -177,6 +177,6 @@ public class OrderEntity extends BaseTenantEntity {
      * 订单是否可取消
      */
     public boolean isUserCancelable() {
-        return status == ShopConst.OrderStatusEnum.PLACED.value();
+        return state == ShopConst.OrderStateEnum.PLACED.value();
     }
 }

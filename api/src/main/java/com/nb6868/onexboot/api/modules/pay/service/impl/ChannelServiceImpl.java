@@ -31,7 +31,7 @@ public class ChannelServiceImpl extends CrudServiceImpl<ChannelDao, ChannelEntit
 
     @Override
     public ChannelEntity getByTenantIdAndPayType(Long tenantId, String payType) {
-        return query().eq("tenant_id", tenantId).eq("pay_type", payType).eq("status", 1).last(Const.LIMIT_ONE).one();
+        return query().eq("tenant_id", tenantId).eq("pay_type", payType).eq("state", 1).last(Const.LIMIT_ONE).one();
     }
 
 }

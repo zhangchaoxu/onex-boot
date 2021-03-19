@@ -18,10 +18,10 @@ public interface BusinessService extends CrudService<BusinessEntity, BusinessDTO
     /**
      * 修改状态
      * @param id 商机id
-     * @param newStatus 新状态
+     * @param newState 新状态
      * @return
      */
-    boolean changeStatus(Long id, int newStatus);
+    boolean changeState(Long id, int newState);
 
     /**
      * 修改跟进时间
@@ -31,6 +31,6 @@ public interface BusinessService extends CrudService<BusinessEntity, BusinessDTO
      */
     boolean changeFollowDate(Long id, Date followDate);
 
-    List<Map<String, Object>> listStatusCount(Map<String, Object> params);
+    List<Map<String, Object>> listStateCount(Map<String, Object> params);
 
 }

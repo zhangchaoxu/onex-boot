@@ -105,7 +105,7 @@ public class GoodsEntity extends BaseTenantEntity {
     /**
      * 状态
      */
-	private Integer status;
+	private Integer state;
     /**
      * 点击数
      */

@@ -79,7 +79,7 @@ public class ShiroRealm extends AuthorizingRealm {
         if (userEntity == null) {
             // 账号不存在
             throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-        } else if (userEntity.getStatus() != UcConst.UserStatusEnum.ENABLED.value()) {
+        } else if (userEntity.getState() != UcConst.UserStateEnum.ENABLED.value()) {
             // 账号锁定
             throw new OnexException(ErrorCode.ACCOUNT_LOCK);
         }

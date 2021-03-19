@@ -13,7 +13,7 @@ import com.nb6868.onexboot.api.modules.shop.service.OrderItemService;
 import com.nb6868.onexboot.api.modules.shop.service.OrderService;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.pojo.ChangeStatusRequest;
+import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.validator.AssertUtils;
@@ -141,7 +141,7 @@ public class OrderController {
     @ApiOperation("取消并退款")
     @LogOperation("取消并退款")
     @RequiresPermissions("shop:order:cancel")
-    public Result<?> cancelAndRefund(@Validated(value = {DefaultGroup.class}) @RequestBody ChangeStatusRequest request) {
+    public Result<?> cancelAndRefund(@Validated(value = {DefaultGroup.class}) @RequestBody ChangeStateRequest request) {
         orderService.cancelAndRefund(request);
 
         return new Result<>();
@@ -151,7 +151,7 @@ public class OrderController {
     @ApiOperation("取消")
     @LogOperation("取消")
     @RequiresPermissions("shop:order:cancel")
-    public Result<?> cancel(@Validated(value = {DefaultGroup.class}) @RequestBody ChangeStatusRequest request) {
+    public Result<?> cancel(@Validated(value = {DefaultGroup.class}) @RequestBody ChangeStateRequest request) {
         boolean ret = orderService.cancel(request.getId(), request.getRemark());
 
         return new Result<>();

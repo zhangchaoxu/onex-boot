@@ -32,7 +32,7 @@ public class TaskLogEntity extends BaseEntity {
 	/**
 	 * 任务状态    0：失败    1：成功
 	 */
-	private Integer status;
+	private Integer state;
 	/**
 	 * 失败信息
 	 */

@@ -16,7 +16,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 public class OrderExcel {
     @Excel(name = "状态 0：待付款  1：待发货  2:待收货  3：待评价  -1：退款   -2：售后")
-    private Integer status;
+    private Integer state;
     @Excel(name = "订单号")
     private String no;
     @Excel(name = "用户id")

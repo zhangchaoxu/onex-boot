@@ -35,5 +35,5 @@ public class ShorturlEntity extends BaseEntity {
     /**
      * 状态 0 不开放 1 开放
      */
-	private Integer status;
+	private Integer state;
 }

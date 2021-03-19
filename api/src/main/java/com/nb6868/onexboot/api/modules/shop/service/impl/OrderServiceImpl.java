@@ -30,7 +30,7 @@ import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.pojo.ChangeStatusRequest;
+import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
 import com.nb6868.onexboot.common.util.*;
@@ -75,7 +75,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         return new WrapperUtils<OrderEntity>(new QueryWrapper<>(), params)
                 .like("no", "no")
                 .eq("userId", "user_id")
-                .eq("status", "status")
+                .eq("state", "state")
                 // 创建时间区间
                 .ge("startCreateTime", "create_time")
                 .le("endCreateTime", "create_time")
@@ -131,13 +131,13 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
     @Override
     public boolean cancelUnPaidOrder(long second) {
         // 这里不直接update是因为执行过程中有可能订单状态已经发生变化，而又没有锁单，会导致订单其实已支付又被系统取消
-        List<OrderEntity> orders = query().eq("pay_status", PayConst.PayTypeEnum.NO_PAY.value())
+        List<OrderEntity> orders = query().eq("pay_state", PayConst.PayTypeEnum.NO_PAY.value())
                 .apply("order_time < DATE_SUB(NOW(), interval " + second + " second)")
                 .list();
         for (OrderEntity order : orders) {
             // 更新订单状态
             boolean ret = update().eq("id", order.getId())
-                    .set("status", ShopConst.OrderStatusEnum.CANCELED.value())
+                    .set("state", ShopConst.OrderStateEnum.CANCELED.value())
                     .update(new OrderEntity());
             if (ret) {
                 // 返回扣除的积分
@@ -146,7 +146,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
                 // 插入日志
                 OrderLogEntity orderLog = new OrderLogEntity();
                 orderLog.setOrderId(order.getId());
-                orderLog.setType(ShopConst.OrderStatusEnum.CANCELED.value());
+                orderLog.setType(ShopConst.OrderStateEnum.CANCELED.value());
                 orderLog.setContent("定时任务取消超时未支付订单");
                 orderLogService.save(orderLog);
             } else {
@@ -158,8 +158,8 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
 
     @Override
     public boolean checkOrder(Long orderId) {
-        update().eq("id", orderId).set("status", ShopConst.OrderStatusEnum.CANCELED.value()).update(new OrderEntity());
-       /* OrderEntity orderEntity =query().eq("status", ShopConst.OrderStatusEnum.PLACED.value())
+        update().eq("id", orderId).set("state", ShopConst.OrderStateEnum.CANCELED.value()).update(new OrderEntity());
+       /* OrderEntity orderEntity =query().eq("state", ShopConst.OrderStateEnum.PLACED.value())
                 .eq("id", orderId)
                 .apply("place_time < DATE_SUB(NOW(), interval " + second + " second)")
                 .one();*/
@@ -172,10 +172,10 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         // 检查订单和状态
         OrderEntity order = getById(id);
         AssertUtils.isNull(order, ErrorCode.DB_RECORD_NOT_EXISTED);
-        AssertUtils.isTrue(order.getStatus() == ShopConst.OrderStatusEnum.CANCELED.value(), "订单已取消");
+        AssertUtils.isTrue(order.getState() == ShopConst.OrderStateEnum.CANCELED.value(), "订单已取消");
 
         boolean ret = update().eq("id", order.getId())
-                .set("status", ShopConst.OrderStatusEnum.CANCELED.value())
+                .set("state", ShopConst.OrderStateEnum.CANCELED.value())
                 .update(new OrderEntity());
         if (ret) {
             // 返回扣除的积分
@@ -186,7 +186,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
             // 插入日志
             OrderLogEntity orderLog = new OrderLogEntity();
             orderLog.setOrderId(order.getId());
-            orderLog.setType(ShopConst.OrderStatusEnum.CANCELED.value());
+            orderLog.setType(ShopConst.OrderStateEnum.CANCELED.value());
             orderLog.setContent(remark);
             orderLogService.save(orderLog);
             return true;
@@ -210,8 +210,8 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         // 存入order
         OrderEntity order = ConvertUtils.sourceToTarget(request, OrderEntity.class);
         order.setNo(generateOrderNo("DATE_RANDOM", ""));
-        order.setStatus(ShopConst.OrderStatusEnum.PLACED.value());
-        order.setPayStatus(ShopConst.OrderPayStatusEnum.NO_PAY.value());
+        order.setState(ShopConst.OrderStateEnum.PLACED.value());
+        order.setPayState(ShopConst.OrderPayStateEnum.NO_PAY.value());
         order.setBuyType("oneclick");
         order.setGoodsPrice(goods.getSalePrice().multiply(request.getQty()));
         order.setTotalPrice(goods.getSalePrice());
@@ -224,10 +224,6 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         order.setTenantId(goods.getTenantId());
         order.setTenantName(goods.getTenantName());
         order.setGoodsDiscountPrice(new BigDecimal("0"));
-        if (null != request.getBenefitUserId() && 0 != request.getBenefitUserId()) {
-            order.setBenefitUserId(request.getBenefitUserId());
-            order.setBenefitStatus(0);
-        }
         save(order);
 
         // 存入orderItem
@@ -243,10 +239,6 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         orderItem.setTenantName(goods.getTenantName());
         orderItem.setGoodsDiscountPrice(new BigDecimal("0"));
         orderItem.setGoodsTotalDiscountPrice(new BigDecimal("0"));
-        if (null != request.getBenefitUserId() && 0 != request.getBenefitUserId()) {
-            orderItem.setBenefitUserId(request.getBenefitUserId());
-            orderItem.setBenefitStatus(0);
-        }
         orderItemService.save(orderItem);
 
         // 插入订单日志
@@ -267,8 +259,8 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         // 检查订单及状态
         OrderEntity order = getById(payRequest.getOrderId());
         AssertUtils.isNull(order, ErrorCode.DB_RECORD_NOT_EXISTED);
-        AssertUtils.isFalse(order.getStatus() == ShopConst.OrderStatusEnum.PLACED.value(), "订单状态不允许支付");
-        AssertUtils.isFalse(order.getPayStatus() == ShopConst.OrderPayStatusEnum.NO_PAY.value(), "订单支付状态不允许支付");
+        AssertUtils.isFalse(order.getState() == ShopConst.OrderStateEnum.PLACED.value(), "订单状态不允许支付");
+        AssertUtils.isFalse(order.getPayState() == ShopConst.OrderPayStateEnum.NO_PAY.value(), "订单支付状态不允许支付");
 
         // 支付渠道
         ChannelEntity channel = channelService.getByTenantIdAndPayType(order.getTenantId(), payRequest.getPayType());
@@ -287,7 +279,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
             payOrder.setNotifyUrl(channel.getNotifyUrl());
             payOrder.setTenantId(order.getTenantId());
             payOrder.setTenantName(order.getTenantName());
-            payOrder.setStatus(0);
+            payOrder.setState(0);
             payOrderService.save(payOrder);
         }
 
@@ -325,13 +317,13 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
     }
 
     @Override
-    public boolean cancelAndRefund(ChangeStatusRequest request) {
+    public boolean cancelAndRefund(ChangeStateRequest request) {
         OrderEntity order = getById(request.getId());
         AssertUtils.isNull(order, "订单不存在");
         AssertUtils.isFalse(order.isSysCancelable(), "订单不允许取消");
         AssertUtils.isFalse(order.isSysRefundable(), "订单不允许退款");
 
-        boolean ret = update().eq("id", request.getId()).set("status", ShopConst.OrderStatusEnum.CANCELED.value()).update(new OrderEntity());
+        boolean ret = update().eq("id", request.getId()).set("state", ShopConst.OrderStateEnum.CANCELED.value()).update(new OrderEntity());
         AssertUtils.isFalse(ret, "更新订单状态失败");
 
         // 发起退款
@@ -349,7 +341,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
     @Override
     public boolean payNotify(com.nb6868.onexboot.api.modules.pay.entity.OrderEntity payOrder) {
         OrderEntity orderEntity = getById(payOrder.getOrderId());
-        if (orderEntity != null && orderEntity.getPayStatus() == ShopConst.OrderPayStatusEnum.NO_PAY.value()) {
+        if (orderEntity != null && orderEntity.getPayState() == ShopConst.OrderPayStateEnum.NO_PAY.value()) {
             // 短信下发
             MailSendRequest smsSendRequest = new MailSendRequest();
             smsSendRequest.setMailTo(orderEntity.getReceiverMobile());
@@ -357,13 +349,9 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
             smsSendRequest.setContentParam("{\"code\":\"" + orderEntity.getNo() + "\",\"user\":\"" + orderEntity.getReceiverConsignee() + "\"}");
             mailLogService.send(smsSendRequest);
 
-            // 订单收益计算
-            System.out.println("收到支付回调数据");
-            this.calculateIncome(orderEntity.getId());
-
             // 更新数据
-            return update().set("status", ShopConst.OrderStatusEnum.PAID.value())
-                    .set("pay_status", ShopConst.OrderPayStatusEnum.PAID.value())
+            return update().set("state", ShopConst.OrderStateEnum.PAID.value())
+                    .set("pay_state", ShopConst.OrderPayStateEnum.PAID.value())
                     .set("pay_price", new BigDecimal(payOrder.getTotalFee()).divide(new BigDecimal(100), RoundingMode.HALF_UP))
                     .set("pay_time", payOrder.getEndTime())
                     .set("pay_type", payOrder.getId())
@@ -380,7 +368,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         // 检查订单
         AssertUtils.isNull(order, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 检查订单支付状态
-        AssertUtils.isFalse(order.getPayStatus() == ShopConst.OrderPayStatusEnum.PAID.value(), "订单支付状态不允许退款");
+        AssertUtils.isFalse(order.getPayState() == ShopConst.OrderPayStateEnum.PAID.value(), "订单支付状态不允许退款");
         // 找到payOrder
         com.nb6868.onexboot.api.modules.pay.entity.OrderEntity payOrder = payOrderService.getById(1L);
         AssertUtils.isNull(payOrder, "支付订单不存在");
@@ -401,106 +389,4 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         }
     }
 
-    @Override
-    public boolean calculateIncome(Long orderId) {
-        try {
-            OrderEntity orderEntity = getById(orderId);
-            if (null == orderEntity) {
-                System.out.println("订单收益支付程序：订单未找到，ID-" + orderId);
-                return false;
-            }
-            Map<String, Object> params = new HashMap<>();
-            params.put("orderId", orderEntity.getId());
-            List<OrderItemDTO> itemDTOList = orderItemService.listDto(params);
-            BigDecimal receiptorAmountSum = new BigDecimal("0");
-            for (OrderItemDTO dto : itemDTOList) {
-                // 判断是否有收益变更标记
-                boolean flag = false;
-                // 获取身份信息
-                if (null == dto.getBenefitUserId()) {
-                    // 无收益人情况
-                    continue;
-                }
-                UserDTO benefitUser = userService.getDtoById(dto.getBenefitUserId());
-                if (null == benefitUser) {
-                    System.out.println("订单支付回调程序：收益人未找到！订单明细ID:" + dto.getId());
-                    continue;
-                }
-                // 验证该单收益是否已被计算
-                if (null != dto.getBenefitStatus() && 0 != dto.getBenefitStatus()) {
-                    System.out.println("订单支付回调程序：订单收益收到重复计算请求！订单明细ID:" + dto.getId());
-                    continue;
-                }
-                // 验证产品信息，是否开启分销模式
-                BigDecimal receiptorAmount = new BigDecimal("0");
-                BigDecimal receiptorAmountOne = new BigDecimal("0");
-                GoodsDTO goodsDTO = goodsService.getDtoById(dto.getGoodsId());
-                if (null != goodsDTO.getDistType() && 0 != goodsDTO.getDistType().intValue()) {
-                    switch (goodsDTO.getDistType().intValue()) {
-                        case 1:
-                            // 按比例
-                            receiptorAmountOne = goodsDTO.getSalePrice().multiply(goodsDTO.getDistScale()).setScale(2, BigDecimal.ROUND_HALF_DOWN);
-                            break;
-                        case 2:
-                            // 固定金额
-                            receiptorAmountOne = goodsDTO.getDistVal();
-                            break;
-                        case 3:
-                            // 随机提成
-                            receiptorAmountOne = NumberUtils.getRandom(goodsDTO.getDistMinVal(), goodsDTO.getDistMaxVal());
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                // 当前产品收益合计
-                receiptorAmount = receiptorAmountOne.multiply(dto.getGoodsQty());
-                // 订单收益合计
-                dto.setBenefitPrice(receiptorAmount);
-                dto.setBenefitStatus(1);
-                orderItemService.updateDto(dto);
-                // 收益大于零的情况下打开收益更新的开关
-                if (receiptorAmount.doubleValue() > 0d) {
-                    flag = true;
-                }
-
-                // 如果有收益变动，则对该用户进行付款操作
-                if (flag) {
-                    // 验证身份信息
-                    //transfersService.orderIncomeTransfers(dto.getId());
-                    benefitUser.setIncome(benefitUser.getIncome().add(receiptorAmount));
-                    userService.updateDto(benefitUser);
-                }
-
-                GoodsEntity goods = goodsService.getById(dto.getGoodsId());
-                goods.setSalesVolume(goods.getSalesVolume() != null ? goods.getSalesVolume() + 1 : 1);
-                goodsService.updateById(goods);
-            }
-            if (receiptorAmountSum.doubleValue() > 0) {
-                orderEntity.setBenefitPrice(receiptorAmountSum);
-                orderEntity.setBenefitStatus(1);
-                updateById(orderEntity);
-            }
-
-            System.out.println("完成收益分配，收益订单已处理，详情查看goods_item表格");
-            return true;
-        } catch (Exception e) {
-            System.out.println("订单支付回调程序：分配收益程序错误!订单ID:" + orderId);
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public List<Map> benefitRanking(Long goodsId) {
-        List<Map> list = getBaseMapper().benefitRanking(goodsId);
-        int i = 1;
-        for (Map m : list) {
-            UserEntity userEntity = userService.getById((Long) m.get("benefit_user_id"));
-            m.put("userName", userEntity.getRealName());
-            m.put("index", i);
-            i++;
-        }
-        return list;
-    }
 }

@@ -46,7 +46,7 @@ public class BusinessLogDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "状态1 阶段1 2 阶段2 3 阶段3 10 赢单 -10 输单 0 无效")
 	@Range(min = -10, max = 10, message = "状态取值异常", groups = DefaultGroup.class)
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "记录时间，比如跟进时间")
 	@NotNull(message = "跟进时间不能为空", groups = DefaultGroup.class)

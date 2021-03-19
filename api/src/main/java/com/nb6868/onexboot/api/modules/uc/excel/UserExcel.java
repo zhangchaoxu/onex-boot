@@ -26,7 +26,7 @@ public class UserExcel {
     @Excel(name = "部门名称")
     private String deptName;
     @Excel(name = "状态", replace = {"停用_0", "正常_1"})
-    private Integer status;
+    private Integer state;
     @Excel(name = "备注")
     private String remark;
     @Excel(name = "创建时间", format = "yyyy-MM-dd HH:mm:ss")

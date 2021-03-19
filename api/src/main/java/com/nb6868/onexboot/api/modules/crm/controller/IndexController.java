@@ -47,7 +47,7 @@ public class IndexController {
         int contractCount = contractService.count(params);
         // 各个占比
         List<Map<String, Object>> customerSourceCount = customerService.listSourceCount(params);
-        List<Map<String, Object>> businessStatusCount = businessService.listStatusCount(params);
+        List<Map<String, Object>> businessStateCount = businessService.listStateCount(params);
         if (ParamUtils.isEmpty("contractYear")) {
             params.put("contractYear", Year.now().getValue());
         }
@@ -78,7 +78,7 @@ public class IndexController {
                 .set("contractCount", contractCount)
                 .set("customerSourceCount", customerSourceCount)
                 .set("contractContractMonthCount", contractContractMonthCountInYear)
-                .set("businessStatusCount", businessStatusCount);
+                .set("businessStateCount", businessStateCount);
         return new Result<>().success(data);
     }
 

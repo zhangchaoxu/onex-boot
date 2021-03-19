@@ -51,7 +51,7 @@ public interface PayConst {
      * 支付状态类型
      * 0-订单生成,1-支付中(目前未使用),2-支付成功,3-业务处理完成
      */
-    enum PayStatusEnum {
+    enum PayStateEnum {
 
         /**
          * 详见name
@@ -65,11 +65,11 @@ public interface PayConst {
         private int value;
         private String name;
 
-        PayStatusEnum(int value) {
+        PayStateEnum(int value) {
             this.value = value;
         }
 
-        PayStatusEnum(int value, String name) {
+        PayStateEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }
@@ -82,11 +82,11 @@ public interface PayConst {
             return this.name;
         }
 
-        public static Optional<PayStatusEnum> getOptionalByValue(int value) {
+        public static Optional<PayStateEnum> getOptionalByValue(int value) {
             return Arrays.stream(values()).filter(bl -> bl.value() == value).findFirst();
         }
 
-        public static PayStatusEnum getByValue(int value) {
+        public static PayStateEnum getByValue(int value) {
             return Arrays.stream(values()).filter(bl -> bl.value() == value).findFirst().orElse(UNKNOWN);
         }
 

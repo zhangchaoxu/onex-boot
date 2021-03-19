@@ -29,7 +29,7 @@ public class CouponExcel {
     @Excel(name = "发放方式, 1注册赠送 2积分兑换 3用户领取")
     private Integer giveType;
     @Excel(name = "状态 0 未激活 1 已激活")
-    private Integer status;
+    private Integer state;
     @Excel(name = "兑换积分")
     private Integer pointExchange;
     @Excel(name = "发放总量")

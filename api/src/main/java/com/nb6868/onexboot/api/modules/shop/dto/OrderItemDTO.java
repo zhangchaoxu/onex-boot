@@ -47,7 +47,7 @@ public class OrderItemDTO extends BaseTenantDTO {
 	private BigDecimal goodsTotalDiscountPrice;
 
 	@ApiModelProperty(value = "状态0 正常 -1已退款")
-	private Integer status;
+	private Integer state;
 
 	@ApiModelProperty(value = "收益用户id")
 	private Long benefitUserId;
@@ -56,6 +56,6 @@ public class OrderItemDTO extends BaseTenantDTO {
 	private BigDecimal benefitPrice;
 
 	@ApiModelProperty(value = "收益状态 0 未发放 1 已发放 -1 已回收")
-	private Integer benefitStatus;
+	private Integer benefitState;
 
 }

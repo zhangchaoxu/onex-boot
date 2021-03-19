@@ -236,7 +236,7 @@ public class UserOauthController {
             user.setMobile(phoneNumberInfo.getPurePhoneNumber());
             user.setUsername(phoneNumberInfo.getPurePhoneNumber());
             user.setPassword(PasswordUtils.encode(phoneNumberInfo.getPurePhoneNumber()));
-            user.setStatus(UcConst.UserStatusEnum.ENABLED.value());
+            user.setState(UcConst.UserStateEnum.ENABLED.value());
             user.setType(UcConst.UserTypeEnum.USER.value());
             userService.save(user);
         }

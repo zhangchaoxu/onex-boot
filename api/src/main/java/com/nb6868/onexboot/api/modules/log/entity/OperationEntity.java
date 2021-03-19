@@ -47,7 +47,7 @@ public class OperationEntity extends BaseEntity {
     /**
      * 状态  0：失败   1：成功
      */
-    private Integer status;
+    private Integer state;
     /**
      * 用户名
      */

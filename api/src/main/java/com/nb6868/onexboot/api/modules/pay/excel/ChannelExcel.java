@@ -27,7 +27,7 @@ public class ChannelExcel {
     @Excel(name = "备注")
     private String remark;
     @Excel(name = "状态 0未启用 1启用")
-    private Integer status;
+    private Integer state;
     @Excel(name = "创建者")
     private Long createId;
     @Excel(name = "创建时间")

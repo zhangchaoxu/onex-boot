@@ -43,7 +43,7 @@ public class ChannelEntity extends BaseEntity {
     /**
      * 状态 0未启用 1启用
      */
-    private Integer status;
+    private Integer state;
     /**
      * 租户id
      */
