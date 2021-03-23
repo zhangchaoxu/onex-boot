@@ -34,25 +34,11 @@ public class ShiroServiceImpl implements ShiroService {
     TokenService tokenService;
     @Autowired
     ParamService paramService;
+    @Autowired
+    MenuScopeService menuScopeService;
 
     @Value("${redis.open: false}")
     private boolean open;
-
-    @Override
-    public Set<String> getPermissionsByRoles(List<String> roleCodes) {
-        List<String> permissionsList;
-        permissionsList = menuService.getPermissionsListByRoles(roleCodes);
-        // 用户权限列表
-        Set<String> set = new HashSet<>();
-        for (String permissions : permissionsList) {
-            if (StringUtils.isBlank(permissions)) {
-                continue;
-            }
-            set.addAll(StringUtils.splitToList(permissions));
-        }
-
-        return set;
-    }
 
     @Override
     public Set<String> getUserPermissions(UserDetail user) {
@@ -61,7 +47,7 @@ public class ShiroServiceImpl implements ShiroService {
         if (user.getType() == UcConst.UserTypeEnum.ADMIN.value()) {
             permissionsList = menuService.getPermissionsList();
         } else {
-            permissionsList = menuService.getPermissionsListByUserId(user.getId());
+            permissionsList = menuScopeService.getPermissionsListByUserId(user.getId());
         }
 
         // 用户权限列表

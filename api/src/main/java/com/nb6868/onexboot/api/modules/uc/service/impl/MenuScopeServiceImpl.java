@@ -49,6 +49,11 @@ public class MenuScopeServiceImpl extends BaseServiceImpl<MenuScopeDao, MenuScop
     }
 
     @Override
+    public List<String> getPermissionsListByUserId(Long userId) {
+        return getBaseMapper().getPermissionsListByUserId(userId);
+    }
+
+    @Override
     public List<Long> getMenuIdListByRoleId(Long roleId) {
         return listObjs(new QueryWrapper<MenuScopeEntity>().select("menu_id").eq("role_id", roleId), o -> Long.valueOf(String.valueOf(o)));
     }

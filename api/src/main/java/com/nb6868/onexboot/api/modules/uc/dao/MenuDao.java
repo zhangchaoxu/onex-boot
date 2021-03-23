@@ -19,9 +19,9 @@ public interface MenuDao extends BaseDao<MenuEntity> {
     /**
      * 级联用户id
      */
-    String JOIN_USER = " LEFT JOIN uc_role_menu ON uc_role_user.role_id = uc_role_menu.role_id" +
-            " LEFT JOIN uc_menu ON uc_role_menu.menu_id = uc_menu.id" +
-            " WHERE uc_role_user.user_id = #{userId} AND uc_role_user.deleted = 0 AND uc_role_menu.deleted = 0 AND uc_menu.deleted = 0 ";
+    String JOIN_USER = " LEFT JOIN uc_menu_scope ON uc_role_user.role_id = uc_menu_scope.role_id" +
+            " LEFT JOIN uc_menu ON uc_menu_scope.menu_id = uc_menu.id" +
+            " WHERE uc_role_user.user_id = #{userId} AND uc_role_user.deleted = 0 AND uc_menu_scope.deleted = 0 AND uc_menu.deleted = 0 ";
 
     /**
      * 查询用户菜单列表
@@ -38,33 +38,5 @@ public interface MenuDao extends BaseDao<MenuEntity> {
             "order by uc_menu.sort asc" +
             "</script>")
     List<MenuEntity> getListByUserId(@Param("userId") Long userId, @Param("type") Integer type);
-
-    /**
-     * 查询用户权限列表
-     *
-     * @param userId 用户ID
-     * @return result
-     */
-    @Select("select uc_menu.permissions from uc_role_user" + JOIN_USER + "and uc_menu.permissions != '' order by uc_menu.sort asc")
-    List<String> getPermissionsListByUserId(@Param("userId") Long userId);
-
-    /**
-     * 查询角色权限列表
-     *
-     * @param roleCodes 角色列表
-     * @return result
-     */
-    @Select("<script>" +
-            "SELECT uc_menu.permissions FROM uc_role_menu" +
-            " LEFT JOIN uc_menu ON uc_role_menu.menu_id = uc_menu.id" +
-            " WHERE " +
-            "<foreach item='item' index='index' collection='roleCodes' open='(' close=')' separator='or'>" +
-            "uc_role_menu.role_code = #{item}" +
-            "</foreach>" +
-            " AND uc_menu.permissions != ''" +
-            " AND uc_menu.deleted = 0 AND uc_role_menu.deleted = 0" +
-            " ORDER BY uc_menu.sort ASC" +
-            "</script>")
-    List<String> getPermissionsListByRoles(@Param("roleCodes") List<String> roleCodes);
 
 }

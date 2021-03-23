@@ -13,6 +13,11 @@ import java.util.List;
 public interface MenuScopeService extends BaseService<MenuScopeEntity> {
 
     /**
+     * 通过用户ID获得所有权限
+     */
+    List<String> getPermissionsListByUserId(Long userId);
+
+    /**
      * 根据角色ID，获取菜单ID列表
      */
     List<Long> getMenuIdListByRoleId(Long roleId);

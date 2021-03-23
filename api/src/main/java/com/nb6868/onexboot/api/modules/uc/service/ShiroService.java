@@ -5,7 +5,6 @@ import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,11 +13,6 @@ import java.util.Set;
  * @author Charles zhangchaoxu@gmail.com
  */
 public interface ShiroService {
-
-    /**
-     * 通过角色获取权限列表
-     */
-    Set<String> getPermissionsByRoles(List<String> roleCodes);
 
     /**
      * 获取用户权限列表
