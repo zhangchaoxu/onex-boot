@@ -53,27 +53,11 @@ public interface MenuService extends CrudService<MenuEntity, MenuDTO> {
     List<MenuEntity> getListByUser(UserDetail user, Integer type);
 
     /**
-     * 查询角色权限列表
-     *
-     * @param roleCodes 角色列表
-     * @return result
-     */
-    List<String> getPermissionsListByRoles(List<String> roleCodes);
-
-    /**
      * 查询所有权限列表
      *
      * @return result
      */
     List<String> getPermissionsList();
-
-    /**
-     * 查询用户权限列表
-     *
-     * @param userId 用户ID
-     * @return result
-     */
-    List<String> getPermissionsListByUserId(Long userId);
 
     /**
      * 查询所有级联的子节点id

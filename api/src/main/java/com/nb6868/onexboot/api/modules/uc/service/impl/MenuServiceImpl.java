@@ -3,6 +3,7 @@ package com.nb6868.onexboot.api.modules.uc.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dao.MenuDao;
+import com.nb6868.onexboot.api.modules.uc.entity.MenuScopeEntity;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
@@ -39,12 +40,17 @@ public class MenuServiceImpl extends CrudServiceImpl<MenuDao, MenuEntity, MenuDT
 
     @Override
     protected void beforeSaveOrUpdateDto(MenuDTO dto, int type) {
-        if (1 == type) {
-            // 更新
-            // 上级菜单不能为自身
-            if (dto.getId().equals(dto.getPid())) {
-                throw new OnexException(ErrorCode.SUPERIOR_MENU_ERROR);
-            }
+        if (1 == type && dto.getId().equals(dto.getPid())) {
+            // 更新 上级菜单不能为自身
+            throw new OnexException(ErrorCode.SUPERIOR_MENU_ERROR);
+        }
+    }
+
+    @Override
+    protected void afterSaveOrUpdateDto(boolean ret, MenuDTO dto, MenuEntity existedEntity, int type) {
+        if (ret && type == 1) {
+            // 更新的时候,同时更新menu_scope中的信息
+            menuScopeService.update().set("menu_permissions", dto.getPermissions()).eq("menu_id", dto.getId()).update(new MenuScopeEntity());
         }
     }
 
@@ -78,19 +84,8 @@ public class MenuServiceImpl extends CrudServiceImpl<MenuDao, MenuEntity, MenuDT
     }
 
     @Override
-    public List<String> getPermissionsListByRoles(List<String> roleCodes) {
-        return getBaseMapper().getPermissionsListByRoles(roleCodes);
-    }
-
-    @Override
     public List<String> getPermissionsList() {
-        // select permissions from uc_menu where permissions != '' and deleted = 0
         return listObjs(new QueryWrapper<MenuEntity>().select("permissions").ne("permissions", ""), Object::toString);
-    }
-
-    @Override
-    public List<String> getPermissionsListByUserId(Long userId) {
-        return getBaseMapper().getPermissionsListByUserId(userId);
     }
 
     @Override
