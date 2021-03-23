@@ -36,14 +36,12 @@ public class PublicController {
     @Autowired
     private ArticleService articleService;
 
-    @GetMapping("getSiteInfo")
+    @GetMapping("getSiteInfoByCode")
     @ApiOperation("通过code获取站点详情")
     public Result<?> getSiteInfoByCode(@NotNull(message = "{code.require}") @RequestParam String code) {
         SiteEntity entity = siteService.getOneByColumn("code", code);
         SiteDTO dto = ConvertUtils.sourceToTarget(entity, SiteDTO.class);
         return new Result<>().success(dto);
     }
-
-
 
 }
