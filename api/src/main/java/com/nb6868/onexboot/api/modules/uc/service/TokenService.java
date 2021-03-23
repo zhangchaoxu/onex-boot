@@ -1,8 +1,10 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
-import com.nb6868.onexboot.common.service.BaseService;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
+import com.nb6868.onexboot.common.service.BaseService;
+
+import java.util.List;
 
 /**
  * 用户Token
@@ -59,5 +61,12 @@ public interface TokenService extends BaseService<TokenEntity> {
      * @return result
      */
     boolean deleteTokenByUserId(Long userId, String type);
+
+    /**
+     * 删除用户token
+     * @param userIds 用户ID数组
+     * @return result
+     */
+    boolean deleteByUserIds(List<Long> userIds);
 
 }

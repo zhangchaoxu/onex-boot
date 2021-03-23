@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -383,6 +385,18 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
         logicDeleteByIds(mergeFrom);
         // 将被删除业务数据中的create_id/update_id更新为mergeTo
         return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
+        List<Long> ids = (List<Long>) idList;
+        // 删除用户-角色关系
+        roleUserService.deleteByUserIds(ids);
+        // 删除用户token
+        tokenService.deleteByUserIds(ids);
+        return super.logicDeleteByIds(idList);
     }
 
 }

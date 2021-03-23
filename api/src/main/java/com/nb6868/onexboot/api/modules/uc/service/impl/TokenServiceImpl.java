@@ -11,6 +11,7 @@ import com.nb6868.onexboot.common.util.IdUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * token
@@ -70,6 +71,11 @@ public class TokenServiceImpl extends BaseServiceImpl<TokenDao, TokenEntity> imp
     @Override
     public boolean deleteTokenByUserId(Long userId, String type) {
         return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().eq("user_id", userId).eq("type", type));
+    }
+
+    @Override
+    public boolean deleteByUserIds(List<Long> userIds) {
+        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().in("user_id", userIds));
     }
 
 }
