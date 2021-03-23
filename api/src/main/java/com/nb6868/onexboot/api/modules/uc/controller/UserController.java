@@ -163,15 +163,6 @@ public class UserController {
         return new Result<>();
     }
 
-    @DeleteMapping("delete")
-    @LogOperation("删除")
-    @RequiresPermissions("uc:user:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        userService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
     @DeleteMapping("deleteBatch")
     @LogOperation("批量删除")
     @RequiresPermissions("uc:user:deleteBatch")
