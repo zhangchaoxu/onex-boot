@@ -1,13 +1,14 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import com.nb6868.onexboot.api.modules.uc.dto.ChangePasswordByMailCodeRequest;
+import com.nb6868.onexboot.api.modules.uc.dto.LoginRequest;
 import com.nb6868.onexboot.api.modules.uc.dto.RegisterRequest;
 import com.nb6868.onexboot.api.modules.uc.dto.UserDTO;
+import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
+import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.service.CrudService;
-import com.nb6868.onexboot.api.modules.uc.dto.ChangePasswordByMailCodeRequest;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginRequest;
-import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public interface UserService extends CrudService<UserEntity, UserDTO> {
     /**
      * 修改状态
      */
-    boolean changeState(UserDTO dto);
+    boolean changeState(ChangeStateRequest dto);
 
     /**
      * 修改密码

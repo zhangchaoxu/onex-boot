@@ -17,6 +17,7 @@ import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
+import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
@@ -31,10 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 用户
@@ -312,8 +310,13 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     }
 
     @Override
-    public boolean changeState(UserDTO dto) {
-        return update().set("status", dto.getState()).eq("id", dto.getId()).update(new UserEntity());
+    public boolean changeState(ChangeStateRequest request) {
+        boolean ret = update().set("state", request.getState()).eq("id", request.getId()).update(new UserEntity());
+        if (ret && request.getState() == Const.BooleanEnum.FALSE.value()) {
+            // 停用将token注销
+            tokenService.deleteByUserIds(Collections.singletonList(request.getId()));
+        }
+        return ret;
     }
 
     @Override

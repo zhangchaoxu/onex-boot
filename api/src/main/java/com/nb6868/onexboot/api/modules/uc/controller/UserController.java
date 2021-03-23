@@ -16,10 +16,7 @@ import com.nb6868.onexboot.api.modules.uc.service.RoleService;
 import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.pojo.MsgResult;
-import com.nb6868.onexboot.common.pojo.PageData;
-import com.nb6868.onexboot.common.pojo.Result;
+import com.nb6868.onexboot.common.pojo.*;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.HttpContextUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
@@ -157,8 +154,8 @@ public class UserController {
     @ApiOperation("更新状态")
     @LogOperation("更新状态")
     @RequiresPermissions("uc:user:update")
-    public Result<?> changeState(@RequestBody UserDTO dto) {
-        userService.changeState(dto);
+    public Result<?> changeState(@Validated(value = {DefaultGroup.class, ChangeStateRequest.BoolStateGroup.class}) @RequestBody ChangeStateRequest request) {
+        userService.changeState(request);
 
         return new Result<>();
     }

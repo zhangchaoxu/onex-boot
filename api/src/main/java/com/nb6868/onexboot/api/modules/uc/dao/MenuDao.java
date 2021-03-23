@@ -17,26 +17,20 @@ import java.util.List;
 public interface MenuDao extends BaseDao<MenuEntity> {
 
     /**
-     * 级联用户id
+     * 级联查询方法
+     * SELECT
+     * 	uc_menu.*
+     * FROM
+     * 	uc_role_user
+     * 	LEFT JOIN uc_menu_scope ON uc_role_user.role_id = uc_menu_scope.role_id
+     * 	LEFT JOIN uc_menu ON uc_menu_scope.menu_id = uc_menu.id
+     * WHERE
+     * 	uc_role_user.user_id = 1374288734091931650
+     * 	AND uc_role_user.deleted = 0
+     * 	AND uc_menu_scope.deleted = 0
+     * 	AND uc_menu.deleted = 0
+     * ORDER BY
+     * 	uc_menu.sort ASC
      */
-    String JOIN_USER = " LEFT JOIN uc_menu_scope ON uc_role_user.role_id = uc_menu_scope.role_id" +
-            " LEFT JOIN uc_menu ON uc_menu_scope.menu_id = uc_menu.id" +
-            " WHERE uc_role_user.user_id = #{userId} AND uc_role_user.deleted = 0 AND uc_menu_scope.deleted = 0 AND uc_menu.deleted = 0 ";
-
-    /**
-     * 查询用户菜单列表
-     *
-     * @param userId 用户ID
-     * @param type   菜单类型
-     * @return result
-     */
-    @Select("<script>" +
-            "select uc_menu.* from uc_role_user" + JOIN_USER +
-            " <if test='type != null'>" +
-            " and uc_menu.type = #{type}" +
-            " </if>" +
-            "order by uc_menu.sort asc" +
-            "</script>")
-    List<MenuEntity> getListByUserId(@Param("userId") Long userId, @Param("type") Integer type);
 
 }
