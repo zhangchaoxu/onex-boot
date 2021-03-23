@@ -18,6 +18,11 @@ public interface MenuScopeService extends BaseService<MenuScopeEntity> {
     List<String> getPermissionsListByUserId(Long userId);
 
     /**
+     * 通过用户ID获得所有菜单ID
+     */
+    List<Long> getMenuIdListByUserId(Long userId);
+
+    /**
      * 根据角色ID，获取菜单ID列表
      */
     List<Long> getMenuIdListByRoleId(Long roleId);

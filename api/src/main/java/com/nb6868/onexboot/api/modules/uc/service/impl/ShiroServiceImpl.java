@@ -1,8 +1,10 @@
 package com.nb6868.onexboot.api.modules.uc.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
+import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.service.*;
@@ -45,7 +47,7 @@ public class ShiroServiceImpl implements ShiroService {
         // 系统管理员，拥有最高权限
         List<String> permissionsList;
         if (user.getType() == UcConst.UserTypeEnum.ADMIN.value()) {
-            permissionsList = menuService.getPermissionsList();
+            permissionsList = menuService.listObjs(new QueryWrapper<MenuEntity>().select("permissions").ne("permissions", ""), Object::toString);
         } else {
             permissionsList = menuScopeService.getPermissionsListByUserId(user.getId());
         }

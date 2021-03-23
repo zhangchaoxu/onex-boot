@@ -45,4 +45,17 @@ public interface MenuScopeDao extends BaseDao<MenuScopeEntity> {
             " GROUP BY uc_menu_scope.menu_id")
     List<String> getPermissionsListByUserId(@Param("userId") Long userId);
 
+    /**
+     * 查询用户菜单列表
+     * @param userId 用户id
+     * @return result
+     */
+    @Select("SELECT" +
+            " uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope" +
+            " WHERE uc_menu_scope.deleted = 0" +
+            " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_id IN ( SELECT role_id FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
+            "(uc_menu_scope.type = 2 AND uc_menu_scope.user_id = #{userId}))" +
+            " GROUP BY uc_menu_scope.menu_id")
+    List<Long> getMenuIdListByUserId(@Param("userId") Long userId);
+
 }

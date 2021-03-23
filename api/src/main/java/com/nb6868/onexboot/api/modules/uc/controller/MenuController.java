@@ -50,9 +50,9 @@ public class MenuController {
     @Autowired
     ShiroService shiroService;
 
-    @GetMapping("userMenu")
-    @ApiOperation("登录用户菜单权限")
-    public Result<?> userMenu() {
+    @GetMapping("scope")
+    @ApiOperation("权限范围")
+    public Result<?> scope() {
         UserDetail user = SecurityUser.getUser();
         // 获取该用户所有menu
         List<MenuEntity> allList = menuService.getListByUser(user, null);
@@ -84,14 +84,16 @@ public class MenuController {
                 .set("permissions", permissions));
     }
 
-    @GetMapping("userTree")
+    @GetMapping("tree")
     @ApiOperation("登录用户菜单树")
     @ApiImplicitParam(name = "type", value = "菜单类型 0：菜单 1：按钮  null：全部", paramType = "query", dataType = "int")
-    public Result<?> userTree(Integer type) {
+    public Result<?> tree(Integer type) {
         UserDetail user = SecurityUser.getUser();
-        List<MenuTreeDTO> list = menuService.getTreeByUser(user, type);
+        List<MenuEntity> entityList = menuService.getListByUser(user, type);
+        List<MenuTreeDTO> dtoList = ConvertUtils.sourceToTarget(entityList, MenuTreeDTO.class);
+        List<MenuTreeDTO> dtoTree = TreeUtils.build(dtoList);
 
-        return new Result<>().success(list);
+        return new Result<>().success(dtoTree);
     }
 
     @GetMapping("permissions")
@@ -110,16 +112,6 @@ public class MenuController {
         Set<Long> set = shiroService.getUserRoles(user);
 
         return new Result<>().success(set);
-    }
-
-    @GetMapping("tree")
-    @ApiOperation("列表")
-    @ApiImplicitParam(name = "type", value = "菜单类型 0：菜单 1：按钮  null：全部", paramType = "query", dataType = "int")
-    @RequiresPermissions("uc:menu:list")
-    public Result<?> tree(Integer type) {
-        List<MenuTreeDTO> list = menuService.getTreeByType(type);
-
-        return new Result<>().success(list);
     }
 
     @GetMapping("info")
