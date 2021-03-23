@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.dto;
 
-import com.nb6868.onexboot.common.pojo.BaseIdStringDTO;
+import com.nb6868.onexboot.common.pojo.BaseDTO;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "角色")
-public class RoleDTO extends BaseIdStringDTO {
+public class RoleDTO extends BaseDTO {
 
     @ApiModelProperty(value = "名称")
     @NotBlank(message = "{name.require}", groups = DefaultGroup.class)
@@ -29,8 +29,5 @@ public class RoleDTO extends BaseIdStringDTO {
 
     @ApiModelProperty(value = "菜单ID列表")
     private List<Long> menuIdList;
-
-    @ApiModelProperty(value = "部门ID列表")
-    private List<Long> deptIdList;
 
 }
