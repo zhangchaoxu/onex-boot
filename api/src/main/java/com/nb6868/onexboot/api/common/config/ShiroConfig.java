@@ -85,9 +85,9 @@ public class ShiroConfig {
         filterMap.put("/uc/userOauth/wxMaLoginByPhone", "anon");
         filterMap.put("/uc/userOauth/dingtalkLoginByCode", "anon");
         // 发送消息
-        filterMap.put("msg/mailLog/sendCode", "anon");
+        filterMap.put("/msg/mailLog/sendCode", "anon");
         // cms开放接口
-        filterMap.put("cms/public/*", "anon");
+        filterMap.put("/cms/public/*", "anon");
         // simple shiro
         filterMap.put("/sys/param/getLoginAdmin", "simpleShiro");
 
