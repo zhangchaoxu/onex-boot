@@ -2,9 +2,9 @@ package com.nb6868.onexboot.api.modules.uc.controller;
 
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.uc.dto.RoleDTO;
-import com.nb6868.onexboot.api.modules.uc.service.RoleDataScopeService;
 import com.nb6868.onexboot.api.modules.uc.service.RoleMenuService;
 import com.nb6868.onexboot.api.modules.uc.service.RoleService;
+import com.nb6868.onexboot.api.modules.uc.service.RoleUserService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
@@ -41,7 +41,7 @@ public class RoleController {
 	@Autowired
 	private RoleMenuService roleMenuService;
 	@Autowired
-	private RoleDataScopeService roleDataScopeService;
+	private RoleUserService roleUserService;
 
 	@GetMapping("page")
 	@ApiOperation("分页")
@@ -64,17 +64,13 @@ public class RoleController {
 	@GetMapping("info")
 	@ApiOperation("信息")
 	@RequiresPermissions("uc:role:info")
-	public Result<?> info(@NotNull(message = "{id.require}") @RequestParam String id){
+	public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id){
 		RoleDTO data = roleService.getDtoById(id);
 		AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
 		// 查询角色对应的菜单
 		List<Long> menuIdList = roleMenuService.getMenuIdListByRoleId(id);
 		data.setMenuIdList(menuIdList);
-
-		// 查询角色对应的数据权限
-		List<Long> deptIdList = roleDataScopeService.getDeptIdListByRoleId(id);
-		data.setDeptIdList(deptIdList);
 
 		return new Result<>().success(data);
 	}
@@ -103,13 +99,13 @@ public class RoleController {
 	@ApiOperation("删除")
 	@LogOperation("删除")
 	@RequiresPermissions("uc:role:delete")
-	public Result<?> delete(@NotEmpty(message = "{id.require}") @RequestParam String id) {
+	public Result<?> delete(@NotEmpty(message = "{id.require}") @RequestParam Long id) {
 		// 删除数据
 		roleService.logicDeleteById(id);
 		// 删除角色菜单关联关系
 		roleMenuService.deleteByRoleIds(Collections.singletonList(id));
-		// 删除角色数据关联关系
-		roleDataScopeService.deleteByRoleIds(Collections.singletonList(id));
+		// 删除角色用户关联关系
+		roleUserService.deleteByRoleIds(Collections.singletonList(id));
 		return new Result<>();
 	}
 

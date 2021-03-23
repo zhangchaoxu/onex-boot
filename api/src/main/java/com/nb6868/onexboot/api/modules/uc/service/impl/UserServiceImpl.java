@@ -366,9 +366,11 @@ public class UserServiceImpl extends CrudServiceImpl<UserDao, UserEntity, UserDT
     }
 
     @Override
-    protected void afterSaveOrUpdateDto(boolean ret, UserDTO dto,UserEntity existedEntity, int type) {
-        // 保存角色用户关系
-        roleUserService.saveOrUpdate(dto.getId(), dto.getRoleIdList());
+    protected void afterSaveOrUpdateDto(boolean ret, UserDTO dto, UserEntity existedEntity, int type) {
+        if (ret) {
+            // 保存角色用户关系
+            roleUserService.saveOrUpdateByUserIdAndRoleIds(dto.getId(), dto.getRoleIdList());
+        }
     }
 
     /**

@@ -22,7 +22,7 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDao, RoleMenuEn
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveOrUpdate(String roleId, List<Long> menuIds) {
+    public void saveOrUpdateByRoleAndMenuIds(Long roleId, String roleName, List<Long> menuIds) {
         // 先删除角色菜单关系
         deleteByRoleIds(Collections.singletonList(roleId));
 
@@ -32,6 +32,7 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDao, RoleMenuEn
                 RoleMenuEntity roleMenu = new RoleMenuEntity();
                 roleMenu.setMenuId(menuId);
                 roleMenu.setRoleId(roleId);
+                roleMenu.setRoleName(roleName);
                 //保存
                 save(roleMenu);
             }
@@ -39,13 +40,13 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDao, RoleMenuEn
     }
 
     @Override
-    public List<Long> getMenuIdListByRoleId(String roleId) {
+    public List<Long> getMenuIdListByRoleId(Long roleId) {
         return listObjs(new QueryWrapper<RoleMenuEntity>().select("menu_id").eq("role_id", roleId),  o -> Long.valueOf(String.valueOf(o)));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByRoleIds(List<String> roleIds) {
+    public boolean deleteByRoleIds(List<Long> roleIds) {
         return logicDeleteByWrapper(new QueryWrapper<RoleMenuEntity>().in("role_id", roleIds));
     }
 

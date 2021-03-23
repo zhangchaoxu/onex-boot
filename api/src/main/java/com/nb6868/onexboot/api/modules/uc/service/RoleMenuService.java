@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
-import com.nb6868.onexboot.common.service.BaseService;
 import com.nb6868.onexboot.api.modules.uc.entity.RoleMenuEntity;
+import com.nb6868.onexboot.common.service.BaseService;
 
 import java.util.List;
 
@@ -12,28 +12,32 @@ import java.util.List;
  */
 public interface RoleMenuService extends BaseService<RoleMenuEntity> {
 
-	/**
-	 * 根据角色ID，获取菜单ID列表
-	 */
-	List<Long> getMenuIdListByRoleId(String roleId);
+    /**
+     * 根据角色ID，获取菜单ID列表
+     */
+    List<Long> getMenuIdListByRoleId(Long roleId);
 
-	/**
-	 * 保存或修改
-	 * @param roleId      角色ID
-	 * @param menuIdList  菜单ID列表
-	 */
-	void saveOrUpdate(String roleId, List<Long> menuIdList);
+    /**
+     * 保存角色和菜单的关系
+     *
+     * @param roleId       角色ID
+     * @param roleName       角色名
+     * @param menuIdList 菜单ID列表
+     */
+    void saveOrUpdateByRoleAndMenuIds(Long roleId, String roleName, List<Long> menuIdList);
 
-	/**
-	 * 根据角色id，删除角色菜单关系
-	 * @param roleIds 角色ids
-	 */
-	boolean deleteByRoleIds(List<String> roleIds);
+    /**
+     * 根据角色id，删除角色菜单关系
+     *
+     * @param roleIds 角色ids
+     */
+    boolean deleteByRoleIds(List<Long> roleIds);
 
-	/**
-	 * 根据菜单id，删除角色菜单关系
-	 * @param menuIds 菜单ids
-	 */
-	boolean deleteByMenuIds(List<Long> menuIds);
+    /**
+     * 根据菜单id，删除角色菜单关系
+     *
+     * @param menuIds 菜单ids
+     */
+    boolean deleteByMenuIds(List<Long> menuIds);
 
 }

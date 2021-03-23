@@ -114,10 +114,10 @@ public class ShiroRealm extends AuthorizingRealm {
             info.setRoles(roles);
         } else {
             // 根据配置文件中的role和permission设置SimpleAuthorizationInfo
-            if (shiroRole) {
+            /*if (shiroRole) {
                 // 塞入角色列表
                 info.setRoles(shiroService.getUserRoles(user));
-            }
+            }*/
             if (shiroPermissions) {
                 // 塞入权限列表
                 info.setStringPermissions(shiroService.getUserPermissions(user));

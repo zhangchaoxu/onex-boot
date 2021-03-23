@@ -34,8 +34,6 @@ public class ShiroServiceImpl implements ShiroService {
     TokenService tokenService;
     @Autowired
     ParamService paramService;
-    @Autowired
-    RoleDataScopeService roleDataScopeService;
 
     @Value("${redis.open: false}")
     private boolean open;
@@ -79,14 +77,10 @@ public class ShiroServiceImpl implements ShiroService {
     }
 
     @Override
-    public Set<String> getUserRoles(UserDetail user) {
-        List<String> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleIdList() : roleService.getRoleIdListByUserId(user.getId());
+    public Set<Long> getUserRoles(UserDetail user) {
+        List<Long> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleIdList() : roleService.getRoleIdListByUserId(user.getId());
         // 用户角色列表
-        Set<String> set = new HashSet<>();
-        for (String role : roleList) {
-            set.addAll(StringUtils.splitToList(role));
-        }
-        return set;
+        return new HashSet<>(roleList);
     }
 
     @Override
@@ -97,11 +91,6 @@ public class ShiroServiceImpl implements ShiroService {
     @Override
     public UserEntity getUser(Long userId) {
         return userService.getById(userId);
-    }
-
-    @Override
-    public List<Long> getDeptIdListByUserId(Long userId) {
-        return roleDataScopeService.getDeptIdListByUserId(userId);
     }
 
     @Override

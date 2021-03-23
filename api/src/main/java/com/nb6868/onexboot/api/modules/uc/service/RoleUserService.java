@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
-import com.nb6868.onexboot.common.service.BaseService;
 import com.nb6868.onexboot.api.modules.uc.entity.RoleUserEntity;
+import com.nb6868.onexboot.common.service.BaseService;
 
 import java.util.List;
 
@@ -17,13 +17,13 @@ public interface RoleUserService extends BaseService<RoleUserEntity> {
      * @param userId      用户ID
      * @param roleIds  角色ID列表
      */
-    boolean saveOrUpdate(Long userId, List<String> roleIds);
+    boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds);
 
     /**
      * 根据角色ids，删除角色用户关系
      * @param roleIds 角色ids
      */
-    boolean deleteByRoleIds(List<String> roleIds);
+    boolean deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 根据用户id，删除角色用户关系

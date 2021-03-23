@@ -28,7 +28,7 @@ public interface ShiroService {
     /**
      * 获取用户角色列表
      */
-    Set<String> getUserRoles(UserDetail user);
+    Set<Long> getUserRoles(UserDetail user);
 
     /**
      * 通过token获取用户id
@@ -54,12 +54,5 @@ public interface ShiroService {
      * @param userId
      */
     UserEntity getUser(Long userId);
-
-    /**
-     * 获取用户对应的部门数据权限
-     * @param userId  用户ID
-     * @return        返回部门ID列表
-     */
-    List<Long> getDeptIdListByUserId(Long userId);
 
 }

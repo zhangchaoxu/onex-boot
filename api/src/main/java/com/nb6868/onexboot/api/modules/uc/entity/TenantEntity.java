@@ -33,5 +33,5 @@ public class TenantEntity extends BaseEntity {
     /**
      * 状态 0 无效 1 有效
      */
-	private Integer status;
+	private Integer state;
 }

@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.nb6868.onexboot.common.pojo.BaseIdStringEntity;
+import com.nb6868.onexboot.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("uc_role")
-public class RoleEntity extends BaseIdStringEntity {
+public class RoleEntity extends BaseEntity {
 
     /**
      * 名称
