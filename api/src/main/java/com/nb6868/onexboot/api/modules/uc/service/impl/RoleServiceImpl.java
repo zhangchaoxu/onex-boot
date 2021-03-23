@@ -5,7 +5,7 @@ import com.nb6868.onexboot.api.modules.uc.dao.RoleDao;
 import com.nb6868.onexboot.api.modules.uc.dto.RoleDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.RoleEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.RoleUserEntity;
-import com.nb6868.onexboot.api.modules.uc.service.RoleMenuService;
+import com.nb6868.onexboot.api.modules.uc.service.MenuScopeService;
 import com.nb6868.onexboot.api.modules.uc.service.RoleService;
 import com.nb6868.onexboot.api.modules.uc.service.RoleUserService;
 import com.nb6868.onexboot.common.service.impl.CrudServiceImpl;
@@ -28,7 +28,7 @@ import java.util.Map;
 public class RoleServiceImpl extends CrudServiceImpl<RoleDao, RoleEntity, RoleDTO> implements RoleService {
 
     @Autowired
-    private RoleMenuService roleMenuService;
+    private MenuScopeService menuScopeService;
     @Autowired
     private RoleUserService roleUserService;
 
@@ -53,7 +53,7 @@ public class RoleServiceImpl extends CrudServiceImpl<RoleDao, RoleEntity, RoleDT
     protected void afterSaveOrUpdateDto(boolean ret, RoleDTO dto, RoleEntity existedEntity, int type) {
         if (ret) {
             // 保存角色菜单关系
-            roleMenuService.saveOrUpdateByRoleAndMenuIds(dto.getId(), dto.getName(), dto.getMenuIdList());
+            menuScopeService.saveOrUpdateByRoleAndMenuIds(dto.getId(), dto.getName(), dto.getMenuIdList());
             // 如果是更新,则更新角色用户表中的角色名字段
             if (1 == type) {
                 roleUserService.update().set("role_name", dto.getName()).eq("role_id", dto.getId()).update(new RoleUserEntity());
@@ -69,7 +69,7 @@ public class RoleServiceImpl extends CrudServiceImpl<RoleDao, RoleEntity, RoleDT
         // 删除角色用户关系
         roleUserService.deleteByRoleIds(ids);
         // 删除角色菜单关系
-        roleMenuService.deleteByRoleIds(ids);
+        menuScopeService.deleteByRoleIds(ids);
         return super.logicDeleteByIds(idList);
     }
 

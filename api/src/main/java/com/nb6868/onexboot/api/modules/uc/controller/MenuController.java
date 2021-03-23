@@ -6,7 +6,7 @@ import com.nb6868.onexboot.api.modules.uc.dto.MenuDTO;
 import com.nb6868.onexboot.api.modules.uc.dto.MenuTreeDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onexboot.api.modules.uc.service.MenuService;
-import com.nb6868.onexboot.api.modules.uc.service.RoleMenuService;
+import com.nb6868.onexboot.api.modules.uc.service.MenuScopeService;
 import com.nb6868.onexboot.api.modules.uc.service.ShiroService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
@@ -46,7 +46,7 @@ public class MenuController {
     @Autowired
     MenuService menuService;
     @Autowired
-    RoleMenuService roleMenuService;
+    MenuScopeService menuScopeService;
     @Autowired
     ShiroService shiroService;
 

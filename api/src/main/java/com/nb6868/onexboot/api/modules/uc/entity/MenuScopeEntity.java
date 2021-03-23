@@ -6,14 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 角色菜单关系
+ * 菜单权限范围
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("uc_role_menu")
-public class RoleMenuEntity extends BaseEntity {
+@TableName("uc_menu_scope")
+public class MenuScopeEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
     /**
      * 角色ID
@@ -27,5 +27,17 @@ public class RoleMenuEntity extends BaseEntity {
      * 菜单ID
      */
     private Long menuId;
+    /**
+     * 菜单ID
+     */
+    private String menuPermissions;
+    /**
+     * 授权类型
+     */
+    private Integer type;
+    /**
+     * 用户ID
+     */
+    private Long userId;
 
 }
