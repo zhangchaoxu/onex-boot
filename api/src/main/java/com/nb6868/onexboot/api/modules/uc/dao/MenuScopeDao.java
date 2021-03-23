@@ -1,15 +1,15 @@
 package com.nb6868.onexboot.api.modules.uc.dao;
 
 import com.nb6868.onexboot.common.dao.BaseDao;
-import com.nb6868.onexboot.api.modules.uc.entity.RoleMenuEntity;
+import com.nb6868.onexboot.api.modules.uc.entity.MenuScopeEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 角色与菜单对应关系
+ * 菜单权限范围
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
-public interface RoleMenuDao extends BaseDao<RoleMenuEntity> {
+public interface MenuScopeDao extends BaseDao<MenuScopeEntity> {
 
 }

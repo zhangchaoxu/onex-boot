@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
-import com.nb6868.onexboot.api.modules.uc.entity.RoleMenuEntity;
+import com.nb6868.onexboot.api.modules.uc.entity.MenuScopeEntity;
 import com.nb6868.onexboot.common.service.BaseService;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public interface RoleMenuService extends BaseService<RoleMenuEntity> {
+public interface MenuScopeService extends BaseService<MenuScopeEntity> {
 
     /**
      * 根据角色ID，获取菜单ID列表

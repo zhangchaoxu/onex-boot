@@ -2,7 +2,7 @@ package com.nb6868.onexboot.api.modules.uc.controller;
 
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.uc.dto.RoleDTO;
-import com.nb6868.onexboot.api.modules.uc.service.RoleMenuService;
+import com.nb6868.onexboot.api.modules.uc.service.MenuScopeService;
 import com.nb6868.onexboot.api.modules.uc.service.RoleService;
 import com.nb6868.onexboot.api.modules.uc.service.RoleUserService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
@@ -39,7 +39,7 @@ public class RoleController {
 	@Autowired
 	private RoleService roleService;
 	@Autowired
-	private RoleMenuService roleMenuService;
+	private MenuScopeService menuScopeService;
 	@Autowired
 	private RoleUserService roleUserService;
 
@@ -69,7 +69,7 @@ public class RoleController {
 		AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
 		// 查询角色对应的菜单
-		List<Long> menuIdList = roleMenuService.getMenuIdListByRoleId(id);
+		List<Long> menuIdList = menuScopeService.getMenuIdListByRoleId(id);
 		data.setMenuIdList(menuIdList);
 
 		return new Result<>().success(data);
@@ -103,7 +103,7 @@ public class RoleController {
 		// 删除数据
 		roleService.logicDeleteById(id);
 		// 删除角色菜单关联关系
-		roleMenuService.deleteByRoleIds(Collections.singletonList(id));
+		menuScopeService.deleteByRoleIds(Collections.singletonList(id));
 		// 删除角色用户关联关系
 		roleUserService.deleteByRoleIds(Collections.singletonList(id));
 		return new Result<>();

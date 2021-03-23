@@ -12,7 +12,7 @@ import com.nb6868.onexboot.api.modules.uc.dto.MenuDTO;
 import com.nb6868.onexboot.api.modules.uc.dto.MenuTreeDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onexboot.api.modules.uc.service.MenuService;
-import com.nb6868.onexboot.api.modules.uc.service.RoleMenuService;
+import com.nb6868.onexboot.api.modules.uc.service.MenuScopeService;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ import java.util.*;
 public class MenuServiceImpl extends CrudServiceImpl<MenuDao, MenuEntity, MenuDTO> implements MenuService {
 
     @Autowired
-    private RoleMenuService roleMenuService;
+    private MenuScopeService menuScopeService;
 
     @Override
     public QueryWrapper<MenuEntity> getWrapper(String method, Map<String, Object> params) {
@@ -125,7 +125,7 @@ public class MenuServiceImpl extends CrudServiceImpl<MenuDao, MenuEntity, MenuDT
     public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
         List<Long> ids = (List<Long>) idList;
         // 删除角色菜单关系
-        roleMenuService.deleteByMenuIds(ids);
+        menuScopeService.deleteByMenuIds(ids);
         // 删除菜单
         return super.logicDeleteByIds(idList);
     }
