@@ -99,6 +99,12 @@ public interface BaseService<T> extends IService<T> {
      */
     boolean hasIdRecord(Serializable id);
 
-
+    /**
+     * 通过指定字段获取记录
+     * @param column 字段名
+     * @param value 内容值
+     * @return 记录
+     */
+    T getOneByColumn(String column, Object value);
 
 }
