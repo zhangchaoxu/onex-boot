@@ -91,6 +91,11 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
         return SqlHelper.retBool(getBaseMapper().selectCountById(id));
     }
 
+    @Override
+    public T getOneByColumn(String column, Object val) {
+        return query().eq(column, val).last(Const.LIMIT_ONE).one();
+    }
+
     /**
      * id是否只值,并且存在对应记录
      * @param entity 查询实体

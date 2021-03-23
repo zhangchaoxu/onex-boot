@@ -11,11 +11,4 @@ import com.nb6868.onexboot.common.service.CrudService;
  */
 public interface MailTplService extends CrudService<MailTplEntity, MailTplDTO> {
 
-    /**
-     * 通过类型和编码获取模板
-     * @param code 模板编码
-     * @return 模板
-     */
-    MailTplEntity getByCode(String code);
-
 }

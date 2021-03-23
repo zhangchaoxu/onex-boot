@@ -84,7 +84,7 @@ public class MailLogServiceImpl extends CrudServiceImpl<MailLogDao, MailLogEntit
      */
     @Override
     public boolean send(MailSendRequest request) {
-        MailTplEntity mailTpl = mailTplService.getByCode(request.getTplCode());
+        MailTplEntity mailTpl = mailTplService.getOneByColumn("code", request.getTplCode());
         AssertUtils.isNull(mailTpl, "未定义的消息模板:" + request.getTplCode());
 
         if (MsgConst.MailTypeEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
