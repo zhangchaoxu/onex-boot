@@ -108,12 +108,6 @@ public class UserDTO extends BaseDTO {
     @ApiModelProperty(value = "收入余额")
     private BigDecimal income;
 
-    @ApiModelProperty(value = "上级用户id")
-    private Long supUserId;
-
-    @ApiModelProperty(value = "上上级用户id")
-    private Long sup2UserId;
-
     @ApiModelProperty(value = "租户id")
     private Long tenantId;
 

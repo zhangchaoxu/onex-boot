@@ -97,14 +97,6 @@ public class UserEntity extends BaseTenantEntity {
      */
     private BigDecimal income;
     /**
-     * 上级用户id
-     */
-    private Long supUserId;
-    /**
-     * 上级用户id
-     */
-    private Long sup2UserId;
-    /**
      * 角色ids
      */
     @TableField(exist = false)
