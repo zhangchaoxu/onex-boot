@@ -84,15 +84,6 @@ public class UserDTO extends BaseDTO {
     @Range(min = 0, max = 100, message = "用户类别取值0-100", groups = DefaultGroup.class)
     private Integer type;
 
-    @ApiModelProperty(value = "角色ID列表")
-    private List<Long> roleIdList;
-
-    @ApiModelProperty(value = "角色Ids")
-    private String roleIds;
-
-    @ApiModelProperty(value = "角色名称")
-    private String roleNames;
-
     @ApiModelProperty(value = "部门名称")
     private String deptName;
 
@@ -113,5 +104,14 @@ public class UserDTO extends BaseDTO {
 
     @ApiModelProperty(value = "租户名称")
     private String tenantName;
+
+    @ApiModelProperty(value = "角色ID列表")
+    private List<Long> roleIdList;
+
+    @ApiModelProperty(value = "角色Ids")
+    private String roleIds;
+
+    @ApiModelProperty(value = "角色名称")
+    private String roleNames;
 
 }
