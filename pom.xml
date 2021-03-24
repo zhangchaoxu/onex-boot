@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.3</version>
+        <version>2.4.4</version>
         <relativePath/>
     </parent>
 
@@ -31,7 +31,7 @@
         <mybatisplus.version>3.4.2</mybatisplus.version>
         <druid.version>1.2.5</druid.version>
         <jsoup.version>1.13.1</jsoup.version>
-        <swagger.version>2.10.5</swagger.version>
+        <springfox.version>3.0.0</springfox.version>
     </properties>
 
     <dependencies>
@@ -147,13 +147,8 @@
         <!-- swagger2 -->
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>${springfox.version}</version>
         </dependency>
         <!-- lombok -->
         <dependency>

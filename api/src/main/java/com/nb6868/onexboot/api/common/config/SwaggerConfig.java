@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -22,6 +24,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
+@EnableOpenApi
 public class SwaggerConfig {
 
     @Bean
@@ -47,7 +50,7 @@ public class SwaggerConfig {
                 .build();
     }
 
-    private List<ApiKey> security() {
+    private List<SecurityScheme> security() {
         return newArrayList(new ApiKey(UcConst.TOKEN_HEADER, UcConst.TOKEN_HEADER, "header"));
     }
 }
