@@ -47,13 +47,12 @@ import java.util.function.Function;
  * @author hubin
  * @author Charles zhangchaoxu@gmail.com
  */
-@SuppressWarnings("unchecked")
 public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
 
     protected Log log = LogFactory.getLog(getClass());
 
     /**
-     * 通过id数删除
+     * 通过id删除
      *
      * @param id id
      * @return 删除结果
@@ -240,6 +239,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     /**
      * 转换分页
      */
+    @SuppressWarnings("rawtypes")
     protected <T> PageData<T> getPageData(IPage page, Class<T> target) {
         return getPageData(page.getRecords(), page.getTotal(), target);
     }
@@ -274,10 +274,12 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         return SqlHelper.retBool(result);
     }
 
+    @SuppressWarnings("unchecked")
     protected Class<T> currentMapperClass() {
         return (Class<T>) ReflectionKit.getSuperClassGenericType(getClass(), 0);
     }
 
+    @SuppressWarnings("unchecked")
     protected Class<T> currentModelClass() {
         return (Class<T>) ReflectionKit.getSuperClassGenericType(getClass(), 1);
     }
