@@ -1,21 +1,21 @@
 package com.nb6868.onexboot.api.modules.uc.shiro;
 
 import com.nb6868.onexboot.api.modules.uc.UcConst;
+import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
+import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.service.ShiroService;
+import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
+import com.nb6868.onexboot.api.common.config.OnexConfigProperties;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.MessageUtils;
-import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
-import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
-import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -31,6 +31,8 @@ public class ShiroRealm extends AuthorizingRealm {
 
     @Autowired
     private ShiroService shiroService;
+    @Autowired
+    private OnexConfigProperties onexConfig;
 
     /**
      * 必须重写此方法，不然Shiro会报错
@@ -39,18 +41,6 @@ public class ShiroRealm extends AuthorizingRealm {
     public boolean supports(AuthenticationToken token) {
         return token != null;
     }
-
-    /**
-     * shiro是否基于角色或者权限来判断
-     */
-    @Value("${onex.shiro.role: false}")
-    private boolean shiroRole;
-    @Value("${onex.shiro.permissions: true}")
-    private boolean shiroPermissions;
-    @Value("${onex.shiro.token.renewal: true}")
-    private boolean tokenRenewal;
-    @Value("${onex.shiro.token.expire: 604800}")
-    private long tokenExpire;
 
     /**
      * 认证(登录时调用)
@@ -92,8 +82,8 @@ public class ShiroRealm extends AuthorizingRealm {
         userDetail.setDeptIdList(deptIdList);*/
 
         // 更新token
-        if (tokenRenewal) {
-            shiroService.renewalToken(accessToken, tokenExpire);
+        if (onexConfig.getLoginConfigAdmin().isTokenRenewal()) {
+            shiroService.renewalToken(accessToken, onexConfig.getLoginConfigAdmin().getTokenExpire());
         }
 
         return new SimpleAuthenticationInfo(userDetail, accessToken, getName());
@@ -113,12 +103,12 @@ public class ShiroRealm extends AuthorizingRealm {
             roles.add(UcConst.ROLE_CODE_ANON);
             info.setRoles(roles);
         } else {
-            // 根据配置文件中的role和permission设置SimpleAuthorizationInfo
-            /*if (shiroRole) {
+            // 根据配置中的role和permission设置SimpleAuthorizationInfo
+            if (onexConfig.getLoginConfigAdmin().isRoleBase()) {
                 // 塞入角色列表
                 info.setRoles(shiroService.getUserRoles(user));
-            }*/
-            if (shiroPermissions) {
+            }
+            if (onexConfig.getLoginConfigAdmin().isPermissionBase()) {
                 // 塞入权限列表
                 info.setStringPermissions(shiroService.getUserPermissions(user));
             }

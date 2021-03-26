@@ -76,7 +76,7 @@ public class MenuController {
         // 将菜单列表转成菜单树
         List<MenuTreeDTO> menuTree = TreeUtils.build(menuList);
         // 获取角色列表
-        Set<Long> roles = shiroService.getUserRoles(user);
+        Set<String> roles = shiroService.getUserRoles(user);
         return new Result<>().success(Kv.init()
                 .set("menuTree", menuTree)
                 .set("urlList", urlList)
@@ -109,7 +109,7 @@ public class MenuController {
     @ApiOperation("登录用户角色范围")
     public Result<?> roles() {
         UserDetail user = SecurityUser.getUser();
-        Set<Long> set = shiroService.getUserRoles(user);
+        Set<String> set = shiroService.getUserRoles(user);
 
         return new Result<>().success(set);
     }

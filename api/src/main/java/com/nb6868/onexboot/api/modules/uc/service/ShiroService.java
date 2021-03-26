@@ -61,17 +61,20 @@ public class ShiroService {
             }
             set.addAll(StringUtils.splitToList(permissions));
         }
-
         return set;
     }
 
     /**
      * 获取用户角色列表
      */
-    public Set<Long> getUserRoles(UserDetail user) {
+    public Set<String> getUserRoles(UserDetail user) {
         List<Long> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleIdList() : roleService.getRoleIdListByUserId(user.getId());
         // 用户角色列表
-        return new HashSet<>(roleList);
+        Set<String> set = new HashSet<>();
+        for (Long role : roleList) {
+            set.add(String.valueOf(role));
+        }
+        return set;
     }
 
     /**

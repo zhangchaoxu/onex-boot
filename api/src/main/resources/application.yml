@@ -46,8 +46,6 @@ spring:
   quartz:
     ## 任务存储方式
     job-store-type: jdbc
-    ## 启动开关
-    auto-startup: false
 
 # mybatis plus
 # see {https://mybatis.plus/config/}
@@ -76,21 +74,3 @@ mybatis-plus:
     cache-enabled: false
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
-
-# onex 配置
-onex:
-  token-policy: uuid
-  # shiro相关
-  shiro:
-    # token策略
-    token:
-      # 支持uuid和jwt
-      policy: uuid
-      # 是否自动延期
-      renewal: true
-      # token有效秒
-      expire: 604800
-    # 基于角色分配
-    role: false
-    # 基于权限分配
-    permissions: true
