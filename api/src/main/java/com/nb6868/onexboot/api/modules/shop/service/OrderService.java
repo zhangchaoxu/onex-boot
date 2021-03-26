@@ -13,7 +13,6 @@ import com.nb6868.onexboot.api.modules.pay.entity.ChannelEntity;
 import com.nb6868.onexboot.api.modules.pay.service.ChannelService;
 import com.nb6868.onexboot.api.modules.pay.util.PayUtils;
 import com.nb6868.onexboot.api.modules.shop.ShopConst;
-import com.nb6868.onexboot.api.modules.shop.dto.OrderChangeReceiverRequest;
 import com.nb6868.onexboot.api.modules.shop.dto.OrderDTO;
 import com.nb6868.onexboot.api.modules.shop.dto.OrderOneClickRequest;
 import com.nb6868.onexboot.api.modules.shop.entity.GoodsEntity;
@@ -87,20 +86,6 @@ public class OrderService extends DtoService<com.nb6868.onexboot.api.modules.sho
                 })
                 .apply(Const.SQL_FILTER)
                 .getQueryWrapper();
-    }
-
-    /**
-     * 通过订单号获取订单
-     */
-    public OrderEntity getByNo(String no) {
-        return query().eq("no", no).last(Const.LIMIT_ONE).one();
-    }
-
-    /**
-     * 修改订单收件信息
-     */
-    public boolean changeReceiver(OrderChangeReceiverRequest request) {
-        return false;
     }
 
     /**

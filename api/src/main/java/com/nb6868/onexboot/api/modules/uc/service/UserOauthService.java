@@ -6,7 +6,6 @@ import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dao.UserOauthDao;
 import com.nb6868.onexboot.api.modules.uc.dto.UserOauthDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
-import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.springframework.stereotype.Service;
@@ -22,10 +21,10 @@ public class UserOauthService extends DtoService<UserOauthDao, UserOauthEntity, 
     /**
      * 通过openid获取用户，openid可以保证唯一
      * @param openid
-     * @return
+     * @return 用户
      */
     public UserOauthEntity getByOpenid(String openid) {
-        return query().eq("openid", openid).last(Const.LIMIT_ONE).one();
+        return getOneByColumn("openid", openid);
     }
 
     /**
