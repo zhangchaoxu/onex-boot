@@ -18,6 +18,14 @@ public class ArticleCategoryEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 站点id
+     */
+    private Long siteId;
+    /**
+     * 站点编码
+     */
+    private String siteCode;
+    /**
      * 编码
      */
     private String code;
@@ -25,6 +33,10 @@ public class ArticleCategoryEntity extends BaseEntity {
      * 名称
      */
     private String name;
+    /**
+     * 图片
+     */
+    private String imgs;
     /**
      * 排序
      */
@@ -41,15 +53,6 @@ public class ArticleCategoryEntity extends BaseEntity {
      * 备注
      */
     private String remark;
-    /**
-     * 图片
-     */
-    private String imgs;
-
-    private Long siteId;
-
-    private String siteCode;
-
     /**
      * 站点名称
      */

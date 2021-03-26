@@ -20,9 +20,49 @@ public class ArticleEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 文章分类编码
+     */
+    private String articleCategoryCode;
+    /**
+     * 文章类别id
+     */
+    private Long articleCategoryId;
+    /**
+     * 站点编码
+     */
+    private String siteCode;
+    /**
+     * 站点id
+     */
+    private Long siteId;
+    /**
      * 编码
      */
     private String code;
+    /**
+     * SEO描述
+     */
+    private String seoDescr;
+    /**
+     * SEO关键词
+     */
+    private String seoKeywords;
+    /**
+     * 来源地址
+     */
+    private String sourceLink;
+    /**
+     * 来源
+     */
+    private String sourceName;
+    /**
+     * 作者
+     */
+    private String author;
+    /**
+     * 标签
+     */
+    private String tags;
     /**
      * 排序
      */
@@ -44,23 +84,23 @@ public class ArticleEntity extends BaseEntity {
      */
     private String remark;
     /**
-     * 文章标题
+     * 副标题
      */
-    private String name;
+    private String subTitle;
     /**
-     * 文章来源
+     * 标题
      */
-    private String sourceName;
+    private String title;
     /**
-     * 文章来源连接
+     * 摘要
      */
-    private String sourceLink;
+    private String summary;
     /**
-     * 文章作者
+     * 评论类型 1 不允许评论 2 运行登录用户评论 3 允许游客评论
      */
-    private String author;
+    private Integer commentType;
     /**
-     * 平均评分
+     * 评分
      */
     private Float score;
     /**
@@ -80,21 +120,13 @@ public class ArticleEntity extends BaseEntity {
      */
     private Date validEndTime;
     /**
-     * 文章类别id
-     */
-    private Long articleCategoryId;
-    /**
-     * 点击次数
-     */
-    private Integer hits;
-    /**
-     * 是否置顶
+     * 是否首页推荐
      */
     private Integer top;
-
-    private Long siteId;
-
-    private String siteCode;
+    /**
+     * 点击数
+     */
+    private Long hits;
     /**
      * 文章类别
      */

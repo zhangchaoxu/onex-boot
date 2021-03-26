@@ -47,6 +47,9 @@ public class SiteDTO extends BaseDTO {
     @ApiModelProperty(value = "关键词")
     private String keywords;
 
+    @ApiModelProperty(value = "生成目录")
+    private String dir;
+
     @ApiModelProperty(value = "图片")
     private String imgs;
 

@@ -19,8 +19,38 @@ import java.util.Date;
 public class ArticleDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty(value = "文章分类编码")
+	private String articleCategoryCode;
+
+	@ApiModelProperty(value = "文章类别id")
+	private Long articleCategoryId;
+
+	@ApiModelProperty(value = "站点编码")
+	private String siteCode;
+
+	@ApiModelProperty(value = "站点id")
+	private Long siteId;
+
 	@ApiModelProperty(value = "编码")
 	private String code;
+
+	@ApiModelProperty(value = "SEO描述")
+	private String seoDescr;
+
+	@ApiModelProperty(value = "SEO关键词")
+	private String seoKeywords;
+
+	@ApiModelProperty(value = "来源地址")
+	private String sourceLink;
+
+	@ApiModelProperty(value = "来源")
+	private String sourceName;
+
+	@ApiModelProperty(value = "作者")
+	private String author;
+
+	@ApiModelProperty(value = "标签")
+	private String tags;
 
 	@ApiModelProperty(value = "排序")
 	private Integer sort;
@@ -31,29 +61,29 @@ public class ArticleDTO extends BaseDTO {
 	@ApiModelProperty(value = "类型")
 	private Integer type;
 
-	@ApiModelProperty(value = "备注")
-	private String remark;
-
-	@ApiModelProperty(value = "作者")
-	private String author;
-
 	@ApiModelProperty(value = "图片")
 	private String imgs;
 
-	@ApiModelProperty(value = "文章标题")
-	private String name;
+	@ApiModelProperty(value = "备注")
+	private String remark;
 
-	@ApiModelProperty(value = "平均评分")
+	@ApiModelProperty(value = "副标题")
+	private String subTitle;
+
+	@ApiModelProperty(value = "标题")
+	private String title;
+
+	@ApiModelProperty(value = "摘要")
+	private String summary;
+
+	@ApiModelProperty(value = "评论类型 1 不允许评论 2 运行登录用户评论 3 允许游客评论")
+	private Integer commentType;
+
+	@ApiModelProperty(value = "评分")
 	private Float score;
 
 	@ApiModelProperty(value = "文章内容")
 	private String content;
-
-	@ApiModelProperty(value = "文章来源")
-	private String sourceName;
-
-	@ApiModelProperty(value = "文章来源链接")
-	private String sourceLink;
 
 	@ApiModelProperty(value = "发布时间")
 	private Date pubTime;
@@ -64,25 +94,10 @@ public class ArticleDTO extends BaseDTO {
 	@ApiModelProperty(value = "有效期结束")
 	private Date validEndTime;
 
-	@ApiModelProperty(value = "文章类别id")
-	private Long articleCategoryId;
-
-	@ApiModelProperty(value = "置顶")
+	@ApiModelProperty(value = "是否首页推荐")
 	private Integer top;
 
-	@ApiModelProperty(value = "点击次数")
-	private Integer readNum;
-
-	@ApiModelProperty(value = "文章类目")
-	private String articleCategoryName;
-
-	@ApiModelProperty(value = "站点名称")
-	private Long siteId;
-
-	@ApiModelProperty(value = "站点编码")
-	private String siteCode;
-
-	@ApiModelProperty(value = "站点名称")
-	private String siteName;
+	@ApiModelProperty(value = "点击数")
+	private Long hits;
 
 }
