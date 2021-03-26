@@ -21,7 +21,7 @@ public class HttpContextUtils {
 
     /**
      * 获得http请求
-     * @return
+     * @return request
      */
     public static HttpServletRequest getHttpServletRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();

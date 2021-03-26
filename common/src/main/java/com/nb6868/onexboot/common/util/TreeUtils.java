@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class TreeUtils {
 
     /**
@@ -50,7 +50,7 @@ public class TreeUtils {
     public static <T extends TreeNode> List<T> build(List<T> treeNodes) {
         List<T> result = new ArrayList<>();
 
-        //list转map
+        // list转map
         Map<Long, T> nodeMap = new LinkedHashMap<>(treeNodes.size());
         for(T treeNode : treeNodes){
             nodeMap.put(treeNode.getId(), treeNode);
