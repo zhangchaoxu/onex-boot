@@ -7,6 +7,7 @@ import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.excel.ParamExcel;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
+import com.nb6868.onexboot.api.common.config.OnexConfigProperties;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
@@ -131,9 +132,11 @@ public class ParamController {
         return new Result<>().success(map);
     }
 
+    @Autowired
+    OnexConfigProperties onexConfig;
+
     @GetMapping("getLoginAdmin")
     @ApiOperation("获得后台登录配置")
-    //@AccessControl
     public Result<?> getLoginAdmin() {
         Map<String, Object> loginAdminConfig = paramService.getContentMap(UcConst.LOGIN_ADMIN);
         AssertUtils.isNull(loginAdminConfig, "未找到后台登录配置");

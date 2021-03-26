@@ -1,0 +1,20 @@
+# onex 配置
+onex:
+  # 登录配置源
+  login-config-source: db
+  # 后台登录
+  login-config-admin:
+    # 配置源 支持props和db
+    source: props
+    # 多端登录
+    multi-login: true
+    # token生成策略 支持uuid和jwt
+    token-policy: jwt
+    # token有效秒
+    token-expire: 604800
+    # 是否自动延期
+    token-renewal: true
+    # 基于角色分配
+    role-base: false
+    # 基于权限分配
+    permission-base: true
