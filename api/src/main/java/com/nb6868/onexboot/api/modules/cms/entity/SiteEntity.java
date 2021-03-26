@@ -49,6 +49,10 @@ public class SiteEntity extends BaseEntity {
      */
     private String keywords;
     /**
+     * 生成目录
+     */
+    private String dir;
+    /**
      * 图片
      */
     private String imgs;
