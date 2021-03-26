@@ -8,15 +8,13 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.SecurityScheme;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Swagger配置
@@ -29,28 +27,37 @@ public class SwaggerConfig {
 
     @Bean
     public Docket createRestApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
                 .select()
-                // 加了ApiOperation注解的类，生成接口文档
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 // 包下的类，生成接口文档
                 // .apis(RequestHandlerSelectors.basePackage("com.nb6868.onexboot.api.modules.*.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .directModelSubstitute(java.util.Date.class, String.class)
-                .securitySchemes(security());
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("API")
+                .title("OneX API")
                 .description("接口文档")
                 .version("1.0.0")
                 .build();
     }
 
-    private List<SecurityScheme> security() {
-        return newArrayList(new ApiKey(UcConst.TOKEN_HEADER, UcConst.TOKEN_HEADER, "header"));
+    private List<SecurityScheme> securitySchemes() {
+        return Collections.singletonList(new ApiKey(UcConst.TOKEN_HEADER, UcConst.TOKEN_HEADER, io.swagger.models.auth.In.HEADER.toValue()));
     }
+
+    private List<SecurityContext> securityContexts() {
+        return Collections.singletonList(
+                SecurityContext.builder().securityReferences(Collections.singletonList(
+                        new SecurityReference(UcConst.TOKEN_HEADER, new AuthorizationScope[]{ new AuthorizationScope("global", "") }))
+                ).build()
+        );
+    }
+
 }
