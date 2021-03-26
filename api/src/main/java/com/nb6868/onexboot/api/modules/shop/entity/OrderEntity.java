@@ -48,18 +48,6 @@ public class OrderEntity extends BaseTenantEntity {
      */
     private Long sellUserId;
     /**
-     * 收益用户id
-     */
-    private Long benefitUserId;
-    /**
-     * 收益金额
-     */
-    private BigDecimal benefitPrice;
-    /**
-     * 收益状态 0 未发放 1 已发放 -1 已回收
-     */
-    private Integer benefitState;
-    /**
      * 用户备注
      */
     private String userRemark;

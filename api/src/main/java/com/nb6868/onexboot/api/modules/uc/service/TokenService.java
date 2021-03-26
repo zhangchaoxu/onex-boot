@@ -1,9 +1,15 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onexboot.api.modules.uc.dao.TokenDao;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
-import com.nb6868.onexboot.common.service.BaseService;
+import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.service.EntityService;
+import com.nb6868.onexboot.common.util.IdUtils;
+import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,21 +17,26 @@ import java.util.List;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public interface TokenService extends BaseService<TokenEntity> {
+@Service
+public class TokenService extends EntityService<TokenDao, TokenEntity> {
 
     /**
      * 通过token获取用户id和登录type
      *
      * @return result
      */
-    TokenEntity getUserIdAndTypeByToken(String token);
+    public TokenEntity getUserIdAndTypeByToken(String token) {
+        return query().select("user_id", "type").eq("token", token).apply("expire_time > now()").last(Const.LIMIT_ONE).one();
+    }
 
     /**
      * 通过token获取用户id
      *
      * @return result
      */
-    Long getUserIdByToken(String token);
+    public Long getUserIdByToken(String token) {
+        return query().select("user_id").eq("token", token).apply("expire_time > now()").last(Const.LIMIT_ONE).oneOpt().map(TokenEntity::getUserId).orElse(null);
+    }
 
     /**
      * 生成token
@@ -34,7 +45,31 @@ public interface TokenService extends BaseService<TokenEntity> {
      * @param loginTypeConfig 登录配置
      * @return result
      */
-    String createToken(Long userId, LoginTypeConfig loginTypeConfig);
+    public String createToken(Long userId, LoginTypeConfig loginTypeConfig) {
+        // 当前时间
+        Date now = new Date();
+        // 过期时间
+        Date expireTime = new Date(now.getTime() + loginTypeConfig.getExpire() * 1000);
+        // 生成的token
+        if (loginTypeConfig.isMultiLogin()) {
+            // 支持多点登录
+        } else {
+            // 不支持多点登录,注销该用户所有token
+            deleteTokenByUserId(userId, loginTypeConfig.getType());
+        }
+        // 不管逻辑，永远都是重新生成一个token
+        TokenEntity tokenEntity = new TokenEntity();
+        tokenEntity.setUserId(userId);
+        tokenEntity.setToken(IdUtils.simpleUUID());
+        tokenEntity.setUpdateTime(now);
+        tokenEntity.setExpireTime(expireTime);
+        tokenEntity.setType(loginTypeConfig.getType());
+
+        // 保存token
+        this.save(tokenEntity);
+
+        return tokenEntity.getToken();
+    }
 
     /**
      * token续期
@@ -43,7 +78,9 @@ public interface TokenService extends BaseService<TokenEntity> {
      * @param expire 延长时间
      * @return result
      */
-    boolean renewalToken(String token, Long expire);
+    public boolean renewalToken(String token, Long expire) {
+        return update().setSql("expire_time = DATE_ADD(NOW(), interval " + expire + " second)").eq("token", token).update(new TokenEntity());
+    }
 
     /**
      * 注销token
@@ -51,7 +88,9 @@ public interface TokenService extends BaseService<TokenEntity> {
      * @param token 用户token
      * @return result
      */
-    boolean deleteToken(String token);
+    public boolean deleteToken(String token) {
+        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().eq("token", token));
+    }
 
     /**
      * 删除用户下所有token
@@ -60,13 +99,17 @@ public interface TokenService extends BaseService<TokenEntity> {
      * @param type   登录类型
      * @return result
      */
-    boolean deleteTokenByUserId(Long userId, String type);
+    public boolean deleteTokenByUserId(Long userId, String type) {
+        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().eq("user_id", userId).eq("type", type));
+    }
 
     /**
      * 删除用户token
      * @param userIds 用户ID数组
      * @return result
      */
-    boolean deleteByUserIds(List<Long> userIds);
+    public boolean deleteByUserIds(List<Long> userIds) {
+        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().in("user_id", userIds));
+    }
 
 }

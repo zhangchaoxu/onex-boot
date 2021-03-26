@@ -13,7 +13,7 @@ import java.util.List;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
-public interface CategoryDao extends BaseDao<GoodsCategoryEntity> {
+public interface GoodsCategoryDao extends BaseDao<GoodsCategoryEntity> {
     /**
      * 查询所有菜单列表
      *

@@ -86,7 +86,7 @@ public class WxController {
     }
 
     @ApiOperation("获取用户信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String", dataTypeClass = String.class)})
     @GetMapping("/info")
     public Result<?> info(@RequestParam String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
         WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
@@ -106,7 +106,7 @@ public class WxController {
     @GetMapping("/phone")
     @ApiOperation("获取用户绑定手机号信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String")
+            @ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String", dataTypeClass = String.class)
     })
     public Result<?> phone(@RequestParam String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
         WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);

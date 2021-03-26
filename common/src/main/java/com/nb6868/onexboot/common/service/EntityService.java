@@ -1,4 +1,4 @@
-package com.nb6868.onexboot.common.service.impl;
+package com.nb6868.onexboot.common.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onexboot.common.dao.BaseDao;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.PageData;
-import com.nb6868.onexboot.common.service.BaseService;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.ParamUtils;
 import org.apache.ibatis.binding.MapperMethod;
@@ -39,21 +38,36 @@ import java.util.function.Function;
  * 基础服务实现类
  * 泛型：M 是 mapper 对象，T 是实体 ， PK 是主键泛型
  * see {https://gitee.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/impl/ServiceImpl.java}
+ * see {https://mybatis.plus/guide/crud-interface.html#service-crud-%E6%8E%A5%E5%8F%A3}
+ * <p>
+ * 进一步封装 CRUD
+ * 采用 get 查询单行 remove 删除 list 查询集合 page 分页
+ * 前缀命名方式区分 Mapper 层避免混淆
  *
  * @author hubin
  * @author Charles zhangchaoxu@gmail.com
  */
 @SuppressWarnings("unchecked")
-public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> {
+public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
 
     protected Log log = LogFactory.getLog(getClass());
 
-    @Override
+    /**
+     * 通过id数删除
+     *
+     * @param id id
+     * @return 删除结果
+     */
     public boolean logicDeleteById(Serializable id) {
         return SqlHelper.retBool(getBaseMapper().deleteByIdWithFill(currentModel(), id));
     }
 
-    @Override
+    /**
+     * 通过id数组删除
+     *
+     * @param idList 数组
+     * @return 删除结果
+     */
     public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
         if (ObjectUtils.isEmpty(idList)) {
             return false;
@@ -61,48 +75,87 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
         return SqlHelper.retBool(getBaseMapper().deleteBatchByIdsWithFill(currentModel(), idList));
     }
 
-    @Override
+    /**
+     * 通过条件删除内容
+     *
+     * @param wrapper 查询条件
+     * @return 删除结果
+     */
     public boolean logicDeleteByWrapper(Wrapper<T> wrapper) {
         return SqlHelper.retBool(getBaseMapper().deleteByWrapperWithFill(currentModel(), wrapper));
     }
 
-    @Override
+    /**
+     * 下级记录数量
+     *
+     * @param column 关联字段
+     * @param val    字段值
+     * @return 数量
+     */
     public int subCount(String column, Object val) {
         return count(new QueryWrapper<T>().eq(column, val));
     }
 
-    @Override
+    /**
+     * 是否存在下级记录
+     *
+     * @param column 关联字段
+     * @param val    字段值
+     * @return 是否存在
+     */
     public boolean hasSub(String column, Object val) {
         return SqlHelper.retBool(subCount(column, val));
     }
 
-    @Override
+    /**
+     * 是否存在对应字段同内容的记录
+     *
+     * @param id     可null
+     * @param column 字段
+     * @param val    字段值
+     * @return 是否存在
+     */
     public boolean hasDuplicated(Serializable id, String column, Object val) {
         return hasRecord(new QueryWrapper<T>().eq(column, val).ne(id != null, "id", id));
     }
 
-    @Override
+    /**
+     * 是否存在查询条件的的记录
+     *
+     * @param wrapper 查询条件
+     * @return 删除结果
+     */
     public boolean hasRecord(Wrapper<T> wrapper) {
         return SqlHelper.retBool(count(wrapper));
     }
 
-    @Override
+    /**
+     * 是否存在主键id对应的记录
+     *
+     * @param id 查询主键
+     */
     public boolean hasIdRecord(Serializable id) {
         return SqlHelper.retBool(getBaseMapper().selectCountById(id));
     }
 
-    @Override
+    /**
+     * 通过指定字段获取记录
+     *
+     * @param column 字段名
+     * @param val    内容值
+     * @return 记录
+     */
     public T getOneByColumn(String column, Object val) {
         return query().eq(column, val).last(Const.LIMIT_ONE).one();
     }
 
     /**
      * id是否只值,并且存在对应记录
+     *
      * @param entity 查询实体
      * @return 结果
      */
     @Transactional(rollbackFor = Exception.class)
-    @Override
     public Object getIdVal(T entity) {
         if (null != entity) {
             TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
@@ -116,11 +169,11 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
 
     /**
      * id是否只值,并且存在对应记录
+     *
      * @param entity 查询实体
      * @return 结果
      */
     @Transactional(rollbackFor = Exception.class)
-    @Override
     public boolean hasIdVal(T entity) {
         Object idVal = getIdVal(entity);
         return !(StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal)));
