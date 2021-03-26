@@ -86,7 +86,7 @@ public class MenuController {
 
     @GetMapping("tree")
     @ApiOperation("登录用户菜单树")
-    @ApiImplicitParam(name = "type", value = "菜单类型 0：菜单 1：按钮  null：全部", paramType = "query", dataType = "int")
+    @ApiImplicitParam(name = "type", value = "菜单类型 0：菜单 1：按钮  null：全部", paramType = "query", dataType = "int", dataTypeClass = Integer.class)
     public Result<?> tree(Integer type) {
         UserDetail user = SecurityUser.getUser();
         List<MenuEntity> entityList = menuService.getListByUser(user, type);

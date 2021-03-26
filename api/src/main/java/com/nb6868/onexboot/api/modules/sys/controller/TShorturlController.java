@@ -33,7 +33,7 @@ public class TShorturlController {
     @AccessControl
     public String redirect(@PathVariable("code") String code, HttpServletResponse response) {
         UserDetail user = SecurityUser.getUser();
-        ShorturlEntity entity = shorturlService.getByCode(code);
+        ShorturlEntity entity = shorturlService.getOneByColumn("code", code);
         if (null == entity) {
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset='utf-8'");

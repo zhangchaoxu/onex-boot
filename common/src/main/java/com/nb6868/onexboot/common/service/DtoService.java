@@ -1,15 +1,14 @@
-package com.nb6868.onexboot.common.service.impl;
+package com.nb6868.onexboot.common.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.nb6868.onexboot.common.dao.BaseDao;
+import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.PageData;
-import com.nb6868.onexboot.common.service.CrudService;
-import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -25,7 +24,7 @@ import java.util.Map;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl<M, T> implements CrudService<T, D> {
+public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> {
 
     /**
      * 构建条件构造器
@@ -39,12 +38,22 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
         return (Class<D>) ReflectionKit.getSuperClassGenericType(getClass(), 2);
     }
 
-    @Override
+    /**
+     * 分页
+     *
+     * @param params 查询条件
+     * @return 分页数据
+     */
     public PageData<D> pageDto(Map<String, Object> params) {
         return pageDto(getPage(params, null, false), getWrapper("page", params));
     }
 
-    @Override
+    /**
+     * 分页
+     *
+     * @param queryWrapper 查询条件
+     * @return 分页数据
+     */
     public PageData<D> pageDto(IPage<T> page, Wrapper<T> queryWrapper) {
         IPage<T> iPage = page(page, queryWrapper);
 
@@ -55,39 +64,58 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
         return pageData;
     }
 
-    @Override
+    /**
+     * 列表
+     *
+     * @param params 查询条件
+     * @return 列表数据
+     */
     public List<D> listDto(Map<String, Object> params) {
         List<T> entityList = list(getWrapper("list", params));
 
         return ConvertUtils.sourceToTarget(entityList, currentDtoClass());
     }
 
-    @Override
     public List<?> listDto(Map<String, Object> params, Class<?> target) {
         List<T> entityList = list(getWrapper("list", params));
 
         return ConvertUtils.sourceToTarget(entityList, target);
     }
 
-    @Override
     public List<D> listDto(Wrapper<T> queryWrapper) {
         List<T> entityList = list(queryWrapper);
 
         return ConvertUtils.sourceToTarget(entityList, currentDtoClass());
     }
 
-    @Override
+    /**
+     * 条数
+     *
+     * @param params 查询条件
+     * @return 条数
+     */
     public int count(Map<String, Object> params) {
         return count(getWrapper("count", params));
     }
 
-    @Override
+    /**
+     * 通过id获取结果
+     *
+     * @param id 查询id
+     * @return 结果
+     */
     public D getDtoById(Serializable id) {
         T entity = getById(id);
         return ConvertUtils.sourceToTarget(entity, currentDtoClass());
     }
 
-    @Override
+    /**
+     * 通过id获取获取指定字段的值
+     *
+     * @param id     查询id
+     * @param column 指定字段
+     * @return 结果
+     */
     @SuppressWarnings("unchecked")
     public <E> E getSelectColumnById(Serializable id, String column) {
         if (ObjectUtils.isEmpty(id) || ObjectUtils.isEmpty(column)) {
@@ -103,7 +131,8 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
 
     /**
      * 新增和修改之前的操作
-     * @param dto 保存dto
+     *
+     * @param dto  保存dto
      * @param type 0 保存 1 修改
      */
     protected void beforeSaveOrUpdateDto(D dto, int type) {
@@ -111,9 +140,10 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
 
     /**
      * 新增和修改之前的操作
-     * @param dto 保存dto
+     *
+     * @param dto          保存dto
      * @param toSaveEntity 待保存entity
-     * @param type 0 保存 1 修改
+     * @param type         0 保存 1 修改
      */
     protected void beforeSaveOrUpdateDto(D dto, T toSaveEntity, int type) {
         this.beforeSaveOrUpdateDto(dto, type);
@@ -121,9 +151,10 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
 
     /**
      * 新增和修改之间的操作
-     * @param dto 保存dto
+     *
+     * @param dto           保存dto
      * @param existedEntity 数据库中原记录
-     * @param type 0 保存 1 修改
+     * @param type          0 保存 1 修改
      */
     protected void inSaveOrUpdateDto(D dto, T existedEntity, int type) {
 
@@ -131,16 +162,22 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
 
     /**
      * 新增和修改之后的操作
-     * @param ret 结果
-     * @param dto 保存dto
+     *
+     * @param ret           结果
+     * @param dto           保存dto
      * @param existedEntity 数据库中原记录
-     * @param type 0 保存 1 修改
+     * @param type          0 保存 1 修改
      */
     protected void afterSaveOrUpdateDto(boolean ret, D dto, T existedEntity, int type) {
 
     }
 
-    @Override
+    /**
+     * 插入数据
+     *
+     * @param dto 数据
+     * @return 插入结果
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveDto(D dto) {
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
@@ -150,7 +187,7 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
             throw new OnexException(ErrorCode.ID_NOT_NULL_IN_SAVE);
         }
         // 自定义操作前检查
-        beforeSaveOrUpdateDto(dto, entity,0);
+        beforeSaveOrUpdateDto(dto, entity, 0);
         boolean ret = save(entity);
         // copy主键值到dto
         BeanUtils.copyProperties(entity, dto);
@@ -159,7 +196,12 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
         return ret;
     }
 
-    @Override
+    /**
+     * 单条更新
+     *
+     * @param dto 数据
+     * @return 更新结果
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateDto(D dto) {
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
@@ -185,9 +227,12 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
     }
 
     /**
+     * 批量插入
      * 尽量避免使用批量和saveOrUpdate方法,按照实际需要调用
+     *
+     * @param dtos 数据列表
+     * @return 插入结果
      */
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean saveDtos(List<D> dtos) {
         List<T> entityList = ConvertUtils.sourceToTarget(dtos, currentModelClass());
@@ -196,7 +241,12 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
         return saveBatch(entityList);
     }
 
-    @Override
+    /**
+     * 批量更新
+     *
+     * @param dtos 数据
+     * @return 更新结果
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateDtos(List<D> dtos) {
         List<T> entityList = ConvertUtils.sourceToTarget(dtos, currentModelClass());
@@ -204,9 +254,12 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
     }
 
     /**
+     * 插入或者更新
      * 尽量避免直接使用saveOrUpdate,按照实际需要调用save或者update
+     *
+     * @param dto 数据
+     * @return 操作结果
      */
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateDto(D dto) {
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
@@ -218,7 +271,12 @@ public class CrudServiceImpl<M extends BaseDao<T>, T, D> extends BaseServiceImpl
         }
     }
 
-    @Override
+    /**
+     * 批量插入或者更新
+     *
+     * @param dtos 数据列表
+     * @return 操作结果
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateDtos(List<D> dtos) {
         List<T> entityList = ConvertUtils.sourceToTarget(dtos, currentModelClass());

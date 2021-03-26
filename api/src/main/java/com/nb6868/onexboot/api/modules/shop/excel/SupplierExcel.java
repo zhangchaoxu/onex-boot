@@ -23,7 +23,7 @@ public class SupplierExcel {
     @Excel(name = "排序")
     private Integer sort;
     @Excel(name = "状态", replace = {"未审核_0", "已审核_1"})
-    private Integer status;
+    private Integer state;
     @Excel(name = "简介")
     private String content;
 

@@ -107,7 +107,7 @@ public class ParamController {
     @ApiOperation("导出")
     @LogOperation("导出")
     @RequiresPermissions("sys:param:export")
-    @ApiImplicitParam(name = "code", value = "参数编码", paramType = "query", dataType = "String")
+    @ApiImplicitParam(name = "code", value = "参数编码", paramType = "query", dataType = "String", dataTypeClass = String.class)
     public void export(@ApiIgnore @RequestParam Map<String, Object> params, HttpServletResponse response) {
         List<ParamDTO> list = paramService.listDto(params);
 

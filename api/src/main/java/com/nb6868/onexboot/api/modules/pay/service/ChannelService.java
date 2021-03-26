@@ -1,16 +1,32 @@
 package com.nb6868.onexboot.api.modules.pay.service;
 
-import com.nb6868.onexboot.common.service.CrudService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onexboot.api.modules.pay.dao.ChannelDao;
 import com.nb6868.onexboot.api.modules.pay.dto.ChannelDTO;
 import com.nb6868.onexboot.api.modules.pay.entity.ChannelEntity;
+import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.service.DtoService;
+import com.nb6868.onexboot.common.util.WrapperUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * 支付渠道
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public interface ChannelService extends CrudService<ChannelEntity, ChannelDTO> {
+@Service
+public class ChannelService extends DtoService<ChannelDao, ChannelEntity, ChannelDTO> {
 
+    @Override
+    public QueryWrapper<ChannelEntity> getWrapper(String method, Map<String, Object> params) {
+        return new WrapperUtils<ChannelEntity>(new QueryWrapper<>(), params)
+                .eq("payType", "pay_type")
+                .like("name", "name")
+                .apply(Const.SQL_FILTER)
+                .getQueryWrapper();
+    }
     /**
      * 通过租户id和支付类型获得支付配置
      *
@@ -18,6 +34,8 @@ public interface ChannelService extends CrudService<ChannelEntity, ChannelDTO> {
      * @param payType  支付类型
      * @return 支付渠道
      */
-    ChannelEntity getByTenantIdAndPayType(Long tenantId, String payType);
+    public ChannelEntity getByTenantIdAndPayType(Long tenantId, String payType) {
+        return query().eq("tenant_id", tenantId).eq("pay_type", payType).eq("state", 1).last(Const.LIMIT_ONE).one();
+    }
 
 }
