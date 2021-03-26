@@ -47,15 +47,6 @@ public class ParamService extends DtoService<ParamDao, ParamEntity, ParamDTO> {
     }
 
     /**
-     * 通过code获取参数
-     * @param code
-     * @return
-     */
-    public ParamEntity getByCode(String code) {
-        return query().eq("code", code).last(Const.LIMIT_ONE).one();
-    }
-
-    /**
      * 根据参数编码，获取参数的value值
      *
      * @param code  参数编码

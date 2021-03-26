@@ -158,7 +158,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         if (UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name().equalsIgnoreCase(loginRequest.getType()) || UcConst.LoginTypeEnum.APP_USER_PWD.name().equalsIgnoreCase(loginRequest.getType())) {
             // 帐号密码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.UsernamePasswordGroup.class);
-            user = getByUsername(loginRequest.getUsername());
+            user = getOneByColumn("username", loginRequest.getUsername());
             if (user == null) {
                 // 帐号不存在
                 throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
@@ -172,7 +172,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         }  else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(loginRequest.getType()) || UcConst.LoginTypeEnum.APP_MOBILE_SMS.name().equalsIgnoreCase(loginRequest.getType())) {
             // 手机号验证码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.MobileSmsCodeGroup.class);
-            user = getByMobile(loginRequest.getMobile());
+            user = getOneByColumn("mobile", loginRequest.getMobile());
             if (user == null) {
                 // 帐号不存在
                 throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
@@ -281,7 +281,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         // 操作结果
         int resultCode = 0;
         // 登录用户
-        UserEntity user = getByMobile(request.getMailTo());
+        UserEntity user = getOneByColumn("mobile", request.getMailTo());
         if (user == null) {
             // 帐号不存在
             resultCode = ErrorCode.ACCOUNT_NOT_EXIST;
@@ -308,7 +308,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         }
         return new Result<>().setCode(resultCode);
     }
-
 
     /**
      * 注册
@@ -372,7 +371,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     public UserEntity getByMobile(String mobileArea, String mobile) {
         return query().eq("mobile_area", mobileArea).eq("mobile", mobile).last(Const.LIMIT_ONE).one();
     }
-
 
     /**
      * 修改状态
