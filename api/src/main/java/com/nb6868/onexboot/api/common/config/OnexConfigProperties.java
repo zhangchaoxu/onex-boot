@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.common.config;
 
+import com.nb6868.onexboot.common.config.YamlPropertySourceFactory;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 @ConfigurationProperties(prefix = "onex")
-@PropertySource(value = "classpath:/onex.yml")
+@PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
 public class OnexConfigProperties {
 
     private LoginConfigSource loginConfigSource = LoginConfigSource.PROPS;
