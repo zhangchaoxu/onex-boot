@@ -77,11 +77,8 @@ public class ShiroConfig {
         // 图形验证码
         filterMap.put("/sys/captcha/base64", "anon");
         filterMap.put("/sys/captcha/stream", "anon");
-        // 登录注册
+        // 授权接口
         filterMap.put("/uc/auth/**", "anon");
-        filterMap.put("/uc/user/loginEncrypt", "anon");
-        filterMap.put("/uc/user/login", "anon");
-        filterMap.put("/uc/user/register", "anon");
         filterMap.put("/uc/userOauth/wxMaLoginByCodeAndUserInfo", "anon");
         filterMap.put("/uc/userOauth/wxMaLoginByCode", "anon");
         filterMap.put("/uc/userOauth/wxMaLoginByPhone", "anon");
@@ -90,8 +87,6 @@ public class ShiroConfig {
         filterMap.put("/msg/mailLog/sendCode", "anon");
         // cms开放接口
         filterMap.put("/cms/public/*", "anon");
-        // simple shiro
-        filterMap.put("/sys/param/getLoginAdmin", "simpleShiro");
 
         // 除上述anon外,其它都需要过oauth2
         filterMap.put("/**", "shiro");

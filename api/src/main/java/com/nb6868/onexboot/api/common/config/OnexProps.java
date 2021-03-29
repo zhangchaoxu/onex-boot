@@ -1,6 +1,8 @@
 package com.nb6868.onexboot.api.common.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nb6868.onexboot.api.modules.uc.dingtalk.DingtalkScanProps;
+import com.nb6868.onexboot.api.modules.uc.wx.WxScanProps;
 import com.nb6868.onexboot.common.config.YamlPropertySourceFactory;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -60,11 +62,18 @@ public class OnexProps implements Serializable {
         @ApiModelProperty(value = "微信扫码登录配置")
         private LoginProps wechatScanLoginProps;
 
+        @ApiModelProperty(value = "微信扫码配置内容")
+        private WxScanProps wxScanProps;
+
         @ApiModelProperty(value = "开放钉钉扫码登录")
         private boolean dingtalkScanLogin;
 
         @ApiModelProperty(value = "钉钉扫码登录配置")
         private LoginProps dingtalkScanLoginProps;
 
+        @ApiModelProperty(value = "钉钉扫码配置内容")
+        private DingtalkScanProps dingtalkScanProps;
+
     }
+
 }

@@ -21,7 +21,7 @@ public class TokenTest {
 
     @Test
     public void generateToken() {
-        System.out.println("TokenPolicy=" + onexProperties.getLoginPropsSource().name());
+        System.out.println("TokenPolicy=" + onexProperties.getLoginAdminProps().getSource());
     }
 
     @Test

@@ -5,10 +5,11 @@ import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.DataFilter;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
-import com.nb6868.onexboot.api.common.util.AESUtils;
 import com.nb6868.onexboot.api.common.util.ExcelUtils;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.dto.*;
+import com.nb6868.onexboot.api.modules.uc.dto.ChangePasswordByMailCodeRequest;
+import com.nb6868.onexboot.api.modules.uc.dto.PasswordDTO;
+import com.nb6868.onexboot.api.modules.uc.dto.UserDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.excel.UserExcel;
 import com.nb6868.onexboot.api.modules.uc.service.DeptService;
@@ -19,7 +20,6 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.*;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.HttpContextUtils;
-import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.bcrypt.BCryptPasswordEncoder;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.ValidatorUtils;
@@ -28,7 +28,6 @@ import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import com.nb6868.onexboot.common.validator.group.UpdateGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.SneakyThrows;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -40,8 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -169,16 +166,6 @@ public class UserController {
         return new Result<>();
     }
 
-    /**
-     * 注册
-     */
-    @PostMapping("register")
-    @ApiOperation(value = "注册")
-    @AccessControl
-    public Result<?> register(@Validated @RequestBody RegisterRequest request) {
-        return userService.register(request);
-    }
-
     @PostMapping("logout")
     @ApiOperation(value = "退出")
     @LogLogin(type = "LOGOUT")
@@ -202,7 +189,7 @@ public class UserController {
     @ApiOperation("导入")
     @LogOperation("导入")
     @RequiresPermissions("uc:user:import")
-    public Result<?> importExcel(@RequestParam("file") MultipartFile file, @RequestParam Long deptId) {
+    public Result<?> importExcel(@RequestParam("file") MultipartFile file, @RequestParam Long deptId, @RequestParam List<Long> roleIds) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         ImportParams params = new ImportParams();
