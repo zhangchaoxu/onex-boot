@@ -17,9 +17,11 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.service.DtoService;
-import com.nb6868.onexboot.common.util.*;
+import com.nb6868.onexboot.common.util.JacksonUtils;
+import com.nb6868.onexboot.common.util.ParamUtils;
+import com.nb6868.onexboot.common.util.PasswordUtils;
+import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.util.bcrypt.BCryptPasswordEncoder;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,80 +144,57 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 通过短信验证码修改密码
      */
-    public Result<?> changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
+    public boolean changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
         OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
         AssertUtils.isFalse(loginAdminProps.isForgetPassword(), "未开放修改密码功能");
 
-        // 操作结果
-        int resultCode = 0;
         // 登录用户
         UserEntity user = getOneByColumn("mobile", request.getMailTo());
-        if (user == null) {
-            // 帐号不存在
-            resultCode = ErrorCode.ACCOUNT_NOT_EXIST;
-        } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
-            // 帐号锁定
-            resultCode = ErrorCode.ACCOUNT_DISABLE;
-        } else {
-            //  校验验证码
-            MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_CHANGE_PASSWORD, user.getMobile());
-            if (null == lastSmsLog || !request.getCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString())) {
-                // 验证码错误,找不到验证码
-                resultCode = ErrorCode.SMS_CODE_ERROR;
-            } else {
-                // 验证码正确,校验有效时间
-                if (DateUtils.timeDiff(lastSmsLog.getCreateTime()) > 15 * 60 * 1000) {
-                    resultCode = ErrorCode.SMS_CODE_EXPIRED;
-                } else {
-                    // 验证成功,修改密码
-                    updatePassword(user.getId(), request.getPassword());
-                }
-                // 将短信消费掉
-                mailLogService.consumeById(lastSmsLog.getId());
-            }
-        }
-        return new Result<>().setCode(resultCode);
+        // 帐号不存在
+        AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+        // 帐号已锁定
+        AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+        //  校验验证码
+        MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_CHANGE_PASSWORD, user.getMobile());
+        // 验证码错误,找不到验证码
+        AssertUtils.isTrue(null == lastSmsLog || !request.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString()), ErrorCode.SMS_CODE_ERROR);
+        // 校验过期时间
+        AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
+        // 将短信消费掉
+        mailLogService.consumeById(lastSmsLog.getId());
+        // 验证成功,修改密码
+        return updatePassword(user.getId(), request.getPassword());
     }
 
     /**
      * 注册
      */
-    public Result<?> register(RegisterRequest request) {
+    public UserEntity register(RegisterRequest request) {
         OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
         AssertUtils.isFalse(loginAdminProps.isRegister(), "未开放注册");
 
-        // 操作结果
-        int resultCode = 0;
         // 登录用户
-        if (hasDuplicated(null, "mobile", request.getMobile())) {
-            return new Result<>().error(ErrorCode.HAS_DUPLICATED_RECORD, "手机号已注册");
-        } else if (hasDuplicated(null, "username", request.getUsername())) {
-            return new Result<>().error(ErrorCode.HAS_DUPLICATED_RECORD, "用户名已注册");
-        } else {
-            //  校验验证码
-            MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_REGISTER, request.getMobile());
-            if (null == lastSmsLog || !request.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString())) {
-                // 验证码错误,找不到验证码
-                resultCode = ErrorCode.SMS_CODE_ERROR;
-            } else {
-                // 验证码正确
-                // 校验过期时间
-                if (lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date())) {
-                    resultCode = ErrorCode.SMS_CODE_EXPIRED;
-                } else {
-                    // 验证成功,创建用户
-                    UserEntity entity = new UserEntity();
-                    entity.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
-                    entity.setUsername(request.getUsername());
-                    entity.setMobile(request.getMobile());
-                    entity.setMobileArea(request.getMobileArea());
-                    save(entity);
-                }
-                // 将短信消费掉
-                mailLogService.consumeById(lastSmsLog.getId());
-            }
-            return new Result<>().setCode(resultCode);
-        }
+        AssertUtils.isTrue(hasDuplicated(null, "mobile", request.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已注册");
+        AssertUtils.isTrue(hasDuplicated(null, "username", request.getMobile()), ErrorCode.ERROR_REQUEST, "用户名已注册");
+        //  校验验证码
+        MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_REGISTER, request.getMobile());
+        // 验证码错误,找不到验证码
+        AssertUtils.isTrue(null == lastSmsLog || !request.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString()), ErrorCode.SMS_CODE_ERROR);
+        // 校验过期时间
+        AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
+        // 验证成功,创建用户
+        // 将短信消费掉
+        mailLogService.consumeById(lastSmsLog.getId());
+        // 验证成功,创建用户
+        UserEntity entity = new UserEntity();
+
+        entity.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        entity.setUsername(request.getUsername());
+        entity.setMobile(request.getMobile());
+        entity.setMobileArea(request.getMobileArea());
+        save(entity);
+
+        return entity;
     }
 
     /**

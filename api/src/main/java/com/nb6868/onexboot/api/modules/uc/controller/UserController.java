@@ -124,7 +124,8 @@ public class UserController {
     @ApiOperation(value = "通过短信验证码修改密码")
     @AccessControl
     public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordByMailCodeRequest request) {
-        return userService.changePasswordBySmsCode(request);
+        boolean ret = userService.changePasswordBySmsCode(request);
+        return new Result<>().success();
     }
 
     @PostMapping("save")

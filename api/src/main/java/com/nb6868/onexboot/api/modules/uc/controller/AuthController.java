@@ -79,7 +79,17 @@ public class AuthController {
     @ApiOperation(value = "登录")
     @LogLogin
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
-        return new Result<>().success(authService.login(loginRequest));
+        // 获得登录配置
+        LoginProps loginProps = authService.getLoginProps(loginRequest.getType());
+        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
+
+        UserEntity user = authService.login(loginRequest, loginProps);
+
+        // 登录成功
+        Kv kv = Kv.init();
+        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(kv);
     }
 
     /**
@@ -97,7 +107,7 @@ public class AuthController {
         LoginRequest loginRequest = JacksonUtils.jsonToPojo(loginRaw, LoginRequest.class);
         // 效验数据
         ValidatorUtils.validateEntity(loginRequest, DefaultGroup.class);
-        return new Result<>().success(authService.login(loginRequest));
+        return login(loginRequest);
     }
 
     /**
@@ -106,7 +116,9 @@ public class AuthController {
     @PostMapping("register")
     @ApiOperation(value = "注册")
     public Result<?> register(@Validated @RequestBody RegisterRequest request) {
-        return userService.register(request);
+        UserEntity userEntity = userService.register(request);
+        UserDTO userDTO = ConvertUtils.sourceToTarget(userEntity, UserDTO.class);
+        return new Result<>().success(userDTO);
     }
 
     /**
