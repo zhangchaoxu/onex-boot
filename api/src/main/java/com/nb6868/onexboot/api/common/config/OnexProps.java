@@ -29,6 +29,20 @@ public class OnexProps implements Serializable {
      * 管理后台登录配置
      */
     private final LoginAdminProps loginAdminProps = new LoginAdminProps();
+    /**
+     * 前端应用登录配置
+     */
+    private final LoginAppProps loginAppProps = new LoginAppProps();
+
+    @Data
+    @NoArgsConstructor
+    public static class LoginAppProps implements Serializable {
+
+        @JsonIgnore
+        @ApiModelProperty(value = "登录配置源")
+        private LoginPropsSource source = LoginPropsSource.PROPS;
+
+    }
 
     @Data
     @NoArgsConstructor
