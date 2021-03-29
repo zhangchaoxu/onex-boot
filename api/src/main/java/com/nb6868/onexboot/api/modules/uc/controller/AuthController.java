@@ -65,7 +65,7 @@ public class AuthController {
     @Autowired
     private UserOauthService userOauthService;
     @Autowired
-    private ShiroService shiroService;
+    private AuthService shiroService;
     @Autowired
     private WxApiService wxApiService;
 

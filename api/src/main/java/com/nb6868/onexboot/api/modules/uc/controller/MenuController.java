@@ -7,7 +7,7 @@ import com.nb6868.onexboot.api.modules.uc.dto.MenuTreeDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onexboot.api.modules.uc.service.MenuService;
 import com.nb6868.onexboot.api.modules.uc.service.MenuScopeService;
-import com.nb6868.onexboot.api.modules.uc.service.ShiroService;
+import com.nb6868.onexboot.api.modules.uc.service.AuthService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.exception.ErrorCode;
@@ -48,7 +48,7 @@ public class MenuController {
     @Autowired
     MenuScopeService menuScopeService;
     @Autowired
-    ShiroService shiroService;
+    AuthService shiroService;
 
     @GetMapping("scope")
     @ApiOperation("权限范围")

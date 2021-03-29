@@ -4,7 +4,7 @@ import com.nb6868.onexboot.api.common.config.LoginProps;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
-import com.nb6868.onexboot.api.modules.uc.service.ShiroService;
+import com.nb6868.onexboot.api.modules.uc.service.AuthService;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
@@ -30,7 +30,7 @@ import java.util.Set;
 public class ShiroRealm extends AuthorizingRealm {
 
     @Autowired
-    private ShiroService shiroService;
+    private AuthService shiroService;
 
     /**
      * 必须重写此方法，不然Shiro会报错

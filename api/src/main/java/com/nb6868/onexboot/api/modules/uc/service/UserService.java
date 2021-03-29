@@ -5,7 +5,6 @@ import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
-import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dao.UserDao;
 import com.nb6868.onexboot.api.modules.uc.dto.ChangePasswordByMailCodeRequest;
@@ -40,7 +39,7 @@ import java.util.*;
 public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     @Autowired
-    private ShiroService shiroService;
+    private AuthService shiroService;
     @Autowired
     private TokenService tokenService;
     @Autowired
