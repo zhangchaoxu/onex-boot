@@ -29,9 +29,9 @@ public class ParamEntity extends BaseEntity {
      */
     private String content;
     /**
-     * 内容私有
+     * 实例化类
      */
-    private String contentPri;
+    private String clazz;
     /**
      * 备注
      */

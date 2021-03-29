@@ -79,10 +79,6 @@ public class ShiroConfig {
         filterMap.put("/sys/captcha/stream", "anon");
         // 授权接口
         filterMap.put("/uc/auth/**", "anon");
-        filterMap.put("/uc/userOauth/wxMaLoginByCodeAndUserInfo", "anon");
-        filterMap.put("/uc/userOauth/wxMaLoginByCode", "anon");
-        filterMap.put("/uc/userOauth/wxMaLoginByPhone", "anon");
-        filterMap.put("/uc/userOauth/dingtalkLoginByCode", "anon");
         // 发送消息
         filterMap.put("/msg/mailLog/sendCode", "anon");
         // cms开放接口

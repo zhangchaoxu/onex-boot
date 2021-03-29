@@ -27,8 +27,8 @@ public class ParamDTO extends BaseDTO {
     @ApiModelProperty(value = "内容")
     private String content;
 
-    @ApiModelProperty(value = "内容私有")
-    private String contentPri;
+    @ApiModelProperty(value = "实例化类")
+    private String clazz;
 
     @ApiModelProperty(value = "备注")
     private String remark;
