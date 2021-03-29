@@ -4,10 +4,10 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
-import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
+import com.nb6868.onexboot.api.common.config.LoginProps;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dingtalk.DingTalkApi;
@@ -15,7 +15,7 @@ import com.nb6868.onexboot.api.modules.uc.dingtalk.GetUserInfoByCodeResponse;
 import com.nb6868.onexboot.api.modules.uc.dto.*;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
-import com.nb6868.onexboot.api.modules.uc.service.AuthService;
+import com.nb6868.onexboot.api.modules.uc.service.ShiroService;
 import com.nb6868.onexboot.api.modules.uc.service.TokenService;
 import com.nb6868.onexboot.api.modules.uc.service.UserOauthService;
 import com.nb6868.onexboot.api.modules.uc.service.UserService;
@@ -56,7 +56,7 @@ import java.util.Map;
 public class UserOauthController {
 
     @Autowired
-    AuthService authService;
+    ShiroService shiroService;
     @Autowired
     UserOauthService userOauthService;
     @Autowired
@@ -144,7 +144,7 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> wxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
-        OnexProps.LoginProps loginProps = authService.getLoginProps(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_USER_INFO");
+        LoginProps loginProps = shiroService.getLoginProps(request.getParamCode());
         AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录
@@ -188,7 +188,7 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> wxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
-        OnexProps.LoginProps loginProps = authService.getLoginProps(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_CODE");
+        LoginProps loginProps = shiroService.getLoginProps(request.getParamCode());
         AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
@@ -224,7 +224,7 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> wxMaLoginByPhone(@Validated @RequestBody OauthWxMaLoginByCodeAndPhone request) throws WxErrorException {
-        OnexProps.LoginProps loginProps = authService.getLoginProps(UcConst.LOGIN_TYPE_PREFIX + "WECHAT_MA_PHONE");
+        LoginProps loginProps = shiroService.getLoginProps(request.getParamCode());
         AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
@@ -260,7 +260,7 @@ public class UserOauthController {
     @LogLogin
     @AccessControl
     public Result<?> dingtalkLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
-        OnexProps.LoginProps loginProps = authService.getLoginProps(UcConst.LOGIN_TYPE_PREFIX + "ADMIN_DINGTALK_SCAN");
+        LoginProps loginProps = shiroService.getLoginProps(request.getParamCode());
         AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 1. 根据sns临时授权码获取用户信息

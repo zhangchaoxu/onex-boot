@@ -170,36 +170,6 @@ public class UserController {
     }
 
     /**
-     * 加密登录
-     * 逻辑同login接口
-     */
-    @SneakyThrows
-    @PostMapping("loginEncrypt")
-    @ApiOperation(value = "加密登录")
-    @LogLogin
-    @AccessControl
-    public Result<?> loginEncrypt(@RequestBody String loginEncrypted) {
-        // 密文转json明文
-        String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, StandardCharsets.UTF_8.name()));
-        // json明文转实体
-        LoginRequest loginRequest = JacksonUtils.jsonToPojo(loginRaw, LoginRequest.class);
-        // 效验数据
-        ValidatorUtils.validateEntity(loginRequest, DefaultGroup.class);
-        return new Result<>().success(userService.login(loginRequest));
-    }
-
-    /**
-     * 登录
-     */
-    @PostMapping("login")
-    @ApiOperation(value = "登录")
-    @LogLogin
-    @AccessControl
-    public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
-        return new Result<>().success(userService.login(loginRequest));
-    }
-
-    /**
      * 注册
      */
     @PostMapping("register")
