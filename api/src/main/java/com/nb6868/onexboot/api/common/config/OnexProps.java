@@ -63,7 +63,7 @@ public class OnexProps implements Serializable {
         private LoginProps wechatScanLoginProps;
 
         @ApiModelProperty(value = "微信扫码配置内容")
-        private WxScanProps wxScanProps;
+        private WxScanProps wechatScanProps;
 
         @ApiModelProperty(value = "开放钉钉扫码登录")
         private boolean dingtalkScanLogin;

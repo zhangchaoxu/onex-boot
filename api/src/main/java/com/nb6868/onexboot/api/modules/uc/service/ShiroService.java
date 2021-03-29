@@ -2,13 +2,16 @@ package com.nb6868.onexboot.api.modules.uc.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.config.LoginProps;
+import com.nb6868.onexboot.api.common.config.LoginPropsSource;
 import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
+import com.nb6868.onexboot.api.modules.uc.dingtalk.DingtalkScanProps;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
+import com.nb6868.onexboot.api.modules.uc.wx.WxScanProps;
 import com.nb6868.onexboot.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,7 +115,50 @@ public class ShiroService {
         if (UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name().equalsIgnoreCase(type)) {
             return onexProps.getLoginAdminProps().getUsernamePasswordLoginProps();
         }
-        return new LoginProps();
+        if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(type)) {
+            return onexProps.getLoginAdminProps().getMobileSmscodeLoginProps();
+        }
+        if (UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name().equalsIgnoreCase(type)) {
+            return onexProps.getLoginAdminProps().getDingtalkScanLoginProps();
+        }
+        if (UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name().equalsIgnoreCase(type)) {
+            return onexProps.getLoginAdminProps().getWechatScanLoginProps();
+        }
+        return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginProps.class);
+    }
+
+    /**
+     * 获得后台登录配置
+     */
+    public OnexProps.LoginAdminProps getLoginAdminProps() {
+        OnexProps.LoginAdminProps loginAdminProps = onexProps.getLoginAdminProps();
+        if (loginAdminProps.getSource() == LoginPropsSource.DB) {
+            loginAdminProps = paramService.getContentObject(UcConst.LOGIN_ADMIN, OnexProps.LoginAdminProps.class);
+        }
+        return loginAdminProps;
+    }
+
+    /**
+     * 获得详细的后台登录配置
+     */
+    public OnexProps.LoginAdminProps getLoginAdminDetailProps() {
+        OnexProps.LoginAdminProps loginAdminProps = getLoginAdminProps();
+        // 各个登录途径的登录配置,需要确认是否从db读取
+        if (loginAdminProps.isUsernamePasswordLogin() && loginAdminProps.getUsernamePasswordLoginProps().getSource() == LoginPropsSource.DB) {
+            loginAdminProps.setUsernamePasswordLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name(), LoginProps.class));
+        }
+        if (loginAdminProps.isMobileSmscodeLogin() && loginAdminProps.getMobileSmscodeLoginProps().getSource() == LoginPropsSource.DB) {
+            loginAdminProps.setMobileSmscodeLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name(), LoginProps.class));
+        }
+        if (loginAdminProps.isWechatScanLogin() && loginAdminProps.getWechatScanLoginProps().getSource() == LoginPropsSource.DB) {
+            loginAdminProps.setWechatScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name(), LoginProps.class));
+            loginAdminProps.setWechatScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name() + "_CONFIG", WxScanProps.class));
+        }
+        if (loginAdminProps.isDingtalkScanLogin() && loginAdminProps.getDingtalkScanLoginProps().getSource() == LoginPropsSource.DB) {
+            loginAdminProps.setDingtalkScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name(), LoginProps.class));
+            loginAdminProps.setDingtalkScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name() + "_CONFIG", DingtalkScanProps.class));
+        }
+        return loginAdminProps;
     }
 
 }

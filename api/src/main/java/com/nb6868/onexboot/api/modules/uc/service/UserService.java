@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
@@ -41,6 +42,8 @@ import java.util.Map;
 @Service
 public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
+    @Autowired
+    private ShiroService shiroService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -146,10 +149,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 通过短信验证码修改密码
      */
     public Result<?> changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
-        Map<String, Object> loginAdminConfig = paramService.getContentMap(UcConst.LOGIN_ADMIN);
-        AssertUtils.isNull(loginAdminConfig, "未找到后台登录配置");
-
-        AssertUtils.isFalse((boolean) loginAdminConfig.get("forgetPassword"), "未开放修改密码功能");
+        OnexProps.LoginAdminProps loginAdminProps = shiroService.getLoginAdminProps();
+        AssertUtils.isFalse(loginAdminProps.isForgetPassword(), "未开放修改密码功能");
 
         // 操作结果
         int resultCode = 0;
@@ -186,10 +187,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 注册
      */
     public Result<?> register(RegisterRequest request) {
-        Map<String, Object> loginAdminConfig = paramService.getContentMap(UcConst.LOGIN_ADMIN);
-        AssertUtils.isNull(loginAdminConfig, "未找到后台登录配置");
-
-        AssertUtils.isFalse((boolean) loginAdminConfig.get("register"), "未开放注册");
+        OnexProps.LoginAdminProps loginAdminProps = shiroService.getLoginAdminProps();
+        AssertUtils.isFalse(loginAdminProps.isRegister(), "未开放注册");
 
         // 操作结果
         int resultCode = 0;
@@ -222,13 +221,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
             }
             return new Result<>().setCode(resultCode);
         }
-    }
-
-    /**
-     * 通过用户名获取用户
-     */
-    public UserEntity getByUsername(String username) {
-        return query().eq("username", username).last(Const.LIMIT_ONE).one();
     }
 
     /**

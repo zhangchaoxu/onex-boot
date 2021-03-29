@@ -4,21 +4,17 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.config.LoginProps;
-import com.nb6868.onexboot.api.common.config.LoginPropsSource;
 import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.common.util.AESUtils;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
-import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.dingtalk.DingtalkScanProps;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginRequest;
 import com.nb6868.onexboot.api.modules.uc.dto.RegisterRequest;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onexboot.api.modules.uc.service.*;
-import com.nb6868.onexboot.api.modules.uc.wx.WxScanProps;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Kv;
@@ -51,10 +47,6 @@ import java.util.Date;
 public class AuthController {
 
     @Autowired
-    private OnexProps onexProps;
-    @Autowired
-    private ParamService paramService;
-    @Autowired
     private TokenService tokenService;
     @Autowired
     private MailLogService mailLogService;
@@ -70,26 +62,7 @@ public class AuthController {
     @GetMapping("getLoginAdminProps")
     @ApiOperation("获得后台登录配置")
     public Result<?> getLoginAdminProps() {
-        // 后台配置
-        OnexProps.LoginAdminProps loginAdminProps = onexProps.getLoginAdminProps();
-        if (loginAdminProps.getSource() == LoginPropsSource.DB) {
-            loginAdminProps = paramService.getContentObject(UcConst.LOGIN_ADMIN, OnexProps.LoginAdminProps.class);
-        }
-        // 各个登录途径的登录配置,需要确认是否从db读取
-        if (loginAdminProps.isUsernamePasswordLogin() && loginAdminProps.getUsernamePasswordLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setUsernamePasswordLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name(), LoginProps.class));
-        }
-        if (loginAdminProps.isMobileSmscodeLogin() && loginAdminProps.getMobileSmscodeLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setMobileSmscodeLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name(), LoginProps.class));
-        }
-        if (loginAdminProps.isWechatScanLogin() && loginAdminProps.getWechatScanLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setWechatScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name(), LoginProps.class));
-            loginAdminProps.setWxScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name() + "_CONFIG", WxScanProps.class));
-        }
-        if (loginAdminProps.isDingtalkScanLogin() && loginAdminProps.getDingtalkScanLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setDingtalkScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name(), LoginProps.class));
-            loginAdminProps.setDingtalkScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name() + "_CONFIG", DingtalkScanProps.class));
-        }
+        OnexProps.LoginAdminProps loginAdminProps = shiroService.getLoginAdminDetailProps();
         return new Result<>().success(loginAdminProps);
     }
 
