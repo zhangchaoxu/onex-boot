@@ -38,12 +38,10 @@ public class ParamService extends DtoService<ParamDao, ParamEntity, ParamDTO> {
         super.afterSaveOrUpdateDto(ret, dto, existedEntity, type);
         // 删除原缓存
         if (existedEntity != null) {
-            paramCache.evictIfPresent("content_" + existedEntity.getCode());
-            paramCache.evictIfPresent("content_combine_" + existedEntity.getCode());
+            paramCache.evictIfPresent(existedEntity.getCode());
         }
         // 插入新缓存
-        paramCache.put("content_" + dto.getCode(), dto.getContent());
-        paramCache.put("content_combine_" + dto.getCode(), JacksonUtils.mapToJson(JacksonUtils.combineJson(dto.getContentPri(), dto.getContent()), ""));
+        paramCache.put(dto.getCode(), dto.getContent());
     }
 
     /**
@@ -53,10 +51,10 @@ public class ParamService extends DtoService<ParamDao, ParamEntity, ParamDTO> {
      */
     public String getContent(String code) {
         // 先从缓存读取
-        String content = paramCache.get("content_" + code, String.class);
+        String content = paramCache.get(code, String.class);
         if (ObjectUtils.isEmpty(content)) {
             content = query().select("content").eq("code",code).last(Const.LIMIT_ONE).oneOpt().map(ParamEntity::getContent).orElse(null);
-            paramCache.put("content_" + code, content);
+            paramCache.put(code, content);
         }
         return content;
     }
@@ -68,37 +66,6 @@ public class ParamService extends DtoService<ParamDao, ParamEntity, ParamDTO> {
      */
     public Map<String, Object> getContentMap(String code) {
         return JacksonUtils.jsonToMap(getContent(code));
-    }
-
-    /**
-     * 根据参数编码，获取合并后的map
-     *
-     * @param code  参数编码
-     */
-    public Map<String, Object> getCombineContentMap(String code) {
-        // 先从缓存读取
-        String contentCombine = paramCache.get("content_combine_" + code, String.class);
-        if (ObjectUtils.isEmpty(contentCombine)) {
-            ParamEntity entity = query().select("content", "content_pri").eq("code",code).last(Const.LIMIT_ONE).one();
-            if (entity == null) {
-                return null;
-            } else {
-                Map<String, Object> map = JacksonUtils.combineJson(entity.getContentPri(), entity.getContent());
-                paramCache.put("content_combine_" + code, JacksonUtils.pojoToJson(map));
-                return map;
-            }
-        } else {
-            return JacksonUtils.jsonToMap(contentCombine);
-        }
-    }
-
-    /**
-     * 根据参数编码，获取合并后的Object对象
-     * @param code  参数编码
-     * @param clazz  Object对象
-     */
-    public <T> T getCombineContentObject(String code, Class<T> clazz) {
-        return JacksonUtils.mapToPojo(getCombineContentMap(code), clazz);
     }
 
     /**
@@ -119,8 +86,7 @@ public class ParamService extends DtoService<ParamDao, ParamEntity, ParamDTO> {
         if (ObjectUtils.isEmpty(key)) {
             paramCache.invalidate();
         } else {
-            paramCache.evictIfPresent("content_" + key);
-            paramCache.evictIfPresent("content_combine_" + key);
+            paramCache.evictIfPresent(key);
         }
         return true;
     }

@@ -6,8 +6,6 @@ import com.nb6868.onexboot.api.common.util.ExcelUtils;
 import com.nb6868.onexboot.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onexboot.api.modules.sys.excel.ParamExcel;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
-import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
