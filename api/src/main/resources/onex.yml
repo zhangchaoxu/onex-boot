@@ -1,21 +1,12 @@
-# onex 配置
+# onex 配置,详见 OnexProps
 onex:
   # 后台登录
-  login-props:
-    # 配置源 支持props和db
+  login-admin-props:
+    # 配置源
     source: props
-    # 多端登录
-    multi-login: true
-    # token生成策略 支持uuid和jwt
-    token-policy: uuid
-    # token有效秒
-    token-expire: 604800
-    # 是否自动延期
-    token-renewal: true
-    # 基于角色分配
-    role-base: false
-    # 基于权限分配
-    permission-base: true
-    # 验证码
-    captcha: false
-    magic-captcha:
+    # 开放帐号登录
+    username-password-login: true
+    username-password-login-props:
+      source: props
+      type: ADMIN_USERNAME_PASSWORD
+      captcha: true

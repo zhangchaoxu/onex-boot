@@ -12,10 +12,13 @@ import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
+import com.nb6868.onexboot.api.modules.uc.dingtalk.DingtalkScanProps;
 import com.nb6868.onexboot.api.modules.uc.dto.LoginRequest;
+import com.nb6868.onexboot.api.modules.uc.dto.RegisterRequest;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onexboot.api.modules.uc.service.*;
+import com.nb6868.onexboot.api.modules.uc.wx.WxScanProps;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Kv;
@@ -37,7 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
- * 认证
+ * 认证授权相关接口
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -54,8 +57,6 @@ public class AuthController {
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private AuthService authService;
-    @Autowired
     private MailLogService mailLogService;
     @Autowired
     private UserService userService;
@@ -66,7 +67,7 @@ public class AuthController {
     @Autowired
     private ShiroService shiroService;
 
-    @GetMapping("getLoginAdmin")
+    @GetMapping("getLoginAdminProps")
     @ApiOperation("获得后台登录配置")
     public Result<?> getLoginAdminProps() {
         // 后台配置
@@ -83,9 +84,11 @@ public class AuthController {
         }
         if (loginAdminProps.isWechatScanLogin() && loginAdminProps.getWechatScanLoginProps().getSource() == LoginPropsSource.DB) {
             loginAdminProps.setWechatScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name(), LoginProps.class));
+            loginAdminProps.setWxScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name() + "_CONFIG", WxScanProps.class));
         }
         if (loginAdminProps.isDingtalkScanLogin() && loginAdminProps.getDingtalkScanLoginProps().getSource() == LoginPropsSource.DB) {
             loginAdminProps.setDingtalkScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name(), LoginProps.class));
+            loginAdminProps.setDingtalkScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name() + "_CONFIG", DingtalkScanProps.class));
         }
         return new Result<>().success(loginAdminProps);
     }
@@ -232,6 +235,15 @@ public class AuthController {
         // 效验数据
         ValidatorUtils.validateEntity(loginRequest, DefaultGroup.class);
         return new Result<>().success(login(loginRequest));
+    }
+
+    /**
+     * 注册
+     */
+    @PostMapping("register")
+    @ApiOperation(value = "注册")
+    public Result<?> register(@Validated @RequestBody RegisterRequest request) {
+        return userService.register(request);
     }
 
 }
