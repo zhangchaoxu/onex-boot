@@ -133,16 +133,21 @@ public class AuthService {
      * @return 登录配置
      */
     public LoginProps getLoginProps(String type) {
-        if (UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name().equalsIgnoreCase(type)) {
+        if (UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name().equalsIgnoreCase(type)
+                && null != onexProps.getLoginAdminProps().getUsernamePasswordLoginProps()
+                && onexProps.getLoginAdminProps().getUsernamePasswordLoginProps().getSource() == LoginPropsSource.PROPS) {
             return onexProps.getLoginAdminProps().getUsernamePasswordLoginProps();
-        }
-        if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(type)) {
+        } else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(type)
+                && null != onexProps.getLoginAdminProps().getMobileSmscodeLoginProps()
+                && onexProps.getLoginAdminProps().getMobileSmscodeLoginProps().getSource() == LoginPropsSource.PROPS) {
             return onexProps.getLoginAdminProps().getMobileSmscodeLoginProps();
-        }
-        if (UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name().equalsIgnoreCase(type)) {
+        } else if (UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name().equalsIgnoreCase(type)
+                && null != onexProps.getLoginAdminProps().getDingtalkScanLoginProps()
+                && onexProps.getLoginAdminProps().getDingtalkScanLoginProps().getSource() == LoginPropsSource.PROPS) {
             return onexProps.getLoginAdminProps().getDingtalkScanLoginProps();
-        }
-        if (UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name().equalsIgnoreCase(type)) {
+        } else if (UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name().equalsIgnoreCase(type)
+                && null != onexProps.getLoginAdminProps().getWechatScanLoginProps()
+                && onexProps.getLoginAdminProps().getWechatScanLoginProps().getSource() == LoginPropsSource.PROPS) {
             return onexProps.getLoginAdminProps().getWechatScanLoginProps();
         }
         return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginProps.class);
@@ -192,7 +197,7 @@ public class AuthService {
 
     public Kv login(LoginRequest loginRequest) {
         // 获得登录配置
-        LoginProps loginProps = getLoginProps(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType());
+        LoginProps loginProps = getLoginProps(loginRequest.getType());
         AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 校验验证码
@@ -218,7 +223,7 @@ public class AuthService {
                 // 密码不匹配
                 throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
             }
-        }  else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(loginRequest.getType()) || UcConst.LoginTypeEnum.APP_MOBILE_SMS.name().equalsIgnoreCase(loginRequest.getType())) {
+        } else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(loginRequest.getType()) || UcConst.LoginTypeEnum.APP_MOBILE_SMS.name().equalsIgnoreCase(loginRequest.getType())) {
             // 手机号验证码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.MobileSmsCodeGroup.class);
             user = userService.getOneByColumn("mobile", loginRequest.getMobile());

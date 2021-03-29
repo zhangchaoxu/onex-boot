@@ -9,4 +9,4 @@ onex:
     username-password-login-props:
       source: props
       type: ADMIN_USERNAME_PASSWORD
-      captcha: true
+      captcha: false
