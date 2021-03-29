@@ -127,6 +127,14 @@ public class ShiroService {
         return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginProps.class);
     }
 
+    public OnexProps.LoginAppProps getLoginAppProps() {
+        OnexProps.LoginAppProps loginAppProps = onexProps.getLoginAppProps();
+        if (loginAppProps.getSource() == LoginPropsSource.DB) {
+            loginAppProps = paramService.getContentObject(UcConst.LOGIN_APP, OnexProps.LoginAppProps.class);
+        }
+        return loginAppProps;
+    }
+
     /**
      * 获得后台登录配置
      */

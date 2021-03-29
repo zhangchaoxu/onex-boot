@@ -44,8 +44,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private ParamService paramService;
-    @Autowired
     private RoleUserService roleUserService;
     @Autowired
     private DeptService deptService;

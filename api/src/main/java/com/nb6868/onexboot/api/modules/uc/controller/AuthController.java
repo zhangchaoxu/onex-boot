@@ -66,6 +66,13 @@ public class AuthController {
         return new Result<>().success(loginAdminProps);
     }
 
+    @GetMapping("getLoginAppProps")
+    @ApiOperation("获得前台登录配置")
+    public Result<?> getLoginAppProps() {
+        OnexProps.LoginAppProps loginAppProps = shiroService.getLoginAppProps();
+        return new Result<>().success(loginAppProps);
+    }
+
     /**
      * 登录
      */

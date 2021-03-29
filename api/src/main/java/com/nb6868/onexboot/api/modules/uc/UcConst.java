@@ -21,6 +21,11 @@ public interface UcConst {
     String LOGIN_ADMIN = "LOGIN_ADMIN";
 
     /**
+     * 前台登录配置
+     */
+    String LOGIN_APP = "LOGIN_APP";
+
+    /**
      * 登录配置前缀
      */
     String LOGIN_TYPE_PREFIX = "LOGIN_";
