@@ -205,10 +205,10 @@ public class UserController {
             if (validateResult.isSuccess()) {
                 // 额外赋值
                 dto.setDeptId(deptId);
+                dto.setRoleIdList(roleIds);
                 dto.setState(1);
                 try {
                     userService.saveDto(dto);
-                    // todo 插入用户与角色关系表
                     result.add(new MsgResult().success("导入成功"));
                 } catch (Exception e) {
                     result.add(new MsgResult().error(ErrorCode.ERROR_REQUEST, e.getMessage()));

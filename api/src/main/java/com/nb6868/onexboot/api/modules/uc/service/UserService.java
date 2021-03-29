@@ -29,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 用户
@@ -204,8 +201,9 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
                 // 验证码错误,找不到验证码
                 resultCode = ErrorCode.SMS_CODE_ERROR;
             } else {
-                // 验证码正确,校验有效时间
-                if (DateUtils.timeDiff(lastSmsLog.getCreateTime()) > 15 * 60 * 1000) {
+                // 验证码正确
+                // 校验过期时间
+                if (lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date())) {
                     resultCode = ErrorCode.SMS_CODE_EXPIRED;
                 } else {
                     // 验证成功,创建用户
