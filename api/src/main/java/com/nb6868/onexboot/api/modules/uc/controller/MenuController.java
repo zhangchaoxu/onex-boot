@@ -48,7 +48,7 @@ public class MenuController {
     @Autowired
     MenuScopeService menuScopeService;
     @Autowired
-    AuthService shiroService;
+    AuthService authService;
 
     @GetMapping("scope")
     @ApiOperation("权限范围")
@@ -76,7 +76,7 @@ public class MenuController {
         // 将菜单列表转成菜单树
         List<MenuTreeDTO> menuTree = TreeUtils.build(menuList);
         // 获取角色列表
-        Set<String> roles = shiroService.getUserRoles(user);
+        Set<String> roles = authService.getUserRoles(user);
         return new Result<>().success(Kv.init()
                 .set("menuTree", menuTree)
                 .set("urlList", urlList)
@@ -100,7 +100,7 @@ public class MenuController {
     @ApiOperation("登录用户权限范围")
     public Result<?> permissions() {
         UserDetail user = SecurityUser.getUser();
-        Set<String> set = shiroService.getUserPermissions(user);
+        Set<String> set = authService.getUserPermissions(user);
 
         return new Result<>().success(set);
     }
@@ -109,7 +109,7 @@ public class MenuController {
     @ApiOperation("登录用户角色范围")
     public Result<?> roles() {
         UserDetail user = SecurityUser.getUser();
-        Set<String> set = shiroService.getUserRoles(user);
+        Set<String> set = authService.getUserRoles(user);
 
         return new Result<>().success(set);
     }

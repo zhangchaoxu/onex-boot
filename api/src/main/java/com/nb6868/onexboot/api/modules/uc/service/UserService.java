@@ -39,7 +39,7 @@ import java.util.*;
 public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     @Autowired
-    private AuthService shiroService;
+    private AuthService authService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -143,7 +143,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 通过短信验证码修改密码
      */
     public Result<?> changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
-        OnexProps.LoginAdminProps loginAdminProps = shiroService.getLoginAdminProps();
+        OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
         AssertUtils.isFalse(loginAdminProps.isForgetPassword(), "未开放修改密码功能");
 
         // 操作结果
@@ -181,15 +181,15 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 注册
      */
     public Result<?> register(RegisterRequest request) {
-        OnexProps.LoginAdminProps loginAdminProps = shiroService.getLoginAdminProps();
+        OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
         AssertUtils.isFalse(loginAdminProps.isRegister(), "未开放注册");
 
         // 操作结果
         int resultCode = 0;
         // 登录用户
-        if (isMobileExisted(request.getMobile(), null)) {
+        if (hasDuplicated(null, "mobile", request.getMobile())) {
             return new Result<>().error(ErrorCode.HAS_DUPLICATED_RECORD, "手机号已注册");
-        } else if (isUsernameExisted(request.getUsername(), null)) {
+        } else if (hasDuplicated(null, "username", request.getUsername())) {
             return new Result<>().error(ErrorCode.HAS_DUPLICATED_RECORD, "用户名已注册");
         } else {
             //  校验验证码
@@ -219,20 +219,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     }
 
     /**
-     * 通过手机号获取用户
-     */
-    public UserEntity getByMobile(String mobile) {
-        return getByMobile("86", mobile);
-    }
-
-    /**
-     * 通过手机号区域和手机号获取用户
-     */
-    public UserEntity getByMobile(String mobileArea, String mobile) {
-        return query().eq("mobile_area", mobileArea).eq("mobile", mobile).last(Const.LIMIT_ONE).one();
-    }
-
-    /**
      * 修改状态
      */
     public boolean changeState(ChangeStateRequest request) {
@@ -253,27 +239,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     @Transactional(rollbackFor = Exception.class)
     public boolean updatePassword(Long id, String newPassword) {
         return update().eq("id", id).set("password", PasswordUtils.encode(newPassword)).update(new UserEntity());
-    }
-
-    /**
-     * 根据部门ID，查询用户数
-     */
-    public int getCountByDeptId(Long deptId) {
-        return count(new QueryWrapper<UserEntity>().eq("dept_id", deptId));
-    }
-
-    /**
-     * 判断用户名是否存在
-     */
-    public boolean isUsernameExisted(String username, Long id) {
-        return hasDuplicated(id, "username", username);
-    }
-
-    /**
-     * 判断手机号是否存在
-     */
-    public boolean isMobileExisted(String mobile, Long id) {
-        return hasDuplicated(id, "mobile", mobile);
     }
 
     /**
