@@ -78,6 +78,7 @@ public class ShiroConfig {
         filterMap.put("/sys/captcha/base64", "anon");
         filterMap.put("/sys/captcha/stream", "anon");
         // 登录注册
+        filterMap.put("/uc/auth/**", "anon");
         filterMap.put("/uc/user/loginEncrypt", "anon");
         filterMap.put("/uc/user/login", "anon");
         filterMap.put("/uc/user/register", "anon");

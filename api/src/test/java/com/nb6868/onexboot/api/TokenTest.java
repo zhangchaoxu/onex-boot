@@ -2,7 +2,7 @@ package com.nb6868.onexboot.api;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.nb6868.onexboot.api.common.config.OnexProperties;
+import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.common.util.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +17,11 @@ import java.util.Date;
 public class TokenTest {
 
     @Autowired
-    OnexProperties onexProperties;
+    OnexProps onexProperties;
 
     @Test
     public void generateToken() {
-        System.out.println("TokenPolicy=" + onexProperties.getLoginConfigSource().name());
+        System.out.println("TokenPolicy=" + onexProperties.getLoginPropsSource().name());
     }
 
     @Test

@@ -5,7 +5,7 @@ import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.service.ShiroService;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
-import com.nb6868.onexboot.api.common.config.OnexProperties;
+import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.util.ConvertUtils;
@@ -32,7 +32,7 @@ public class ShiroRealm extends AuthorizingRealm {
     @Autowired
     private ShiroService shiroService;
     @Autowired
-    private OnexProperties onexConfig;
+    private OnexProps onexProps;
 
     /**
      * 必须重写此方法，不然Shiro会报错
@@ -82,8 +82,8 @@ public class ShiroRealm extends AuthorizingRealm {
         userDetail.setDeptIdList(deptIdList);*/
 
         // 更新token
-        if (onexConfig.getLoginAdminConfig().isTokenRenewal()) {
-            shiroService.renewalToken(accessToken, onexConfig.getLoginAdminConfig().getTokenExpire());
+        if (onexProps.getLoginProps().isTokenRenewal()) {
+            shiroService.renewalToken(accessToken, onexProps.getLoginProps().getTokenExpire());
         }
 
         return new SimpleAuthenticationInfo(userDetail, accessToken, getName());
@@ -104,11 +104,11 @@ public class ShiroRealm extends AuthorizingRealm {
             info.setRoles(roles);
         } else {
             // 根据配置中的role和permission设置SimpleAuthorizationInfo
-            if (onexConfig.getLoginAdminConfig().isRoleBase()) {
+            if (onexProps.getLoginProps().isRoleBase()) {
                 // 塞入角色列表
                 info.setRoles(shiroService.getUserRoles(user));
             }
-            if (onexConfig.getLoginAdminConfig().isPermissionBase()) {
+            if (onexProps.getLoginProps().isPermissionBase()) {
                 // 塞入权限列表
                 info.setStringPermissions(shiroService.getUserPermissions(user));
             }

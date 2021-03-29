@@ -3,6 +3,8 @@ package com.nb6868.onexboot.api.modules.uc.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onexboot.api.common.config.OnexProps;
+import com.nb6868.onexboot.api.common.config.LoginPropsSource;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
@@ -41,6 +43,9 @@ import java.util.*;
 @Service
 public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
+
+    @Autowired
+    private AuthService authService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -143,13 +148,13 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      */
     public Kv login(LoginRequest loginRequest) {
         // 获得登录配置
-        LoginTypeConfig loginTypeConfig = paramService.getCombineContentObject(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType(), LoginTypeConfig.class);
-        AssertUtils.isNull(loginTypeConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        OnexProps.LoginProps loginProps = authService.getLoginProps(UcConst.LOGIN_TYPE_PREFIX + loginRequest.getType());
+        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 校验验证码
-        if (loginTypeConfig.isCaptcha()) {
+        if (loginProps.isCaptcha()) {
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.CaptchaGroup.class);
-            boolean validateCaptcha = loginRequest.getCaptcha().equalsIgnoreCase(loginTypeConfig.getMagicCaptcha()) || captchaService.validate(loginRequest.getUuid(), loginRequest.getCaptcha());
+            boolean validateCaptcha = loginRequest.getCaptcha().equalsIgnoreCase(loginProps.getMagicCaptcha()) || captchaService.validate(loginRequest.getUuid(), loginRequest.getCaptcha());
             AssertUtils.isFalse(validateCaptcha, ErrorCode.CAPTCHA_ERROR);
         }
 
@@ -255,8 +260,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
         // 登录成功
         Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginTypeConfig));
-        kv.set("expire", loginTypeConfig.getExpire());
+        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        kv.set("expire", loginProps.getTokenExpire());
         kv.set("user", user);
         return kv;
     }

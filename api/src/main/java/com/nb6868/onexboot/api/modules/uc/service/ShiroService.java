@@ -3,7 +3,6 @@ package com.nb6868.onexboot.api.modules.uc.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
-import com.nb6868.onexboot.api.modules.uc.dto.LoginTypeConfig;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
@@ -92,16 +91,6 @@ public class ShiroService {
      */
     public boolean renewalToken(String token, Long expire) {
         return tokenService.renewalToken(token, expire);
-    }
-
-    /**
-     * 获得登录配置
-     *
-     * @param type 类型
-     * @return config
-     */
-    public LoginTypeConfig getLoginCfg(Integer type) {
-        return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginTypeConfig.class);
     }
 
     /**

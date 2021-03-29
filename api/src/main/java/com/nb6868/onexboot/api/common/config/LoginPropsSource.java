@@ -5,7 +5,7 @@ package com.nb6868.onexboot.api.common.config;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public enum LoginConfigSource {
+public enum LoginPropsSource {
 
     /**
      * 配置文件
