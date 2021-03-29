@@ -21,7 +21,6 @@ import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.api.modules.uc.wx.WxScanProps;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
@@ -195,11 +194,10 @@ public class AuthService {
         return loginAdminProps;
     }
 
-    public Kv login(LoginRequest loginRequest) {
-        // 获得登录配置
-        LoginProps loginProps = getLoginProps(loginRequest.getType());
-        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
-
+    /**
+     * 登录获取用户
+     */
+    public UserEntity login(LoginRequest loginRequest, LoginProps loginProps) {
         // 校验验证码
         if (loginProps.isCaptcha()) {
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.CaptchaGroup.class);
@@ -308,11 +306,7 @@ public class AuthService {
         }*/
 
         // 登录成功
-        Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
-        kv.set("expire", loginProps.getTokenExpire());
-        kv.set("user", user);
-        return kv;
+        return user;
     }
 
 }

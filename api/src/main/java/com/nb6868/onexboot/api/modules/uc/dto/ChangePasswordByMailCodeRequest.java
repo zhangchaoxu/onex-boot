@@ -25,7 +25,7 @@ public class ChangePasswordByMailCodeRequest implements Serializable {
 
     @ApiModelProperty(value = "验证码", required = true)
     @NotEmpty(message = "验证码不能为空")
-    private String code;
+    private String smsCode;
 
     @ApiModelProperty(value = "收件方", required = true)
     @NotEmpty(message = "收件方不能为空")
