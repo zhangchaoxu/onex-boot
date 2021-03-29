@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.user;
 
+import com.nb6868.onexboot.api.common.config.LoginProps;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -31,6 +32,10 @@ public class UserDetail implements Serializable {
      * 部门数据权限
      */
     private List<Long> deptIdList;
+    /**
+     * 登录配置
+     */
+    private LoginProps loginProps;
 
     /**
      * 是否匿名用户

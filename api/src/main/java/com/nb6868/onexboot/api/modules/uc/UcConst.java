@@ -211,7 +211,7 @@ public interface UcConst {
         // APP苹果登录
         APP_APPLE,
         // APP苹果登录验证手机号
-        APP_APPLE_MOBILE_SMS;
+        APP_APPLE_MOBILE_SMS
     }
 
 }

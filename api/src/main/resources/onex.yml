@@ -1,7 +1,5 @@
 # onex 配置
 onex:
-  # 登录配置源
-  login-props-source: props
   # 后台登录
   login-props:
     # 配置源 支持props和db

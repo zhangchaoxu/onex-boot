@@ -8,7 +8,7 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.EntityService;
 import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.IdUtils;
-import com.nb6868.onexboot.api.common.config.OnexProps.LoginProps;
+import com.nb6868.onexboot.api.common.config.LoginProps;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -49,20 +49,20 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * 生成token
      *
      * @param userId      用户ID
-     * @param loginTypeConfig 登录配置
+     * @param loginProps 登录配置
      * @return result
      */
-    public String createToken(Long userId, LoginProps loginProperties) {
+    public String createToken(Long userId, LoginProps loginProps) {
         // 当前时间
         Date now = new Date();
         // 过期时间
-        Date expireTime = DateUtils.addDateSeconds(now, loginProperties.getTokenExpire());
+        Date expireTime = DateUtils.addDateSeconds(now, loginProps.getTokenExpire());
         // 生成的token
-        if (loginProperties.isMultiLogin()) {
+        if (loginProps.isMultiLogin()) {
             // 支持多点登录
         } else {
             // 不支持多点登录,注销该用户所有token
-            deleteTokenByUserId(userId, loginProperties.getType());
+            deleteTokenByUserId(userId, loginProps.getType());
         }
         // 不管逻辑，永远都是重新生成一个token
         TokenEntity tokenEntity = new TokenEntity();
@@ -70,7 +70,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
         tokenEntity.setToken(IdUtils.simpleUUID());
         tokenEntity.setUpdateTime(now);
         tokenEntity.setExpireTime(expireTime);
-        tokenEntity.setType(loginProperties.getType());
+        tokenEntity.setType(loginProps.getType());
 
         // 保存token
         this.save(tokenEntity);
