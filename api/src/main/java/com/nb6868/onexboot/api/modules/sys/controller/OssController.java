@@ -38,6 +38,7 @@ import java.util.Map;
 @Validated
 @Api(tags = "素材库")
 public class OssController {
+
     @Autowired
     private OssService ossService;
 
