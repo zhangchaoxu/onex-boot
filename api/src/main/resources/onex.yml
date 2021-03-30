@@ -10,3 +10,4 @@ onex:
       source: props
       type: ADMIN_USERNAME_PASSWORD
       captcha: false
+      multi-login: true
