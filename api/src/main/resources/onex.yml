@@ -4,10 +4,16 @@ onex:
   login-admin-props:
     # 配置源
     source: props
+    # 开放注册
+    register: true
+    # 开放忘记密码
+    forget-password: true
     # 开放帐号登录
     username-password-login: true
+    # 帐号密码登录配置
     username-password-login-props:
       source: props
       type: ADMIN_USERNAME_PASSWORD
       captcha: false
       multi-login: true
+
