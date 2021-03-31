@@ -6,6 +6,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.util.List;
 
@@ -32,11 +33,22 @@ public class CacheConfig {
     /**
      * 参数缓存
      */
+    @Primary
+    @Bean("commonCache")
+    public ConcurrentMapCacheFactoryBean commonCache(){
+        ConcurrentMapCacheFactoryBean cacheFactoryBean = new ConcurrentMapCacheFactoryBean();
+        cacheFactoryBean.setName("common");
+        return cacheFactoryBean;
+    }
+
+    /**
+     * 参数缓存
+     */
     @Bean("paramCache")
     public ConcurrentMapCacheFactoryBean paramCache(){
-        ConcurrentMapCacheFactoryBean stockDetail = new ConcurrentMapCacheFactoryBean();
-        stockDetail.setName("param");
-        return stockDetail;
+        ConcurrentMapCacheFactoryBean cacheFactoryBean = new ConcurrentMapCacheFactoryBean();
+        cacheFactoryBean.setName("param");
+        return cacheFactoryBean;
     }
 
     /**
@@ -44,9 +56,9 @@ public class CacheConfig {
      */
     @Bean("captchaCache")
     public ConcurrentMapCacheFactoryBean captchaCache(){
-        ConcurrentMapCacheFactoryBean stockDetail = new ConcurrentMapCacheFactoryBean();
-        stockDetail.setName("captcha");
-        return stockDetail;
+        ConcurrentMapCacheFactoryBean cacheFactoryBean = new ConcurrentMapCacheFactoryBean();
+        cacheFactoryBean.setName("captcha");
+        return cacheFactoryBean;
     }
 
     /**
@@ -54,9 +66,9 @@ public class CacheConfig {
      */
     @Bean("dingtalkTokenCache")
     public ConcurrentMapCacheFactoryBean dingtalkTokenCache(){
-        ConcurrentMapCacheFactoryBean stockDetail = new ConcurrentMapCacheFactoryBean();
-        stockDetail.setName("dingtalkToken");
-        return stockDetail;
+        ConcurrentMapCacheFactoryBean cacheFactoryBean = new ConcurrentMapCacheFactoryBean();
+        cacheFactoryBean.setName("dingtalkToken");
+        return cacheFactoryBean;
     }
 
 }
