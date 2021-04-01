@@ -41,6 +41,8 @@ import java.util.*;
 public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     @Autowired
+    private MenuScopeService menuScopeService;
+    @Autowired
     private AuthService authService;
     @Autowired
     private TokenService tokenService;
@@ -210,6 +212,16 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     }
 
     /**
+     * 合并帐号,将mergeFrom数据合并到mergeTo
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean changeMenuScope(List<Long> menuIds) {
+        // 保存用户菜单关系
+        menuScopeService.saveOrUpdateByUserIdAndMenuIds(SecurityUser.getUserId(), menuIds);
+        return true;
+    }
+
+    /**
      * 修改密码
      *
      * @param id          用户ID
@@ -230,5 +242,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         // 将被删除业务数据中的create_id/update_id更新为mergeTo
         return true;
     }
+
 
 }

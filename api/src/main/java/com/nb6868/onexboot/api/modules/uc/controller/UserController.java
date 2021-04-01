@@ -158,6 +158,16 @@ public class UserController {
         return new Result<>();
     }
 
+    @PutMapping("changeMenuScope")
+    @ApiOperation("用户授权")
+    @LogOperation("用户授权")
+    @RequiresPermissions("uc:user:changeMenuScope")
+    public Result<?> changeMenuScope(@RequestBody List<Long> menuIds) {
+        userService.changeMenuScope(menuIds);
+
+        return new Result<>();
+    }
+
     @DeleteMapping("deleteBatch")
     @LogOperation("批量删除")
     @RequiresPermissions("uc:user:deleteBatch")
