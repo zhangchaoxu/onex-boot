@@ -27,9 +27,9 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
     /**
      * 保存角色和菜单的关系
      *
-     * @param roleId       角色ID
-     * @param roleName       角色名
-     * @param menuIdList 菜单ID列表
+     * @param roleId   角色ID
+     * @param roleName 角色名
+     * @param menuIds  菜单ID列表
      */
     @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdateByRoleAndMenuIds(Long roleId, String roleName, List<Long> menuIds) {
@@ -46,6 +46,32 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
                 menuScope.setMenuPermissions(menu.getPermissions());
                 menuScope.setRoleId(roleId);
                 menuScope.setRoleName(roleName);
+                //保存
+                save(menuScope);
+            }
+        }
+    }
+
+    /**
+     * 保存用户和菜单的关系
+     *
+     * @param userId   用户ID
+     * @param menuIds  菜单ID列表
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrUpdateByUserIdAndMenuIds(Long userId, List<Long> menuIds) {
+        // 先删除角色菜单关系
+        deleteByUserId(userId);
+
+        if (ObjectUtils.isNotEmpty(menuIds)) {
+            List<MenuEntity> menus = menuService.listByIds(menuIds);
+            //保存角色菜单关系
+            for (MenuEntity menu : menus) {
+                MenuScopeEntity menuScope = new MenuScopeEntity();
+                menuScope.setType(2);
+                menuScope.setUserId(userId);
+                menuScope.setMenuId(menu.getId());
+                menuScope.setMenuPermissions(menu.getPermissions());
                 //保存
                 save(menuScope);
             }
@@ -74,13 +100,23 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
     }
 
     /**
+     * 根据用户id，删除用户菜单关系
+     *
+     * @param userId 用户ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteByUserId(Long userId) {
+        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().eq("user_id", userId).eq("type", 2));
+    }
+
+    /**
      * 根据角色id，删除角色菜单关系
      *
      * @param roleIds 角色ids
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByRoleIds(List<Long> roleIds) {
-        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().in("role_id", roleIds));
+        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().in("role_id", roleIds).eq("type", 1));
     }
 
     /**
