@@ -63,6 +63,7 @@
             <artifactId>easy-captcha</artifactId>
             <version>${easy.captcha.version}</version>
         </dependency>
+        <!-- easypoi -->
         <dependency>
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-spring-boot-starter</artifactId>
