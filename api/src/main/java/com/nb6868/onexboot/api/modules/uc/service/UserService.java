@@ -243,5 +243,4 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         return true;
     }
 
-
 }
