@@ -1,6 +1,5 @@
 package com.nb6868.onexboot.api.modules.msg.controller;
 
-import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.api.modules.msg.dto.MailLogDTO;
@@ -91,7 +90,6 @@ public class MailLogController {
     @PostMapping("sendCode")
     @ApiOperation("发送验证码消息")
     @LogOperation("发送验证码消息")
-    @AccessControl
     public Result<?> sendCode(@Validated(value = {AddGroup.class}) @RequestBody MailSendRequest dto) {
         // 只允许发送CODE_开头的模板
         AssertUtils.isFalse(dto.getTplCode().startsWith(MsgConst.SMS_CODE_TPL_PREFIX), "只支持" + MsgConst.SMS_CODE_TPL_PREFIX + "类型模板发送");

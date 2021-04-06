@@ -52,4 +52,13 @@ public class MailTplDTO extends BaseDTO {
 	@ApiModelProperty(value = "限时秒")
 	private Integer timeLimit;
 
+	@ApiModelProperty(value = "收件人黑名单")
+	private String mailToBlack;
+
+	@ApiModelProperty(value = "收件人魔术放行")
+	private String mailToMagic;
+
+	@ApiModelProperty(value = "验证码生成器")
+	private String codeGenerator;
+
 }

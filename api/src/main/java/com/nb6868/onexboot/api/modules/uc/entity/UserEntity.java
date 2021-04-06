@@ -45,6 +45,10 @@ public class UserEntity extends BaseTenantEntity {
      */
     private String code;
     /**
+     * 安全码
+     */
+    private String verifyCode;
+    /**
      * 备注
      */
     private String remark;
