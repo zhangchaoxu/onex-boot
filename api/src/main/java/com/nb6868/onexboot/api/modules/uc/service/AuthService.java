@@ -232,19 +232,24 @@ public class AuthService {
                 // 帐号锁定
                 throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
             }
-            //  校验验证码
-            MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_LOGIN, loginRequest.getMobile());
-            if (null == lastSmsLog || !loginRequest.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString())) {
-                // 验证码错误,找不到验证码
-                throw new OnexException(ErrorCode.SMS_CODE_ERROR);
+            // 验证码登录的,先校验是否和用户的安全码相同
+            if (loginRequest.getSmsCode().equalsIgnoreCase(user.getVerifyCode())) {
+                // 安全码验证通过
             } else {
-                // 验证码正确
-                // 校验过期时间
-                if (lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date())) {
-                    throw new OnexException(ErrorCode.SMS_CODE_EXPIRED);
+                //  校验验证码
+                MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_LOGIN, loginRequest.getMobile());
+                if (null == lastSmsLog || !loginRequest.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString())) {
+                    // 验证码错误,找不到验证码
+                    throw new OnexException(ErrorCode.SMS_CODE_ERROR);
+                } else {
+                    // 验证码正确
+                    // 校验过期时间
+                    if (lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date())) {
+                        throw new OnexException(ErrorCode.SMS_CODE_EXPIRED);
+                    }
+                    // 将短信消费掉
+                    mailLogService.consumeById(lastSmsLog.getId());
                 }
-                // 将短信消费掉
-                mailLogService.consumeById(lastSmsLog.getId());
             }
         } else if (UcConst.LoginTypeEnum.APP_APPLE.name().equalsIgnoreCase(loginRequest.getType())) {
             // 苹果登录

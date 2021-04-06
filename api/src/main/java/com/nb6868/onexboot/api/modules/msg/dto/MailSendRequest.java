@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.msg.dto;
 
+import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,7 +25,7 @@ public class MailSendRequest implements Serializable {
 
     @ApiModelProperty(value = "模板编码", required = true)
     @NotBlank(message = "模板编码不能为空", groups = AddGroup.class)
-    private String tplCode;
+    private String tplCode = MsgConst.SMS_TPL_LOGIN;
 
     @ApiModelProperty(value = "收件人", required = true)
     @NotEmpty(message = "收件人不能为空", groups = AddGroup.class)

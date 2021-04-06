@@ -5,25 +5,34 @@ import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
+import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.common.config.LoginProps;
 import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.common.util.AESUtils;
+import com.nb6868.onexboot.api.modules.msg.MsgConst;
+import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
+import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
+import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
+import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
+import com.nb6868.onexboot.api.modules.msg.service.MailTplService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dingtalk.DingTalkApi;
 import com.nb6868.onexboot.api.modules.uc.dingtalk.GetUserInfoByCodeResponse;
 import com.nb6868.onexboot.api.modules.uc.dto.*;
 import com.nb6868.onexboot.api.modules.uc.entity.UserEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.UserOauthEntity;
-import com.nb6868.onexboot.api.modules.uc.service.*;
+import com.nb6868.onexboot.api.modules.uc.service.AuthService;
+import com.nb6868.onexboot.api.modules.uc.service.TokenService;
+import com.nb6868.onexboot.api.modules.uc.service.UserOauthService;
+import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import com.nb6868.onexboot.api.modules.uc.wx.WxApiService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.ConvertUtils;
-import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.PasswordUtils;
+import com.nb6868.onexboot.common.util.*;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.ValidatorUtils;
+import com.nb6868.onexboot.common.validator.group.AddGroup;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,6 +66,10 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private WxApiService wxApiService;
+    @Autowired
+    private MailLogService mailLogService;
+    @Autowired
+    private MailTplService mailTplService;
 
     @GetMapping("getLoginAdminProps")
     @ApiOperation("获得后台登录配置")
@@ -70,6 +83,31 @@ public class AuthController {
     public Result<?> getLoginAppProps() {
         OnexProps.LoginAppProps loginAppProps = authService.getLoginAppProps();
         return new Result<>().success(loginAppProps);
+    }
+
+    @PostMapping("sendLoginCode")
+    @ApiOperation("发送登录验证码消息")
+    @LogOperation("发送登录验证码消息")
+    public Result<?> sendCode(@Validated(value = {AddGroup.class}) @RequestBody MailSendRequest dto) {
+        // 只允许发送CODE_开头的模板
+        AssertUtils.isFalse(dto.getTplCode().startsWith(MsgConst.SMS_CODE_TPL_PREFIX), "只支持" + MsgConst.SMS_CODE_TPL_PREFIX + "类型模板发送");
+        // 消息模板
+        MailTplEntity mailTpl = mailTplService.getOneByColumn("code", dto.getTplCode());
+        AssertUtils.isNull(mailTpl, "找不到对应的消息模板:" + dto.getTplCode());
+        if (mailTpl.getTimeLimit() > 0) {
+            // 有时间限制
+            // 先校验该收件人是否timeLimit秒内发送过
+            MailLogEntity lastMailLog = mailLogService.findLastLogByTplCode(dto.getTplCode(), dto.getMailTo());
+            // 检查限定时间内是否已经发送
+            AssertUtils.isTrue(null != lastMailLog && DateUtils.timeDiff(lastMailLog.getCreateTime()) < mailTpl.getTimeLimit() * 1000, ErrorCode.ERROR_REQUEST, "发送请求过于频繁");
+        }
+        dto.setContentParam(JacksonUtils.pojoToJson(Kv.init().set("code", StringUtils.getRandomDec(4))));
+
+        boolean flag = mailLogService.send(dto);
+        if (flag) {
+            return new Result<>();
+        }
+        return new Result<>().error("消息发送失败");
     }
 
     /**
@@ -93,8 +131,7 @@ public class AuthController {
     }
 
     /**
-     * 加密登录
-     * 逻辑同login接口
+     * 加密登录,逻辑同login接口
      */
     @SneakyThrows
     @PostMapping("loginEncrypt")

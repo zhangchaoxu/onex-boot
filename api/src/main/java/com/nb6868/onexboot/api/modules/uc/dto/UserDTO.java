@@ -36,6 +36,10 @@ public class UserDTO extends BaseDTO {
     @NotBlank(message = "{password.require}", groups = AddGroup.class)
     private String password;
 
+    @ApiModelProperty(value = "安全码")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String verifyCode;
+
     @ApiModelProperty(value = "姓名")
     private String realName;
 

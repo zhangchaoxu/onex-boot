@@ -53,5 +53,17 @@ public class MailTplEntity extends BaseEntity {
 	 * 限时秒 -1表示不限
 	 */
 	private Integer timeLimit;
+	/**
+	 * 收件人黑名单
+	 */
+	private String mailToBlack;
+	/**
+	 * 收件人魔术放行
+	 */
+	private String mailToMagic;
+	/**
+	 * 验证码生成器
+	 */
+	private String codeGenerator;
 
 }
