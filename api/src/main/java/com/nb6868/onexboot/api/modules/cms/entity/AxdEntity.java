@@ -1,4 +1,4 @@
-package com.nb6868.onexboot.api.modules.sys.entity;
+package com.nb6868.onexboot.api.modules.cms.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nb6868.onexboot.common.pojo.BaseTenantEntity;
@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("sys_ad")
-public class AdEntity extends BaseTenantEntity {
+@TableName("cms_axd")
+public class AxdEntity extends BaseTenantEntity {
 	private static final long serialVersionUID = 1L;
 
     /**

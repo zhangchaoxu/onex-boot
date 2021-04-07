@@ -1,7 +1,7 @@
-package com.nb6868.onexboot.api.modules.sys.dao;
+package com.nb6868.onexboot.api.modules.cms.dao;
 
 import com.nb6868.onexboot.common.dao.BaseDao;
-import com.nb6868.onexboot.api.modules.sys.entity.AdEntity;
+import com.nb6868.onexboot.api.modules.cms.entity.AxdEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,6 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
-public interface AdDao extends BaseDao<AdEntity> {
+public interface AxdDao extends BaseDao<AxdEntity> {
 
 }

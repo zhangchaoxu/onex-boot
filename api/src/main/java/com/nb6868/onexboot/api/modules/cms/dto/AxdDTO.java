@@ -1,4 +1,4 @@
-package com.nb6868.onexboot.api.modules.sys.dto;
+package com.nb6868.onexboot.api.modules.cms.dto;
 
 import com.nb6868.onexboot.common.pojo.BaseDTO;
 import io.swagger.annotations.ApiModel;
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "广告位")
-public class AdDTO extends BaseDTO {
+public class AxdDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "标题")
