@@ -52,7 +52,7 @@ public interface MsgConst {
     }
 
     /**
-     * 消息渠道类型
+     * 消息类型
      */
     enum MailTypeEnum {
 
