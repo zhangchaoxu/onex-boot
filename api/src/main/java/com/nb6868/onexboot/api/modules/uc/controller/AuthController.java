@@ -88,7 +88,7 @@ public class AuthController {
     @PostMapping("sendLoginCode")
     @ApiOperation("发送登录验证码消息")
     @LogOperation("发送登录验证码消息")
-    public Result<?> sendCode(@Validated(value = {AddGroup.class}) @RequestBody MailSendRequest dto) {
+    public Result<?> sendLoginCode(@Validated(value = {AddGroup.class}) @RequestBody MailSendRequest dto) {
         // 只允许发送CODE_开头的模板
         AssertUtils.isFalse(dto.getTplCode().startsWith(MsgConst.SMS_CODE_TPL_PREFIX), "只支持" + MsgConst.SMS_CODE_TPL_PREFIX + "类型模板发送");
         boolean flag = mailLogService.send(dto);
