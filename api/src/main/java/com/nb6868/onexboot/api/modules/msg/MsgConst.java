@@ -30,12 +30,12 @@ public interface MsgConst {
     String SMS_TPL_REGISTER = SMS_CODE_TPL_PREFIX+  "REGISTER";
 
     /**
-     * 消息类型
+     * 消息渠道类型
      */
-    enum MailTypeEnum {
+    enum MailChannelEnum {
 
         /**
-         * 支持的消息类型定义
+         * 消息渠道类型
          */
         SMS("短信"),
         EMAIL("电子邮件"),
@@ -45,10 +45,35 @@ public interface MsgConst {
 
         private String code;
 
-        MailTypeEnum(String code) {
+        MailChannelEnum(String code) {
             this.code = code;
         }
 
+    }
+
+    /**
+     * 消息渠道类型
+     */
+    enum MailTypeEnum {
+
+        /**
+         * 支持的消息类型定义
+         */
+        CODE(1, "验证码"),
+        NOTIFY(2, "通知"),
+        ADV(3, "营销广告");
+
+        private Integer value;
+        private String name;
+
+        MailTypeEnum(Integer value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int value() {
+            return this.value;
+        }
     }
 
     /**

@@ -14,13 +14,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 邮件发送请求
+ * 消息发送请求
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "邮件发送请求")
+@ApiModel(value = "消息发送请求")
 public class MailSendRequest implements Serializable {
 
     @ApiModelProperty(value = "模板编码", required = true)

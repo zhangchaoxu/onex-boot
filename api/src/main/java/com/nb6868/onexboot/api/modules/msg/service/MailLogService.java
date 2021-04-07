@@ -15,8 +15,11 @@ import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.sms.SmsFactory;
 import com.nb6868.onexboot.api.modules.uc.wx.WxProp;
+import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.service.DtoService;
+import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
@@ -87,15 +90,26 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
     public boolean send(MailSendRequest request) {
         MailTplEntity mailTpl = mailTplService.getOneByColumn("code", request.getTplCode());
         AssertUtils.isNull(mailTpl, "未定义的消息模板:" + request.getTplCode());
+        // 检查消息模板是否有时间限制
+        if (mailTpl.getTimeLimit() > 0) {
+            // 先校验该收件人是否timeLimit秒内发送过
+            MailLogEntity lastMailLog = findLastLogByTplCode(request.getTplCode(), request.getMailTo());
+            // 检查限定时间内是否已经发送
+            AssertUtils.isTrue(null != lastMailLog && DateUtils.timeDiff(lastMailLog.getCreateTime()) < mailTpl.getTimeLimit() * 1000, ErrorCode.ERROR_REQUEST, "发送请求过于频繁");
+        }
+        // 判断是否验证码消息类型
+        if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {
+            request.setContentParam(JacksonUtils.pojoToJson(Kv.init().set("code", StringUtils.getRandomDec(4))));
+        }
 
-        if (MsgConst.MailTypeEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
+        if (MsgConst.MailChannelEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 邮件
             return emailUtils.sendMail(mailTpl, request);
-        } else if (MsgConst.MailTypeEnum.SMS.name().equalsIgnoreCase(mailTpl.getChannel())) {
+        } else if (MsgConst.MailChannelEnum.SMS.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 短信
             // 获取短信服务，发送短信
             return SmsFactory.build(mailTpl.getPlatform()).sendSms(mailTpl, request.getMailTo(), request.getContentParam());
-        } else if (MsgConst.MailTypeEnum.WX_MP_TEMPLATE.name().equalsIgnoreCase(mailTpl.getChannel())) {
+        } else if (MsgConst.MailChannelEnum.WX_MP_TEMPLATE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信模板消息
             WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
             AssertUtils.isNull(wxProp, "消息模板配置错误");
@@ -149,7 +163,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
                 save(mailLog);
             }
             return true;
-        } else if (MsgConst.MailTypeEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
+        } else if (MsgConst.MailChannelEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信小程序模板消息
             WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
             AssertUtils.isNull(wxProp, "消息模板配置错误");
