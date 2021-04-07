@@ -79,10 +79,9 @@ public class ShiroConfig {
         filterMap.put("/sys/captcha/stream", "anon");
         // 授权接口
         filterMap.put("/uc/auth/**", "anon");
-        // 发送消息
-        filterMap.put("/msg/mailLog/sendCode", "anon");
         // cms开放接口
-        filterMap.put("/cms/public/*", "anon");
+        filterMap.put("/cms/public/**", "anon");
+        // todo 扫描注解
 
         // 除上述anon外,其它都需要过oauth2
         filterMap.put("/**", "shiro");

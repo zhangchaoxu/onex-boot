@@ -9,6 +9,7 @@ import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +28,24 @@ public class AxdService extends DtoService<AxdDao, AxdEntity, AxdDTO> {
                 .eq("tenantId", "tenant_id")
                 .apply(Const.SQL_FILTER)
                 .getQueryWrapper();
+    }
+
+    /**
+     * 获取指定位置的广告列表
+     * @param position 位置
+     * @return 广告列表
+     */
+    public List<AxdEntity> listByPosition(String position) {
+        return query().eq("position", position).orderByAsc("sort").list();
+    }
+
+    /**
+     * 获取指定位置的广告
+     * @param position 位置
+     * @return 广告
+     */
+    public AxdEntity getByPosition(String position) {
+        return query().eq("position", position).orderByAsc("sort").last(Const.LIMIT_ONE).one();
     }
 
 }
