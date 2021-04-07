@@ -1,9 +1,12 @@
 package com.nb6868.onexboot.api.modules.cms.controller;
 
+import com.nb6868.onexboot.api.modules.cms.dto.AxdDTO;
 import com.nb6868.onexboot.api.modules.cms.dto.SiteDTO;
+import com.nb6868.onexboot.api.modules.cms.entity.AxdEntity;
 import com.nb6868.onexboot.api.modules.cms.entity.SiteEntity;
 import com.nb6868.onexboot.api.modules.cms.service.ArticleCategoryService;
 import com.nb6868.onexboot.api.modules.cms.service.ArticleService;
+import com.nb6868.onexboot.api.modules.cms.service.AxdService;
 import com.nb6868.onexboot.api.modules.cms.service.SiteService;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.ConvertUtils;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 站点
@@ -35,6 +40,26 @@ public class PublicController {
     private ArticleCategoryService articleCategoryService;
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private AxdService axdService;
+
+    @GetMapping("getAxdListByPosition")
+    @ApiOperation("获取指定位置的广告列表")
+    public Result<?> getAxdListByPosition(@NotEmpty(message = "位置参数不能为空") @RequestParam String position) {
+        List<AxdEntity> entityList = axdService.listByPosition(position);
+        List<AxdDTO> list = ConvertUtils.sourceToTarget(entityList, AxdDTO.class);
+
+        return new Result<>().success(list);
+    }
+
+    @GetMapping("getAxdByPosition")
+    @ApiOperation("获取指定位置的广告")
+    public Result<?> getAxdByPosition(@NotEmpty(message = "位置参数不能为空") @RequestParam String position) {
+        AxdEntity entity = axdService.getByPosition(position);
+        AxdDTO dto = ConvertUtils.sourceToTarget(entity, AxdDTO.class);
+
+        return new Result<>().success(dto);
+    }
 
     @GetMapping("getSiteInfoByCode")
     @ApiOperation("通过code获取站点详情")
@@ -43,5 +68,7 @@ public class PublicController {
         SiteDTO dto = ConvertUtils.sourceToTarget(entity, SiteDTO.class);
         return new Result<>().success(dto);
     }
+
+
 
 }
