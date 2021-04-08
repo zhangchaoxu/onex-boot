@@ -3,10 +3,15 @@ package com.nb6868.onexboot.api.common.config;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.handler.TableNameHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.nb6868.onexboot.common.injector.MySqlInjector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
 
 /**
  * mybatis-plus配置
@@ -16,6 +21,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class MybatisPlusConfig {
+
+    /***
+     * 使用ThreadLocal将表名传进来
+     */
+    public static ThreadLocal<String> tableNameLocal = new ThreadLocal<>();
 
     /**
      * 配置分页
@@ -28,15 +38,36 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        // 动态表名拦截器
+        interceptor.addInnerInterceptor(initDynamicTableNameInnerInterceptor());
+        // 分页拦截器
+        interceptor.addInnerInterceptor(initPaginationInterceptor());
+        return interceptor;
+    }
+
+    /**
+     * 初始化分页拦截器
+     */
+    private InnerInterceptor initPaginationInterceptor() {
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
         // 单页分页条数限制，默认不受限制
         paginationInnerInterceptor.setMaxLimit(-1L);
         // 溢出总页数后是否进行处理
         paginationInnerInterceptor.setOverflow(false);
-        interceptor.addInnerInterceptor(paginationInnerInterceptor);
-        return interceptor;
+        return paginationInnerInterceptor;
     }
 
+    /**
+     * 初始化动态表名拦截器
+     */
+    private InnerInterceptor initDynamicTableNameInnerInterceptor() {
+        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
+        HashMap<String, TableNameHandler> map = new HashMap<String, TableNameHandler>(2) {{
+            // put("shops_entity", (sql, tableName) -> tableNameLocal.get());
+        }};
+        dynamicTableNameInnerInterceptor.setTableNameHandlerMap(map);
+        return dynamicTableNameInnerInterceptor;
+    }
 
     @SuppressWarnings("deprecation")
     @Bean
@@ -46,6 +77,7 @@ public class MybatisPlusConfig {
 
     /**
      * sql注入器
+     *
      * @return inject
      */
     @Bean
