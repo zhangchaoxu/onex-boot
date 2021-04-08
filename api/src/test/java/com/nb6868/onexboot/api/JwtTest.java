@@ -1,17 +1,19 @@
 package com.nb6868.onexboot.api;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nb6868.onexboot.common.util.DateUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
  * JWT测试
+ *
+ * @author Charles zhangchaoxu@gmail.com
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class JwtTest {
 
     @Test
@@ -36,4 +38,19 @@ public class JwtTest {
         System.out.println("是否过期=" + isExpired);
     }
 
+
+    @Test
+    public void encode() {
+        Calendar nowTime = Calendar.getInstance();
+        nowTime.add(Calendar.MINUTE, 30);
+        Date expiresDate = nowTime.getTime();
+
+        String jwtToken = JWT.create().withAudience("userId")   //签发对象
+                .withIssuedAt(new Date())    //发行时间
+                .withExpiresAt(expiresDate)  //有效时间
+                .withClaim("userName", "userName")    //载荷，随便写几个都可以
+                .withClaim("realName", "realName")
+                .sign(Algorithm.HMAC256("userId" + "HelloLehr"));
+        System.out.println("jwtToken=" + jwtToken);
+    }
 }
