@@ -158,9 +158,19 @@ public class UserController {
         return new Result<>();
     }
 
+    @GetMapping("getMenuScope")
+    @ApiOperation("获得用户授权")
+    @RequiresPermissions("uc:user:changeMenuScope")
+    public Result<?> getMenuScope() {
+        // todo 返回用户角色授权和用户自身授权
+        // userService.changeMenuScope(menuIds);
+
+        return new Result<>();
+    }
+
     @PutMapping("changeMenuScope")
-    @ApiOperation("用户授权")
-    @LogOperation("用户授权")
+    @ApiOperation("修改用户授权")
+    @LogOperation("修改用户授权")
     @RequiresPermissions("uc:user:changeMenuScope")
     public Result<?> changeMenuScope(@RequestBody List<Long> menuIds) {
         userService.changeMenuScope(menuIds);
