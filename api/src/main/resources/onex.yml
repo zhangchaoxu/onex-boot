@@ -5,9 +5,9 @@ onex:
     # 配置源
     source: props
     # 开放注册
-    register: true
+    register: false
     # 开放忘记密码
-    forget-password: true
+    forget-password: false
     # 开放帐号登录
     username-password-login: true
     # 帐号密码登录配置
