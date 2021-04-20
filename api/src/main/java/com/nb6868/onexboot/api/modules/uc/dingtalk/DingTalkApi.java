@@ -4,6 +4,14 @@ import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.util.AliSignUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -17,7 +25,7 @@ import java.util.Map;
 public class DingTalkApi {
 
     @Autowired
-    Cache dingtalkTokenCache;
+    static Cache dingtalkTokenCache;
 
     /**
      * 获取企业内部应用的access_token
@@ -50,6 +58,18 @@ public class DingTalkApi {
     private final static String ROBOT_SEND = "https://oapi.dingtalk.com/robot/send?access_token={1}&timestamp={2}&sign={3}";
 
     /**
+     * 上传媒体文件
+     * https://developers.dingtalk.com/document/app/upload-media-files
+     */
+    private final static String UPLOAD_MEDIA = "https://oapi.dingtalk.com/media/upload?access_token={1}";
+
+    /**
+     * ASR 一句话语音识别
+     * https://developers.dingtalk.com/document/app/asr-short-sentence-recognition
+     */
+    private final static String ASR_VOICE_TRANSLATE = "https://oapi.dingtalk.com/topapi/asr/voice/translate?access_token={1}";
+
+    /**
      * 通过临时授权码获取授权用户的个人信息
      */
     public static GetUserInfoByCodeResponse getUserInfoByCode(String accessKey, String appSecret, String code) {
@@ -64,8 +84,32 @@ public class DingTalkApi {
     /**
      * 通过临时授权码获取授权用户的个人信息
      */
-    public static AccessTokenResponse getAccessToken(String appkey, String appSecret) {
-        return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appkey, appSecret);
+    public static AccessTokenResponse getAccessToken(String appKey, String appSecret) {
+        return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
+    }
+
+    /**
+     * 上传媒体文件
+     */
+    public static UploadMediaResponse uploadMedia(String type, String filePath, String accessToken) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("type", type);
+        form.add("media", new FileSystemResource(filePath));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(form, headers);
+
+        return new RestTemplate().postForObject(UPLOAD_MEDIA, requestEntity, UploadMediaResponse.class, accessToken);
+    }
+
+    /**
+     * ASR 一句话语音识别
+     */
+    public static String asrVoiceTranslate(String mediaId, String accessToken) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("media_id", mediaId);
+        return new RestTemplate().exchange(ASR_VOICE_TRANSLATE, HttpMethod.POST,
+                new HttpEntity<>(form), new ParameterizedTypeReference<String>() {}, accessToken).getBody();
     }
 
     /**

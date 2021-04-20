@@ -81,6 +81,9 @@ public class ShiroConfig {
         filterMap.put("/uc/auth/**", "anon");
         // cms开放接口
         filterMap.put("/cms/public/**", "anon");
+        // 钉钉回调
+        filterMap.put("/dingtalk/eventCallback", "anon");
+
         // todo 扫描注解
 
         // 除上述anon外,其它都需要过oauth2
