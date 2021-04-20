@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.api;
 
-import com.nb6868.onexboot.api.modules.uc.dingtalk.BaseResponse;
-import com.nb6868.onexboot.api.modules.uc.dingtalk.DingTalkApi;
+import com.nb6868.onexboot.api.modules.uc.dingtalk.*;
 import com.nb6868.onexboot.common.pojo.Kv;
 import org.junit.jupiter.api.Test;
 
@@ -21,4 +20,23 @@ public class DingtalkApiTest {
         BaseResponse response = DingTalkApi.sendRobotMsg("", "", kv);
         System.out.println(response);
     }
+
+    @Test
+    void getAccessToken() {
+        AccessTokenResponse response = DingTalkApi.getAccessToken("dingzy0fp2ltwvg3gw8m", "edraUxgxNGlNB1mD8TINHRrPTDzu-unRoVAoAszfLpc7IKQUML7mFLbVbhsGIf1y");
+        System.out.println(response);
+    }
+
+    @Test
+    void uploadMedia() {
+        UploadMediaResponse response = DingTalkApi.uploadMedia("voice", "C://1.amr", "80878ad8026d39c8a647fd66391a86f9");
+        System.out.println(response);
+    }
+
+    @Test
+    void asrVoiceTranslate() {
+        String response = DingTalkApi.asrVoiceTranslate("@@lATPDf0iyGhtg8DODAIAcM4u0LOS", "80878ad8026d39c8a647fd66391a86f9");
+        System.out.println(response);
+    }
+
 }
