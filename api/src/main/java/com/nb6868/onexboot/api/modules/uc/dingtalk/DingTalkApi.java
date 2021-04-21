@@ -70,6 +70,18 @@ public class DingTalkApi {
     private final static String ASR_VOICE_TRANSLATE = "https://oapi.dingtalk.com/topapi/asr/voice/translate?access_token={1}";
 
     /**
+     * OCR文字识别
+     * https://developers.dingtalk.com/document/app/structured-image-recognition-api
+     */
+    private final static String OCR_STRUCTURED_RECOGNIZE = "https://oapi.dingtalk.com/topapi/ocr/structured/recognize?access_token={1}";
+
+    /**
+     * 注册回调事件
+     * https://developers.dingtalk.com/document/app/registers-event-callback-interfaces
+     */
+    private final static String REGISTER_CALLBACK = "https://oapi.dingtalk.com/call_back/register_call_back?access_token={1}";
+
+    /**
      * 通过临时授权码获取授权用户的个人信息
      */
     public static GetUserInfoByCodeResponse getUserInfoByCode(String accessKey, String appSecret, String code) {
@@ -109,7 +121,20 @@ public class DingTalkApi {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.add("media_id", mediaId);
         return new RestTemplate().exchange(ASR_VOICE_TRANSLATE, HttpMethod.POST,
-                new HttpEntity<>(form), new ParameterizedTypeReference<String>() {}, accessToken).getBody();
+                new HttpEntity<>(form), new ParameterizedTypeReference<String>() {
+                }, accessToken).getBody();
+    }
+
+    /**
+     * OCR文字识别
+     */
+    public static ResultResponse<String> ocrStructuredRecognize(String type, String mediaUrl, String accessToken) {
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("type", type);
+        form.add("mediaUrl", mediaUrl);
+        return new RestTemplate().exchange(OCR_STRUCTURED_RECOGNIZE, HttpMethod.POST,
+                new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<String>>() {
+                }, accessToken).getBody();
     }
 
     /**
@@ -142,6 +167,19 @@ public class DingTalkApi {
         String timestamp = String.valueOf(System.currentTimeMillis());
         String signature = AliSignUtils.signature(timestamp + "\n" + signKey, signKey, "HmacSHA256");
         return restTemplate.postForObject(ROBOT_SEND, requestBody, GetUserDetailByUseridResponse.class, accessToken, timestamp, signature);
+    }
+
+    /**
+     * 注册回调地址
+     */
+    public static BaseResponse registerCallback(String aesKey, String token, String url, String[] callbackTag, String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("aes_key", aesKey);
+        requestBody.put("token", token);
+        requestBody.put("url", url);
+        requestBody.put("call_back_tag", callbackTag);
+        return restTemplate.postForObject(REGISTER_CALLBACK, requestBody, GetUserDetailByUseridResponse.class, accessToken);
     }
 
 }

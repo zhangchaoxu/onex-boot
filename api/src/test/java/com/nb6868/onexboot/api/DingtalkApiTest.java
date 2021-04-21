@@ -35,7 +35,25 @@ public class DingtalkApiTest {
 
     @Test
     void asrVoiceTranslate() {
-        String response = DingTalkApi.asrVoiceTranslate("@@lATPDf0iyGhtg8DODAIAcM4u0LOS", "80878ad8026d39c8a647fd66391a86f9");
+        String response = DingTalkApi.asrVoiceTranslate("@@lATPDf0iyGhtg8DODAIAcM4u0LOS", "9ef940ba747536d5a9c568c177983101");
+        System.out.println(response);
+    }
+
+    @Test
+    void registerCallback() {
+        BaseResponse response = DingTalkApi.registerCallback("EvnXTdTV2UmbtTTMBYoiENqZcGkioxhKhPiW5hXTCCR",
+                "mLSiVo1RNFEK7tr5Xx8lApSLrWyUFpNfcJ1aBwEQoU1VouSGIe6iZi",
+                "https://charles-dev.cn.utools.club/onex-boot-api/dingtalk/eventCallback",
+                new String[]{"voice_translate_short_speech"},
+                "9ef940ba747536d5a9c568c177983101");
+        System.out.println(response);
+    }
+
+    @Test
+    void ocrStructuredRecognize() {
+        ResultResponse<String> response = DingTalkApi.ocrStructuredRecognize("blicense",
+                "mLSiVo1RNFEK7tr5Xx8lApSLrWyUFpNfcJ1aBwEQoU1VouSGIe6iZi",
+                "9ef940ba747536d5a9c568c177983101");
         System.out.println(response);
     }
 
