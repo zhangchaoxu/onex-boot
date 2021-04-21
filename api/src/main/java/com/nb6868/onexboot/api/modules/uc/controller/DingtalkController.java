@@ -37,7 +37,7 @@ public class DingtalkController {
             // 1、开发者后台配置的订阅事件为应用级事件推送，此时OWNER_KEY为应用的APP_KEY。
             // 2、调用订阅事件接口订阅的事件为企业级事件推送，
             //      此时OWNER_KEY为：企业的appkey（企业内部应用）或SUITE_KEY（三方应用）
-            DingCallbackCrypto callbackCrypto = new DingCallbackCrypto("", "", "dingzy0fp2ltwvg3gw8m");
+            DingCallbackCrypto callbackCrypto = new DingCallbackCrypto("mLSiVo1RNFEK7tr5Xx8lApSLrWyUFpNfcJ1aBwEQoU1VouSGIe6iZi", "EvnXTdTV2UmbtTTMBYoiENqZcGkioxhKhPiW5hXTCCR", "dinge50b586c3b1a420d35c2f4657eb6378f");
             String encryptMsg = json.get("encrypt");
             String decryptMsg = callbackCrypto.getDecryptMsg(msg_signature, timestamp, nonce, encryptMsg);
             // 3. 反序列化回调事件json数据
