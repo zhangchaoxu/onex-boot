@@ -58,7 +58,7 @@ public class RegionDTO implements Serializable {
 	private String geo;
 
 	@ApiModelProperty(value = "边界坐标点GCJ-02")
-	private String polyline;
+	private String polygon;
 
 	@ApiModelProperty(value = "是否有下级")
 	public boolean getHasChildren() {

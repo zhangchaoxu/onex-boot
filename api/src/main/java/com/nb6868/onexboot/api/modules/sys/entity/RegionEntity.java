@@ -66,6 +66,6 @@ public class RegionEntity implements Serializable {
     /**
      * 边界坐标点,GCJ-02
      */
-    private String polyline;
+    private String polygon;
 
 }
