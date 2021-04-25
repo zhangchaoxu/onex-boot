@@ -23,7 +23,7 @@ public class RSAUtils {
      * @param base64s 公钥字符串
      * @return RSA公钥
      */
-    public static RSAPublicKey getRSAPublidKeyByBase64(String base64s) {
+    public static RSAPublicKey getRSAPublicKeyByBase64(String base64s) {
         try {
             return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(new Base64().decode(base64s)));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {

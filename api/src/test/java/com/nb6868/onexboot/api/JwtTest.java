@@ -72,7 +72,7 @@ public class JwtTest {
                 .withIssuedAt(now)
                 .withExpiresAt(DateUtils.addDateMinutes(now, 3))
                 .withSubject(uuid)
-                .sign(Algorithm.RSA256(RSAUtils.getRSAPublidKeyByBase64(pubKey), RSAUtils.getRSAPrivateKeyByBase64(priKey)));
+                .sign(Algorithm.RSA256(RSAUtils.getRSAPublicKeyByBase64(pubKey), RSAUtils.getRSAPrivateKeyByBase64(priKey)));
         log.info("rsa token=\n" + jwtToken);
         // 打开浏览器
         java.awt.Desktop.getDesktop().browse(java.net.URI.create("http://yunmian2020.f3322.net:8000/login?token=" + jwtToken));
