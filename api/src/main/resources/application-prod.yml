@@ -32,8 +32,8 @@ spring:
       stat-view-servlet:
         enabled: true
         url-pattern: /druid/*
-        #login-username: admin
-        #login-password: admin
+        login-username: admin
+        login-password: rkTA7&2&#&Qu
       filter:
         stat:
           log-slow-sql: true
