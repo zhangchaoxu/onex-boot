@@ -50,6 +50,6 @@ public class RegionTreeDTO extends TreeNode<RegionTreeDTO> implements Serializab
 	private String geo;
 
 	@ApiModelProperty(value = "边界坐标点GCJ-02")
-	private String polyline;
+	private String polygon;
 
 }
