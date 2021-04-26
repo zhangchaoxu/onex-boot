@@ -1,4 +1,4 @@
-package com.nb6868.onexboot.api.common.websocket;
+package com.nb6868.onexboot.api.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

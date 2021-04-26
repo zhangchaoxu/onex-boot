@@ -1,6 +1,5 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
-import com.nb6868.onexboot.api.common.websocket.WebSocketServer;
 import com.nb6868.onexboot.common.pojo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
