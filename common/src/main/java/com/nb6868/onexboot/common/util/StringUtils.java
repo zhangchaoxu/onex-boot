@@ -1,6 +1,15 @@
 package com.nb6868.onexboot.common.util;
 
-import java.util.*;
+import lombok.SneakyThrows;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.StringJoiner;
 
 /**
  * 字符处理工具类
@@ -258,6 +267,22 @@ public class StringUtils {
             array.add((strHex.length() == 1) ? "0" + strHex : strHex);
         }
         return array;
+    }
+
+    /**
+     * URLDecoder
+     */
+    @SneakyThrows(UnsupportedEncodingException.class)
+    public static String urlDecode(String raw) {
+        return URLDecoder.decode(raw, StandardCharsets.UTF_8.name());
+    }
+
+    /**
+     * URLEncoder
+     */
+    @SneakyThrows(UnsupportedEncodingException.class)
+    public static String urlEncode(String raw) {
+        return URLEncoder.encode(raw, StandardCharsets.UTF_8.name());
     }
 
 }
