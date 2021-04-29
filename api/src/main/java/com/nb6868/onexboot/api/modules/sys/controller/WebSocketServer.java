@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 @Log4j2
 @Component
-@ServerEndpoint("/webSocket/{sid}")
+@ServerEndpoint("/ws/{sid}")
 public class WebSocketServer {
 
 
