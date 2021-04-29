@@ -11,9 +11,23 @@ import java.util.List;
  */
 public class GpsCoordinateUtils {
 
-    private static final double PI = 3.1415926535897932384626433832795;
+    private static final double PI = Math.PI;
     private static final double A = 6378245.0;
     private static final double EE = 0.00669342162296594323;
+    private static final double PK = 180 / PI;
+
+    /**
+     * 根据经纬度计算两点之间的距离
+     *
+     * @return 距离
+     */
+    public static long getDistance(double lat_a, double lng_a, double lat_b, double lng_b) {
+        double t1 = Math.cos(lat_a / PK) * Math.cos(lng_a / PK) * Math.cos(lat_b / PK) * Math.cos(lng_b / PK);
+        double t2 = Math.cos(lat_a / PK) * Math.sin(lng_a / PK) * Math.cos(lat_b / PK) * Math.sin(lng_b / PK);
+        double t3 = Math.sin(lat_a / PK) * Math.sin(lat_b / PK);
+
+        return (long) (6366000 * Math.acos(t1 + t2 + t3));
+    }
 
     /**
      * 地球坐标系 WGS-84 to 火星坐标系 GCJ-02
