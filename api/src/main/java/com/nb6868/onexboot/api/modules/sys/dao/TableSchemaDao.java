@@ -53,6 +53,13 @@ public interface TableSchemaDao {
     int copyTableStructure(@Param("tableNameTarget") String tableNameTarget, @Param("tableNameSource") String tableNameSource);
 
     /**
+     * 复制表数据
+     * 表结构不一样 INSERT INTO ${tableNameTarget}(字段1,字段2,.......) SELECT 字段1,字段2,...... FROM ${tableNameSource}
+     */
+    @Update("INSERT INTO ${tableNameTarget} SELECT * FROM ${tableNameSource}")
+    int copyTableData(@Param("tableNameTarget") String tableNameTarget, @Param("tableNameSource") String tableNameSource);
+
+    /**
      * 修改表注释
      */
     @Update("ALTER TABLE ${tableName} COMMENT #{comment}")

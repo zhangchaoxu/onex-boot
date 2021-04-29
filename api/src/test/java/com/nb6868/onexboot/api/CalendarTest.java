@@ -1,18 +1,13 @@
 package com.nb6868.onexboot.api;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.sys.dao.CalendarDao;
-import com.nb6868.onexboot.api.modules.sys.entity.CalendarEntity;
 import org.joda.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +46,7 @@ public class CalendarTest {
         List<Date> dayList = getDayList();
         RestTemplate restTemplate = new RestTemplate();
         for (Date date : dayList) {
-            JSONObject json;
+            /*JSONObject json;
             try {
                 json = restTemplate.getForObject("http://timor.tech/api/holiday/info/{1}/", JSONObject.class, new SimpleDateFormat("yyyy-MM-dd").format(date));
             } catch (Exception e) {
@@ -81,7 +76,7 @@ public class CalendarTest {
             }
             calendar.setDayDate(date);
             calendarDao.insert(calendar);
-            System.out.println("count:" + calendarDao.selectCount(new QueryWrapper<>()));
+            System.out.println("count:" + calendarDao.selectCount(new QueryWrapper<>()));*/
         }
     }
 
