@@ -61,6 +61,9 @@ public class ShiroConfig {
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
         // 匿名访问地址
+        filterMap.put("/", "anon");
+        filterMap.put("/ws/**", "anon");
+        //
         filterMap.put("/static/**", "anon");
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/druid/**", "anon");
