@@ -10,9 +10,9 @@
     </parent>
 
     <packaging>pom</packaging>
-    <groupId>com.nb6868</groupId>
+    <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
