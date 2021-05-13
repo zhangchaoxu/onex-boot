@@ -4,7 +4,6 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Kv;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -23,8 +22,12 @@ public class LocalOssService extends AbstractOssService {
 
     @Override
     public String upload(MultipartFile file) {
-        String objectKey = buildUploadPath(config.getPrefix(), FilenameUtils.getExtension(file.getOriginalFilename()));
+        String objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), false);
         File localFile = new File(config.getLocalPath() + File.separator + objectKey);
+        if (localFile.exists()) {
+            // 文件已存在,则需要对文件重命名
+            objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), true);
+        }
         try {
             FileUtils.copyToFile(file.getInputStream(), localFile);
         } catch (IOException e) {
