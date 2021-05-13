@@ -1,11 +1,8 @@
 package com.nb6868.onexboot.api.modules.sys.oss;
 
-import com.aliyun.oss.OSSException;
-import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.OSSException;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.auth.sts.AssumeRoleRequest;
 import com.aliyuncs.auth.sts.AssumeRoleResponse;
@@ -14,8 +11,10 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.http.ProtocolType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.nb6868.onexboot.common.exception.ErrorCode;
+import com.nb6868.onexboot.common.exception.OnexException;
+import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.util.DateUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,9 +35,13 @@ public class AliyunOssService extends AbstractOssService {
 
     @Override
     public String upload(MultipartFile file) {
-        String objectKey =  buildUploadPath(config.getPrefix(), FilenameUtils.getExtension(file.getOriginalFilename()));
+        String objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), false);
         OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
         try {
+            if (ossClient.doesObjectExist(config.getBucketName(), objectKey)) {
+                // 文件已存在,则需要对文件重命名
+                objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), true);
+            }
             ossClient.putObject(config.getBucketName(), objectKey, file.getInputStream());
         } catch (OSSException | com.aliyun.oss.ClientException | IOException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
