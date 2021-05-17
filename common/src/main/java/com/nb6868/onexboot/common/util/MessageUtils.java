@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator;
@@ -42,6 +43,11 @@ public class MessageUtils {
     }
 
     public static String getMessage(int code, String... params) {
-        return messageSource.getMessage(String.valueOf(code), params, LocaleContextHolder.getLocale());
+        try {
+            return messageSource.getMessage(String.valueOf(code), params, LocaleContextHolder.getLocale());
+        } catch (NoSuchMessageException e) {
+            // 找不到会抛NoSuchMessageException
+            return "未定义的错误代码";
+        }
     }
 }
