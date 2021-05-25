@@ -27,6 +27,9 @@ public class OssProp implements Serializable {
     @URL(message = "{aliyun.domain.url}")
     private String domain;
 
+    @ApiModelProperty("保留文件名")
+    private Boolean keepFileName;
+
     @ApiModelProperty("安全访问")
     private Boolean secure;
 

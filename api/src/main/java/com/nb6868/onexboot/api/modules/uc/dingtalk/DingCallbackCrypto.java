@@ -24,7 +24,7 @@ import java.util.Random;
  */
 public class DingCallbackCrypto {
 
-    private static final Charset CHARSET = Charset.forName("utf-8");
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
     private static final Base64 base64 = new Base64();
     private byte[] aesKey;
     private String token;
@@ -67,8 +67,6 @@ public class DingCallbackCrypto {
      * @param plaintext 传递的消息体明文
      * @param timeStamp 时间戳
      * @param nonce     随机字符串
-     * @return
-     * @throws DingTalkEncryptException
      */
     public Map<String, String> getEncryptedMap(String plaintext, Long timeStamp, String nonce) throws DingTalkEncryptException {
         if (null == plaintext) {
@@ -260,7 +258,6 @@ public class DingCallbackCrypto {
 
     public static class PKCS7Padding {
         private static final Charset CHARSET = StandardCharsets.UTF_8;
-        private static final int BLOCK_SIZE = 32;
 
         public PKCS7Padding() {
         }

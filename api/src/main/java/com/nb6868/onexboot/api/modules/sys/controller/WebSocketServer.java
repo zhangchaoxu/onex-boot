@@ -21,8 +21,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 @ServerEndpoint("/ws/{sid}")
 public class WebSocketServer {
-
-
+    
     // 线程安全Set，存放每个客户端对应的MyWebSocket对象
     private final static CopyOnWriteArraySet<WebSocketServer> webSockets = new CopyOnWriteArraySet<>();
     private final static Map<Long, Session> sessionPool = new HashMap<>();
