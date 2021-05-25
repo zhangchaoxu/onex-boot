@@ -1,10 +1,10 @@
 package com.nb6868.onexboot.api.modules.sys.oss;
 
+import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 
 /**
  * 文件上传Factory
