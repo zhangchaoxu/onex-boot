@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
-import com.nb6868.onexboot.common.util.bcrypt.BCryptPasswordEncoder;
+import cn.hutool.crypto.digest.DigestUtil;
 
 /**
  * 密码工具类
@@ -9,8 +9,6 @@ import com.nb6868.onexboot.common.util.bcrypt.BCryptPasswordEncoder;
  */
 public class PasswordUtils {
 
-    private final static BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
     /**
      * 加密
      *
@@ -18,7 +16,7 @@ public class PasswordUtils {
      * @return 返回加密字符串
      */
     public static String encode(String raw) {
-        return bCryptPasswordEncoder.encode(raw);
+        return DigestUtil.bcrypt(raw);
     }
 
     /**
@@ -29,7 +27,7 @@ public class PasswordUtils {
      * @return 匹配结果
      */
     public static boolean matches(String raw, String encoded) {
-        return bCryptPasswordEncoder.matches(raw, encoded);
+        return DigestUtil.bcryptCheck(raw, encoded);
     }
 
 }

@@ -22,7 +22,6 @@ import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
-import com.nb6868.onexboot.common.util.bcrypt.BCryptPasswordEncoder;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -190,7 +189,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         // 验证成功,创建用户
         UserEntity entity = new UserEntity();
 
-        entity.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        entity.setPassword(PasswordUtils.encode(request.getPassword()));
         entity.setUsername(request.getUsername());
         entity.setMobile(request.getMobile());
         entity.setMobileArea(request.getMobileArea());
