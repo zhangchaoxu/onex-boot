@@ -19,10 +19,10 @@
         <easypoi.version>4.3.0</easypoi.version>
         <aliyun.oss.version>3.12.0</aliyun.oss.version>
         <jwt.version>3.16.0</jwt.version>
-        <weixin.pay.version>4.0.0</weixin.pay.version>
-        <weixin.miniapp.version>4.0.0</weixin.miniapp.version>
-        <weixin.mp.version>4.0.0</weixin.mp.version>
-        <alipay.sdk.version>4.13.50.ALL</alipay.sdk.version>
+        <weixin.pay.version>4.1.0</weixin.pay.version>
+        <weixin.miniapp.version>4.1.0</weixin.miniapp.version>
+        <weixin.mp.version>4.1.0</weixin.mp.version>
+        <alipay.sdk.version>4.13.58.ALL</alipay.sdk.version>
         <jpush.version>3.4.8</jpush.version>
         <zxing.version>3.4.1</zxing.version>
     </properties>
