@@ -1,12 +1,12 @@
 package com.nb6868.onexboot.api.modules.sched.utils;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import com.nb6868.onexboot.api.modules.sched.SchedConst;
 import com.nb6868.onexboot.api.modules.sched.entity.TaskEntity;
+import com.nb6868.onexboot.api.modules.sched.entity.TaskLogEntity;
 import com.nb6868.onexboot.api.modules.sched.service.TaskLogService;
 import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.util.ExceptionUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
-import com.nb6868.onexboot.api.modules.sched.entity.TaskLogEntity;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class ScheduleJob extends QuartzJobBean {
 
             //任务状态
             log.setState(Const.ResultEnum.FAIL.value());
-            log.setError(ExceptionUtils.getErrorStackTrace(e));
+            log.setError(ExceptionUtil.stacktraceToString(e));
         } finally {
             // 获取spring bean
             TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
