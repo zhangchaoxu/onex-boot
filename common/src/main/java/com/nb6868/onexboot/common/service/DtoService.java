@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.common.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,7 +12,6 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,7 +118,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      */
     @SuppressWarnings("unchecked")
     public <E> E getSelectColumnById(Serializable id, String column) {
-        if (ObjectUtils.isEmpty(id) || ObjectUtils.isEmpty(column)) {
+        if (ObjectUtil.isEmpty(id) || ObjectUtil.isEmpty(column)) {
             return null;
         }
         Map<String, Object> entity = getMap(new QueryWrapper<T>().select(column).eq("id", id).last(Const.LIMIT_ONE));
@@ -183,7 +183,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
         // 检查id
         Object idVal = getIdVal(entity);
-        if (ObjectUtils.isNotEmpty(idVal)) {
+        if (ObjectUtil.isNotEmpty(idVal)) {
             throw new OnexException(ErrorCode.ID_NOT_NULL_IN_SAVE);
         }
         // 自定义操作前检查
@@ -207,7 +207,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
         // 检查id
         Object idVal = getIdVal(entity);
-        if (ObjectUtils.isEmpty(idVal)) {
+        if (ObjectUtil.isEmpty(idVal)) {
             throw new OnexException(ErrorCode.ID_NULL_IN_UPDATE);
         }
         // 自定义操作前检查
@@ -264,7 +264,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
     public boolean saveOrUpdateDto(D dto) {
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
         Object idVal = getIdVal(entity);
-        if (ObjectUtils.isNotEmpty(idVal)) {
+        if (ObjectUtil.isNotEmpty(idVal)) {
             return updateDto(dto);
         } else {
             return saveDto(dto);

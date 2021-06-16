@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.msg.sms;
 
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
@@ -9,7 +10,6 @@ import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
@@ -42,7 +42,7 @@ public class JuheSmsService extends AbstractSmsService {
         Map<String, Object> paramJson = JacksonUtils.jsonToMap(params, new HashMap<>());
         for (String key : paramJson.keySet()) {
             // 遍历json,拼装参数
-            if (StringUtils.isNotBlank(paramJuhe)) {
+            if (StrUtil.isNotBlank(paramJuhe)) {
                 paramJuhe.append("&");
             }
             paramJuhe.append("#").append(key).append("#=").append(paramJson.get(key));

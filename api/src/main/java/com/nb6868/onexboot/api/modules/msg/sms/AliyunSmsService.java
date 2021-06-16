@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.msg.sms;
 
+import cn.hutool.core.collection.CollUtil;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
@@ -9,7 +10,6 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.AliSignUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
@@ -113,7 +113,7 @@ public class AliyunSmsService extends AbstractSmsService {
 
     @Override
     public boolean sendBatchSms(MailTplEntity mailTpl, String[] phoneNumbers, String params) {
-        return sendSms(mailTpl, StringUtils.joinList(phoneNumbers), params);
+        return sendSms(mailTpl, CollUtil.join(CollUtil.newArrayList(phoneNumbers), ","), params);
     }
 
 }

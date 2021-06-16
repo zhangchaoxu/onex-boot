@@ -1,5 +1,7 @@
 package com.nb6868.onexboot.api.modules.msg.push;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.jiguang.common.ClientConfig;
 import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
@@ -15,16 +17,14 @@ import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
+import com.nb6868.onexboot.api.modules.msg.entity.PushLogEntity;
+import com.nb6868.onexboot.api.modules.msg.service.PushLogService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.SpringContextUtils;
-import com.nb6868.onexboot.api.modules.msg.entity.PushLogEntity;
-import com.nb6868.onexboot.api.modules.msg.service.PushLogService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -42,10 +42,10 @@ public class JPushService extends AbstractPushService {
     public void send(PushProps props, int pushType, String alias, String tags, String title, String content, String extras, Boolean apnsProd) {
         JPushClient jpushClient = new JPushClient(props.getMasterSecret(), props.getAppKey(), null, ClientConfig.getInstance());
         Map<String, String> extraMap = null;
-        if (StringUtils.isNoneEmpty(extras)) {
+        if (StrUtil.isNotEmpty(extras)) {
             extraMap = JacksonUtils.jsonToPojoByTypeReference(extras, new TypeReference<Map<String, String>>(){});
         }
-        PushPayload payload = buildNotificationPushPayloadByAliases(pushType, StringUtils.split(alias, ","),  StringUtils.split(tags, ","), title, content, extraMap, apnsProd);
+        PushPayload payload = buildNotificationPushPayloadByAliases(pushType, StrUtil.split(alias, ","),  StrUtil.split(tags, ","), title, content, extraMap, apnsProd);
 
         // 保存记录
         PushLogService logService = SpringContextUtils.getBean(PushLogService.class);
@@ -88,22 +88,22 @@ public class JPushService extends AbstractPushService {
         Audience.Builder audienceBuilder = Audience.newBuilder();
         audienceBuilder.setAll(pushType == MsgConst.PushTypeEnum.ALL.value());
         if (pushType == MsgConst.PushTypeEnum.ALIAS.value()) {
-            if (ObjectUtils.isNotEmpty(aliases)) {
+            if (ObjectUtil.isNotEmpty(aliases)) {
                 audienceBuilder.addAudienceTarget(AudienceTarget.alias(aliases));
             } else {
                 throw new OnexException("aliases不能为空");
             }
         } else if (pushType == MsgConst.PushTypeEnum.TAGS.value()) {
-            if (ObjectUtils.isNotEmpty(tags)) {
+            if (ObjectUtil.isNotEmpty(tags)) {
                 audienceBuilder.addAudienceTarget(AudienceTarget.tag(tags));
             } else {
                 throw new OnexException("tags不能为空");
             }
         } if (pushType == MsgConst.PushTypeEnum.ALIAS_AND_TAGS.value()) {
-            if (ObjectUtils.isNotEmpty(aliases)) {
+            if (ObjectUtil.isNotEmpty(aliases)) {
                 audienceBuilder.addAudienceTarget(AudienceTarget.alias(aliases));
             }
-            if (ObjectUtils.isNotEmpty(tags)) {
+            if (ObjectUtil.isNotEmpty(tags)) {
                 audienceBuilder.addAudienceTarget(AudienceTarget.tag(tags));
             }
         }

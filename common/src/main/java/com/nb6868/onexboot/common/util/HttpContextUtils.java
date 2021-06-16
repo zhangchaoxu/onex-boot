@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
+import cn.hutool.core.util.StrUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
@@ -40,7 +41,7 @@ public class HttpContextUtils {
      */
     public static String getFullUrl(HttpServletRequest request) {
         String queryString = request.getQueryString();
-        if (StringUtils.isBlank(queryString)) {
+        if (StrUtil.isBlank(queryString)) {
             return request.getRequestURL().toString();
         } else {
             return request.getRequestURL().append("?").append(queryString).toString();
@@ -69,7 +70,7 @@ public class HttpContextUtils {
             }
             if (!excluded) {
                 String value = request.getParameter(parameter);
-                if (StringUtils.isNotBlank(value)) {
+                if (StrUtil.isNotBlank(value)) {
                     params.put(parameter, value);
                 }
             }
@@ -133,19 +134,19 @@ public class HttpContextUtils {
         String unknown = "unknown";
         try {
             ip = request.getHeader("x-forwarded-for");
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
+            if (StrUtil.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("Proxy-Client-IP");
             }
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
+            if (StrUtil.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("WL-Proxy-Client-IP");
             }
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
+            if (StrUtil.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("HTTP_CLIENT_IP");
             }
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
+            if (StrUtil.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("HTTP_X_FORWARDED_FOR");
             }
-            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
+            if (StrUtil.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getRemoteAddr();
                 if ("127.0.0.1".equalsIgnoreCase(ip)) {
                     // 根据网卡取本机配置的IP
@@ -193,7 +194,7 @@ public class HttpContextUtils {
      * 获取请求中的参数
      */
     public static String getRequestParameter(HttpServletRequest httpRequest, String name) {
-        if (httpRequest == null || StringUtils.isEmpty(name)) {
+        if (httpRequest == null || StrUtil.isEmpty(name)) {
             return null;
         }
 
@@ -201,7 +202,7 @@ public class HttpContextUtils {
         String param = httpRequest.getHeader(name);
 
         // 如果header中不存在，则从参数中获取
-        if (StringUtils.isBlank(param)) {
+        if (StrUtil.isBlank(param)) {
             param = httpRequest.getParameter(name);
         }
 
@@ -212,7 +213,7 @@ public class HttpContextUtils {
      * 获取请求中的参数
      */
     public static String getRequestParameter(NativeWebRequest httpRequest, String name) {
-        if (httpRequest == null || StringUtils.isEmpty(name)) {
+        if (httpRequest == null || StrUtil.isEmpty(name)) {
             return null;
         }
 
@@ -220,7 +221,7 @@ public class HttpContextUtils {
         String param = httpRequest.getHeader(name);
 
         // 如果header中不存在，则从参数中获取
-        if (StringUtils.isBlank(param)) {
+        if (StrUtil.isBlank(param)) {
             param = httpRequest.getParameter(name);
         }
 

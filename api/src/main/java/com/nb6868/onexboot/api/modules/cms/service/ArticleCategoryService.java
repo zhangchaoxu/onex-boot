@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.cms.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.cms.dao.ArticleCategoryDao;
 import com.nb6868.onexboot.api.modules.cms.dto.ArticleCategoryDTO;
@@ -8,7 +9,6 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class ArticleCategoryService extends DtoService<ArticleCategoryDao, Artic
 
     @Override
     protected void beforeSaveOrUpdateDto(ArticleCategoryDTO dto, int type) {
-        boolean hasRecord = query().eq(StringUtils.isNotBlank(dto.getCode()), "code", dto.getCode())
+        boolean hasRecord = query().eq(StrUtil.isNotBlank(dto.getCode()), "code", dto.getCode())
                 .eq("site_id", dto.getSiteId())
                 .ne(dto.getId() != null, "id", dto.getId()).exists();
         AssertUtils.isTrue(hasRecord, ErrorCode.ERROR_REQUEST, "编码已存在");
@@ -47,7 +47,7 @@ public class ArticleCategoryService extends DtoService<ArticleCategoryDao, Artic
 
     @Override
     protected void afterSaveOrUpdateDto(boolean ret, ArticleCategoryDTO dto, ArticleCategoryEntity existedEntity, int type) {
-        if (1 == type && ret && !StringUtils.equals(existedEntity.getCode(), dto.getCode())) {
+        if (1 == type && ret && !StrUtil.equalsIgnoreCase(existedEntity.getCode(), dto.getCode())) {
             // 更新成功, code发生变化,更新相关业务表中的code
             articleService.updateArticleCategoryCode(dto.getId(), dto.getCode());
         }

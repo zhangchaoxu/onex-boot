@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.crm.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onexboot.api.modules.crm.dao.ProductCategoryDao;
@@ -10,7 +11,6 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +45,7 @@ public class ProductCategoryService extends DtoService<ProductCategoryDao, Produ
 
     @Override
     protected void afterSaveOrUpdateDto(boolean ret, ProductCategoryDTO dto, ProductCategoryEntity existedEntity, int type) {
-        if (1 == type && ret && !StringUtils.equals(existedEntity.getName(), dto.getName())) {
+        if (1 == type && ret && !StrUtil.equalsIgnoreCase(existedEntity.getName(), dto.getName())) {
             // 更新成功, name发生变化,更新相关业务表中的code
             productService.update().eq("category_id", existedEntity.getId()).set("category_name", dto.getName()).update(new ProductEntity());
         }

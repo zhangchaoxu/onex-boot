@@ -1,5 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import cn.hutool.core.text.StrSpliter;
+import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -23,7 +25,6 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.PasswordUtils;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,10 +79,10 @@ public class AuthService {
         // 用户权限列表
         Set<String> set = new HashSet<>();
         for (String permissions : permissionsList) {
-            if (StringUtils.isBlank(permissions)) {
+            if (StrUtil.isBlank(permissions)) {
                 continue;
             }
-            set.addAll(StringUtils.splitToList(permissions));
+            set.addAll(StrSpliter.splitTrim(permissions, ',', true));
         }
         return set;
     }

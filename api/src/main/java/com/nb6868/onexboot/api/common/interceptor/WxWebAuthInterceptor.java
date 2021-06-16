@@ -1,20 +1,20 @@
 package com.nb6868.onexboot.api.common.interceptor;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.nb6868.onexboot.api.common.annotation.WxWebAuth;
+import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.wx.WxProp;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.util.HttpContextUtils;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.common.annotation.WxWebAuth;
-import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -44,11 +44,11 @@ public class WxWebAuthInterceptor implements HandlerInterceptor {
                 String userAgent = request.getHeader("User-Agent");
                 // 从session中获取openid
                 Object openid = request.getSession(false).getAttribute(UcConst.WX_SESSION_OPEN_ID);
-                if (ObjectUtils.isEmpty(openid)) {
+                if (ObjectUtil.isEmpty(openid)) {
                     // 通过是否有code来判断是否回调
                     String code = request.getParameter("code");
                     WxMpService wxService = getWxService(UcConst.WX_MP);
-                    if (StringUtils.isBlank(code)) {
+                    if (StrUtil.isBlank(code)) {
                         String url = HttpContextUtils.getFullUrl(request);
                         String oauth2buildAuthorizationUrl = wxService.getOAuth2Service().buildAuthorizationUrl(url, annotation.scope(), "wx#wechat_redirect");
                         try {

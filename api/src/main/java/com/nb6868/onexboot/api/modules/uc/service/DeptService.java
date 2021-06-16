@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
@@ -13,7 +14,6 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.TreeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -135,7 +135,7 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 		List<Long> pidList = new ArrayList<>();
 		getPidTree(pid, map, pidList);
 
-		return StringUtils.join(pidList, ",");
+		return CollUtil.join(pidList, ",");
 	}
 
 	private void getPidTree(Long pid, Map<Long, DeptEntity> map, List<Long> pidList) {

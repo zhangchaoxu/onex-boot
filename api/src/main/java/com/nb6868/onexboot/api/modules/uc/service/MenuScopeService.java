@@ -1,11 +1,11 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.uc.dao.MenuScopeDao;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuScopeEntity;
 import com.nb6868.onexboot.common.service.EntityService;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +36,7 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
         // 先删除角色菜单关系
         deleteByRoleIds(Collections.singletonList(roleId));
 
-        if (ObjectUtils.isNotEmpty(menuIds)) {
+        if (ObjectUtil.isNotEmpty(menuIds)) {
             List<MenuEntity> menus = menuService.listByIds(menuIds);
             //保存角色菜单关系
             for (MenuEntity menu : menus) {
@@ -63,7 +63,7 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
         // 先删除角色菜单关系
         deleteByUserId(userId);
 
-        if (ObjectUtils.isNotEmpty(menuIds)) {
+        if (ObjectUtil.isNotEmpty(menuIds)) {
             List<MenuEntity> menus = menuService.listByIds(menuIds);
             //保存角色菜单关系
             for (MenuEntity menu : menus) {

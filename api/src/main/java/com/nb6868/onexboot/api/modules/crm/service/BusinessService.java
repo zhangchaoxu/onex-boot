@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.crm.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.crm.dao.BusinessDao;
 import com.nb6868.onexboot.api.modules.crm.dto.BusinessDTO;
@@ -15,7 +16,6 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -96,7 +96,7 @@ public class BusinessService extends DtoService<BusinessDao, BusinessEntity, Bus
             // 修改，先删除原先的产品信息
             businessProductService.deleteByBusinessId(dto.getId());
             // 是否修改了名称
-            if (!StringUtils.equals(existedEntity.getName(), dto.getName())) {
+            if (!StrUtil.equals(existedEntity.getName(), dto.getName())) {
                 // 修改合同中冗余的名字
                 contractService.update().eq("business_id", existedEntity.getId()).set("business_name", dto.getName()).update(new ContractEntity());
             }

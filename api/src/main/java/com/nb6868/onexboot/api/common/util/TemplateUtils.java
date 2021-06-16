@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.common.util;
 
-import com.nb6868.onexboot.common.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -26,7 +26,7 @@ public class TemplateUtils {
      * @param params 参数
      */
     public static String getTemplateContent(String templateName, String raw, Map<String, Object> params) {
-        if (StringUtils.isBlank(raw) || CollectionUtils.isEmpty(params)) {
+        if (StrUtil.isBlank(raw) || CollectionUtils.isEmpty(params)) {
             return raw;
         }
         // 模板

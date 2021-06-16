@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.region;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.nb6868.onexboot.common.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
 @Data
@@ -15,7 +15,7 @@ public class RegionOkGeo {
     private String polygon;
 
     public String getGeo() {
-        if (StringUtils.isEmpty(geo) || "empty".equalsIgnoreCase(geo)) {
+        if (StrUtil.isEmpty(geo) || "empty".equalsIgnoreCase(geo)) {
             return null;
         } else {
             return geo.trim().replaceAll(" ", ",");
@@ -23,7 +23,7 @@ public class RegionOkGeo {
     }
 
     public String getPolygon() {
-        if (StringUtils.isEmpty(polygon) || "empty".equalsIgnoreCase(polygon)) {
+        if (StrUtil.isEmpty(polygon) || "empty".equalsIgnoreCase(polygon)) {
             return null;
         } else {
             return polygon.trim().replaceAll(",", ";").replaceAll(" ", ",");
