@@ -1,9 +1,9 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
+import cn.hutool.core.util.IdUtil;
 import com.nb6868.onexboot.api.modules.uc.service.CaptchaService;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.IdUtils;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,7 +45,7 @@ public class CaptchaController {
     @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", dataTypeClass = Integer.class, name = "图片宽度", defaultValue = "150"),
             @ApiImplicitParam(paramType = "query", dataType = "int", dataTypeClass = Integer.class, name = "图片高度", defaultValue = "50")})
     public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width, @RequestParam(required = false, defaultValue = "50") int height) {
-        String uuid = IdUtils.randomUUID();
+        String uuid = IdUtil.randomUUID();
         // 随机取出一种
         String[] captchaTypes = {"arithmetic", "spec"};
         Captcha captcha = captchaService.createCaptcha(uuid, width, height, captchaTypes[(int) (Math.random() * captchaTypes.length)]);

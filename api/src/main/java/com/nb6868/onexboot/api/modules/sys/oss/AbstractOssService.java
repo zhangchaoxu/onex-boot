@@ -1,8 +1,8 @@
 package com.nb6868.onexboot.api.modules.sys.oss;
 
+import cn.hutool.core.util.IdUtil;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.util.DateUtils;
-import com.nb6868.onexboot.common.util.IdUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +50,7 @@ public abstract class AbstractOssService {
             }
         } else {
             // 生成uuid
-            String uuid = IdUtils.simpleUUID();
+            String uuid = IdUtil.simpleUUID();
             String fileExtensionName = FilenameUtils.getExtension(fileName);
             if (StringUtils.isNotBlank(fileExtensionName)) {
                 if (appendTimestamp) {
