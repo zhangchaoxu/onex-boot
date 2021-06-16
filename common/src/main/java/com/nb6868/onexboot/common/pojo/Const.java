@@ -7,6 +7,7 @@ package com.nb6868.onexboot.common.pojo;
  */
 public interface Const {
 
+    String AES_KEY = "1234567890adbcde";
     /**
      * 部门根节点标识
      */
