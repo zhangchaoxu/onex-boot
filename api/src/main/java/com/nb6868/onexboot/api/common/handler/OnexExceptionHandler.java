@@ -1,11 +1,11 @@
 package com.nb6868.onexboot.api.common.handler;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import com.nb6868.onexboot.api.modules.log.entity.ErrorEntity;
 import com.nb6868.onexboot.api.modules.log.service.ErrorService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.ExceptionUtils;
 import com.nb6868.onexboot.common.util.HttpContextUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.MessageUtils;
@@ -291,7 +291,7 @@ public class OnexExceptionHandler {
             }
         }
         // 异常信息
-        log.setContent(ExceptionUtils.getErrorStackTrace(ex));
+        log.setContent(ExceptionUtil.stacktraceToString(ex));
         // 保存
         try {
             errorService.save(log);
