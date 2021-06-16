@@ -4,11 +4,13 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.common.config.LoginProps;
 import com.nb6868.onexboot.api.common.config.OnexProps;
-import com.nb6868.onexboot.api.common.util.AESUtils;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
@@ -25,6 +27,7 @@ import com.nb6868.onexboot.api.modules.uc.service.UserOauthService;
 import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import com.nb6868.onexboot.api.modules.uc.wx.WxApiService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
+import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.ConvertUtils;
@@ -41,9 +44,6 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 认证授权相关接口
@@ -126,10 +126,8 @@ public class AuthController {
     @ApiOperation(value = "加密登录")
     @LogLogin
     public Result<?> loginEncrypt(@RequestBody String loginEncrypted) {
-        // 密文转json明文
-        String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, StandardCharsets.UTF_8.name()));
-        // json明文转实体
-        LoginRequest loginRequest = JacksonUtils.jsonToPojo(loginRaw, LoginRequest.class);
+        // 密文->urldecode->base64解码->aes解码->原明文->json转实体
+        LoginRequest loginRequest = JacksonUtils.jsonToPojo(SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(Base64.decodeStr(URLUtil.decode(loginEncrypted))), LoginRequest.class);
         // 效验数据
         ValidatorUtils.validateEntity(loginRequest, DefaultGroup.class);
         return login(loginRequest);
