@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.common.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
@@ -10,12 +11,12 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onexboot.common.dao.BaseDao;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.util.ConvertUtils;
-import com.nb6868.onexboot.common.util.ParamUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -115,17 +116,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      * @return 是否存在
      */
     public boolean hasDuplicated(Serializable id, String column, Object val) {
-        return hasRecord(new QueryWrapper<T>().eq(column, val).ne(id != null, "id", id));
-    }
-
-    /**
-     * 是否存在查询条件的的记录
-     *
-     * @param wrapper 查询条件
-     * @return 删除结果
-     */
-    public boolean hasRecord(Wrapper<T> wrapper) {
-        return SqlHelper.retBool(count(wrapper));
+        return query().eq(column, val).ne(id != null, "id", id).exists();
     }
 
     /**
@@ -202,7 +193,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      */
     protected IPage<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
         // 分页对象 参数,当前页和每页数
-        Page<T> page = new Page<>(ParamUtils.toLong(params.get(Const.PAGE), 1), ParamUtils.toLong(params.get(Const.LIMIT), 10));
+        Page<T> page = new Page<>(MapUtil.getLong(params, Const.PAGE, 1L), MapUtil.getLong(params, Const.LIMIT, 10L));
 
         // 分页参数?
         // params.put(Constant.PAGE, page);
@@ -260,7 +251,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         return entityClass;
     }
 
-    protected Class<T> mapperClass = currentMapperClass();
+    protected Class<M> mapperClass = currentMapperClass();
 
     /**
      * 判断数据库操作是否成功
@@ -275,14 +266,15 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected Class<T> currentMapperClass() {
-        return (Class<T>) ReflectionKit.getSuperClassGenericType(getClass(), 0);
+    protected Class<M> currentMapperClass() {
+        return (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), ServiceImpl.class, 0);
     }
 
     @SuppressWarnings("unchecked")
     protected Class<T> currentModelClass() {
-        return (Class<T>) ReflectionKit.getSuperClassGenericType(getClass(), 1);
+        return (Class<T>) ReflectionKit.getSuperClassGenericType(this.getClass(), ServiceImpl.class, 1);
     }
+
 
     /**
      * 批量操作 SqlSession

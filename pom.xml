@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.0</version>
+        <version>2.5.1</version>
         <relativePath/>
     </parent>
 
@@ -28,7 +28,8 @@
         <java.version>1.8</java.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <commons.io.version>2.8.0</commons.io.version>
-        <mybatisplus.version>3.4.3</mybatisplus.version>
+        <mybatisplus.version>3.4.3.1</mybatisplus.version>
+        <hutool.version>5.6.6</hutool.version>
         <fastjson.version>1.2.76</fastjson.version>
         <druid.version>1.2.6</druid.version>
         <jsoup.version>1.13.1</jsoup.version>
@@ -140,6 +141,12 @@
                     <artifactId>mybatis-plus-generator</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- hutool -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <!-- fastjson -->
         <dependency>

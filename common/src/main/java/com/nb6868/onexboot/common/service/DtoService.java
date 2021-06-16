@@ -35,7 +35,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
 
     @SuppressWarnings("unchecked")
     protected Class<D> currentDtoClass() {
-        return (Class<D>) ReflectionKit.getSuperClassGenericType(getClass(), 2);
+        return (Class<D>) ReflectionKit.getSuperClassGenericType(this.getClass(), DtoService.class, 2);
     }
 
     /**

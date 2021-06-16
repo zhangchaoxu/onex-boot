@@ -5,7 +5,7 @@ import com.nb6868.onexboot.api.modules.msg.dao.PushLogDao;
 import com.nb6868.onexboot.api.modules.msg.dto.PushLogDTO;
 import com.nb6868.onexboot.api.modules.msg.entity.PushLogEntity;
 import com.nb6868.onexboot.common.service.DtoService;
-import com.nb6868.onexboot.common.util.ParamUtils;
+import com.nb6868.onexboot.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,14 +19,15 @@ import java.util.Map;
 public class PushLogService extends DtoService<PushLogDao, PushLogEntity, PushLogDTO> {
 
     @Override
-    public QueryWrapper<PushLogEntity> getWrapper(String method, Map<String, Object> params){
-        return new QueryWrapper<PushLogEntity>()
-                .like(ParamUtils.isNotEmpty(params.get("content")), "content", params.get("content"))
-                .like(ParamUtils.isNotEmpty(params.get("params")), "params", params.get("params"))
-                .like(ParamUtils.isNotEmpty(params.get("result")), "result", params.get("result"))
-                .eq(ParamUtils.isNotEmpty(params.get("state")), "state", params.get("state"))
-                .eq(ParamUtils.isNotEmpty(params.get("alias")), "alias", params.get("alias"))
-                .eq(ParamUtils.isNotEmpty(params.get("tags")), "tags", params.get("tags"));
+    public QueryWrapper<PushLogEntity> getWrapper(String method, Map<String, Object> params) {
+        return new WrapperUtils<PushLogEntity>(new QueryWrapper<>(), params)
+                .like("content", "content")
+                .like("params", "params")
+                .like("result", "result")
+                .eq("state", "state")
+                .eq("alias", "alias")
+                .eq("tags", "tags")
+                .getQueryWrapper();
     }
 
 }

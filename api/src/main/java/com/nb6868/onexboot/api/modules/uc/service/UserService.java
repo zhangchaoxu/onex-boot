@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
@@ -19,7 +20,6 @@ import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.ParamUtils;
 import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.util.bcrypt.BCryptPasswordEncoder;
@@ -76,7 +76,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         UserDetail user = SecurityUser.getUser();
         qw.in(user.getType() > UcConst.UserTypeEnum.SYSADMIN.value() && user.getDeptId() != null, "uc_user.dept_id", deptService.getSubDeptIdList(user.getDeptId()));
         // 角色
-        String[] roleIds = ParamUtils.toArray(params, "roleIds");
+        String[] roleIds = MapUtil.getStr(params, "roleIds", "").split(",");
         qw.and(roleIds.length > 0, queryWrapper -> {
             for (int i = 0; i < roleIds.length; i++) {
                 queryWrapper.or(i != 0).apply("find_in_set({0}, role.roleIds)", roleIds[i]);

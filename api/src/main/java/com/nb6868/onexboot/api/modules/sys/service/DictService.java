@@ -1,15 +1,17 @@
 package com.nb6868.onexboot.api.modules.sys.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.sys.dao.DictDao;
 import com.nb6868.onexboot.api.modules.sys.dto.DictDTO;
 import com.nb6868.onexboot.api.modules.sys.entity.DictEntity;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
-import com.nb6868.onexboot.common.util.ParamUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +33,8 @@ public class DictService extends DtoService<DictDao, DictEntity, DictDTO> {
                 .like("name", "name")
                 .eq("value", "value")
                 .getQueryWrapper()
-                .ne(ParamUtils.isEmpty(params.get("pid")), "pid", 0)
-                .orderByAsc("sort", "value");
+                .ne(ObjectUtils.isEmpty(MapUtil.getLong(params, "pid")), "pid", 0)
+                .orderByAsc(Arrays.asList("sort", "value"));
     }
 
     @Override

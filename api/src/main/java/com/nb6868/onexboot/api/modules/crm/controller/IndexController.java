@@ -1,14 +1,15 @@
 package com.nb6868.onexboot.api.modules.crm.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.nb6868.onexboot.api.common.annotation.DataFilter;
 import com.nb6868.onexboot.api.modules.crm.service.BusinessService;
 import com.nb6868.onexboot.api.modules.crm.service.ContractService;
 import com.nb6868.onexboot.api.modules.crm.service.CustomerService;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.ParamUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,13 +49,13 @@ public class IndexController {
         // 各个占比
         List<Map<String, Object>> customerSourceCount = customerService.listSourceCount(params);
         List<Map<String, Object>> businessStateCount = businessService.listStateCount(params);
-        if (ParamUtils.isEmpty("contractYear")) {
+        if (ObjectUtils.isEmpty(MapUtil.getInt(params, "contractYear"))) {
             params.put("contractYear", Year.now().getValue());
         }
         List<Map<String, Object>> contractContractMonthCount = contractService.listContractMonthCount(params);
         List<Map<String, Object>> contractContractMonthCountInYear = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
-            String month = params.get("contractYear").toString() + "-" +  (i < 10 ? ("0" + i) : i);
+            String month = params.get("contractYear").toString() + "-" + (i < 10 ? ("0" + i) : i);
             boolean existed = false;
             for (Map<String, Object> map : contractContractMonthCount) {
                 if (map.get("contract_month").toString().equalsIgnoreCase(month)) {
