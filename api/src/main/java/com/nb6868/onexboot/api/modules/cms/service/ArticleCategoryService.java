@@ -39,9 +39,9 @@ public class ArticleCategoryService extends DtoService<ArticleCategoryDao, Artic
 
     @Override
     protected void beforeSaveOrUpdateDto(ArticleCategoryDTO dto, int type) {
-        boolean hasRecord = hasRecord(new QueryWrapper<ArticleCategoryEntity>().eq(StringUtils.isNotBlank(dto.getCode()), "code", dto.getCode())
+        boolean hasRecord = query().eq(StringUtils.isNotBlank(dto.getCode()), "code", dto.getCode())
                 .eq("site_id", dto.getSiteId())
-                .ne(dto.getId() != null, "id", dto.getId()));
+                .ne(dto.getId() != null, "id", dto.getId()).exists();
         AssertUtils.isTrue(hasRecord, ErrorCode.ERROR_REQUEST, "编码已存在");
     }
 
