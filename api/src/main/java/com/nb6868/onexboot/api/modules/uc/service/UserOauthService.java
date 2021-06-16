@@ -78,22 +78,22 @@ public class UserOauthService extends DtoService<UserOauthDao, UserOauthEntity, 
     /**
      * 插入或者更新微信小程序用户
      */
-    public UserOauthEntity saveOrUpdateByWxMaUserInfo(String appId, WxMaUserInfo user) {
-        UserOauthEntity userWx = getByOpenid(user.getOpenId());
+    public UserOauthEntity saveOrUpdateByWxMaUserInfo(String appId, WxMaUserInfo user, String openId, String unionId) {
+        UserOauthEntity userWx = getByOpenid(openId);
         if (userWx == null) {
             // 不存在,则新增数据
             userWx = new UserOauthEntity();
             userWx.setAppid(appId);
             userWx.setType(UcConst.OauthTypeEnum.WECHAT_MA.name());
-            userWx.setOpenid(user.getOpenId());
-            userWx.setUnionid(user.getUnionId());
+            userWx.setOpenid(openId);
+            userWx.setUnionid(unionId);
             userWx.setAvatar(user.getAvatarUrl());
             userWx.setNickname(user.getNickName());
             userWx.setExt(user.toString());
             save(userWx);
         } else {
             // 已存在,则更新数据
-            userWx.setUnionid(user.getUnionId());
+            userWx.setUnionid(unionId);
             userWx.setAvatar(user.getAvatarUrl());
             userWx.setNickname(user.getNickName());
             updateById(userWx);

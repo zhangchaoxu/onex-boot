@@ -146,7 +146,10 @@ public class AuthController {
 
     /**
      * 微信小程序Oauth授权登录
+     *
+     * 微信登录有调整
      */
+    @Deprecated
     @PostMapping("/wxMaLoginByCodeAndUserInfo")
     @ApiOperation("Oauth授权登录")
     @LogLogin
@@ -166,7 +169,7 @@ public class AuthController {
         WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(jscode2SessionResult.getSessionKey(), request.getEncryptedData(), request.getIv());
 
         // 更新或者插入Oauth表
-        UserOauthEntity userOauth = userOauthService.saveOrUpdateByWxMaUserInfo(wxService.getWxMaConfig().getAppid(), userInfo);
+        UserOauthEntity userOauth = userOauthService.saveOrUpdateByWxMaUserInfo(wxService.getWxMaConfig().getAppid(), userInfo, jscode2SessionResult.getOpenid(), jscode2SessionResult.getUnionid());
         // 用户
         UserEntity user = null;
         if (userOauth.getUserId() != null) {
