@@ -1,5 +1,7 @@
 package com.nb6868.onexboot.api.modules.shop.service;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
@@ -98,11 +100,11 @@ public class OrderService extends DtoService<com.nb6868.onexboot.api.modules.sho
         String orderNo;
         if ("DATE_RANDOM".equalsIgnoreCase(policy)) {
             // 订单号规则：前缀+日期+随机数
-            String time = DateUtils.format(DateUtils.now(), "yyyyMMdd");
+            String time = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN);
             orderNo = prefix + time + StringUtils.getRandomDec(6);
         } else if ("DATETIME_RANDOM".equalsIgnoreCase(policy)) {
             // 订单号规则：前缀+日期时间+随机数
-            String time = DateUtils.format(DateUtils.now(), "yyyyMMddHHmmss");
+            String time = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
             orderNo = prefix + time + StringUtils.getRandomDec(6);
         } else {
             throw new OnexException("不支持的订单号生成策略");
@@ -212,7 +214,7 @@ public class OrderService extends DtoService<com.nb6868.onexboot.api.modules.sho
         order.setPayPrice(goods.getSalePrice());
         order.setExpressPrice(new BigDecimal(0));
         order.setPayType(request.getPayType());
-        order.setOrderTime(DateUtils.now());
+        order.setOrderTime(DateUtil.date());
         order.setGoodsDetail(goods.getName() + request.getQty());
         order.setUserId(SecurityUser.getUserId());
         order.setTenantId(goods.getTenantId());
@@ -288,7 +290,7 @@ public class OrderService extends DtoService<com.nb6868.onexboot.api.modules.sho
             // 发起支付
             WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
             // 解决重复问题
-            orderRequest.setOutTradeNo(order.getNo() + "_" + DateUtils.format(DateUtils.now(), "yyyyHHddHHmmssSSS"));
+            orderRequest.setOutTradeNo(order.getNo() + "_" + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_MS_FORMAT));
             orderRequest.setOpenid(payRequest.getOpenid());
             orderRequest.setTradeType(wxPayService.getConfig().getTradeType());
             orderRequest.setDeviceInfo("WEB");

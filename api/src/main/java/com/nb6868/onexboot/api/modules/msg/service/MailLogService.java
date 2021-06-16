@@ -4,6 +4,8 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
@@ -19,7 +21,6 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.service.DtoService;
-import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
@@ -95,7 +96,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             // 先校验该收件人是否timeLimit秒内发送过
             MailLogEntity lastMailLog = findLastLogByTplCode(request.getTplCode(), request.getMailTo());
             // 检查限定时间内是否已经发送
-            AssertUtils.isTrue(null != lastMailLog && DateUtils.timeDiff(lastMailLog.getCreateTime()) < mailTpl.getTimeLimit() * 1000, ErrorCode.ERROR_REQUEST, "发送请求过于频繁");
+            AssertUtils.isTrue(null != lastMailLog && DateUtil.between(DateUtil.date(), lastMailLog.getCreateTime(), DateUnit.SECOND) < mailTpl.getTimeLimit(), ErrorCode.ERROR_REQUEST, "发送请求过于频繁");
         }
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {

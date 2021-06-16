@@ -1,10 +1,10 @@
 package com.nb6868.onexboot.api.common.config;
 
+import cn.hutool.core.date.DatePattern;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.api.common.interceptor.WxWebAuthInterceptor;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
@@ -135,7 +135,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         // 日期格式转换
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.setDateFormat(new SimpleDateFormat(DateUtils.DATE_TIME_PATTERN));
+        mapper.setDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
         mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
         // Long类型转String类型

@@ -1,9 +1,9 @@
 package com.nb6868.onexboot.api;
 
+import cn.hutool.core.date.DateUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.RSAUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class JwtTest {
         long exp = jwt.getClaim("exp").asLong();
         Date expireTime = jwt.getExpiresAt();
 
-        boolean isExpired = DateUtils.now().after(expireTime);
+        boolean isExpired = DateUtil.date().after(expireTime);
         System.out.println("header=" + jwt.getHeader());
         System.out.println("payload=" + jwt.getPayload());
         System.out.println("user_id=" + user_id);
@@ -67,10 +67,10 @@ public class JwtTest {
         String priKey = "";
         String pubKey = "";
         String uuid = "";
-        Date now = new Date();
+        Date now = DateUtil.date();
         String jwtToken = JWT.create().withAudience()
                 .withIssuedAt(now)
-                .withExpiresAt(DateUtils.addDateMinutes(now, 3))
+                .withExpiresAt(DateUtil.offsetMinute(now, 3))
                 .withSubject(uuid)
                 .sign(Algorithm.RSA256(RSAUtils.getRSAPublicKeyByBase64(pubKey), RSAUtils.getRSAPrivateKeyByBase64(priKey)));
         log.info("rsa token=\n" + jwtToken);

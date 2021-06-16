@@ -1,9 +1,9 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.DateUtils;
 import com.sun.management.OperatingSystemMXBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +41,7 @@ public class IndexController {
         OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
         Kv data = Kv.init();
-        data.set("sysTime", DateUtils.now());
+        data.set("sysTime", DateUtil.now());
         data.set("osName", System.getProperty("os.name"));
         data.set("osArch", System.getProperty("os.arch"));
         data.set("osVersion", System.getProperty("os.version"));

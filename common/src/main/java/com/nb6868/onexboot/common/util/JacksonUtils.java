@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
+import cn.hutool.core.date.DatePattern;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -54,7 +55,7 @@ public class JacksonUtils {
             JacksonUtils.mapper = new ObjectMapper();
             // 设置时间格式
             JacksonUtils.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            JacksonUtils.mapper.setDateFormat(new SimpleDateFormat(DateUtils.DATE_TIME_PATTERN));
+            JacksonUtils.mapper.setDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
             JacksonUtils.mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
             // 设置
             JacksonUtils.mapper.disable(MapperFeature.USE_ANNOTATIONS);

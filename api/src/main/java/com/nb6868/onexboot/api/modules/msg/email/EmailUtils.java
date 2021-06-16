@@ -1,12 +1,12 @@
 package com.nb6868.onexboot.api.modules.msg.email;
 
+import cn.hutool.core.date.DateUtil;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
@@ -84,7 +84,7 @@ public class EmailUtils {
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         // 设置有效时间
         if (mailTpl.getTimeLimit() > 0) {
-            mailLog.setValidEndTime(DateUtils.addDateSeconds(DateUtils.now(), mailTpl.getTimeLimit()));
+            mailLog.setValidEndTime(DateUtil.offsetSecond(DateUtil.date(), mailTpl.getTimeLimit()));
         }
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
