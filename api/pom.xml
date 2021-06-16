@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <dynamic.datasource.version>3.3.6</dynamic.datasource.version>
+        <dynamic.datasource.version>3.4.0</dynamic.datasource.version>
         <shiro.version>1.7.1</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.3.0</easypoi.version>

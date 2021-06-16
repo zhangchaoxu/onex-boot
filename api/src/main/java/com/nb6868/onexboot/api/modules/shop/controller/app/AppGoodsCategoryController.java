@@ -1,11 +1,11 @@
 package com.nb6868.onexboot.api.modules.shop.controller.app;
 
+import cn.hutool.core.map.MapUtil;
 import com.nb6868.onexboot.api.common.annotation.DataFilter;
-import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.ParamUtils;
 import com.nb6868.onexboot.api.modules.shop.dto.GoodsCategoryDTO;
 import com.nb6868.onexboot.api.modules.shop.dto.GoodsCategoryTreeDTO;
 import com.nb6868.onexboot.api.modules.shop.service.GoodsCategoryService;
+import com.nb6868.onexboot.common.pojo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class AppGoodsCategoryController {
         List<GoodsCategoryTreeDTO> tree = categoryService.tree(params);
 
         // 使用迭代器的删除方法删除
-        if (ParamUtils.toBoolean(params.get("filterEmptyChild"), false)) {
+        if (MapUtil.getBool(params, "filterEmptyChild", false)) {
             tree.removeIf(categoryTree -> ObjectUtils.isEmpty(categoryTree.getChildren()));
         }
 

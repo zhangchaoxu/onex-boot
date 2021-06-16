@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.shop.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.nb6868.onexboot.api.common.annotation.DataFilter;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.shop.dto.GoodsCategoryDTO;
@@ -8,7 +9,6 @@ import com.nb6868.onexboot.api.modules.shop.service.GoodsCategoryService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.common.util.ParamUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
@@ -58,7 +58,7 @@ public class GoodsCategoryController {
         List<GoodsCategoryTreeDTO> tree = categoryService.tree(params);
 
         // 使用迭代器的删除方法删除
-        if (ParamUtils.toBoolean(params.get("filterEmptyChild"), false)) {
+        if (MapUtil.getBool(params, "filterEmptyChild", false)) {
             tree.removeIf(categoryTree -> ObjectUtils.isEmpty(categoryTree.getChildren()));
         }
 

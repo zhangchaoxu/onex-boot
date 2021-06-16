@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dao.DeptDao;
@@ -11,11 +12,11 @@ import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.ConvertUtils;
-import com.nb6868.onexboot.common.util.ParamUtils;
 import com.nb6868.onexboot.common.util.TreeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -37,9 +38,9 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 	public QueryWrapper<DeptEntity> getWrapper(String method, Map<String, Object> params) {
 		return new QueryWrapper<DeptEntity>()
 				.eq("uc_dept.deleted", 0)
-				.in(ParamUtils.isNotEmpty(params.get("deptIdList")), "uc_dept.id", (List<Long>) params.get("deptIdList"))
-				.like(ParamUtils.isNotEmpty(params.get("name")), "uc_dept.name", params.get("name"))
-				.like(ParamUtils.isNotEmpty(params.get("code")), "uc_dept.code", params.get("code"));
+				.in(!ObjectUtils.isEmpty(MapUtil.get(params, "deptIdList", List.class)), "uc_dept.id", (List<Long>) params.get("deptIdList"))
+				.like(!ObjectUtils.isEmpty(MapUtil.getStr(params, "name")), "uc_dept.name", params.get("name"))
+				.like(!ObjectUtils.isEmpty(MapUtil.getStr(params, "code")), "uc_dept.code", params.get("code"));
 	}
 
 	@Override
