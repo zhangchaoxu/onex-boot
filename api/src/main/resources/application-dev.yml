@@ -5,24 +5,6 @@ spring:
     auto-startup: false
   datasource:
     druid:
-      #MySQL
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://121.196.194.39:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
-      username: onex
-      password: kbEijzjWBybL8B2N
-      initial-size: 10
-      max-active: 100
-      min-idle: 10
-      max-wait: 6000
-      pool-prepared-statements: true
-      max-pool-prepared-statement-per-connection-size: 20
-      time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 300000
-      #Oracle需要打开注释
-      #validation-query: SELECT 1 FROM DUAL
-      test-while-idle: true
-      test-on-borrow: false
-      test-on-return: false
       stat-view-servlet:
         enabled: true
         url-pattern: /druid/*
@@ -36,6 +18,17 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+    dynamic:
+      druid:
+        filters: stat
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://121.196.194.39:3306/onex?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+          username: onex
+          password: kbEijzjWBybL8B2N
+          druid:
+            initial-size: 5
 
 # mybatis plus
 # see {https://mybatis.plus/config/}

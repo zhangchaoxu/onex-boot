@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api;
 
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import com.nb6868.onexboot.common.util.SpringBeanNameGenerator;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class, DruidDataSourceAutoConfigure.class})
 @ComponentScan(basePackages = {"com.nb6868.onexboot.common.**", "com.nb6868.onexboot.api.**"}, nameGenerator = SpringBeanNameGenerator.class)
 @MapperScan(basePackages="com.nb6868.onexboot.api.modules.*.dao", nameGenerator = SpringBeanNameGenerator.class)
 @EnableAsync
