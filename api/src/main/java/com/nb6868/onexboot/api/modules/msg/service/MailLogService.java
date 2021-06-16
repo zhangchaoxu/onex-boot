@@ -6,6 +6,8 @@ import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.text.StrSpliter;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
@@ -22,7 +24,6 @@ import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -100,7 +101,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
         }
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {
-            request.setContentParam(JacksonUtils.pojoToJson(Kv.init().set("code", StringUtils.getRandomDec(4))));
+            request.setContentParam(JacksonUtils.pojoToJson(Kv.init().set("code", RandomUtil.randomNumbers(4))));
         }
 
         if (MsgConst.MailChannelEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
@@ -125,7 +126,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             wxService.setWxMpConfigStorage(config);
 
             // 可能是发送多个
-            List<String> openIds = StringUtils.splitToList(request.getMailTo());
+            List<String> openIds = StrSpliter.splitTrim(request.getMailTo(), ',', true);
             for (String openId : openIds) {
                 // 构建消息
                 WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
@@ -180,7 +181,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             wxService.setWxMaConfig(config);
 
             // 可能是发送多个
-            List<String> openIds = StringUtils.splitToList(request.getMailTo());
+            List<String> openIds = StrSpliter.splitTrim(request.getMailTo(), ',', true);
             for (String openId : openIds) {
                 // 构建消息
                 WxMaSubscribeMessage templateMessage = WxMaSubscribeMessage.builder()

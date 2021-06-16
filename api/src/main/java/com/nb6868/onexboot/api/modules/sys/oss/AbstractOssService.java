@@ -3,9 +3,9 @@ package com.nb6868.onexboot.api.modules.sys.oss;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onexboot.common.pojo.Kv;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -32,7 +32,7 @@ public abstract class AbstractOssService {
     public String buildUploadPath(String pathPrefix, String fileName, boolean keepFileName, boolean appendTimestamp) {
         // 路径：文件路径,按日分割
         String path = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN) + "/";
-        if (StringUtils.isNotBlank(pathPrefix)) {
+        if (StrUtil.isNotBlank(pathPrefix)) {
             path = pathPrefix + "/" + path;
         }
         // 文件
@@ -41,7 +41,7 @@ public abstract class AbstractOssService {
             // 保留原文件名
             if (appendTimestamp) {
                 String fileExtensionName = FilenameUtils.getExtension(fileName);
-                if (StringUtils.isNotBlank(fileExtensionName)) {
+                if (StrUtil.isNotBlank(fileExtensionName)) {
                     newFileName = FilenameUtils.removeExtension(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS") + "." + fileExtensionName;
                 } else {
                     newFileName = FilenameUtils.getName(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS");
@@ -53,7 +53,7 @@ public abstract class AbstractOssService {
             // 生成uuid
             String uuid = IdUtil.simpleUUID();
             String fileExtensionName = FilenameUtils.getExtension(fileName);
-            if (StringUtils.isNotBlank(fileExtensionName)) {
+            if (StrUtil.isNotBlank(fileExtensionName)) {
                 if (appendTimestamp) {
                     newFileName = uuid + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS") + "." + fileExtensionName;
                 } else {

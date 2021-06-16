@@ -1,20 +1,21 @@
 package com.nb6868.onexboot.api.modules.uc.controller;
 
+import cn.hutool.core.text.StrSpliter;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dto.MenuDTO;
 import com.nb6868.onexboot.api.modules.uc.dto.MenuTreeDTO;
 import com.nb6868.onexboot.api.modules.uc.entity.MenuEntity;
-import com.nb6868.onexboot.api.modules.uc.service.MenuService;
-import com.nb6868.onexboot.api.modules.uc.service.MenuScopeService;
 import com.nb6868.onexboot.api.modules.uc.service.AuthService;
+import com.nb6868.onexboot.api.modules.uc.service.MenuScopeService;
+import com.nb6868.onexboot.api.modules.uc.service.MenuService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.ConvertUtils;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.util.TreeUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.group.AddGroup;
@@ -66,11 +67,11 @@ public class MenuController {
             if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
                 menuList.add(ConvertUtils.sourceToTarget(menu, MenuTreeDTO.class));
             }
-            if (StringUtils.isNotBlank(menu.getUrl())) {
+            if (StrUtil.isNotBlank(menu.getUrl())) {
                 urlList.add(ConvertUtils.sourceToTarget(menu, MenuDTO.class));
             }
-            if (StringUtils.isNotBlank(menu.getPermissions())) {
-                permissions.addAll(StringUtils.splitToList(menu.getPermissions()));
+            if (StrUtil.isNotBlank(menu.getPermissions())) {
+                permissions.addAll(StrSpliter.splitTrim(menu.getPermissions(), ',', true));
             }
         });
         // 将菜单列表转成菜单树

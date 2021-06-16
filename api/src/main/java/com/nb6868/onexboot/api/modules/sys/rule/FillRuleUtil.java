@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.modules.sys.rule;
 
+import cn.hutool.core.util.StrUtil;
 import com.google.gson.JsonObject;
-import com.nb6868.onexboot.common.util.StringUtils;
 
 public class FillRuleUtil {
 
@@ -11,7 +11,7 @@ public class FillRuleUtil {
      */
     @SuppressWarnings("unchecked")
     public static Object executeRule(String ruleCode, JsonObject formData) {
-        if (!StringUtils.isEmpty(ruleCode)) {
+        if (!StrUtil.isEmpty(ruleCode)) {
             /*try {
                 // 获取 Service
                 ServiceImpl impl = (ServiceImpl) SpringContextUtils.getBean("sysFillRuleServiceImpl");

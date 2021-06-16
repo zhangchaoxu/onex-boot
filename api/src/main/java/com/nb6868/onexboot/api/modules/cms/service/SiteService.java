@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.cms.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.modules.cms.dao.SiteDao;
 import com.nb6868.onexboot.api.modules.cms.dto.SiteDTO;
@@ -8,7 +9,6 @@ import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +45,7 @@ public class SiteService extends DtoService<SiteDao, SiteEntity, SiteDTO> {
     protected void afterSaveOrUpdateDto(boolean ret, SiteDTO dto, SiteEntity existedEntity, int type) {
         if (ret && type == 1) {
             // 更新成功
-            if (!StringUtils.equals(existedEntity.getCode(), dto.getCode())) {
+            if (!StrUtil.equalsIgnoreCase(existedEntity.getCode(), dto.getCode())) {
                 // 如果code发生变化,更新相关业务表中的site_code
                 articleCategoryService.updateSiteCode(dto.getId(), dto.getCode());
                 articleService.updateSiteCode(dto.getId(), dto.getCode());

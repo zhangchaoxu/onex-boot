@@ -1,14 +1,14 @@
 package com.nb6868.onexboot.api.common.aspect;
 
-import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onexboot.api.common.annotation.DataFilter;
 import com.nb6868.onexboot.api.common.interceptor.DataScope;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
+import com.nb6868.onexboot.common.exception.ErrorCode;
+import com.nb6868.onexboot.common.exception.OnexException;
+import com.nb6868.onexboot.common.pojo.Const;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -75,13 +75,13 @@ public class DataFilterAspect {
             // 有开启的过滤器
             // 获取表的别名
             String tableAlias = dataFilter.tableAlias();
-            if (StringUtils.isNotBlank(tableAlias)) {
+            if (StrUtil.isNotBlank(tableAlias)) {
                 tableAlias += ".";
             }
             StringBuilder sqlFilter = new StringBuilder();
             //查询条件前缀
             String prefix = dataFilter.prefix();
-            if (StringUtils.isNotBlank(prefix)) {
+            if (StrUtil.isNotBlank(prefix)) {
                 sqlFilter.append(" ").append(prefix);
             }
             sqlFilter.append(" (");

@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.sys.dto.OssDTO;
 import com.nb6868.onexboot.api.modules.sys.entity.OssEntity;
@@ -14,7 +15,6 @@ import com.nb6868.onexboot.common.util.Base64DecodeMultipartFile;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -132,7 +132,7 @@ public class OssController {
             ossList.add(oss);
         }
 
-        return new Result<>().success(Kv.init().set("src", StringUtils.join(srcList, ",")).set("oss", ossList));
+        return new Result<>().success(Kv.init().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
     }
 
     @DeleteMapping("delete")

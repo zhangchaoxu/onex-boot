@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.msg.email;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.text.StrSpliter;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
@@ -8,7 +9,6 @@ import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.StringUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,8 +89,8 @@ public class EmailUtils {
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
             messageHelper.setFrom(emailProps.getUsername());
-            messageHelper.setTo(StringUtils.split(request.getMailTo()));
-            messageHelper.setCc(StringUtils.split(request.getMailCc()));
+            messageHelper.setTo(StrSpliter.splitToArray(request.getMailTo(), ',', -1, true, true));
+            messageHelper.setCc(StrSpliter.splitToArray(request.getMailCc(), ',', -1, true, true));
             messageHelper.setSubject(title);
             messageHelper.setText(content, true);
             // 附件

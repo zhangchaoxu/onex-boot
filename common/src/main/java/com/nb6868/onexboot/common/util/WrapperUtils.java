@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Map;

@@ -2,6 +2,7 @@ package com.nb6868.onexboot.api.modules.shop.service;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
@@ -29,7 +30,9 @@ import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
-import com.nb6868.onexboot.common.util.*;
+import com.nb6868.onexboot.common.util.ConvertUtils;
+import com.nb6868.onexboot.common.util.HttpContextUtils;
+import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,11 +104,11 @@ public class OrderService extends DtoService<com.nb6868.onexboot.api.modules.sho
         if ("DATE_RANDOM".equalsIgnoreCase(policy)) {
             // 订单号规则：前缀+日期+随机数
             String time = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN);
-            orderNo = prefix + time + StringUtils.getRandomDec(6);
+            orderNo = prefix + time + RandomUtil.randomNumbers(6);
         } else if ("DATETIME_RANDOM".equalsIgnoreCase(policy)) {
             // 订单号规则：前缀+日期时间+随机数
             String time = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
-            orderNo = prefix + time + StringUtils.getRandomDec(6);
+            orderNo = prefix + time + RandomUtil.randomNumbers(6);
         } else {
             throw new OnexException("不支持的订单号生成策略");
         }
