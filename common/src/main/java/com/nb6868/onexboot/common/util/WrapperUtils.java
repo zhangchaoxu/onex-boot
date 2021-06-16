@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class WrapperUtils<T> {
      * @return
      */
     private boolean isKeyEmpty(String key) {
-        if (null == params || StringUtils.isBlank(key)) {
+        if (null == params || StrUtil.isBlank(key)) {
             return true;
         } else {
             return params.get(key) == null || params.get(key).toString().trim().length() == 0;
