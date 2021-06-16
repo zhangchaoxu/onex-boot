@@ -22,6 +22,7 @@ import java.util.Random;
  * JDK7的下载地址：http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
  * JDK8的下载地址 https://www.oracle.com/java/technologies/javase-jce8-downloads.html
  */
+@SuppressWarnings({"unchecked", "unsafe"})
 public class DingCallbackCrypto {
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
