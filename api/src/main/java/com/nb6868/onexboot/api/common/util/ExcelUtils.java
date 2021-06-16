@@ -4,9 +4,10 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.util.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +23,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -92,7 +92,7 @@ public class ExcelUtils {
      * @param pojoClass 对象Class
      */
     public static void exportExcel(HttpServletResponse response, String fileName, Collection<?> list, Class<?> pojoClass) {
-        fileName += DateUtils.format(new Date(), "yyyyMMddHmmss");
+        fileName += DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
 
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());

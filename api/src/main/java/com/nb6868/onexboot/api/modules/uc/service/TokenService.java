@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.config.LoginProps;
@@ -8,7 +9,6 @@ import com.nb6868.onexboot.api.modules.uc.dao.TokenDao;
 import com.nb6868.onexboot.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.EntityService;
-import com.nb6868.onexboot.common.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
         // 当前时间
         Date now = new Date();
         // 过期时间
-        Date expireTime = DateUtils.addDateSeconds(now, loginProps.getTokenExpire());
+        Date expireTime = DateUtil.offsetSecond(now, loginProps.getTokenExpire().intValue());
         // 生成的token
         if (loginProps.isMultiLogin()) {
             // 支持多点登录

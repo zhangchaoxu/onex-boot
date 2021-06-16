@@ -1,9 +1,9 @@
 package com.nb6868.onexboot.api;
 
+import cn.hutool.core.date.DateUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nb6868.onexboot.api.common.config.OnexProps;
-import com.nb6868.onexboot.common.util.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +35,7 @@ public class TokenTest {
         long exp = jwt.getClaim("exp").asLong();
         Date expireTime = jwt.getExpiresAt();
 
-        boolean isExpired = DateUtils.now().after(expireTime);
+        boolean isExpired = DateUtil.date().after(expireTime);
         System.out.println("header=" + jwt.getHeader());
         System.out.println("payload=" + jwt.getPayload());
         System.out.println("user_id=" + user_id);

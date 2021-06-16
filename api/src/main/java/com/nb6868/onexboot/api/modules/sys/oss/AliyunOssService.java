@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.sys.oss;
 
+import cn.hutool.core.date.DateUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
@@ -14,7 +15,6 @@ import com.aliyuncs.profile.IClientProfile;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Kv;
-import com.nb6868.onexboot.common.util.DateUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class AliyunOssService extends AbstractOssService {
         OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
         try {
             // 设置URL过期时间。
-            Date expiration = DateUtils.addDateSeconds(DateUtils.now(), expire);
+            Date expiration = DateUtil.offsetSecond(DateUtil.date(), (int) expire);
             // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
             URL url = ossClient.generatePresignedUrl(config.getBucketName(), objectName, expiration);
             return url.toString();

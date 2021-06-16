@@ -1,9 +1,10 @@
 package com.nb6868.onexboot.api.modules.shop.entity;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.nb6868.onexboot.common.pojo.BaseTenantEntity;
-import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.api.modules.shop.ShopConst;
+import com.nb6868.onexboot.common.pojo.BaseTenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
@@ -157,7 +158,7 @@ public class OrderEntity extends BaseTenantEntity {
      */
     public boolean isSysRefundable() {
         // 订单已支付,并且订单时间未超90天
-        return payState == ShopConst.OrderPayStateEnum.PAID.value() && DateUtils.addDateDays(orderTime, 90).after(DateUtils.now());
+        return payState == ShopConst.OrderPayStateEnum.PAID.value() && DateUtil.between(DateUtil.date(), orderTime, DateUnit.DAY) < 90;
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.nb6868.onexboot.api.modules.pay.service;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
@@ -11,7 +13,6 @@ import com.nb6868.onexboot.api.modules.pay.entity.OrderEntity;
 import com.nb6868.onexboot.api.modules.pay.util.PayUtils;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
-import com.nb6868.onexboot.common.util.DateUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class OrderService extends DtoService<OrderDao, OrderEntity, OrderDTO> {
             // 支付订单生成,待处理->支付成功/支付成功->业务处理完成
             update().eq("id", payOrder.getId())
                     .set("state", orderPayNotify ? PayConst.PayStateEnum.BIZ_HANDLED.value() : PayConst.PayStateEnum.PAID.value())
-                    .set("end_time", DateUtils.parse(notifyResult.getTimeEnd(), "yyyyMMddHHmmss"))
+                    .set("end_time", DateUtil.parse(notifyResult.getTimeEnd(), DatePattern.PURE_DATETIME_FORMAT))
                     .set("transaction_id", notifyResult.getTransactionId())
                     .set("total_fee", notifyResult.getTotalFee())
                     .set("currency", notifyResult.getFeeType())
