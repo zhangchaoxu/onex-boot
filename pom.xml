@@ -33,7 +33,7 @@
         <fastjson.version>1.2.76</fastjson.version>
         <druid.version>1.2.6</druid.version>
         <jsoup.version>1.13.1</jsoup.version>
-        <springfox.version>3.0.0</springfox.version>
+        <knife4j.version>2.0.8</knife4j.version>
     </properties>
 
     <dependencies>
@@ -156,11 +156,11 @@
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
         </dependency>
-        <!-- swagger3 -->
+        <!-- knife4j -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>${springfox.version}</version>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
         </dependency>
         <!-- lombok -->
         <dependency>

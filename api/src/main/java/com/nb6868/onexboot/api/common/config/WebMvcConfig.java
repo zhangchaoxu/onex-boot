@@ -66,21 +66,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // knife4j(swagger) doc
+        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
-
-    /*@Override
-    public void addCorsMappings(CorsRegistry registry) {
-        // 添加允许的方法和来源
-        // Access-Control-Allow-Origin和Access-Control-Allow-Credentials有约束,Credentials true,Origin必须指定具体来源,不能用*通配;
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedHeaders("*")
-                // .allowCredentials(true)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .maxAge(3600);
-    }*/
 
     /**
      * 文件路径在yml配置文件中定义

@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,17 +22,18 @@ import java.util.List;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
-@EnableOpenApi
+@EnableSwagger2WebMvc
 public class SwaggerConfig {
 
     @Bean
     public Docket createRestApi() {
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                .groupName("1.0.0版本")
                 .select()
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 // 包下的类，生成接口文档
-                // .apis(RequestHandlerSelectors.basePackage("com.nb6868.onexboot.api.modules.*.controller"))
+                //.apis(RequestHandlerSelectors.basePackage("com.nb6868.onexboot.api.modules.*.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .directModelSubstitute(java.util.Date.class, String.class)
