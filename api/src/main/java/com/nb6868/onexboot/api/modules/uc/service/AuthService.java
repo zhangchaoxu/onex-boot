@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
-import cn.hutool.core.text.StrSpliter;
+import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -82,7 +82,7 @@ public class AuthService {
             if (StrUtil.isBlank(permissions)) {
                 continue;
             }
-            set.addAll(StrSpliter.splitTrim(permissions, ',', true));
+            set.addAll(StrSplitter.splitTrim(permissions, ',', true));
         }
         return set;
     }

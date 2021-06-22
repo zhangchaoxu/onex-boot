@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api.modules.msg.email;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.text.StrSpliter;
+import cn.hutool.core.text.StrSplitter;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
@@ -89,8 +89,8 @@ public class EmailUtils {
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
             messageHelper.setFrom(emailProps.getUsername());
-            messageHelper.setTo(StrSpliter.splitToArray(request.getMailTo(), ',', -1, true, true));
-            messageHelper.setCc(StrSpliter.splitToArray(request.getMailCc(), ',', -1, true, true));
+            messageHelper.setTo(StrSplitter.splitToArray(request.getMailTo(), ',', -1, true, true));
+            messageHelper.setCc(StrSplitter.splitToArray(request.getMailCc(), ',', -1, true, true));
             messageHelper.setSubject(title);
             messageHelper.setText(content, true);
             // 附件

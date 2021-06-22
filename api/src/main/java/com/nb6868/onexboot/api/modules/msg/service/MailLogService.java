@@ -6,7 +6,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.text.StrSpliter;
+import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
@@ -126,7 +126,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             wxService.setWxMpConfigStorage(config);
 
             // 可能是发送多个
-            List<String> openIds = StrSpliter.splitTrim(request.getMailTo(), ',', true);
+            List<String> openIds = StrSplitter.splitTrim(request.getMailTo(), ',', true);
             for (String openId : openIds) {
                 // 构建消息
                 WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
@@ -181,7 +181,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             wxService.setWxMaConfig(config);
 
             // 可能是发送多个
-            List<String> openIds = StrSpliter.splitTrim(request.getMailTo(), ',', true);
+            List<String> openIds = StrSplitter.splitTrim(request.getMailTo(), ',', true);
             for (String openId : openIds) {
                 // 构建消息
                 WxMaSubscribeMessage templateMessage = WxMaSubscribeMessage.builder()
@@ -194,7 +194,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
                 String content = TemplateUtils.getTemplateContent("wxTemplateContent", mailTpl.getContent(), contentParam);
 
                 for (String key : contentParam.keySet()) {
-                    templateMessage.addData(new WxMaSubscribeMessage.Data(key, contentParam.get(key).toString()));
+                    templateMessage.addData(new WxMaSubscribeMessage.MsgData(key, contentParam.get(key).toString()));
                 }
 
                 Const.ResultEnum state = Const.ResultEnum.FAIL;

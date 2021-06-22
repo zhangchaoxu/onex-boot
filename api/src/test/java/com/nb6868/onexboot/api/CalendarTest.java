@@ -1,13 +1,11 @@
 package com.nb6868.onexboot.api;
 
 import com.nb6868.onexboot.api.modules.sys.dao.CalendarDao;
-import org.joda.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,14 +22,15 @@ public class CalendarTest {
 
     private List<Date> getDayList() {
         // 日期列表
-        List<Date> days = new ArrayList<>();
+        /*List<Date> days = new ArrayList<>();
         LocalDate firstDay = new LocalDate(2010, 1, 1);
         LocalDate lastDay = new LocalDate(2013, 12, 31).plusDays(1);
         while (firstDay.isBefore(lastDay)) {
             days.add(firstDay.toDateTimeAtStartOfDay().toDate());
             firstDay = firstDay.plusDays(1);
         }
-        return days;
+        return days;*/
+        return null;
     }
 
     /**
