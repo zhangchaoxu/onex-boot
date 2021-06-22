@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.msg.push;
 
+import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.jiguang.common.ClientConfig;
@@ -45,7 +46,7 @@ public class JPushService extends AbstractPushService {
         if (StrUtil.isNotEmpty(extras)) {
             extraMap = JacksonUtils.jsonToPojoByTypeReference(extras, new TypeReference<Map<String, String>>(){});
         }
-        PushPayload payload = buildNotificationPushPayloadByAliases(pushType, StrUtil.split(alias, ","),  StrUtil.split(tags, ","), title, content, extraMap, apnsProd);
+        PushPayload payload = buildNotificationPushPayloadByAliases(pushType, StrSplitter.splitToArray(alias, ",", 0, true, true),  StrSplitter.splitToArray(tags, ",", 0, true, true), title, content, extraMap, apnsProd);
 
         // 保存记录
         PushLogService logService = SpringContextUtils.getBean(PushLogService.class);

@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.controller;
 
-import cn.hutool.core.text.StrSpliter;
+import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
@@ -71,7 +71,7 @@ public class MenuController {
                 urlList.add(ConvertUtils.sourceToTarget(menu, MenuDTO.class));
             }
             if (StrUtil.isNotBlank(menu.getPermissions())) {
-                permissions.addAll(StrSpliter.splitTrim(menu.getPermissions(), ',', true));
+                permissions.addAll(StrSplitter.splitTrim(menu.getPermissions(), ',', true));
             }
         });
         // 将菜单列表转成菜单树
