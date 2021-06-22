@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onexboot.common.dao.BaseDao;
 import com.nb6868.onexboot.common.pojo.Const;
@@ -267,14 +266,13 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
 
     @SuppressWarnings("unchecked")
     protected Class<M> currentMapperClass() {
-        return (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), ServiceImpl.class, 0);
+        return (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), EntityService.class, 0);
     }
 
     @SuppressWarnings("unchecked")
     protected Class<T> currentModelClass() {
-        return (Class<T>) ReflectionKit.getSuperClassGenericType(this.getClass(), ServiceImpl.class, 1);
+        return (Class<T>) ReflectionKit.getSuperClassGenericType(this.getClass(), EntityService.class, 1);
     }
-
 
     /**
      * 批量操作 SqlSession
