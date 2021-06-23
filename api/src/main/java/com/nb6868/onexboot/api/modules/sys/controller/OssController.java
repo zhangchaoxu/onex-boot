@@ -69,10 +69,10 @@ public class OssController {
     }
 
     @PostMapping("upload")
-    @ApiOperation(value = "上传单个文件")
-    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramCode,
+    @ApiOperation(value = "上传单文件(文件形式)")
+    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramCode,
                             @RequestParam("file") MultipartFile file,
-                            @RequestParam(required = false) String prefix) {
+                            @RequestParam(required = false, name = "路径前缀") String prefix) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         // 上传文件
@@ -89,10 +89,10 @@ public class OssController {
     }
 
     @PostMapping("uploadBase64")
-    @ApiOperation(value = "base64方式上传单个文件")
-    public Result<?> uploadBase64(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramCode,
-                                  @RequestParam String fileBase64,
-                                  @RequestParam(required = false) String prefix) {
+    @ApiOperation(value = "上传单文件(base64形式)")
+    public Result<?> uploadBase64(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramCode,
+                                  @RequestParam(name = "文件base64") String fileBase64,
+                                  @RequestParam(required = false, name = "路径前缀") String prefix) {
         // 将base64转成file
         MultipartFile file = Base64DecodeMultipartFile.base64Convert(fileBase64);
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
@@ -111,10 +111,10 @@ public class OssController {
     }
 
     @PostMapping("uploadMulti")
-    @ApiOperation(value = "上传多个文件")
-    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramCode,
+    @ApiOperation(value = "上传多文件")
+    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramCode,
                                  @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files,
-                                 @RequestParam(required = false) String prefix) {
+                                 @RequestParam(required = false, name = "路径前缀") String prefix) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
         AbstractOssService abstractOssService = OssFactory.build(paramCode);
