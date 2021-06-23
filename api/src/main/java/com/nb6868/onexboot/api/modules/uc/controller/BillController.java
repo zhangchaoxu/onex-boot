@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("uc/bill")
+@RequestMapping("/uc/bill")
 @Validated
 @Api(tags = "账单流水")
 public class BillController {

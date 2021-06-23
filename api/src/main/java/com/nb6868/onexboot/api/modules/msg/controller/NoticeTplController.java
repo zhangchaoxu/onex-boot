@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("msg/noticeTpl")
+@RequestMapping("/msg/noticeTpl")
 @Validated
 @Api(tags="通知模板")
 public class NoticeTplController {

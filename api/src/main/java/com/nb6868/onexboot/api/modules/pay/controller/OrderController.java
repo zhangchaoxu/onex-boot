@@ -37,7 +37,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController("PayOrder")
-@RequestMapping("pay/order")
+@RequestMapping("/pay/order")
 @Validated
 @Api(tags = "支付订单")
 public class OrderController {
@@ -133,7 +133,7 @@ public class OrderController {
     @ApiOperation(value = "微信订单支付回调通知")
     @LogOperation("微信订单支付回调通知")
     @PostMapping("/wxNotify")
-    @AccessControl
+    @AccessControl("/wxNotify")
     public String wxNotify(@RequestBody String xmlData) {
         try {
             orderService.handleWxNotifyResult(WxPayOrderNotifyResult.fromXML(xmlData));
@@ -149,7 +149,7 @@ public class OrderController {
     @ApiOperation(value = "支付宝订单支付回调通知")
     @LogOperation("支付宝订单支付回调通知")
     @PostMapping("/alipayNotify")
-    @AccessControl
+    @AccessControl("/alipayNotify")
     public String alipayNotify(@RequestBody String xmlData) {
         // todo
         return "";

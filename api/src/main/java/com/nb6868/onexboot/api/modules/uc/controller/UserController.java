@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("uc/user")
+@RequestMapping("/uc/user")
 @Validated
 @Api(tags = "用户管理")
 public class UserController {
@@ -122,7 +122,7 @@ public class UserController {
      */
     @PostMapping("changePasswordByMailCode")
     @ApiOperation(value = "通过短信验证码修改密码")
-    @AccessControl
+    @AccessControl("/changePasswordByMailCode")
     public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordByMailCodeRequest request) {
         boolean ret = userService.changePasswordBySmsCode(request);
         return new Result<>().success();

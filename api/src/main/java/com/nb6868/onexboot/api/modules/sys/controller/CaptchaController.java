@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
 import cn.hutool.core.util.IdUtil;
+import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.modules.uc.service.CaptchaService;
 import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
@@ -25,7 +26,8 @@ import java.io.IOException;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("sys/captcha")
+@RequestMapping("/sys/captcha")
+@AccessControl("/sys/captcha/**")
 @Validated
 @Api(tags = "验证码")
 public class CaptchaController {

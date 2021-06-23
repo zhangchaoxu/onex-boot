@@ -1,11 +1,10 @@
 package com.nb6868.onexboot.api.modules.cms.controller;
 
+import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.modules.cms.dto.AxdDTO;
 import com.nb6868.onexboot.api.modules.cms.dto.SiteDTO;
 import com.nb6868.onexboot.api.modules.cms.entity.AxdEntity;
 import com.nb6868.onexboot.api.modules.cms.entity.SiteEntity;
-import com.nb6868.onexboot.api.modules.cms.service.ArticleCategoryService;
-import com.nb6868.onexboot.api.modules.cms.service.ArticleService;
 import com.nb6868.onexboot.api.modules.cms.service.AxdService;
 import com.nb6868.onexboot.api.modules.cms.service.SiteService;
 import com.nb6868.onexboot.common.pojo.Result;
@@ -29,17 +28,14 @@ import java.util.List;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController("CmsPublic")
-@RequestMapping("cms/public")
+@RequestMapping("/cms/public")
+@AccessControl("/cms/public/**")
 @Validated
 @Api(tags="CMS开放接口")
 public class PublicController {
 
     @Autowired
     private SiteService siteService;
-    @Autowired
-    private ArticleCategoryService articleCategoryService;
-    @Autowired
-    private ArticleService articleService;
     @Autowired
     private AxdService axdService;
 
@@ -68,7 +64,5 @@ public class PublicController {
         SiteDTO dto = ConvertUtils.sourceToTarget(entity, SiteDTO.class);
         return new Result<>().success(dto);
     }
-
-
 
 }

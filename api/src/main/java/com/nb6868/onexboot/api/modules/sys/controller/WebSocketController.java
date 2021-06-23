@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("webSocket")
+@RequestMapping("/webSocket")
 @Validated
 @Api(tags="WebSocket")
 public class WebSocketController {

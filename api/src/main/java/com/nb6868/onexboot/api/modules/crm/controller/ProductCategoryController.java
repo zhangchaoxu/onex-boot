@@ -40,7 +40,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("crm/productCategory")
+@RequestMapping("/crm/productCategory")
 @Validated
 @Api(tags = "CRM 产品类别")
 public class ProductCategoryController {

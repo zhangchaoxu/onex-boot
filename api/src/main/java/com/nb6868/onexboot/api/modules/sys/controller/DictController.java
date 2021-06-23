@@ -27,7 +27,7 @@ import java.util.Map;
  * 数据字典
  */
 @RestController
-@RequestMapping("sys/dict")
+@RequestMapping("/sys/dict")
 @Validated
 @Api(tags="数据字典")
 public class DictController {

@@ -1,6 +1,5 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
-import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.sys.entity.ShorturlEntity;
 import com.nb6868.onexboot.api.modules.sys.service.ShorturlService;
@@ -20,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 @Controller
 @Api(tags = "短地址接口")
-@RequestMapping("t")
+@RequestMapping("/t")
 public class TShorturlController {
 
     @Autowired
@@ -30,7 +29,6 @@ public class TShorturlController {
     @GetMapping("{code}")
     @ApiOperation("系统信息")
     @LogOperation("系统信息")
-    @AccessControl
     public String redirect(@PathVariable("code") String code, HttpServletResponse response) {
         UserDetail user = SecurityUser.getUser();
         ShorturlEntity entity = shorturlService.getOneByColumn("code", code);

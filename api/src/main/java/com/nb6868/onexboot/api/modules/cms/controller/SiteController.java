@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("cms/site")
+@RequestMapping("/cms/site")
 @Validated
 @Api(tags="站点")
 public class SiteController {

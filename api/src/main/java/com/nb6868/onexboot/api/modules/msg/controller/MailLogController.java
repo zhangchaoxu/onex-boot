@@ -29,7 +29,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("msg/mailLog")
+@RequestMapping("/msg/mailLog")
 @Validated
 @Api(tags = "消息记录")
 public class MailLogController {

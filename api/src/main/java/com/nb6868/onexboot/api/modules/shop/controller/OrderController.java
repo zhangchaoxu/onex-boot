@@ -41,7 +41,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController("ShopOrder")
-@RequestMapping("shop/order")
+@RequestMapping("/shop/order")
 @Validated
 @Api(tags="订单")
 public class OrderController {

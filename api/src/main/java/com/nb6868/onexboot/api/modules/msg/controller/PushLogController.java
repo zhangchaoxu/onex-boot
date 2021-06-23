@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("msg/pushLog")
+@RequestMapping("/msg/pushLog")
 @Validated
 @Api(tags = "消息推送记录")
 public class PushLogController {

@@ -7,6 +7,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.LogLogin;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.common.config.LoginProps;
@@ -51,7 +52,8 @@ import org.springframework.web.bind.annotation.*;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("uc/auth")
+@RequestMapping("/uc/auth")
+@AccessControl("/uc/auth/**")
 @Validated
 @Api(tags = "用户认证")
 public class AuthController {

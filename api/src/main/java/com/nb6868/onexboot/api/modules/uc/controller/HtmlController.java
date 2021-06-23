@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Controller("UcHtml")
-@RequestMapping("uc/html")
+@RequestMapping("/uc/html")
 @Api(tags = "uc html")
 public class HtmlController {
 
     @ApiOperation("绑定微信")
-    @GetMapping("wx/bind")
-    @AccessControl
+    @GetMapping("/wx/bind")
+    @AccessControl("/wx/bind")
     public String wxBind(ModelMap map, @RequestParam(required = false, defaultValue = UcConst.WX_MP) String paramCode, @RequestParam(required = false) String code) {
         return "uc/wx-bind";
     }

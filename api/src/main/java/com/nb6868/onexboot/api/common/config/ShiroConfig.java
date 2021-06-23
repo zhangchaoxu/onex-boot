@@ -1,5 +1,7 @@
 package com.nb6868.onexboot.api.common.config;
 
+import cn.hutool.core.util.ClassUtil;
+import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.modules.uc.shiro.ShiroFilter;
 import com.nb6868.onexboot.api.modules.uc.shiro.ShiroRealm;
 import com.nb6868.onexboot.api.modules.uc.shiro.SimpleShiroFilter;
@@ -12,11 +14,15 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.Filter;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Shiro配置
@@ -60,38 +66,60 @@ public class ShiroConfig {
          * 2. anon接口不过shiro,无法记录访问用户信息
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
-        // 匿名访问地址
+        // 允许匿名访问地址
+        // 首页
         filterMap.put("/", "anon");
+        // favicon
+        filterMap.put("/favicon.ico", "anon");
+        // websocket
         filterMap.put("/ws/**", "anon");
-        //
+        // 静态文件
         filterMap.put("/static/**", "anon");
         filterMap.put("/webjars/**", "anon");
+        // druid
         filterMap.put("/druid/**", "anon");
         // swagger
         filterMap.put("/doc.html", "anon");
         filterMap.put("/swagger-resources/**", "anon");
         filterMap.put("/v2/api-docs", "anon");
-        //
+        // activities
         filterMap.put("/service/**", "anon");
         filterMap.put("/editor-app/**", "anon");
         filterMap.put("/diagram-viewer/**", "anon");
         filterMap.put("/modeler.html", "anon");
-        filterMap.put("/favicon.ico", "anon");
-        // 图形验证码
-        filterMap.put("/sys/captcha/base64", "anon");
-        filterMap.put("/sys/captcha/stream", "anon");
-        // 授权接口
-        filterMap.put("/uc/auth/**", "anon");
-        // cms开放接口
-        filterMap.put("/cms/public/**", "anon");
-        // 钉钉回调
-        filterMap.put("/dingtalk/eventCallback", "anon");
-
-        // todo 扫描注解
-
+        // 扫描RequestMapping类
+        Set<Class<?>> requestMapClassSet = ClassUtil.scanPackageByAnnotation("com.nb6868.onexboot.api.modules", RequestMapping.class);
+        requestMapClassSet.forEach(cls -> {
+            // 方法中获取注解
+            RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);
+            if (null != requestMappingAnnotation) {
+                // 先判断是否有类注解
+                AccessControl accessControlClassAnnotation = cls.getAnnotation(AccessControl.class);
+                if (null == accessControlClassAnnotation) {
+                    // 没有类注解,判断方法注解
+                    Method[] methods = cls.getDeclaredMethods();
+                    if (!ObjectUtils.isEmpty(methods)) {
+                        for (Method method : methods) {
+                            AccessControl accessControlMethodAnnotation =  method.getAnnotation(AccessControl.class);
+                            if (accessControlMethodAnnotation != null) {
+                                for (String value : accessControlMethodAnnotation.value()) {
+                                    for (String requestMappingValue : requestMappingAnnotation.value()) {
+                                        filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // 有类注解,不再判断方法注解
+                    for (String value : accessControlClassAnnotation.value()) {
+                        filterMap.put(value, accessControlClassAnnotation.filter());
+                    }
+                }
+            }
+        });
         // 除上述anon外,其它都需要过oauth2
         filterMap.put("/**", "shiro");
-        // 加入注解中含有anon的
         shiroFilter.setFilterChainDefinitionMap(filterMap);
 
         return shiroFilter;

@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/goods")
+@RequestMapping("/shop/goods")
 @Validated
 @Api(tags="商品")
 public class GoodsController {
@@ -61,9 +61,9 @@ public class GoodsController {
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @GetMapping("/info")
     @ApiOperation("信息")
-    @AccessControl
+    @AccessControl("/info")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         GoodsDTO data = goodsService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

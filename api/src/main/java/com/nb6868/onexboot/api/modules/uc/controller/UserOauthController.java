@@ -29,7 +29,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController("UserOauth")
-@RequestMapping("uc/userOauth")
+@RequestMapping("/uc/userOauth")
 @Validated
 @Api(tags = "第三方用户")
 public class UserOauthController {
