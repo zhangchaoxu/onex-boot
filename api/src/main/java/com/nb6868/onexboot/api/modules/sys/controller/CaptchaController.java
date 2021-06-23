@@ -6,8 +6,6 @@ import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,10 +39,8 @@ public class CaptchaController {
      * 包含uuid和图片信息
      */
     @GetMapping("base64")
-    @ApiOperation(value = "图形验证码(base64格式)")
-    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", dataTypeClass = Integer.class, name = "图片宽度", defaultValue = "150"),
-            @ApiImplicitParam(paramType = "query", dataType = "int", dataTypeClass = Integer.class, name = "图片高度", defaultValue = "50")})
-    public Result<?> base64(@RequestParam(required = false, defaultValue = "150") int width, @RequestParam(required = false, defaultValue = "50") int height) {
+    @ApiOperation(value = "图形验证码(base64)")
+   public Result<?> base64(@RequestParam(required = false, defaultValue = "150", name = "图片宽度") int width, @RequestParam(required = false, defaultValue = "50", name = "图片高度") int height) {
         String uuid = IdUtil.randomUUID();
         // 随机取出一种
         String[] captchaTypes = {"arithmetic", "spec"};
@@ -53,18 +49,13 @@ public class CaptchaController {
         return new Result<>().success(Kv.init().set("uuid", uuid).set("image", captcha.toBase64()));
     }
 
-    /**
-     * @deprecated uuid由参数决定
-     */
+    @Deprecated
     @GetMapping("stream")
     @ApiOperation(value = "图形验证码(数据流)", produces = "application/octet-stream")
-    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "int", dataTypeClass = Integer.class, name = "图片宽度", defaultValue = "150"),
-            @ApiImplicitParam(paramType = "query", dataType = "int", dataTypeClass = Integer.class, name = "图片高度", defaultValue = "50"),
-            @ApiImplicitParam(paramType = "query", dataType = "String", dataTypeClass = String.class, name = "uuid", required = true)})
     public void stream(HttpServletResponse response,
-                       @RequestParam(required = false, defaultValue = "150") int width,
-                       @RequestParam(required = false, defaultValue = "50") int height,
-                       @NotNull(message = "uuid不能为空") @RequestParam String uuid) {
+                       @RequestParam(required = false, defaultValue = "150", name = "图片宽度") int width,
+                       @RequestParam(required = false, defaultValue = "50", name = "图片高度") int height,
+                       @NotNull(message = "uuid不能为空") @RequestParam(name = "UUID") String uuid) {
         // 随机取出一种
         String[] captchaTypes = {"arithmetic", "spec"};
         Captcha captcha = captchaService.createCaptcha(uuid, width, height, captchaTypes[(int) (Math.random() * captchaTypes.length)]);

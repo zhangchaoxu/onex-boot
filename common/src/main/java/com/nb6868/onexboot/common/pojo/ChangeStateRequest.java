@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.common.pojo;
 
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -14,6 +15,7 @@ import java.io.Serializable;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
+@ApiModel(value = "修改状态请求")
 public class ChangeStateRequest implements Serializable {
 
     /**
