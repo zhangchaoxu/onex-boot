@@ -22,7 +22,6 @@ import com.nb6868.onexboot.common.validator.group.AddGroup;
 import com.nb6868.onexboot.common.validator.group.DefaultGroup;
 import com.nb6868.onexboot.common.validator.group.UpdateGroup;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,8 +86,7 @@ public class MenuController {
 
     @GetMapping("tree")
     @ApiOperation("登录用户菜单树")
-    @ApiImplicitParam(name = "type", value = "菜单类型 0：菜单 1：按钮  null：全部", paramType = "query", dataType = "int", dataTypeClass = Integer.class)
-    public Result<?> tree(Integer type) {
+    public Result<?> tree(@RequestParam(required = false, name = "菜单类型 0：菜单 1：按钮  null：全部") Integer type) {
         UserDetail user = SecurityUser.getUser();
         List<MenuEntity> entityList = menuService.getListByUser(user, type);
         List<MenuTreeDTO> dtoList = ConvertUtils.sourceToTarget(entityList, MenuTreeDTO.class);

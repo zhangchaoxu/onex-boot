@@ -6,14 +6,12 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
+import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import com.nb6868.onexboot.api.modules.uc.wx.WxProp;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.validator.AssertUtils;
-import com.nb6868.onexboot.api.modules.sys.service.ParamService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
@@ -86,9 +84,8 @@ public class WxController {
     }
 
     @ApiOperation("获取用户信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String", dataTypeClass = String.class)})
     @GetMapping("/info")
-    public Result<?> info(@RequestParam String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
+    public Result<?> info(@RequestParam(name = "微信配置code") String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
         WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
 
@@ -105,10 +102,7 @@ public class WxController {
 
     @GetMapping("/phone")
     @ApiOperation("获取用户绑定手机号信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "paramCode", value = "微信配置参数表code", paramType = "query", dataType = "String", dataTypeClass = String.class)
-    })
-    public Result<?> phone(@RequestParam String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
+    public Result<?> phone(@RequestParam(name = "微信配置参数表code") String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
         WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
 

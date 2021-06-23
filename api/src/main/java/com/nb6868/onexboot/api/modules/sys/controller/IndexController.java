@@ -28,10 +28,10 @@ import java.math.RoundingMode;
 public class IndexController {
 
     @GetMapping("/")
-    @ApiOperation("index")
+    @ApiOperation("首页")
     @AccessControl
     public Result<?> index() {
-        log.info("test index log");
+        log.info("index log");
         return new Result<>().success("api success");
     }
 
