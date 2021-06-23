@@ -66,8 +66,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        /**
+         * 注意,如果使用nginx,需要配置静态文件代理
+         * location ~* \.(php|jsp|cgi|asp|aspx|gif|jpg|jpeg|js|css)$
+         * {
+         * 	proxy_pass http://127.0.0.1:18181;
+         *     proxy_set_header Host $host;
+         *     proxy_set_header X-Real-IP $remote_addr;
+         *     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         *     proxy_set_header REMOTE-HOST $remote_addr;
+         * }
+         */
         // knife4j(swagger) doc
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        // webjars and static support
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
