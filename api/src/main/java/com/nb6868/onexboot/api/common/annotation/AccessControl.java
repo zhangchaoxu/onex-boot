@@ -3,7 +3,7 @@ package com.nb6868.onexboot.api.common.annotation;
 import java.lang.annotation.*;
 
 /**
- * 是否允许匿名访问
+ * 访问控制
  *
  * @author Charles zhangchaoxu@gmail.com
  */
