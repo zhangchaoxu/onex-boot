@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("uc/role")
+@RequestMapping("/uc/role")
 @Validated
 @Api(tags="角色管理")
 public class RoleController {

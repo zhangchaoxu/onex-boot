@@ -29,7 +29,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("sys/calendar")
+@RequestMapping("/sys/calendar")
 @Validated
 @Api(tags = "万年历")
 public class CalendarController {

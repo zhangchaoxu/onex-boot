@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("sys/shorturl")
+@RequestMapping("/sys/shorturl")
 @Validated
 @Api(tags = "短地址")
 public class ShorturlController {

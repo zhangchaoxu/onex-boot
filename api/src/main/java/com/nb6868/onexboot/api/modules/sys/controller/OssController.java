@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("sys/oss")
+@RequestMapping("/sys/oss")
 @Validated
 @Api(tags = "素材库")
 public class OssController {

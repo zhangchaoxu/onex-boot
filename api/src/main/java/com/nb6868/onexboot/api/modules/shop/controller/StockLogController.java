@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/stockLog")
+@RequestMapping("/shop/stockLog")
 @Validated
 @Api(tags="出入库记录")
 public class StockLogController {

@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("msg/noticeLog")
+@RequestMapping("/msg/noticeLog")
 @Validated
 @Api(tags="通知发送记录")
 public class NoticeLogController {

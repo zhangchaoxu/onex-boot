@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("sys/param")
+@RequestMapping("/sys/param")
 @Validated
 @Api(tags = "参数管理")
 public class ParamController {
@@ -123,7 +123,7 @@ public class ParamController {
 
     @GetMapping("getContentByCode")
     @ApiOperation("通过code获取对应参数的content")
-    @AccessControl
+    @AccessControl("/getContentByCode")
     public Result<?> getContentByCode(@NotBlank(message = "code不能为空") @RequestParam String code) {
         Map<String, Object> map = paramService.getContentMap(code);
 

@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/receiver")
+@RequestMapping("/shop/receiver")
 @Validated
 @Api(tags = "收件地址")
 public class ReceiverController {

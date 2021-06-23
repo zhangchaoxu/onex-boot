@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("uc/dept")
+@RequestMapping("/uc/dept")
 @Validated
 @Api(tags = "部门管理")
 public class DeptController {

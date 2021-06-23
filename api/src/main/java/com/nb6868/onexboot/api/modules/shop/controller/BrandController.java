@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/brand")
+@RequestMapping("/shop/brand")
 @Validated
 @Api(tags = "品牌")
 public class BrandController {

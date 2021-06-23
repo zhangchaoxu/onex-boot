@@ -1,6 +1,5 @@
 package com.nb6868.onexboot.api.modules.shop.controller;
 
-import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.common.annotation.WxWebAuth;
 import com.nb6868.onexboot.api.modules.shop.dto.GoodsDTO;
 import com.nb6868.onexboot.api.modules.shop.dto.OrderDTO;
@@ -27,7 +26,7 @@ import javax.validation.constraints.NotNull;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Controller("ShopHtml")
-@RequestMapping("shop/html")
+@RequestMapping("/shop/html")
 @Api(tags = "shop html")
 public class HtmlController {
 
@@ -38,7 +37,6 @@ public class HtmlController {
 
     @ApiOperation("商品详情页面")
     @GetMapping("goods/info")
-    @AccessControl
     public String goodsInfo(ModelMap map, @NotNull(message = "{id.require}") @RequestParam Long id) {
         GoodsDTO data = goodsService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -50,7 +48,6 @@ public class HtmlController {
     @WxWebAuth
     @ApiOperation("订单详情页面")
     @GetMapping("order/info")
-    @AccessControl
     public String orderInfo(HttpServletRequest request, ModelMap map, @NotNull(message = "{id.require}") @RequestParam Long id) {
         OrderDTO data = orderService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

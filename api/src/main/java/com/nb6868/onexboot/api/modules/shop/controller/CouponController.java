@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/coupon")
+@RequestMapping("/shop/coupon")
 @Validated
 @Api(tags = "优惠券")
 public class CouponController {

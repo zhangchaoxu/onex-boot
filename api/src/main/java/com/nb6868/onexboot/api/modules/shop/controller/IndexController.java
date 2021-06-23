@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/index")
+@RequestMapping("/shop/index")
 @Validated
 public class IndexController {
 

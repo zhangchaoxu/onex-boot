@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/cart")
+@RequestMapping("/shop/cart")
 @Validated
 @Api(tags = "购物车")
 public class CartController {

@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping( "cms/axd")
+@RequestMapping( "/cms/axd")
 @Validated
 @Api(tags="广告位")
 public class AxdController {

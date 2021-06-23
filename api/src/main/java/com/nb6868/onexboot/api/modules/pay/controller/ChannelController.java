@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController("Channel")
-@RequestMapping("pay/channel")
+@RequestMapping("/pay/channel")
 @Validated
 @Api(tags = "支付渠道")
 public class ChannelController {

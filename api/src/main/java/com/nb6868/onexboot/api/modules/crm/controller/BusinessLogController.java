@@ -31,7 +31,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("crm/businessLog")
+@RequestMapping("/crm/businessLog")
 @Validated
 @Api(tags = "CRM商机记录")
 public class BusinessLogController {

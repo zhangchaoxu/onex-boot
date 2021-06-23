@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.controller;
 
+import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.modules.uc.dingtalk.DingCallbackCrypto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("dingtalk")
+@RequestMapping("/dingtalk")
 @Validated
 @Api(tags = "钉钉")
 @Slf4j
@@ -25,6 +26,7 @@ public class DingtalkController {
      * https://developers.dingtalk.com/document/app/configure-event-subcription
      */
     @PostMapping("eventCallback")
+    @AccessControl("/eventCallback")
     @ApiOperation("事件订阅回调")
     public Map<String, String> eventCallback(@RequestParam(required = false) String msg_signature,
                                              @RequestParam(required = false) String timestamp,

@@ -7,14 +7,18 @@ import java.lang.annotation.*;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface AccessControl {
+    /**
+     * 访问路径
+     */
+    String[] value() default {};
 
     /**
-     * 是否允许匿名用户
+     * 过滤器
      */
-    boolean anon() default true;
+    String filter() default "anon";
 
 }

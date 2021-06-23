@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("uc/tenant")
+@RequestMapping("/uc/tenant")
 @Validated
 @Api(tags = "租户")
 public class TenantController {

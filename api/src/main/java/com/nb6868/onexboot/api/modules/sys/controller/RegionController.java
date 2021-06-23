@@ -29,7 +29,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("sys/region")
+@RequestMapping("/sys/region")
 @Validated
 @Api(tags = "行政区域")
 public class RegionController {

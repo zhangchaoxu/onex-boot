@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("shop/goodsCategory")
+@RequestMapping("/shop/goodsCategory")
 @Validated
 @Api(tags="商品类别")
 public class GoodsCategoryController {

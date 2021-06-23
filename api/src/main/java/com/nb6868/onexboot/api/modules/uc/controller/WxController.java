@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController("Wx")
-@RequestMapping("uc/wx")
+@RequestMapping("/uc/wx")
 @Validated
 @Api(tags = "微信接口")
 public class WxController {
@@ -41,9 +41,9 @@ public class WxController {
     @Autowired
     ParamService paramService;
 
-    @GetMapping("/getJsapiSignature")
+    @GetMapping("getJsapiSignature")
     @ApiOperation("获得签名")
-    @AccessControl
+    @AccessControl("/getJsapiSignature")
     public Result<?> getJsapiSignature(@RequestParam(required = false, defaultValue = "WX_CONFIG") String paramCode, @RequestParam String url) {
         WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
@@ -69,9 +69,9 @@ public class WxController {
         }
     }
 
-    @GetMapping("/getOauth2Url")
+    @GetMapping("getOauth2Url")
     @ApiOperation("获得OAuth2地址")
-    @AccessControl
+    @AccessControl("/getOauth2Url")
     public Result<?> getOauth2Url(@RequestParam String paramCode, @RequestParam String url,
                                   @RequestParam(required = false, defaultValue = WxConsts.OAuth2Scope.SNSAPI_USERINFO) String scope,
                                   @RequestParam(required = false) String state) {
@@ -84,7 +84,7 @@ public class WxController {
     }
 
     @ApiOperation("获取用户信息")
-    @GetMapping("/info")
+    @GetMapping("info")
     public Result<?> info(@RequestParam(name = "微信配置code") String paramCode, String sessionKey, String signature, String rawData, String encryptedData, String iv) {
         WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
         AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);

@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("log/error")
+@RequestMapping("/log/error")
 @Validated
 @Api(tags = "异常日志")
 public class ErrorController {

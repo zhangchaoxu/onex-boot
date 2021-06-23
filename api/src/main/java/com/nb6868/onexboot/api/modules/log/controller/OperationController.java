@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("log/operation")
+@RequestMapping("/log/operation")
 @Validated
 @Api(tags = "操作日志")
 public class OperationController {

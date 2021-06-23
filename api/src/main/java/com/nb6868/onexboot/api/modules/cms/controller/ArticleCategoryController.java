@@ -29,7 +29,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("cms/articleCategory")
+@RequestMapping("/cms/articleCategory")
 @Validated
 @Api(tags = "文章类目")
 public class ArticleCategoryController {

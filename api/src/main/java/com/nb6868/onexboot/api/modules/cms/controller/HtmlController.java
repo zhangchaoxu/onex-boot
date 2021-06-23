@@ -1,6 +1,5 @@
 package com.nb6868.onexboot.api.modules.cms.controller;
 
-import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.modules.cms.dto.ArticleDTO;
 import com.nb6868.onexboot.api.modules.cms.service.ArticleService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
@@ -24,7 +23,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Controller("CmsHtml")
-@RequestMapping("cms/html")
+@RequestMapping("/cms/html")
 @Api(tags = "cms html")
 public class HtmlController {
 
@@ -33,7 +32,6 @@ public class HtmlController {
 
     @ApiOperation("文章详情页面")
     @GetMapping("article/info")
-    @AccessControl
     public String articleInfo(ModelMap map, @NotNull(message = "{id.require}") @RequestParam Long id) {
         ArticleDTO data = articleService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -43,7 +41,6 @@ public class HtmlController {
     }
 
     @GetMapping("article/page")
-    @AccessControl
     public String articlePage(ModelMap map, @RequestParam Map<String, Object> params) {
         PageData<ArticleDTO> page = articleService.pageDto(params);
         map.put("page", page);

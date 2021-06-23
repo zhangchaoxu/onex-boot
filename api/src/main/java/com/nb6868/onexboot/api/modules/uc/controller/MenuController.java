@@ -38,7 +38,7 @@ import java.util.*;
  * @author Charles zhangchaoxu@gmail.com
  */
 @RestController
-@RequestMapping("uc/menu")
+@RequestMapping("/uc/menu")
 @Validated
 @Api(tags = "菜单权限")
 public class MenuController {
