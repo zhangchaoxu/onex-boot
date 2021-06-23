@@ -78,7 +78,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         String[] roleIds = MapUtil.getStr(params, "roleIds", "").split(",");
         qw.and(roleIds.length > 0, queryWrapper -> {
             for (int i = 0; i < roleIds.length; i++) {
-                queryWrapper.or(i != 0).apply("find_in_set({0}, role.roleIds)", roleIds[i]);
+                queryWrapper.or(i != 0).apply("find_in_set({0}, role.role_ids)", roleIds[i]);
             }
         });
         return qw;
