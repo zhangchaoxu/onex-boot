@@ -82,6 +82,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // webjars and static support
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/static/");
     }
 
     /**
