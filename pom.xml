@@ -29,7 +29,6 @@
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <mybatisplus.version>3.4.3.1</mybatisplus.version>
         <hutool.version>5.7.2</hutool.version>
-        <fastjson.version>1.2.76</fastjson.version>
         <druid.version>1.2.6</druid.version>
         <jsoup.version>1.13.1</jsoup.version>
         <knife4j.version>2.0.8</knife4j.version>
@@ -133,12 +132,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
-        </dependency>
-        <!-- fastjson -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
         </dependency>
         <!-- jsoup -->
         <dependency>

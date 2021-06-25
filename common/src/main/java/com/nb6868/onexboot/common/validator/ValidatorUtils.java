@@ -30,9 +30,7 @@ public class ValidatorUtils {
      */
     public static void validateEntity(Object object, Class<?>... groups) {
         MsgResult result = getValidateResult(object, groups);
-        if (!result.isSuccess()) {
-            throw new OnexException(result.getCode(), result.getMsg());
-        }
+        AssertUtils.isFalse(result.isSuccess(), result.getCode(), result.getMsg());
     }
 
     /**
@@ -61,4 +59,5 @@ public class ValidatorUtils {
             return new MsgResult().error(ErrorCode.ERROR_REQUEST, errorMsg.toString());
         }
     }
+
 }

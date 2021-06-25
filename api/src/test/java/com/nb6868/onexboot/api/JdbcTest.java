@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api;
 
+import com.nb6868.onexboot.api.modules.sys.dao.TableSchemaDao;
 import com.nb6868.onexboot.common.util.DbUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,11 @@ public class JdbcTest {
 
     @Autowired
     private DbUtils dbUtils;
+    @Autowired
+    private TableSchemaDao tableSchemaDao;
 
     @Test
-    void readTable() {
+    void readTable() throws Exception {
         String sql = "select * from ok_geo limit 10";
         List<Map<String, Object>> list = dbUtils.executeQuerySql(sql);
         log.info("list size = " + list.size());
