@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.dingtalk;
 
-import org.apache.commons.codec.binary.Base64;
+import cn.hutool.core.codec.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -55,7 +55,7 @@ public class DingCallbackCrypto {
         }
         this.token = token;
         this.corpId = corpId;
-        aesKey = Base64.decodeBase64(encodingAesKey + "=");
+        aesKey = Base64.decode(encodingAesKey + "=");
     }
 
     public Map<String, String> getEncryptedMap(String plaintext) throws DingTalkEncryptException {
@@ -136,7 +136,7 @@ public class DingCallbackCrypto {
             IvParameterSpec iv = new IvParameterSpec(aesKey, 0, 16);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, iv);
             byte[] encrypted = cipher.doFinal(unencrypted);
-            return base64.encodeToString(encrypted);
+            return Base64.encode(encrypted);
         } catch (Exception e) {
             throw new DingTalkEncryptException(DingTalkEncryptException.COMPUTE_ENCRYPT_TEXT_ERROR);
         }
@@ -156,7 +156,7 @@ public class DingCallbackCrypto {
             IvParameterSpec iv = new IvParameterSpec(Arrays.copyOfRange(aesKey, 0, 16));
             cipher.init(Cipher.DECRYPT_MODE, keySpec, iv);
             // 使用BASE64对密文进行解码
-            byte[] encrypted = Base64.decodeBase64(text);
+            byte[] encrypted = Base64.decode(text);
             // 解密
             originalArr = cipher.doFinal(encrypted);
         } catch (Exception e) {

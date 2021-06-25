@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.common.util;
 
-import org.apache.commons.codec.binary.Base64;
+import cn.hutool.core.codec.Base64;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +25,7 @@ public class RSAUtils {
      */
     public static RSAPublicKey getRSAPublicKeyByBase64(String base64s) {
         try {
-            return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(new Base64().decode(base64s)));
+            return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode(base64s)));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
@@ -40,7 +40,7 @@ public class RSAUtils {
      */
     public static RSAPrivateKey getRSAPrivateKeyByBase64(String base64s) {
         try {
-            return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(new Base64().decode(base64s)));
+            return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(Base64.decode(base64s)));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
