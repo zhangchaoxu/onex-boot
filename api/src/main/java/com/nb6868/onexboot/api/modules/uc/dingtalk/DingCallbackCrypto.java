@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.dingtalk;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.RandomUtil;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -59,7 +60,7 @@ public class DingCallbackCrypto {
     }
 
     public Map<String, String> getEncryptedMap(String plaintext) throws DingTalkEncryptException {
-        return getEncryptedMap(plaintext, System.currentTimeMillis(), Utils.getRandomStr(16));
+        return getEncryptedMap(plaintext, System.currentTimeMillis(), RandomUtil.randomString(16));
     }
 
     /**
@@ -80,7 +81,7 @@ public class DingCallbackCrypto {
             throw new DingTalkEncryptException(DingTalkEncryptException.ENCRYPTION_NONCE_ILLEGAL);
         }
         // 加密
-        String encrypt = encrypt(Utils.getRandomStr(RANDOM_LENGTH), plaintext);
+        String encrypt = encrypt(RandomUtil.randomString(RANDOM_LENGTH), plaintext);
         String signature = getSignature(token, String.valueOf(timeStamp), nonce, encrypt);
         Map<String, String> resultMap = new HashMap<String, String>();
         resultMap.put("msg_signature", signature);
@@ -226,19 +227,6 @@ public class DingCallbackCrypto {
 
     public static class Utils {
         public Utils() {
-        }
-
-        public static String getRandomStr(int count) {
-            String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < count; ++i) {
-                int number = random.nextInt(base.length());
-                sb.append(base.charAt(number));
-            }
-
-            return sb.toString();
         }
 
         public static byte[] int2Bytes(int count) {

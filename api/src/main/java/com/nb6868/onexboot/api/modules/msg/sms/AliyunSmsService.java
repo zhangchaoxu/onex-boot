@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.msg.sms;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.UUID;
 import com.nb6868.onexboot.api.common.util.TemplateUtils;
 import com.nb6868.onexboot.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onexboot.api.modules.msg.entity.MailTplEntity;
@@ -72,7 +73,7 @@ public class AliyunSmsService extends AbstractSmsService {
         // 封装阿里云接口参数
         Map<String, String> paras = new HashMap<>();
         paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", java.util.UUID.randomUUID().toString());
+        paras.put("SignatureNonce", UUID.randomUUID().toString());
         paras.put("AccessKeyId", smsProps.getAppKey());
         paras.put("SignatureVersion", "1.0");
         paras.put("Timestamp", simpleDateFormat.format(new java.util.Date()));
