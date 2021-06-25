@@ -16,14 +16,13 @@
         <dynamic.datasource.version>3.4.0</dynamic.datasource.version>
         <shiro.version>1.7.1</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
-        <easypoi.version>4.3.0</easypoi.version>
+        <easypoi.version>4.4.0</easypoi.version>
         <aliyun.oss.version>3.12.0</aliyun.oss.version>
-        <jwt.version>3.16.0</jwt.version>
         <weixin.pay.version>4.1.0</weixin.pay.version>
         <weixin.miniapp.version>4.1.0</weixin.miniapp.version>
         <weixin.mp.version>4.1.0</weixin.mp.version>
-        <alipay.sdk.version>4.13.58.ALL</alipay.sdk.version>
-        <jpush.version>3.4.8</jpush.version>
+        <alipay.sdk.version>4.14.8.ALL</alipay.sdk.version>
+        <jpush.version>3.4.9</jpush.version>
         <zxing.version>3.4.1</zxing.version>
     </properties>
 
@@ -104,17 +103,17 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>${alipay.sdk.version}</version>
         </dependency>-->
-        <!-- jwt -->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${jwt.version}</version>
-        </dependency>
         <!-- zxing qrcode generator -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
             <version>${zxing.version}</version>
+        </dependency>
+        <!-- compileflow -->
+        <dependency>
+            <groupId>com.alibaba.compileflow</groupId>
+            <artifactId>compileflow</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

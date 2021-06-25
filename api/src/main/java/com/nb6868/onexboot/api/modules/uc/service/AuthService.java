@@ -2,8 +2,7 @@ package com.nb6868.onexboot.api.modules.uc.service;
 
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.StrUtil;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.config.LoginProps;
 import com.nb6868.onexboot.api.common.config.LoginPropsSource;
@@ -256,13 +255,13 @@ public class AuthService {
             // 苹果登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.AppleGroup.class);
             // jwt解析identityToken, 获取userIdentifier
-            DecodedJWT jwt = JWT.decode(loginRequest.getAppleIdentityToken());
+            JWT jwt = JWT.of(loginRequest.getAppleIdentityToken());
             // app包名
-            String packageName = jwt.getAudience().get(0);
+            String packageName = jwt.getHeader("audience").toString();
             // 用户id
-            String userIdentifier = jwt.getSubject();
+            String userIdentifier = jwt.getPayload("subject").toString();
             // 有效期
-            Date expireTime = jwt.getExpiresAt();
+            Date expireTime = new Date((long) jwt.getPayload("exp"));
             if (expireTime.after(new Date())) {
                 throw new OnexException(ErrorCode.APPLE_LOGIN_ERROR);
             } else {
