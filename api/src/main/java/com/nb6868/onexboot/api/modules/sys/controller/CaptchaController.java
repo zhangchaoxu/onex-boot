@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.modules.uc.service.CaptchaService;
 import com.nb6868.onexboot.common.pojo.Kv;
@@ -44,9 +45,8 @@ public class CaptchaController {
     @ApiOperation(value = "图形验证码(base64)")
    public Result<?> base64(@RequestParam(required = false, defaultValue = "150", name = "图片宽度") int width, @RequestParam(required = false, defaultValue = "50", name = "图片高度") int height) {
         String uuid = IdUtil.randomUUID();
-        // 随机取出一种
-        String[] captchaTypes = {"arithmetic", "spec"};
-        Captcha captcha = captchaService.createCaptcha(uuid, width, height, captchaTypes[(int) (Math.random() * captchaTypes.length)]);
+        // 随机arithmetic/spec
+        Captcha captcha = captchaService.createCaptcha(uuid, width, height, RandomUtil.randomEle(new String[]{"arithmetic", "spec"}));
         // 将uuid和图片base64返回给前端
         return new Result<>().success(Kv.init().set("uuid", uuid).set("image", captcha.toBase64()));
     }
@@ -58,9 +58,8 @@ public class CaptchaController {
                        @RequestParam(required = false, defaultValue = "150", name = "图片宽度") int width,
                        @RequestParam(required = false, defaultValue = "50", name = "图片高度") int height,
                        @NotNull(message = "uuid不能为空") @RequestParam(name = "UUID") String uuid) {
-        // 随机取出一种
-        String[] captchaTypes = {"arithmetic", "spec"};
-        Captcha captcha = captchaService.createCaptcha(uuid, width, height, captchaTypes[(int) (Math.random() * captchaTypes.length)]);
+        // 随机arithmetic/spec
+        Captcha captcha = captchaService.createCaptcha(uuid, width, height, RandomUtil.randomEle(new String[]{"arithmetic", "spec"}));
 
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
