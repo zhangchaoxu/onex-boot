@@ -100,9 +100,6 @@ public class AuthController {
         return new Result<>().error("消息发送失败");
     }
 
-    /**
-     * 登录
-     */
     @PostMapping("login")
     @ApiOperation(value = "登录")
     @LogLogin
@@ -120,9 +117,6 @@ public class AuthController {
         return new Result<>().success(kv);
     }
 
-    /**
-     * 加密登录,逻辑同login接口
-     */
     @SneakyThrows
     @PostMapping("loginEncrypt")
     @ApiOperation(value = "加密登录")
@@ -135,9 +129,6 @@ public class AuthController {
         return login(loginRequest);
     }
 
-    /**
-     * 注册
-     */
     @PostMapping("register")
     @ApiOperation(value = "注册")
     public Result<?> register(@Validated @RequestBody RegisterRequest request) {
@@ -146,11 +137,6 @@ public class AuthController {
         return new Result<>().success(userDTO);
     }
 
-    /**
-     * 微信小程序Oauth授权登录
-     *
-     * 微信登录有调整
-     */
     @Deprecated
     @PostMapping("/wxMaLoginByCodeAndUserInfo")
     @ApiOperation("Oauth授权登录")
@@ -192,9 +178,6 @@ public class AuthController {
         return new Result<>().success(kv);
     }
 
-    /**
-     * Oauth授权登录
-     */
     @PostMapping("/wxMaLoginByCode")
     @ApiOperation("Oauth微信小程序授权登录")
     @LogLogin
@@ -227,9 +210,6 @@ public class AuthController {
         return new Result<>().success(kv);
     }
 
-    /**
-     * Oauth授权登录
-     */
     @PostMapping("/wxMaLoginByPhone")
     @ApiOperation("Oauth微信小程序手机号授权登录")
     @LogLogin

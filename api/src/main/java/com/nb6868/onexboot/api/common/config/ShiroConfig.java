@@ -14,7 +14,6 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.Filter;
@@ -93,19 +92,16 @@ public class ShiroConfig {
             // 方法中获取注解
             RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);
             if (null != requestMappingAnnotation) {
-                // 先判断是否有类注解
+                // 先判断是否有AccessControl类注解
                 AccessControl accessControlClassAnnotation = cls.getAnnotation(AccessControl.class);
                 if (null == accessControlClassAnnotation) {
                     // 没有类注解,判断方法注解
-                    Method[] methods = cls.getDeclaredMethods();
-                    if (!ObjectUtils.isEmpty(methods)) {
-                        for (Method method : methods) {
-                            AccessControl accessControlMethodAnnotation =  method.getAnnotation(AccessControl.class);
-                            if (accessControlMethodAnnotation != null) {
-                                for (String value : accessControlMethodAnnotation.value()) {
-                                    for (String requestMappingValue : requestMappingAnnotation.value()) {
-                                        filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
-                                    }
+                    for (Method method : cls.getDeclaredMethods()) {
+                        AccessControl accessControlMethodAnnotation = method.getAnnotation(AccessControl.class);
+                        if (accessControlMethodAnnotation != null) {
+                            for (String value : accessControlMethodAnnotation.value()) {
+                                for (String requestMappingValue : requestMappingAnnotation.value()) {
+                                    filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
                                 }
                             }
                         }
