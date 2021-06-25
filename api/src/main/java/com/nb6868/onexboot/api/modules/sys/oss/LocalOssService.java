@@ -1,11 +1,13 @@
 package com.nb6868.onexboot.api.modules.sys.oss;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Kv;
-import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -28,8 +30,9 @@ public class LocalOssService extends AbstractOssService {
             // 文件已存在,则需要对文件重命名
             objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), true);
         }
+        BufferedOutputStream out = FileUtil.getOutputStream(localFile);
         try {
-            FileUtils.copyToFile(file.getInputStream(), localFile);
+            IoUtil.copy(file.getInputStream(), out);
         } catch (IOException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }

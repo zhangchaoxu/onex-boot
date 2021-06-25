@@ -2,10 +2,10 @@ package com.nb6868.onexboot.api.modules.sys.oss;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onexboot.common.pojo.Kv;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -40,11 +40,11 @@ public abstract class AbstractOssService {
         if (keepFileName) {
             // 保留原文件名
             if (appendTimestamp) {
-                String fileExtensionName = FilenameUtils.getExtension(fileName);
+                String fileExtensionName = FileNameUtil.extName(fileName);
                 if (StrUtil.isNotBlank(fileExtensionName)) {
-                    newFileName = FilenameUtils.removeExtension(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS") + "." + fileExtensionName;
+                    newFileName = FileNameUtil.mainName(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS") + "." + fileExtensionName;
                 } else {
-                    newFileName = FilenameUtils.getName(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS");
+                    newFileName = FileNameUtil.getName(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS");
                 }
             } else {
                 newFileName = fileName;
@@ -52,7 +52,7 @@ public abstract class AbstractOssService {
         } else {
             // 生成uuid
             String uuid = IdUtil.simpleUUID();
-            String fileExtensionName = FilenameUtils.getExtension(fileName);
+            String fileExtensionName = FileNameUtil.extName(fileName);
             if (StrUtil.isNotBlank(fileExtensionName)) {
                 if (appendTimestamp) {
                     newFileName = uuid + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS") + "." + fileExtensionName;
