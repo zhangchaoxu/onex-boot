@@ -1,7 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
 import cn.hutool.core.text.StrSplitter;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -68,21 +67,15 @@ public class AuthService {
      */
     public Set<String> getUserPermissions(UserDetail user) {
         // 系统管理员，拥有最高权限
-        List<String> permissionsList;
-        if (user.getType() == UcConst.UserTypeEnum.ADMIN.value()) {
-            permissionsList = menuService.listObjs(new QueryWrapper<MenuEntity>().select("permissions").ne("permissions", ""), Object::toString);
-        } else {
-            permissionsList = menuScopeService.getPermissionsListByUserId(user.getId());
-        }
+        List<String> permissionsList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? menuService.listObjs(new QueryWrapper<MenuEntity>().select("permissions")
+                .ne("permissions", "").isNotNull("permissions"), Object::toString) :
+                menuScopeService.getPermissionsListByUserId(user.getId());
 
         // 用户权限列表
         Set<String> set = new HashSet<>();
-        for (String permissions : permissionsList) {
-            if (StrUtil.isBlank(permissions)) {
-                continue;
-            }
+        permissionsList.forEach(permissions -> {
             set.addAll(StrSplitter.splitTrim(permissions, ',', true));
-        }
+        });
         return set;
     }
 
