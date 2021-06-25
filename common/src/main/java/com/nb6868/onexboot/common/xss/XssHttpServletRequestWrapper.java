@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.common.xss;
 
-import org.apache.commons.io.IOUtils;
+import cn.hutool.core.io.IoUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.ObjectUtils;
@@ -37,7 +37,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         }
 
         // 为空，直接返回
-        String json = IOUtils.toString(super.getInputStream(), StandardCharsets.UTF_8);
+        String json = IoUtil.read(super.getInputStream(), StandardCharsets.UTF_8);
         if (ObjectUtils.isEmpty(json)) {
             return super.getInputStream();
         }

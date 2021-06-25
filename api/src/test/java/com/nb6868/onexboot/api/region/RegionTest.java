@@ -2,6 +2,7 @@ package com.nb6868.onexboot.api.region;
 
 import cn.afterturn.easypoi.csv.entity.CsvImportParams;
 import cn.afterturn.easypoi.csv.imports.CsvImportService;
+import cn.hutool.core.io.file.FileReader;
 import com.nb6868.onexboot.api.modules.sys.dao.RegionDao;
 import com.nb6868.onexboot.api.modules.sys.entity.RegionEntity;
 import com.nb6868.onexboot.api.modules.sys.service.RegionService;
@@ -10,13 +11,11 @@ import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.DbUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +42,9 @@ public class RegionTest {
      */
     @Test
     public void importDataLevel4() throws IOException {
-        File file = new File("c://ok_data_level4.csv");
+        String file = "c://ok_data_level4.csv";
         CsvImportParams params = new CsvImportParams();
-        List<RegionOkDataLevel> list =  new CsvImportService().readExcel(FileUtils.openInputStream(file), RegionOkDataLevel.class, params, null);
+        List<RegionOkDataLevel> list =  new CsvImportService().readExcel(new FileReader(file).getInputStream(), RegionOkDataLevel.class, params, null);
         AssertUtils.isTrue(list.isEmpty(), ErrorCode.ERROR_REQUEST, "Excel内容为空");
         for (RegionOkDataLevel item : list) {
             RegionEntity entity = ConvertUtils.sourceToTarget(item, RegionEntity.class);
