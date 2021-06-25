@@ -15,7 +15,6 @@ import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
 import com.nb6868.onexboot.api.modules.msg.dto.MailSendRequest;
 import com.nb6868.onexboot.api.modules.msg.service.MailLogService;
-import com.nb6868.onexboot.api.modules.msg.service.MailTplService;
 import com.nb6868.onexboot.api.modules.uc.UcConst;
 import com.nb6868.onexboot.api.modules.uc.dingtalk.DingTalkApi;
 import com.nb6868.onexboot.api.modules.uc.dingtalk.GetUserInfoByCodeResponse;
@@ -70,8 +69,6 @@ public class AuthController {
     private WxApiService wxApiService;
     @Autowired
     private MailLogService mailLogService;
-    @Autowired
-    private MailTplService mailTplService;
 
     @GetMapping("getLoginAdminProps")
     @ApiOperation("获得后台登录配置")
