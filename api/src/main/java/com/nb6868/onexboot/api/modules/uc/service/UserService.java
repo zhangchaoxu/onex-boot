@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.uc.service;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.config.OnexProps;
 import com.nb6868.onexboot.api.modules.msg.MsgConst;
@@ -20,7 +21,6 @@ import com.nb6868.onexboot.common.pojo.ChangeStateRequest;
 import com.nb6868.onexboot.common.pojo.Const;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,10 +107,10 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         if (type == 1) {
             // 更新
             // 检查是否需要修改密码,对于null的不会更新字段
-            toSaveEntity.setPassword(ObjectUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.encode(dto.getPassword()));
+            toSaveEntity.setPassword(ObjectUtils.isEmpty(dto.getPassword()) ? null : DigestUtil.bcrypt(dto.getPassword()));
         } else {
             // 新增
-            toSaveEntity.setPassword(PasswordUtils.encode(dto.getPassword()));
+            toSaveEntity.setPassword(DigestUtil.bcrypt(dto.getPassword()));
         }
     }
 
@@ -189,7 +189,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         // 验证成功,创建用户
         UserEntity entity = new UserEntity();
 
-        entity.setPassword(PasswordUtils.encode(request.getPassword()));
+        entity.setPassword(DigestUtil.bcrypt(request.getPassword()));
         entity.setUsername(request.getUsername());
         entity.setMobile(request.getMobile());
         entity.setMobileArea(request.getMobileArea());
@@ -228,7 +228,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updatePassword(Long id, String newPassword) {
-        return update().eq("id", id).set("password", PasswordUtils.encode(newPassword)).update(new UserEntity());
+        return update().eq("id", id).set("password", DigestUtil.bcrypt(newPassword)).update(new UserEntity());
     }
 
     /**

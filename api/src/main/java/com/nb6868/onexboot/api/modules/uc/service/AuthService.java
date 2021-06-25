@@ -2,6 +2,7 @@ package com.nb6868.onexboot.api.modules.uc.service;
 
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onexboot.api.common.config.LoginProps;
@@ -23,7 +24,6 @@ import com.nb6868.onexboot.api.modules.uc.wx.WxScanProps;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.util.JacksonUtils;
-import com.nb6868.onexboot.common.util.PasswordUtils;
 import com.nb6868.onexboot.common.validator.AssertUtils;
 import com.nb6868.onexboot.common.validator.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -217,7 +217,7 @@ public class AuthService {
             } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
                 // 帐号锁定
                 throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
-            } else if (!PasswordUtils.matches(loginRequest.getPassword(), user.getPassword())) {
+            } else if (!DigestUtil.bcryptCheck(loginRequest.getPassword(), user.getPassword())) {
                 // 密码不匹配
                 throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
             }
