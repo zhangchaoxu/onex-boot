@@ -1,14 +1,16 @@
 package com.nb6868.onexboot.api.common.aspect;
 
-import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.pojo.Kv;
-import com.nb6868.onexboot.common.util.HttpContextUtils;
-import com.nb6868.onexboot.common.util.JacksonUtils;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.log.entity.OperationEntity;
 import com.nb6868.onexboot.api.modules.log.service.OperationService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
+import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.pojo.Kv;
+import com.nb6868.onexboot.common.util.HttpContextUtils;
+import com.nb6868.onexboot.common.util.JacksonUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -47,18 +49,18 @@ public class LogOperationAspect {
     @Around("pointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         // 记录开始执行时间
-        long beginTime = System.currentTimeMillis();
+        TimeInterval timer = DateUtil.timer();
         // 需要先把param拿出来,不然processed以后可能会被修改赋值
         String requestParam = getRequestParam(joinPoint);
         try {
             // 执行方法
             Object result = joinPoint.proceed();
             // 保存日志
-            saveLog(joinPoint, requestParam, System.currentTimeMillis() - beginTime, Const.ResultEnum.SUCCESS.value());
+            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.SUCCESS.value());
             return result;
         } catch (Exception e) {
             //保存日志
-            saveLog(joinPoint, requestParam, System.currentTimeMillis() - beginTime, Const.ResultEnum.FAIL.value());
+            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.FAIL.value());
             throw e;
         }
     }
