@@ -88,20 +88,9 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     protected void beforeSaveOrUpdateDto(UserDTO dto, UserEntity toSaveEntity, int type) {
         // 检查用户权限
         UserDetail user = SecurityUser.getUser();
-        if (user.getType() > dto.getType()) {
-            throw new OnexException("无权创建高等级用户");
-        }
-        // 系统管理员必须指定dept
-        if (dto.getType() == UcConst.UserTypeEnum.DEPTADMIN.value() && dto.getDeptId() == null) {
-            throw new OnexException("单位管理员需指定所在单位");
-        }
-        // 只能创建子部门
-        if (user.getDeptId() != null) {
-            if (dto.getDeptId() == null) {
-                throw new OnexException("需指定所在单位");
-            }
-        }
-        // 检查用户名和手机号是否已存在
+        AssertUtils.isTrue(user.getType() > dto.getType(), "无权创建高等级用户");
+        AssertUtils.isTrue(dto.getType() == UcConst.UserTypeEnum.DEPTADMIN.value() && dto.getDeptId() == null, "单位管理员需指定所在单位");
+        AssertUtils.isTrue(user.getDeptId() != null && dto.getDeptId() == null, "需指定所在单位");
         AssertUtils.isTrue(hasDuplicated(dto.getId(), "username", dto.getUsername()), ErrorCode.ERROR_REQUEST, "用户名已存在");
         AssertUtils.isTrue(hasDuplicated(dto.getId(), "mobile", dto.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已存在");
         if (type == 1) {

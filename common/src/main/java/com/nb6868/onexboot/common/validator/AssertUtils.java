@@ -17,7 +17,7 @@ public class AssertUtils {
      * 是否false
      */
     public static void isFalse(boolean object) {
-        isFalse(object, ErrorCode.INTERNAL_SERVER_ERROR, MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR));
+        isFalse(object, ErrorCode.ERROR_REQUEST, MessageUtils.getMessage(ErrorCode.ERROR_REQUEST));
     }
 
     public static void isFalse(boolean object, Integer code) {
@@ -25,7 +25,7 @@ public class AssertUtils {
     }
 
     public static void isFalse(boolean object, String msg) {
-        isFalse(object, ErrorCode.INTERNAL_SERVER_ERROR, msg);
+        isFalse(object, ErrorCode.ERROR_REQUEST, msg);
     }
 
     public static void isFalse(boolean object, Integer code, String msg) {
@@ -38,7 +38,7 @@ public class AssertUtils {
      * 是否true
      */
     public static void isTrue(boolean object) {
-        isTrue(object, ErrorCode.INTERNAL_SERVER_ERROR, MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR));
+        isTrue(object, ErrorCode.ERROR_REQUEST, MessageUtils.getMessage(ErrorCode.ERROR_REQUEST));
     }
 
     public static void isTrue(boolean object, Integer code) {
@@ -46,7 +46,7 @@ public class AssertUtils {
     }
 
     public static void isTrue(boolean object, String msg) {
-        isTrue(object, ErrorCode.INTERNAL_SERVER_ERROR, msg);
+        isTrue(object, ErrorCode.ERROR_REQUEST, msg);
     }
 
     public static void isTrue(boolean object, Integer code, String msg) {
@@ -59,7 +59,7 @@ public class AssertUtils {
      * 是否null
      */
     public static void isNull(Object object) {
-        isNull(object, ErrorCode.INTERNAL_SERVER_ERROR, MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR));
+        isNull(object, ErrorCode.ERROR_REQUEST, MessageUtils.getMessage(ErrorCode.ERROR_REQUEST));
     }
 
     public static void isNull(Object object, Integer code) {
@@ -67,7 +67,7 @@ public class AssertUtils {
     }
 
     public static void isNull(Object object, String msg) {
-        isNull(object, ErrorCode.INTERNAL_SERVER_ERROR, msg);
+        isNull(object, ErrorCode.ERROR_REQUEST, msg);
     }
 
     public static void isNull(Object object, Integer code, String msg) {
@@ -80,7 +80,7 @@ public class AssertUtils {
      * 是否为空
      */
     public static void isEmpty(Object object) {
-        isEmpty(object, ErrorCode.INTERNAL_SERVER_ERROR, MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR));
+        isEmpty(object, ErrorCode.ERROR_REQUEST, MessageUtils.getMessage(ErrorCode.ERROR_REQUEST));
     }
 
     public static void isEmpty(Object object, Integer code) {
@@ -88,7 +88,7 @@ public class AssertUtils {
     }
 
     public static void isEmpty(Object object, String msg) {
-        isEmpty(object, ErrorCode.INTERNAL_SERVER_ERROR, msg);
+        isEmpty(object, ErrorCode.ERROR_REQUEST, msg);
     }
 
     public static void isEmpty(Object object, Integer code, String msg) {

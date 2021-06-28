@@ -66,8 +66,6 @@ public class OrderService extends DtoService<OrderDao, OrderEntity, OrderDTO> {
             if ("shop_order".equalsIgnoreCase(payOrder.getOrderTable())) {
                 // 更新商城订单
                 orderPayNotify = shopOrderService.payNotify(payOrder);
-            } else if ("ips_order".equalsIgnoreCase(payOrder.getOrderTable())) {
-                // 更新ips order 状态
             }
             // 支付订单生成,待处理->支付成功/支付成功->业务处理完成
             update().eq("id", payOrder.getId())
