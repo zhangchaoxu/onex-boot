@@ -1,10 +1,10 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
 import com.nb6868.onexboot.api.modules.uc.service.CaptchaService;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
@@ -48,7 +48,7 @@ public class CaptchaController {
         // 随机arithmetic/spec
         Captcha captcha = captchaService.createCaptcha(uuid, width, height, RandomUtil.randomEle(new String[]{"arithmetic", "spec"}));
         // 将uuid和图片base64返回给前端
-        return new Result<>().success(Kv.init().set("uuid", uuid).set("image", captcha.toBase64()));
+        return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
     }
 
     @Deprecated

@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.sys.oss;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
@@ -14,7 +15,6 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.pojo.Kv;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class AliyunOssService extends AbstractOssService {
     }
 
     @Override
-    public Kv getSts() {
+    public Dict getSts() {
         try {
             // 添加endpoint（直接使用STS endpoint，无需添加region ID）
             DefaultProfile.addEndpoint("", "Sts", "sts." + config.getRegion() + ".aliyuncs.com");
@@ -88,7 +88,7 @@ public class AliyunOssService extends AbstractOssService {
             // 设置凭证有效时间
             request.setDurationSeconds(config.getStsDurationSeconds());
             AssumeRoleResponse response = client.getAcsResponse(request);
-            return Kv.init()
+            return Dict.create()
                     .set("accessKeyId", response.getCredentials().getAccessKeyId())
                     .set("accessKeySecret", response.getCredentials().getAccessKeySecret())
                     .set("securityToken", response.getCredentials().getSecurityToken())

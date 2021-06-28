@@ -1,10 +1,10 @@
 package com.nb6868.onexboot.api.modules.shop.controller;
 
+import cn.hutool.core.lang.Dict;
+import com.nb6868.onexboot.api.modules.shop.service.GoodsService;
 import com.nb6868.onexboot.api.modules.shop.service.OrderService;
 import com.nb6868.onexboot.api.modules.uc.service.UserService;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
-import com.nb6868.onexboot.api.modules.shop.service.GoodsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +39,7 @@ public class IndexController {
         int userCount = userService.count(params);
         int goodsCount = goodsService.count(params);
 
-        Kv data = Kv.init()
+        Dict data = Dict.create()
                 .set("userCount", userCount)
                 .set("orderCount", orderCount)
                 .set("goodsCount", goodsCount);

@@ -1,5 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.controller;
 
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
@@ -13,7 +14,6 @@ import com.nb6868.onexboot.api.modules.uc.service.MenuService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.TreeUtils;
@@ -77,11 +77,11 @@ public class MenuController {
         List<MenuTreeDTO> menuTree = TreeUtils.build(menuList);
         // 获取角色列表
         Set<String> roles = authService.getUserRoles(user);
-        return new Result<>().success(Kv.init()
+        return new Result<>().success(Dict.create()
                 .set("menuTree", menuTree)
                 .set("urlList", urlList)
-                .set("roles", roles)
-                .set("permissions", permissions));
+                .set("permissions", permissions)
+                .set("roles", roles));
     }
 
     @GetMapping("tree")

@@ -1,6 +1,7 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Dict;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.sys.dto.OssDTO;
 import com.nb6868.onexboot.api.modules.sys.entity.OssEntity;
@@ -8,7 +9,6 @@ import com.nb6868.onexboot.api.modules.sys.oss.AbstractOssService;
 import com.nb6868.onexboot.api.modules.sys.oss.OssFactory;
 import com.nb6868.onexboot.api.modules.sys.service.OssService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.PageData;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.Base64DecodeMultipartFile;
@@ -64,8 +64,8 @@ public class OssController {
     @GetMapping("getSts")
     @ApiOperation(value = "获得STS临时访问token")
     public Result<?> getSts(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode) {
-        Kv kv = OssFactory.build(paramCode).getSts();
-        return new Result<>().success(kv);
+        Dict dict = OssFactory.build(paramCode).getSts();
+        return new Result<>().success(dict);
     }
 
     @PostMapping("upload")
@@ -85,7 +85,7 @@ public class OssController {
         oss.setContentType(file.getContentType());
         ossService.save(oss);
 
-        return new Result<>().success(Kv.init().set("src", url).set("oss", oss));
+        return new Result<>().success(Dict.create().set("src", url).set("oss", oss));
     }
 
     @PostMapping("uploadBase64")
@@ -107,7 +107,7 @@ public class OssController {
         oss.setContentType(file.getContentType());
         ossService.save(oss);
 
-        return new Result<>().success(Kv.init().set("src", url).set("oss", oss));
+        return new Result<>().success(Dict.create().set("src", url).set("oss", oss));
     }
 
     @PostMapping("uploadMulti")
@@ -132,7 +132,7 @@ public class OssController {
             ossList.add(oss);
         }
 
-        return new Result<>().success(Kv.init().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
+        return new Result<>().success(Dict.create().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
     }
 
     @DeleteMapping("delete")

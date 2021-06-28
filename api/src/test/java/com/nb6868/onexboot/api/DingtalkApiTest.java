@@ -1,7 +1,7 @@
 package com.nb6868.onexboot.api;
 
+import cn.hutool.core.lang.Dict;
 import com.nb6868.onexboot.api.modules.uc.dingtalk.*;
-import com.nb6868.onexboot.common.pojo.Kv;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -13,11 +13,11 @@ public class DingtalkApiTest {
 
     @Test
     void sendRobotMsg() {
-        Kv kv = Kv.init();
-        kv.set("msgtype", "text")
-                .set("text", Kv.init().set("content", "测试消息内容"))
-                .set("at", Kv.init().set("atMobiles", new String[]{"13012345678"}));
-        BaseResponse response = DingTalkApi.sendRobotMsg("", "", kv);
+        Dict dict = Dict.create();
+        dict.set("msgtype", "text")
+                .set("text", Dict.create().set("content", "测试消息内容"))
+                .set("at", Dict.create().set("atMobiles", new String[]{"13012345678"}));
+        BaseResponse response = DingTalkApi.sendRobotMsg("", "", dict);
         System.out.println(response);
     }
 

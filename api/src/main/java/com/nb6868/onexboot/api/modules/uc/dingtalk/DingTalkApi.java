@@ -1,6 +1,6 @@
 package com.nb6868.onexboot.api.modules.uc.dingtalk;
 
-import com.nb6868.onexboot.common.pojo.Kv;
+import cn.hutool.core.lang.Dict;
 import com.nb6868.onexboot.common.util.AliSignUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -162,7 +162,7 @@ public class DingTalkApi {
     /**
      * 自定义机器人消息发送
      */
-    public static BaseResponse sendRobotMsg(String accessToken, String signKey, Kv requestBody) {
+    public static BaseResponse sendRobotMsg(String accessToken, String signKey, Dict requestBody) {
         RestTemplate restTemplate = new RestTemplate();
         String timestamp = String.valueOf(System.currentTimeMillis());
         String signature = AliSignUtils.signature(timestamp + "\n" + signKey, signKey, "HmacSHA256");
