@@ -73,9 +73,7 @@ public class AuthService {
 
         // 用户权限列表
         Set<String> set = new HashSet<>();
-        permissionsList.forEach(permissions -> {
-            set.addAll(StrSplitter.splitTrim(permissions, ',', true));
-        });
+        permissionsList.forEach(permissions -> set.addAll(StrSplitter.splitTrim(permissions, ',', true)));
         return set;
     }
 
@@ -86,9 +84,7 @@ public class AuthService {
         List<Long> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleIdList() : roleService.getRoleIdListByUserId(user.getId());
         // 用户角色列表
         Set<String> set = new HashSet<>();
-        for (Long role : roleList) {
-            set.add(String.valueOf(role));
-        }
+        roleList.forEach(role -> set.add(String.valueOf(role)));
         return set;
     }
 
@@ -204,45 +200,28 @@ public class AuthService {
             // 帐号密码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.UsernamePasswordGroup.class);
             user = userService.getOneByColumn("username", loginRequest.getUsername());
-            if (user == null) {
-                // 帐号不存在
-                throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-            } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
-                // 帐号锁定
-                throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
-            } else if (!DigestUtil.bcryptCheck(loginRequest.getPassword(), user.getPassword())) {
-                // 密码不匹配
-                throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
-            }
+            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+            AssertUtils.isFalse(DigestUtil.bcryptCheck(loginRequest.getPassword(), user.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
         } else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(loginRequest.getType()) || UcConst.LoginTypeEnum.APP_MOBILE_SMS.name().equalsIgnoreCase(loginRequest.getType())) {
             // 手机号验证码登录
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.MobileSmsCodeGroup.class);
             user = userService.getOneByColumn("mobile", loginRequest.getMobile());
-            if (user == null) {
-                // 帐号不存在
-                throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-            } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
-                // 帐号锁定
-                throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
-            }
+            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+
             // 验证码登录的,先校验是否和用户的安全码相同
             if (loginRequest.getSmsCode().equalsIgnoreCase(user.getVerifyCode())) {
                 // 安全码验证通过
             } else {
                 //  校验验证码
                 MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_LOGIN, loginRequest.getMobile());
-                if (null == lastSmsLog || !loginRequest.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString())) {
-                    // 验证码错误,找不到验证码
-                    throw new OnexException(ErrorCode.SMS_CODE_ERROR);
-                } else {
-                    // 验证码正确
-                    // 校验过期时间
-                    if (lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date())) {
-                        throw new OnexException(ErrorCode.SMS_CODE_EXPIRED);
-                    }
-                    // 将短信消费掉
-                    mailLogService.consumeById(lastSmsLog.getId());
-                }
+                AssertUtils.isNull(lastSmsLog, ErrorCode.SMS_CODE_ERROR);
+                AssertUtils.isFalse(loginRequest.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString()), ErrorCode.SMS_CODE_ERROR);
+                // 验证码正确,校验过期时间
+                AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
+                // 将短信消费掉
+                mailLogService.consumeById(lastSmsLog.getId());
             }
         } else if (UcConst.LoginTypeEnum.APP_APPLE.name().equalsIgnoreCase(loginRequest.getType())) {
             // 苹果登录
@@ -254,36 +233,25 @@ public class AuthService {
             // 用户id
             String userIdentifier = jwt.getPayload("subject").toString();
             // 有效期
-            Date expireTime = new Date((long) jwt.getPayload("exp"));
-            if (expireTime.after(new Date())) {
-                throw new OnexException(ErrorCode.APPLE_LOGIN_ERROR);
-            } else {
-                // todo 使用apple keys做验证
-                // {https://developer.apple.com/cn/app-store/review/guidelines/#sign-in-with-apple}
-                // 通过packageName和userIdentifier找对应的数据记录
-                UserOauthEntity userApple = userOauthService.getByOpenid(userIdentifier);
-                if (userApple == null) {
-                    // 不存在记录,则保存记录
-                    userApple = new UserOauthEntity();
-                    userApple.setAppid(packageName);
-                    userApple.setOpenid(userIdentifier);
-                    userApple.setType(UcConst.OauthTypeEnum.APPLE.name());
-                    userOauthService.save(userApple);
-                }
-                if (userApple.getUserId() == null) {
-                    // 未绑定用户
-                    throw new OnexException(ErrorCode.APPLE_NOT_BIND);
-                } else {
-                    user = userService.getById(userApple.getUserId());
-                    if (user == null) {
-                        // 帐号不存在
-                        throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-                    } else if (user.getState() != UcConst.UserStateEnum.ENABLED.value()) {
-                        // 帐号锁定
-                        throw new OnexException(ErrorCode.ACCOUNT_DISABLE);
-                    }
-                }
+            AssertUtils.isTrue(new Date((long) jwt.getPayload("exp")).after(new Date()), ErrorCode.APPLE_LOGIN_ERROR);
+
+            // todo 使用apple keys做验证
+            // {https://developer.apple.com/cn/app-store/review/guidelines/#sign-in-with-apple}
+            // 通过packageName和userIdentifier找对应的数据记录
+            UserOauthEntity userApple = userOauthService.getByOpenid(userIdentifier);
+            if (userApple == null) {
+                // 不存在记录,则保存记录
+                userApple = new UserOauthEntity();
+                userApple.setAppid(packageName);
+                userApple.setOpenid(userIdentifier);
+                userApple.setType(UcConst.OauthTypeEnum.APPLE.name());
+                userOauthService.save(userApple);
             }
+            AssertUtils.isNull(userApple.getUserId(), ErrorCode.APPLE_NOT_BIND);
+
+            user = userService.getById(userApple.getUserId());
+            AssertUtils.isNull(user, ErrorCode.ACCOUNT_DISABLE);
+            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_NOT_EXIST);
         } else {
             throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
         }
