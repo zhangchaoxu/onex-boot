@@ -1,11 +1,11 @@
 package com.nb6868.onexboot.api.modules.crm.controller;
 
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import com.nb6868.onexboot.api.common.annotation.DataFilter;
 import com.nb6868.onexboot.api.modules.crm.service.BusinessService;
 import com.nb6868.onexboot.api.modules.crm.service.ContractService;
 import com.nb6868.onexboot.api.modules.crm.service.CustomerService;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class IndexController {
             }
         }
 
-        Kv data = Kv.init()
+        Dict data = Dict.create()
                 .set("customerCount", customerCount)
                 .set("businessCount", businessCount)
                 .set("contractCount", contractCount)

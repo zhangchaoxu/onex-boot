@@ -1,8 +1,8 @@
 package com.nb6868.onexboot.api.modules.sys.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
 import com.nb6868.onexboot.api.common.annotation.AccessControl;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.sun.management.OperatingSystemMXBean;
 import io.swagger.annotations.Api;
@@ -42,7 +42,7 @@ public class IndexController {
     public Result<?> sysInfo() {
         OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
-        Kv data = Kv.init();
+        Dict data = Dict.create();
         data.set("sysTime", DateUtil.now());
         data.set("osName", System.getProperty("os.name"));
         data.set("osArch", System.getProperty("os.arch"));

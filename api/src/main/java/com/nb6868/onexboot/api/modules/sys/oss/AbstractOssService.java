@@ -3,9 +3,9 @@ package com.nb6868.onexboot.api.modules.sys.oss;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.nb6868.onexboot.common.pojo.Kv;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -82,6 +82,6 @@ public abstract class AbstractOssService {
     /**
      * 获得sts
      */
-    public abstract Kv getSts();
+    public abstract Dict getSts();
 
 }

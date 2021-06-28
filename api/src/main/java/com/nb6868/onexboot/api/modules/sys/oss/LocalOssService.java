@@ -2,9 +2,9 @@ package com.nb6868.onexboot.api.modules.sys.oss;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Dict;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
-import com.nb6868.onexboot.common.pojo.Kv;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedOutputStream;
@@ -45,7 +45,7 @@ public class LocalOssService extends AbstractOssService {
     }
 
     @Override
-    public Kv getSts() {
+    public Dict getSts() {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "本地存储不支持sts模式");
     }
 }

@@ -5,6 +5,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestUtil;
@@ -29,7 +30,6 @@ import com.nb6868.onexboot.api.modules.uc.service.UserService;
 import com.nb6868.onexboot.api.modules.uc.wx.WxApiService;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.pojo.Result;
 import com.nb6868.onexboot.common.util.ConvertUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
@@ -108,10 +108,10 @@ public class AuthController {
         UserEntity user = authService.login(loginRequest, loginProps);
 
         // 登录成功
-        Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
-        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
-        return new Result<>().success(kv);
+        Dict dict = Dict.create();
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(dict);
     }
 
     @SneakyThrows
@@ -169,10 +169,10 @@ public class AuthController {
             return new Result<>().error(ErrorCode.OAUTH_NOT_BIND_ERROR);
         }
         // 登录成功
-        Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
-        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
-        return new Result<>().success(kv);
+        Dict dict = Dict.create();
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(dict);
     }
 
     @PostMapping("/wxMaLoginByCode")
@@ -201,10 +201,10 @@ public class AuthController {
             return new Result<>().error(ErrorCode.OAUTH_NOT_BIND_ERROR);
         }
         // 登录成功
-        Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
-        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
-        return new Result<>().success(kv);
+        Dict dict = Dict.create();
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(dict);
     }
 
     @PostMapping("/wxMaLoginByPhone")
@@ -232,10 +232,10 @@ public class AuthController {
             userService.save(user);
         }
         // 登录成功
-        Kv kv = Kv.init();
-        kv.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
-        kv.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
-        return new Result<>().success(kv);
+        Dict dict = Dict.create();
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
+        return new Result<>().success(dict);
     }
 
     /**

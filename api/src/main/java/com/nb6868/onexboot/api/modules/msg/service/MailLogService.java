@@ -6,6 +6,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,7 +22,6 @@ import com.nb6868.onexboot.api.modules.msg.sms.SmsFactory;
 import com.nb6868.onexboot.api.modules.uc.wx.WxProp;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.service.DtoService;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import com.nb6868.onexboot.common.util.WrapperUtils;
@@ -101,7 +101,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
         }
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {
-            request.setContentParam(JacksonUtils.pojoToJson(Kv.init().set("code", RandomUtil.randomNumbers(4))));
+            request.setContentParam(JacksonUtils.pojoToJson(Dict.create().set("code", RandomUtil.randomNumbers(4))));
         }
 
         if (MsgConst.MailChannelEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {

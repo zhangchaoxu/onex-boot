@@ -2,13 +2,13 @@ package com.nb6868.onexboot.api.common.aspect;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
+import cn.hutool.core.lang.Dict;
 import com.nb6868.onexboot.api.common.annotation.LogOperation;
 import com.nb6868.onexboot.api.modules.log.entity.OperationEntity;
 import com.nb6868.onexboot.api.modules.log.service.OperationService;
 import com.nb6868.onexboot.api.modules.uc.user.SecurityUser;
 import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.pojo.Const;
-import com.nb6868.onexboot.common.pojo.Kv;
 import com.nb6868.onexboot.common.util.HttpContextUtils;
 import com.nb6868.onexboot.common.util.JacksonUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -111,18 +111,18 @@ public class LogOperationAspect {
                 // 不处理的特例
                 break;
             } else if (arg instanceof MultipartFile) {
-                actualParam.add(Kv.init().set("type", "file").set("name", ((MultipartFile) arg).getOriginalFilename()));
+                actualParam.add(Dict.create().set("type", "file").set("name", ((MultipartFile) arg).getOriginalFilename()));
             } else if (arg instanceof MultipartFile[]) {
                 MultipartFile[] files = (MultipartFile[]) arg;
-                List<Kv> list = new ArrayList<>();
+                List<Dict> list = new ArrayList<>();
                 for (MultipartFile file : files) {
-                    list.add(Kv.init().set("type", "file").set("name", file.getOriginalFilename()));
+                    list.add(Dict.create().set("type", "file").set("name", file.getOriginalFilename()));
                 }
                 actualParam.add(list);
             } else if (arg instanceof Serializable || arg instanceof Map) {
                 actualParam.add(arg);
             } else {
-                actualParam.add(Kv.init().set("type", arg.getClass().getName()));
+                actualParam.add(Dict.create().set("type", arg.getClass().getName()));
             }
         }
         if (actualParam.size() == 1) {
