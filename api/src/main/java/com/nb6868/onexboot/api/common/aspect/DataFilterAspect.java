@@ -9,6 +9,7 @@ import com.nb6868.onexboot.api.modules.uc.user.UserDetail;
 import com.nb6868.onexboot.common.exception.ErrorCode;
 import com.nb6868.onexboot.common.exception.OnexException;
 import com.nb6868.onexboot.common.pojo.Const;
+import com.nb6868.onexboot.common.validator.AssertUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -37,9 +38,8 @@ public class DataFilterAspect {
     @SuppressWarnings("unchecked")
     @Before("dataFilterCut()")
     public void dataFilter(JoinPoint point) {
-        if (ObjectUtils.isEmpty(point.getArgs())) {
-            throw new OnexException(ErrorCode.DATA_SCOPE_PARAMS_ERROR);
-        }
+        AssertUtils.isEmpty(point.getArgs(), ErrorCode.DATA_SCOPE_PARAMS_ERROR);
+
         Object params = point.getArgs()[0];
         if (params instanceof Map) {
             UserDetail user = SecurityUser.getUser();
