@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.2</version>
+        <version>2.5.3</version>
         <relativePath/>
     </parent>
 
@@ -28,7 +28,7 @@
         <java.version>1.8</java.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <mybatisplus.version>3.4.3.1</mybatisplus.version>
-        <hutool.version>5.7.4</hutool.version>
+        <hutool.version>5.7.7</hutool.version>
         <druid.version>1.2.6</druid.version>
         <jsoup.version>1.13.1</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
