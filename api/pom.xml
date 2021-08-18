@@ -109,12 +109,6 @@
             <artifactId>javase</artifactId>
             <version>${zxing.version}</version>
         </dependency>
-        <!-- compileflow -->
-        <dependency>
-            <groupId>com.alibaba.compileflow</groupId>
-            <artifactId>compileflow</artifactId>
-            <version>1.0.0</version>
-        </dependency>
     </dependencies>
 
     <!-- 单个jar -->
