@@ -65,5 +65,9 @@ OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如
 * [行政区域](https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov/)
 * [万年历]()
 
+## deploy 
+ref1. https://zhuanlan.zhihu.com/p/401243478
+ref2. https://www.cnblogs.com/kancy/p/13509128.html
+
 ## 文档 
 更多详细内容见[gitbook文档](https://onex.nb6868.com)
