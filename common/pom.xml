@@ -10,4 +10,27 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
     <packaging>jar</packaging>
+
+    <properties>
+        <druid.version>1.2.6</druid.version>
+    </properties>
+
+    <dependencies>
+        <!-- druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun</groupId>
+                    <artifactId>jconsole</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 </project>
