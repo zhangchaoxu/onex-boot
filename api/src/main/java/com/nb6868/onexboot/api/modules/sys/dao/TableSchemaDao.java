@@ -19,13 +19,13 @@ public interface TableSchemaDao {
     /**
      * 查询表
      */
-    @Select("SELECT table_name, engine, table_comment, create_time FROM information_schema.tables  WHERE table_schema = (select database()) and table_name like '%${tableName}%'")
+    @Select("SELECT table_name, engine, table_comment, create_time FROM information_schema.tables WHERE table_schema = (select database()) and table_name like '%${tableName}%'")
     List<Map<String, Object>> queryTable(@Param("tableName") String tableName);
 
     /**
      * 查询表结构字段
      */
-    @Select("SELECT column_name, data_type, column_comment, column_key, extra FROM information_schema.columns WHERE table_schema = (select database()) and table_name = ${tableName} order by ordinal_position")
+    @Select("SELECT column_name, data_type, column_comment, column_key, extra FROM information_schema.columns WHERE table_schema = (select database()) and table_name = #{tableName} order by ordinal_position")
     List<Map<String, Object>> queryColumns(@Param("tableName") String tableName);
 
     /**
