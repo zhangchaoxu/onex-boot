@@ -1,6 +1,7 @@
 package com.nb6868.onex.coder.utils;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.map.MapUtil;
 import com.nb6868.onex.coder.entity.CodeGenerateConfig;
 import com.nb6868.onex.coder.entity.ColumnEntity;
 import com.nb6868.onex.coder.entity.TableEntity;
@@ -54,8 +55,8 @@ public class GenUtils {
      * @param codeGenerateConfig 生成配置
      * @param zip                输出的压缩包
      */
-    public static void generatorCode(Map<String, String> table,
-                                     List<Map<String, String>> columns,
+    public static void generatorCode(Map<String, Object> table,
+                                     List<Map<String, Object>> columns,
                                      CodeGenerateConfig codeGenerateConfig,
                                      ZipOutputStream zip) {
         //配置信息
@@ -63,8 +64,8 @@ public class GenUtils {
         boolean hasBigDecimal = false;
         //表信息
         TableEntity tableEntity = new TableEntity();
-        tableEntity.setTableName(table.get("tableName"));
-        tableEntity.setComments(table.get("tableComment"));
+        tableEntity.setTableName(MapUtil.getStr(table, "table_name"));
+        tableEntity.setComments(MapUtil.getStr(table, "table_comment"));
         //表名转换成Java类名
         String className = tableToJava(tableEntity.getTableName(), codeGenerateConfig.getTablePrefix());
         tableEntity.setClassName(className);
@@ -72,12 +73,12 @@ public class GenUtils {
 
         //列信息
         List<ColumnEntity> columnsList = new ArrayList<>();
-        for (Map<String, String> column : columns) {
+        for (Map<String, Object> column : columns) {
             ColumnEntity columnEntity = new ColumnEntity();
-            columnEntity.setColumnName(column.get("columnName"));
-            columnEntity.setDataType(column.get("dataType"));
-            columnEntity.setComments(column.get("columnComment"));
-            columnEntity.setExtra(column.get("extra"));
+            columnEntity.setColumnName(MapUtil.getStr(column, "column_name"));
+            columnEntity.setDataType(MapUtil.getStr(column, "data_type"));
+            columnEntity.setComments(MapUtil.getStr(column, "column_comment"));
+            columnEntity.setExtra(MapUtil.getStr(column, "extra"));
 
             //列名转换成Java属性名
             String attrName = columnToJava(columnEntity.getColumnName());
@@ -91,7 +92,7 @@ public class GenUtils {
                 hasBigDecimal = true;
             }
             //是否主键
-            if ("PRI".equalsIgnoreCase(column.get("columnKey")) && tableEntity.getPk() == null) {
+            if ("PRI".equalsIgnoreCase(MapUtil.getStr(column, "column_key")) && tableEntity.getPk() == null) {
                 tableEntity.setPk(columnEntity);
             }
 

@@ -7,7 +7,6 @@ import cn.smallbun.screw.core.engine.EngineTemplateType;
 import cn.smallbun.screw.core.execute.DocumentationExecute;
 import cn.smallbun.screw.core.process.ProcessConfig;
 import com.nb6868.onex.coder.entity.DbConfigRequest;
-import com.nb6868.onex.coder.utils.GenUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.stereotype.Service;
@@ -129,7 +128,7 @@ public class TableSchemaService {
             // 查询列信息
             List<Map<String, String>> columns = queryColumns(request);
             // 生成代码
-            GenUtils.generatorCode(table, columns, request.getCodeGenerateConfig(), zip);
+            // GenUtils.generatorCode(table, columns, request.getCodeGenerateConfig(), zip);
         }
         try {
             zip.close();
