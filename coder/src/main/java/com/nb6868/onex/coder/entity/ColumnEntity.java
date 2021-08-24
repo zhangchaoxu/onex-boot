@@ -1,4 +1,4 @@
-package onexcoder.entity;
+package com.nb6868.onex.coder.entity;
 
 import lombok.Data;
 

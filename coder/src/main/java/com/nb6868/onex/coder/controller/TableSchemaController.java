@@ -1,11 +1,11 @@
-package onexcoder.controller;
+package com.nb6868.onex.coder.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONUtil;
-import com.nb6868.onexcoder.entity.DbConfigRequest;
-import com.nb6868.onexcoder.service.TableSchemaService;
-import com.nb6868.onexcoder.utils.Result;
+import com.nb6868.onex.coder.entity.DbConfigRequest;
+import com.nb6868.onex.coder.service.TableSchemaService;
+import com.nb6868.onex.coder.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

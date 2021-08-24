@@ -1,4 +1,4 @@
-package onexcoder.utils;
+package com.nb6868.onex.coder.utils;
 
 /**
  * 自定义异常

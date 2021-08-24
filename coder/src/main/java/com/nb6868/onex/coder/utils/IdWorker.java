@@ -1,4 +1,4 @@
-package onexcoder.utils;
+package com.nb6868.onex.coder.utils;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
