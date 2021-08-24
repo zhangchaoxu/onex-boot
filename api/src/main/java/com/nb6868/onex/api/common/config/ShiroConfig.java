@@ -87,7 +87,7 @@ public class ShiroConfig {
         filterMap.put("/diagram-viewer/**", "anon");
         filterMap.put("/modeler.html", "anon");
         // 扫描RequestMapping类
-        Set<Class<?>> requestMapClassSet = ClassUtil.scanPackageByAnnotation("com.nb6868.onexboot.api.modules", RequestMapping.class);
+        Set<Class<?>> requestMapClassSet = ClassUtil.scanPackageByAnnotation("com.nb6868.onex.api.modules", RequestMapping.class);
         requestMapClassSet.forEach(cls -> {
             // 方法中获取注解
             RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);

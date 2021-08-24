@@ -21,7 +21,6 @@ import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.dingtalk.DingTalkApi;
 import com.nb6868.onex.api.modules.uc.dingtalk.GetUserInfoByCodeResponse;
 import com.nb6868.onex.api.modules.uc.dto.*;
-import com.nb6868.onexboot.api.modules.uc.dto.*;
 import com.nb6868.onex.api.modules.uc.entity.UserEntity;
 import com.nb6868.onex.api.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onex.api.modules.uc.service.AuthService;
