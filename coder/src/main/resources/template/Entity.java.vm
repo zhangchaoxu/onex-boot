@@ -1,7 +1,7 @@
 package ${package}.modules.${moduleName}.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.nb6868.onexboot.common.pojo.BaseEntity;
+import BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;

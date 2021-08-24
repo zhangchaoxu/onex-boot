@@ -152,7 +152,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.nb6868.onexboot.api.ApiApplication</mainClass>
+                            <mainClass>ApiApplication</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>./resources/</Class-Path>
