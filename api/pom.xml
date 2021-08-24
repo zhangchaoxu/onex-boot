@@ -33,6 +33,13 @@
             <artifactId>common</artifactId>
             <version>1.5.0</version>
         </dependency>
+        <!-- coder
+        <dependency>
+            <groupId>com.nb6868.onex</groupId>
+            <artifactId>coder</artifactId>
+            <version>1.5.0</version>
+            <scope>provided</scope>
+        </dependency>-->
         <!-- springboot cache -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

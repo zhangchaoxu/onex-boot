@@ -1,9 +1,9 @@
-package onexcoder.utils;
+package com.nb6868.onex.coder.utils;
 
 import cn.hutool.core.io.IoUtil;
-import com.nb6868.onexcoder.entity.CodeGenerateConfig;
-import com.nb6868.onexcoder.entity.ColumnEntity;
-import com.nb6868.onexcoder.entity.TableEntity;
+import com.nb6868.onex.coder.entity.CodeGenerateConfig;
+import com.nb6868.onex.coder.entity.ColumnEntity;
+import com.nb6868.onex.coder.entity.TableEntity;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;

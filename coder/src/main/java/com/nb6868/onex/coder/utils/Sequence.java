@@ -1,4 +1,4 @@
-package onexcoder.utils;
+package com.nb6868.onex.coder.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;

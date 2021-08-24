@@ -1,4 +1,4 @@
-package onexcoder.service;
+package com.nb6868.onex.coder.service;
 
 import cn.smallbun.screw.core.Configuration;
 import cn.smallbun.screw.core.engine.EngineConfig;
@@ -6,8 +6,8 @@ import cn.smallbun.screw.core.engine.EngineFileType;
 import cn.smallbun.screw.core.engine.EngineTemplateType;
 import cn.smallbun.screw.core.execute.DocumentationExecute;
 import cn.smallbun.screw.core.process.ProcessConfig;
-import com.nb6868.onexcoder.entity.DbConfigRequest;
-import com.nb6868.onexcoder.utils.GenUtils;
+import com.nb6868.onex.coder.entity.DbConfigRequest;
+import com.nb6868.onex.coder.utils.GenUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.stereotype.Service;
