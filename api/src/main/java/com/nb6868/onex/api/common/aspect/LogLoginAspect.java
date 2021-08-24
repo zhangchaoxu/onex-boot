@@ -1,11 +1,11 @@
 package com.nb6868.onex.api.common.aspect;
 
-import com.nb6868.onex.api.common.annotation.LogLogin;
 import com.nb6868.onex.api.modules.log.entity.LoginEntity;
 import com.nb6868.onex.api.modules.log.service.LoginService;
 import com.nb6868.onex.api.modules.uc.dto.LoginRequest;
 import com.nb6868.onex.api.modules.uc.user.SecurityUser;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
+import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.HttpContextUtils;
@@ -34,7 +34,7 @@ public class LogLoginAspect {
     @Autowired
     private LoginService loginService;
 
-    @Pointcut("@annotation(com.nb6868.onex.api.common.annotation.LogLogin)")
+    @Pointcut("@annotation(com.nb6868.onex.common.annotation.LogLogin)")
     public void pointcut() {
     }
 

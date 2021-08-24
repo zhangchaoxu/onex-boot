@@ -1,6 +1,7 @@
 package com.nb6868.onex.api.common.config;
 
-import com.nb6868.onex.common.xss.XssFilter;
+import com.nb6868.onex.common.filter.CrosFilter;
+import com.nb6868.onex.common.filter.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

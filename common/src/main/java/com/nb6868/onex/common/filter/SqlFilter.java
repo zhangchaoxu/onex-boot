@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.xss;
+package com.nb6868.onex.common.filter;
 
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;

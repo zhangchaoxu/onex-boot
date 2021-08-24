@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.xss;
+package com.nb6868.onex.common.filter.xss;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;

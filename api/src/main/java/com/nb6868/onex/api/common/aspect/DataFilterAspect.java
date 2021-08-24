@@ -1,11 +1,11 @@
 package com.nb6868.onex.api.common.aspect;
 
 import cn.hutool.core.util.StrUtil;
-import com.nb6868.onex.api.common.annotation.DataFilter;
 import com.nb6868.onex.api.common.interceptor.DataScope;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.user.SecurityUser;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
+import com.nb6868.onex.common.annotation.DataFilter;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.pojo.Const;
@@ -30,7 +30,7 @@ import java.util.Map;
 @Component
 public class DataFilterAspect {
 
-    @Pointcut("@annotation(com.nb6868.onex.api.common.annotation.DataFilter)")
+    @Pointcut("@annotation(com.nb6868.onex.common.annotation.DataFilter)")
     public void dataFilterCut() {
 
     }

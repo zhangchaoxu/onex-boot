@@ -3,11 +3,11 @@ package com.nb6868.onex.api.common.aspect;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.lang.Dict;
-import com.nb6868.onex.api.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.log.entity.OperationEntity;
 import com.nb6868.onex.api.modules.log.service.OperationService;
 import com.nb6868.onex.api.modules.uc.user.SecurityUser;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -42,7 +42,7 @@ public class LogOperationAspect {
     @Autowired
     private OperationService logOperationService;
 
-    @Pointcut("@annotation(com.nb6868.onex.api.common.annotation.LogOperation)")
+    @Pointcut("@annotation(com.nb6868.onex.common.annotation.LogOperation)")
     public void pointcut() {
     }
 

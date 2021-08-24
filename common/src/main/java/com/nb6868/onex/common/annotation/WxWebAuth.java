@@ -1,4 +1,4 @@
-package com.nb6868.onex.api.common.annotation;
+package com.nb6868.onex.common.annotation;
 
 import java.lang.annotation.*;
 

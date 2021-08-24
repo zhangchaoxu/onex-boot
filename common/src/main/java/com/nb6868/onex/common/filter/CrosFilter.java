@@ -1,9 +1,8 @@
-package com.nb6868.onex.api.common.config;
+package com.nb6868.onex.common.filter;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +24,7 @@ public class CrosFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers", "content-type,token,device");
+        response.setHeader("Access-Control-Allow-Headers", "content-type,token,device,Authorization");
         response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
         // Access-Control-Allow-Origin和Access-Control-Allow-Credentials有约束;Credentials true,Origin必须指定具体来源,不能用*通配;
         response.setHeader("Access-Control-Allow-Origin", request.getHeader(HttpHeaders.ORIGIN));

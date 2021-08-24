@@ -1,4 +1,6 @@
-package com.nb6868.onex.common.xss;
+package com.nb6868.onex.common.filter;
+
+import com.nb6868.onex.common.filter.xss.XssHttpServletRequestWrapper;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
