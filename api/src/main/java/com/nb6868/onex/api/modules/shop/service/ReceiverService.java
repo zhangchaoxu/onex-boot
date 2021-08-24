@@ -57,7 +57,7 @@ public class ReceiverService extends DtoService<ReceiverDao, ReceiverEntity, Rec
             update().eq("user_id", dto.getUserId()).set("default_item", 0).ne("id", dto.getId()).update(new ReceiverEntity());
         } else {
             // 为非默认,查一下用户有没有默认地址
-            if (!SqlHelper.retBool(query().eq("user_id", dto.getUserId()).eq("default_item", 1).count())) {
+            if (!query().eq("user_id", dto.getUserId()).eq("default_item", 1).exists()) {
                 // 没有默认地址
                 // 将该会员最新一条地址设置为非默认
                 update().set("default_item", 1)

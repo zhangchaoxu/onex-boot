@@ -39,7 +39,7 @@ public class ProductCategoryService extends DtoService<ProductCategoryDao, Produ
     @Override
     public boolean logicDeleteById(Serializable id) {
         AssertUtils.isTrue(hasSub("pid", id), "存在子类别,不允许删除");
-        AssertUtils.isTrue(SqlHelper.retBool(productService.query().eq("category_id", id).count()), "类别下存在商品,不允许删除");
+        AssertUtils.isTrue(productService.query().eq("category_id", id).exists(), "类别下存在商品,不允许删除");
         return super.logicDeleteById(id);
     }
 

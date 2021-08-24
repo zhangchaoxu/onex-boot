@@ -35,9 +35,9 @@ public class IndexController {
     @GetMapping("count")
     @ApiOperation("统计数据")
     public Result<?> count(@RequestParam Map<String, Object> params) {
-        int orderCount = orderService.count(params);
-        int userCount = userService.count(params);
-        int goodsCount = goodsService.count(params);
+        long orderCount = orderService.count(params);
+        long userCount = userService.count(params);
+        long goodsCount = goodsService.count(params);
 
         Dict data = Dict.create()
                 .set("userCount", userCount)

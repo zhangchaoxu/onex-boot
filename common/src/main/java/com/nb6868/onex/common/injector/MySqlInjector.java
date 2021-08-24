@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.injector;
 
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.nb6868.onex.common.injector.methods.LogicDeleteBatchByIdsWithFill;
 import com.nb6868.onex.common.injector.methods.LogicDeleteByIdWithFill;
 import com.nb6868.onex.common.injector.methods.LogicDeleteByWrapperWithFill;
@@ -17,8 +18,8 @@ import java.util.List;
 public class MySqlInjector extends DefaultSqlInjector {
 
     @Override
-    public List<AbstractMethod> getMethodList(Class<?> mapperClass) {
-        List<AbstractMethod> methodList = super.getMethodList(mapperClass);
+    public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
+        List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
         // 增加自动填充逻辑删除
         methodList.add(new LogicDeleteByIdWithFill());
         methodList.add(new LogicDeleteBatchByIdsWithFill());

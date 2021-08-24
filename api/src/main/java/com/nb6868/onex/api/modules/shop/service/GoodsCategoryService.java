@@ -65,14 +65,14 @@ public class GoodsCategoryService extends DtoService<GoodsCategoryDao, GoodsCate
         // 一级变x级,已存在下级,不允许修改级别
         if (1 == type && !dto.getPid().equals(existedEntity.getPid())) {
             AssertUtils.isTrue(hasSub("pid", dto.getId()),"存在小类,不允许变更级别");
-            AssertUtils.isTrue(SqlHelper.retBool(goodsService.query().eq("category_id",  dto.getId()).count()),"类别下存在商品,不允许变更级别");
+            AssertUtils.isTrue(goodsService.query().eq("category_id",  dto.getId()).exists(),"类别下存在商品,不允许变更级别");
         }
     }
 
     @Override
     public boolean logicDeleteById(Serializable id) {
         AssertUtils.isTrue(hasSub("pid", id), "存在子类别,不允许删除");
-        AssertUtils.isTrue(SqlHelper.retBool(goodsService.query().eq("category_id", id).count()), "类别下存在商品,不允许删除");
+        AssertUtils.isTrue(goodsService.query().eq("category_id", id).exists(), "类别下存在商品,不允许删除");
         return super.logicDeleteById(id);
     }
 

@@ -49,7 +49,7 @@ public class UserRankService extends DtoService<UserRankDao, UserRankEntity, Use
 
     @Override
     public boolean logicDeleteById(Serializable id) {
-        AssertUtils.isTrue(SqlHelper.retBool(userService.query().eq("shop_user_rank_id", id).count()), "级别下存在会员,不允许删除");
+        AssertUtils.isTrue(userService.query().eq("shop_user_rank_id", id).exists(), "级别下存在会员,不允许删除");
         return super.logicDeleteById(id);
     }
 

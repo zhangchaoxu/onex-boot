@@ -43,9 +43,9 @@ public class IndexController {
     @GetMapping("count")
     @ApiOperation("统计数据")
     public Result<?> count(@RequestParam Map<String, Object> params) {
-        int customerCount = customerService.count(params);
-        int businessCount = businessService.count(params);
-        int contractCount = contractService.count(params);
+        long customerCount = customerService.count(params);
+        long businessCount = businessService.count(params);
+        long contractCount = contractService.count(params);
         // 各个占比
         List<Map<String, Object>> customerSourceCount = customerService.listSourceCount(params);
         List<Map<String, Object>> businessStateCount = businessService.listStateCount(params);

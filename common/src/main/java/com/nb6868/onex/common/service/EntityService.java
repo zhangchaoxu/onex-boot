@@ -91,7 +91,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      * @param val    字段值
      * @return 数量
      */
-    public int subCount(String column, Object val) {
+    public long subCount(String column, Object val) {
         return count(new QueryWrapper<T>().eq(column, val));
     }
 
@@ -103,7 +103,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      * @return 是否存在
      */
     public boolean hasSub(String column, Object val) {
-        return SqlHelper.retBool(subCount(column, val));
+        return subCount(column, val) > 0;
     }
 
     /**
