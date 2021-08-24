@@ -1,0 +1,15 @@
+package ${package}.modules.${moduleName}.dao;
+
+import com.nb6868.onexboot.common.dao.BaseDao;
+import ${package}.modules.${moduleName}.entity.${className}Entity;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * ${comments}
+ *
+ * @author ${author} ${email}
+ */
+@Mapper
+public interface ${className}Dao extends BaseDao<${className}Entity> {
+
+}

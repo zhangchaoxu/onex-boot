@@ -46,10 +46,10 @@
     <modules>
         <module>common</module>
         <module>api</module>
+        <module>coder</module>
     </modules>
 
     <properties>
-        <springboot.version>2.5.4</springboot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
