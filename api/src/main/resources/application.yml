@@ -52,9 +52,9 @@ spring:
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   # 实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.nb6868.onexboot.api.modules.*.entity
+  typeAliasesPackage: com.nb6868.onex.api.modules.*.entity
   # 枚举扫描
-  typeEnumsPackage: com.nb6868.onexboot.api.modules.*.enums
+  typeEnumsPackage: com.nb6868.onex.api.modules.*.enums
   global-config:
     # 数据库相关配置
     db-config:

@@ -2,7 +2,6 @@ package com.nb6868.onex.api;
 
 import cn.hutool.core.lang.Dict;
 import com.nb6868.onex.api.modules.uc.dingtalk.*;
-import com.nb6868.onexboot.api.modules.uc.dingtalk.*;
 import org.junit.jupiter.api.Test;
 
 /**

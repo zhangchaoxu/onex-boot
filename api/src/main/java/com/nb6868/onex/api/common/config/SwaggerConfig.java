@@ -33,7 +33,7 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 // 包下的类，生成接口文档
-                //.apis(RequestHandlerSelectors.basePackage("com.nb6868.onexboot.api.modules.*.controller"))
+                //.apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.api.modules.*.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .directModelSubstitute(java.util.Date.class, String.class)
