@@ -36,7 +36,7 @@ public class AppCartController {
     @GetMapping("count")
     @ApiOperation("购物车商品数量")
     public Result<?> count() {
-        int count = cartService.count();
+        long count = cartService.count();
 
         return new Result<>().success(count);
     }

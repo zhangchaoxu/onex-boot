@@ -82,7 +82,7 @@ public class ArticleService extends DtoService<ArticleDao, ArticleEntity, Articl
     /**
      * 统计分类下的内容
      */
-    public Integer countByArticleCategoryId(Long articleCategoryId) {
+    public Long countByArticleCategoryId(Long articleCategoryId) {
         return query().eq("article_category_id", articleCategoryId).count();
     }
 

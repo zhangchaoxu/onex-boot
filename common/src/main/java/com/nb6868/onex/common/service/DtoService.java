@@ -94,7 +94,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      * @param params 查询条件
      * @return 条数
      */
-    public int count(Map<String, Object> params) {
+    public long count(Map<String, Object> params) {
         return count(getWrapper("count", params));
     }
 

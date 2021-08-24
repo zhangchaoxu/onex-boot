@@ -57,7 +57,7 @@ public class ArticleCategoryService extends DtoService<ArticleCategoryDao, Artic
         return update().eq("site_id", siteId).set("site_code", newSiteCode).update(new ArticleCategoryEntity());
     }
 
-    public Integer childrenCount(Long id) {
+    public Long childrenCount(Long id) {
         return query().eq("pid", id).count();
     }
 

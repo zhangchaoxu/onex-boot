@@ -37,7 +37,7 @@ public class BrandService extends DtoService<BrandDao, BrandEntity, BrandDTO> {
 
     @Override
     public boolean logicDeleteById(Serializable id) {
-        AssertUtils.isTrue(SqlHelper.retBool(goodsService.query().eq("brand_id", id).count()), "存在商品,不允许删除");
+        AssertUtils.isTrue(goodsService.query().eq("brand_id", id).exists(), "存在商品,不允许删除");
         return super.logicDeleteById(id);
     }
 

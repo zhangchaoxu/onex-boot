@@ -37,7 +37,7 @@ public class SupplierService extends DtoService<SupplierDao, SupplierEntity, Sup
 
     @Override
     public boolean logicDeleteById(Serializable id) {
-        AssertUtils.isTrue(SqlHelper.retBool(goodsService.query().eq("supplier_id", id).count()), "店铺存在商品,不允许删除");
+        AssertUtils.isTrue(goodsService.query().eq("supplier_id", id).exists(), "店铺存在商品,不允许删除");
         return super.logicDeleteById(id);
     }
 
