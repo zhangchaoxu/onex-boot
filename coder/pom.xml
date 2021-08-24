@@ -50,6 +50,7 @@
             <artifactId>commons-configuration</artifactId>
             <version>${commons.configuration.version}</version>
         </dependency>
+        <!-- velocity -->
         <dependency>
             <artifactId>velocity</artifactId>
             <groupId>org.apache.velocity</groupId>
