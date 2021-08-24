@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>角色管理-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../css/font.css">
+  <link rel="stylesheet" href="../../css/weadmin.css">
+</head>
+
+<body>
+  <div class="weadmin-body">
+    <form action="" method="post" class="layui-form layui-form-pane">
+      <div class="layui-form-item">
+        <label for="name" class="layui-form-label">
+          <span class="we-red">*</span>角色名
+        </label>
+        <div class="layui-input-inline">
+          <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off"
+            class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">
+          拥有权限
+        </label>
+        <table class="layui-table layui-input-block">
+          <tbody>
+            <tr>
+              <td>
+                用户管理
+                <input name="id[]" type="checkbox" value="2">
+              </td>
+              <td>
+                <div class="layui-input-block">
+                  <input name="id[]" type="checkbox" value="2"> 用户停用
+                  <input name="id[]" type="checkbox" value="2"> 用户删除
+                  <input name="id[]" type="checkbox" value="2"> 用户修改
+                  <input name="id[]" type="checkbox" value="2"> 用户改密
+                  <input name="id[]" type="checkbox" value="2"> 用户列表
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                文章管理
+                <input name="id[]" type="checkbox" value="2">
+              </td>
+              <td>
+                <div class="layui-input-block">
+                  <input name="id[]" type="checkbox" value="2"> 文章添加
+                  <input name="id[]" type="checkbox" value="2"> 文章删除
+                  <input name="id[]" type="checkbox" value="2"> 文章修改
+                  <input name="id[]" type="checkbox" value="2"> 文章改密
+                  <input name="id[]" type="checkbox" value="2"> 文章列表
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label for="desc" class="layui-form-label">
+          描述
+        </label>
+        <div class="layui-input-block">
+          <textarea placeholder="请输入内容" id="desc" name="desc" class="layui-textarea"></textarea>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <button class="layui-btn" lay-submit="" lay-filter="add">增加</button>
+      </div>
+    </form>
+  </div>
+  <script src="../../js/layui/layui.js" type="text/javascript"></script>
+  <script src="./role-add.js" type="text/javascript"></script>
+</body>
+
+</html>
