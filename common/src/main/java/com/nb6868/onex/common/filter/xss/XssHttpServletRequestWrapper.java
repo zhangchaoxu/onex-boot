@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.xss;
+package com.nb6868.onex.common.filter.xss;
 
 import cn.hutool.core.io.IoUtil;
 import org.springframework.http.HttpHeaders;
