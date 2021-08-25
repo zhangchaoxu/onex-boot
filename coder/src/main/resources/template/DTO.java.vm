@@ -1,6 +1,6 @@
 package ${package}.modules.${moduleName}.dto;
 
-import BaseDTO;
+import com.nb6868.onex.common.pojo.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
