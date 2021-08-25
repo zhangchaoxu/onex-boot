@@ -2,11 +2,11 @@ package ${package}.modules.${moduleName}.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import DtoService;
 import ${package}.modules.${moduleName}.dao.${className}Dao;
 import ${package}.modules.${moduleName}.dto.${className}DTO;
 import ${package}.modules.${moduleName}.entity.${className}Entity;
 
+import com.nb6868.onex.common.service.DtoService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

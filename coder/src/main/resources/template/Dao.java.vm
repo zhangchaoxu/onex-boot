@@ -1,6 +1,6 @@
 package ${package}.modules.${moduleName}.dao;
 
-import BaseDao;
+import com.nb6868.onex.common.dao.BaseDao;
 import ${package}.modules.${moduleName}.entity.${className}Entity;
 import org.apache.ibatis.annotations.Mapper;
 
