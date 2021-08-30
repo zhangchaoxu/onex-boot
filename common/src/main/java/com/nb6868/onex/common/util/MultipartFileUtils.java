@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -16,6 +17,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Base64;
 
 /**
@@ -39,7 +43,7 @@ public class MultipartFileUtils {
     /**
      * MultipartFile保存为本地File
      */
-    public static File multipartFileToFile(org.springframework.web.multipart.MultipartFile multipartFile) {
+    public static File multipartFileToFile(MultipartFile multipartFile) {
         // 保存文件
         String fileName = uploadPath + File.separator + multipartFile.getOriginalFilename();
         File localFile;
@@ -61,6 +65,7 @@ public class MultipartFileUtils {
             IoUtil.copy(multipartFile.getInputStream(), FileUtil.getOutputStream(localFile));
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
         return localFile;
     }
@@ -69,36 +74,38 @@ public class MultipartFileUtils {
      * 本地File转MultipartFile
      * 也可使用MockMultipartFile
      */
-    public static org.springframework.web.multipart.MultipartFile fileToMultipartFile(File file) {
-        FileItem fileItem =createFileItem(file);
-        if (null == fileItem) {
+    public static MultipartFile fileToMultipartFile(File file) {
+        if (file == null || !file.exists()) {
+            return null;
+        }
+        FileItemFactory factory = new DiskFileItemFactory(16, null);
+        FileItem fileItem = factory.createItem("textField", "text/plain", true, file.getName());
+        try {
+            IoUtil.copy(new FileInputStream(file), fileItem.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
         return new CommonsMultipartFile(fileItem);
     }
 
-    private static FileItem createFileItem(File file) {
-        FileItemFactory factory = new DiskFileItemFactory(16, null);
-        FileItem item = factory.createItem("textField", "text/plain", true, file.getName());
+    /**
+     * base64转文件
+     */
+    public static File base64ToFile(String base64) {
+        String[] baseStrs = base64.split(",");
+        String fileName = uploadPath + File.separator + IdUtil.simpleUUID();
+
         try {
-            IoUtil.copy(new FileInputStream(file), item.getOutputStream());
-        } catch (Exception e) {
-            e.printStackTrace();
+            Files.write(Paths.get(fileName), Base64.getDecoder().decode(baseStrs[1]), StandardOpenOption.CREATE);
+        } catch (IOException e) {
             return null;
         }
-        return item;
+        return new File(fileName);
     }
 
-    public static MultipartFile base64ToFile(String base64) {
-        String[] baseStrs = base64.split(",");
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] b = decoder.decode(baseStrs[1]);
-        for (int i = 0; i < b.length; ++i) {
-            if (b[i] < 0) {
-                b[i] += 256;
-            }
-        }
-        return new Base64DecodeMultipartFile(b, baseStrs[0]);
+    public static MultipartFile base64ToMultipartFile(String base64) {
+        return fileToMultipartFile(base64ToFile(base64));
     }
 
 }
