@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.sched.controller;
 
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.sched.dto.TaskDTO;
 import com.nb6868.onex.api.modules.sched.service.TaskService;
 import com.nb6868.onex.common.exception.ErrorCode;

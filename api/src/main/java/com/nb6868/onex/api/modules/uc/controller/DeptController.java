@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.uc.controller;
 
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.uc.dto.DeptDTO;
 import com.nb6868.onex.api.modules.uc.dto.DeptTreeDTO;
 import com.nb6868.onex.api.modules.uc.service.DeptService;

@@ -3,7 +3,7 @@ package com.nb6868.onex.api.modules.uc.controller;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.StrUtil;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.dto.MenuDTO;
 import com.nb6868.onex.api.modules.uc.dto.MenuTreeDTO;

@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.cms.controller;
 
 import com.nb6868.onex.api.modules.cms.service.SiteService;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.group.AddGroup;

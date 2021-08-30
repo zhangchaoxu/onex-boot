@@ -2,7 +2,7 @@ package com.nb6868.onex.api.modules.sys.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.sys.dto.OssDTO;
 import com.nb6868.onex.api.modules.sys.oss.AbstractOssService;
 import com.nb6868.onex.api.modules.sys.oss.OssFactory;

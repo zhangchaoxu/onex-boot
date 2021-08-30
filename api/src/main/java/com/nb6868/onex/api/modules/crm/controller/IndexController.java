@@ -5,7 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import com.nb6868.onex.api.modules.crm.service.BusinessService;
 import com.nb6868.onex.api.modules.crm.service.ContractService;
 import com.nb6868.onex.api.modules.crm.service.CustomerService;
-import com.nb6868.onex.api.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataFilter;
 import com.nb6868.onex.common.pojo.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

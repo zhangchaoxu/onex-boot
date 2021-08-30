@@ -3,7 +3,7 @@ package com.nb6868.onex.api.modules.sys.controller;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.nb6868.onex.api.common.annotation.AccessControl;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.api.modules.uc.service.CaptchaService;
 import com.nb6868.onex.common.pojo.Result;
 import com.wf.captcha.base.Captcha;

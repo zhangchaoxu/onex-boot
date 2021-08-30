@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
-import com.nb6868.onex.api.common.annotation.DataFilter;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.shop.dto.CouponDTO;
 import com.nb6868.onex.api.modules.shop.excel.CouponExcel;

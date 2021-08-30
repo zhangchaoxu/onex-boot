@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.msg.controller;
 
 import com.nb6868.onex.api.modules.msg.service.PushLogService;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.msg.dto.PushLogDTO;
 import com.nb6868.onex.api.modules.msg.dto.PushSendRequest;
 import com.nb6868.onex.api.modules.msg.push.AbstractPushService;
