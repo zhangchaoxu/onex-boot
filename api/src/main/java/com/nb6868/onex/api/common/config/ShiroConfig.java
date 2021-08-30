@@ -1,10 +1,11 @@
 package com.nb6868.onex.api.common.config;
 
 import cn.hutool.core.util.ClassUtil;
-import com.nb6868.onex.api.common.annotation.AccessControl;
 import com.nb6868.onex.api.modules.uc.shiro.ShiroFilter;
 import com.nb6868.onex.api.modules.uc.shiro.ShiroRealm;
 import com.nb6868.onex.api.modules.uc.shiro.SimpleShiroFilter;
+import com.nb6868.onex.common.annotation.AccessControl;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -28,6 +29,7 @@ import java.util.Set;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
 @Configuration
 public class ShiroConfig {
 
@@ -116,6 +118,8 @@ public class ShiroConfig {
         });
         // 除上述anon外,其它都需要过oauth2
         filterMap.put("/**", "shiro");
+        // print log
+        filterMap.forEach((s, s2) -> log.debug("shiro key={}, filter={}", s, s2));
         shiroFilter.setFilterChainDefinitionMap(filterMap);
 
         return shiroFilter;
