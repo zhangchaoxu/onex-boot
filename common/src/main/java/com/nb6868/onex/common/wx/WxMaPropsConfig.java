@@ -27,25 +27,30 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
-public class WxMaConfig {
+public class WxMaPropsConfig {
 
     @Autowired
     WxMaProps properties;
 
     private static final Map<String, WxMaMessageRouter> routers = new HashMap<>();
-    private static Map<String, WxMaService> maServices = new HashMap<>();
+    private final static Map<String, WxMaService> maServices = new HashMap<>();
 
     public static WxMaService getMaService(String code) {
         WxMaService wxService = maServices.get(code);
         if (wxService == null) {
-            throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置，请核实！", code));
+            throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置", code));
         }
 
         return wxService;
     }
 
-    public static WxMaMessageRouter getRouter(String appid) {
-        return routers.get(appid);
+    public static WxMaMessageRouter getRouter(String code) {
+        WxMaMessageRouter messageRouter = routers.get(code);
+        if (messageRouter == null) {
+            throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置", code));
+        }
+
+        return messageRouter;
     }
 
     @PostConstruct
