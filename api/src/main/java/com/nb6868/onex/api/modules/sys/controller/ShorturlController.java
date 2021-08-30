@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.sys.controller;
 
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.sys.dto.ShorturlDTO;
 import com.nb6868.onex.api.modules.sys.excel.ShorturlExcel;

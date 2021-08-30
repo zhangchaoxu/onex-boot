@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
-import com.nb6868.onex.api.common.annotation.WxWebAuth;
+import com.nb6868.onex.common.annotation.WxWebAuth;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.shop.dto.GoodsDTO;
 import com.nb6868.onex.api.modules.shop.dto.OrderDTO;

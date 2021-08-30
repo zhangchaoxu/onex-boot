@@ -2,7 +2,7 @@ package com.nb6868.onex.api.modules.msg.controller;
 
 import com.nb6868.onex.api.modules.msg.service.MailLogService;
 import com.nb6868.onex.api.modules.msg.service.MailTplService;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.msg.MsgConst;
 import com.nb6868.onex.api.modules.msg.dto.MailLogDTO;
 import com.nb6868.onex.api.modules.msg.dto.MailSendRequest;

@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.cms.controller;
 
-import com.nb6868.onex.api.common.annotation.AccessControl;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.api.modules.cms.dto.AxdDTO;
 import com.nb6868.onex.api.modules.cms.dto.SiteDTO;
 import com.nb6868.onex.api.modules.cms.entity.AxdEntity;

@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.shop.controller.app;
 
 import cn.hutool.core.map.MapUtil;
-import com.nb6868.onex.api.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataFilter;
 import com.nb6868.onex.api.modules.shop.dto.GoodsCategoryDTO;
 import com.nb6868.onex.api.modules.shop.dto.GoodsCategoryTreeDTO;
 import com.nb6868.onex.api.modules.shop.service.GoodsCategoryService;

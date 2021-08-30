@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.log.controller;
 
 import com.nb6868.onex.api.modules.log.service.ErrorService;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.log.dto.ErrorDTO;
 import com.nb6868.onex.api.modules.log.excel.ErrorExcel;

@@ -1,7 +1,7 @@
 package ${package}.modules.${moduleName}.controller;
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.MsgResult;

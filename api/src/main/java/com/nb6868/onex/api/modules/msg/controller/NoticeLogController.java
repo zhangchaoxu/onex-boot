@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.msg.controller;
 
 import com.nb6868.onex.api.modules.msg.service.NoticeLogService;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.msg.dto.NoticeLogDTO;
 import com.nb6868.onex.api.modules.msg.excel.NoticeLogExcel;

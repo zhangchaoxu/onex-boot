@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.uc.controller;
 
-import com.nb6868.onex.api.common.annotation.AccessControl;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.api.modules.uc.dingtalk.DingCallbackCrypto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

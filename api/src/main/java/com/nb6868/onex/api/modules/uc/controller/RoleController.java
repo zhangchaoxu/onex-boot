@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.uc.controller;
 
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.uc.dto.RoleDTO;
 import com.nb6868.onex.api.modules.uc.service.MenuScopeService;
 import com.nb6868.onex.api.modules.uc.service.RoleService;

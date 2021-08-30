@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.cms.controller;
 
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.cms.dto.ArticleDTO;
 import com.nb6868.onex.api.modules.cms.service.ArticleService;
 import com.nb6868.onex.common.exception.ErrorCode;

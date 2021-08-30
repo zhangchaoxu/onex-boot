@@ -2,7 +2,7 @@ package com.nb6868.onex.api.modules.log.controller;
 
 import com.nb6868.onex.api.modules.log.excel.OperationExcel;
 import com.nb6868.onex.api.modules.log.service.OperationService;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.log.dto.OperationDTO;
 import com.nb6868.onex.common.pojo.PageData;

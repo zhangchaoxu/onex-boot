@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.cms.controller;
 
-import com.nb6868.onex.api.common.annotation.DataFilter;
-import com.nb6868.onex.api.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.cms.dto.AxdDTO;
 import com.nb6868.onex.api.modules.cms.service.AxdService;
 import com.nb6868.onex.common.exception.ErrorCode;

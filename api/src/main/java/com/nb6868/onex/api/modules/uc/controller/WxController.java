@@ -5,7 +5,7 @@ import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
-import com.nb6868.onex.api.common.annotation.AccessControl;
+import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.api.modules.sys.service.ParamService;
 import com.nb6868.onex.api.modules.uc.wx.WxProp;
 import com.nb6868.onex.common.exception.ErrorCode;
