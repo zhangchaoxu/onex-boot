@@ -3,7 +3,6 @@ package com.nb6868.onex.api.modules.sys.controller;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
 import com.nb6868.onex.common.annotation.AccessControl;
-import com.nb6868.onex.common.annotation.AccessLimit;
 import com.nb6868.onex.common.pojo.Result;
 import com.sun.management.OperatingSystemMXBean;
 import io.swagger.annotations.Api;
@@ -37,16 +36,6 @@ public class IndexController {
     public Result<?> index() {
         log.info("index log");
         return new Result<>().success("api success");
-    }
-
-    @GetMapping("/limitTest")
-    @ApiOperation("限流测试")
-    @AccessControl
-    @AccessLimit
-    public Result<?> limitTest() throws Exception {
-        log.info("limitTest log");
-        TimeUnit.SECONDS.sleep(1);
-        return new Result<>().success("success");
     }
 
     @GetMapping("sys/info")
