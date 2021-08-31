@@ -3,6 +3,7 @@ package com.nb6868.onex.api.modules.sys.oss;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,12 +24,20 @@ public class LocalOssService extends AbstractOssService {
     }
 
     @Override
-    public String upload(MultipartFile file) {
-        String objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), false);
+    public String upload(String prefix, MultipartFile file) {
+        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
+        if (StrUtil.isNotEmpty(prefix)) {
+            if (StrUtil.isNotEmpty(prefixTotal)) {
+                prefixTotal += "/" + prefix;
+            } else {
+                prefixTotal = prefix;
+            }
+        }
+        String objectKey = buildUploadPath(prefixTotal, file.getOriginalFilename(), config.getKeepFileName(), false);
         File localFile = new File(config.getLocalPath() + File.separator + objectKey);
         if (localFile.exists()) {
             // 文件已存在,则需要对文件重命名
-            objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), true);
+            objectKey = buildUploadPath(prefixTotal, file.getOriginalFilename(), config.getKeepFileName(), true);
         }
         BufferedOutputStream out = FileUtil.getOutputStream(localFile);
         try {
@@ -38,6 +47,7 @@ public class LocalOssService extends AbstractOssService {
         }
         return config.getDomain() + objectKey;
     }
+
 
     @Override
     public String generatePresignedUrl(String objectName, long expiration) {
