@@ -11,7 +11,7 @@ import com.nb6868.onex.api.modules.sys.service.OssService;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
-import com.nb6868.onex.common.util.Base64DecodeMultipartFile;
+import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,7 +76,7 @@ public class OssController {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         // 上传文件
-        String url = OssFactory.build(paramCode).upload(file);
+        String url = OssFactory.build(paramCode).upload(prefix, file);
         //保存文件信息
         OssEntity oss = new OssEntity();
         oss.setUrl(url);
@@ -94,11 +94,11 @@ public class OssController {
                                   @RequestParam(name = "文件base64") String fileBase64,
                                   @RequestParam(required = false, name = "路径前缀") String prefix) {
         // 将base64转成file
-        MultipartFile file = Base64DecodeMultipartFile.base64Convert(fileBase64);
+        MultipartFile file = MultipartFileUtils.base64ToMultipartFile(fileBase64);
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         // 上传文件
-        String url = OssFactory.build(paramCode).upload(file);
+        String url = OssFactory.build(paramCode).upload(prefix, file);
         //保存文件信息
         OssEntity oss = new OssEntity();
         oss.setUrl(url);
@@ -120,7 +120,7 @@ public class OssController {
         AbstractOssService abstractOssService = OssFactory.build(paramCode);
         for (MultipartFile file : files) {
             // 上传文件
-            String url = abstractOssService.upload(file);
+            String url = abstractOssService.upload(prefix, file);
             //保存文件信息
             OssEntity oss = new OssEntity();
             oss.setUrl(url);

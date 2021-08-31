@@ -69,10 +69,11 @@ public abstract class AbstractOssService {
     /**
      * 文件上传
      *
+     * @param prefix 文件路径前缀
      * @param file 文件
      * @return 返回http地址
      */
-    public abstract String upload(MultipartFile file);
+    public abstract String upload(String prefix, MultipartFile file);
 
     /**
      * 生成访问时间

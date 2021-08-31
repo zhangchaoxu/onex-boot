@@ -2,6 +2,7 @@ package com.nb6868.onex.api.modules.sys.oss;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
@@ -34,13 +35,21 @@ public class AliyunOssService extends AbstractOssService {
     }
 
     @Override
-    public String upload(MultipartFile file) {
-        String objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), false);
+    public String upload(String prefix, MultipartFile file) {
+        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
+        if (StrUtil.isNotEmpty(prefix)) {
+            if (StrUtil.isNotEmpty(prefixTotal)) {
+                prefixTotal += "/" + prefix;
+            } else {
+                prefixTotal = prefix;
+            }
+        }
+        String objectKey = buildUploadPath(prefixTotal, file.getOriginalFilename(), config.getKeepFileName(), false);
         OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
         try {
             if (ossClient.doesObjectExist(config.getBucketName(), objectKey)) {
                 // 文件已存在,则需要对文件重命名
-                objectKey = buildUploadPath(config.getPrefix(), file.getOriginalFilename(), config.getKeepFileName(), true);
+                objectKey = buildUploadPath(prefixTotal, file.getOriginalFilename(), config.getKeepFileName(), true);
             }
             ossClient.putObject(config.getBucketName(), objectKey, file.getInputStream());
         } catch (OSSException | com.aliyun.oss.ClientException | IOException e) {
