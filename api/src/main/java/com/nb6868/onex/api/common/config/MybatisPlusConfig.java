@@ -61,10 +61,15 @@ public class MybatisPlusConfig {
      */
     private InnerInterceptor initDynamicTableNameInnerInterceptor() {
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
-        HashMap<String, TableNameHandler> map = new HashMap<String, TableNameHandler>(2) {{
-            // put("shops_entity", (sql, tableName) -> tableNameLocal.get());
-        }};
-        dynamicTableNameInnerInterceptor.setTableNameHandlerMap(map);
+        dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
+            switch (tableName) {
+                // 动态表名
+                //case "xxxx":
+                //    return tableName + "_" + tableNameLocal.get();
+                default:
+                    return tableName;
+            }
+        });
         return dynamicTableNameInnerInterceptor;
     }
 
