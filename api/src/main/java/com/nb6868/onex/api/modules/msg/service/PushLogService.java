@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.msg.dao.PushLogDao;
 import com.nb6868.onex.api.modules.msg.dto.PushLogDTO;
 import com.nb6868.onex.api.modules.msg.entity.PushLogEntity;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 

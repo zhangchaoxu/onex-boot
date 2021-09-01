@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.cms.dao;
 
 import com.nb6868.onex.api.modules.cms.entity.SiteEntity;
-import com.nb6868.onex.common.dao.BaseDao;
+import com.nb6868.onex.common.jpa.BaseDao;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.uc.dao.BillDao;
 import com.nb6868.onex.api.modules.uc.dto.BillDTO;
 import com.nb6868.onex.api.modules.uc.entity.BillEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 

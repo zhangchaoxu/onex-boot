@@ -8,7 +8,7 @@ import com.nb6868.onex.api.modules.sched.entity.TaskEntity;
 import com.nb6868.onex.api.modules.sched.utils.ScheduleUtils;
 import com.nb6868.onex.api.modules.sched.SchedConst;
 import com.nb6868.onex.api.modules.sched.dao.TaskDao;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.quartz.Scheduler;

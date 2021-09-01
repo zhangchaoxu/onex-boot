@@ -6,7 +6,7 @@ import com.nb6868.onex.api.modules.uc.dao.TenantDao;
 import com.nb6868.onex.api.modules.uc.dto.TenantDTO;
 import com.nb6868.onex.api.modules.uc.entity.TenantEntity;
 import com.nb6868.onex.api.modules.uc.entity.UserEntity;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

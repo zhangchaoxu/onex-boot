@@ -7,7 +7,7 @@ import com.nb6868.onex.api.modules.msg.entity.NoticeLogEntity;
 import com.nb6868.onex.api.modules.uc.user.SecurityUser;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 

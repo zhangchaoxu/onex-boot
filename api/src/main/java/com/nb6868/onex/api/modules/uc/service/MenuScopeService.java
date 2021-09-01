@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.uc.dao.MenuScopeDao;
 import com.nb6868.onex.api.modules.uc.entity.MenuEntity;
 import com.nb6868.onex.api.modules.uc.entity.MenuScopeEntity;
-import com.nb6868.onex.common.service.EntityService;
+import com.nb6868.onex.common.jpa.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

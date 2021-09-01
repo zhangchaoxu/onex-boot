@@ -11,7 +11,7 @@ import com.nb6868.onex.api.modules.uc.entity.DeptEntity;
 import com.nb6868.onex.api.modules.uc.user.SecurityUser;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.TreeUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -7,7 +7,7 @@ import com.nb6868.onex.api.modules.sys.dao.ShorturlDao;
 import com.nb6868.onex.api.modules.sys.dto.ShorturlDTO;
 import com.nb6868.onex.api.modules.sys.entity.ShorturlEntity;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.HexUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;

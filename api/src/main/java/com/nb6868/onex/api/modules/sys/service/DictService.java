@@ -6,7 +6,7 @@ import com.nb6868.onex.api.modules.sys.dao.DictDao;
 import com.nb6868.onex.api.modules.sys.dto.DictDTO;
 import com.nb6868.onex.api.modules.sys.entity.DictEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;

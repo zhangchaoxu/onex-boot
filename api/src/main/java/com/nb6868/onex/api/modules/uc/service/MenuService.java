@@ -9,7 +9,7 @@ import com.nb6868.onex.api.modules.uc.entity.MenuScopeEntity;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,10 +1,10 @@
-package com.nb6868.onex.common.injector;
+package com.nb6868.onex.common.jpa.injector;
 
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.nb6868.onex.common.injector.methods.LogicDeleteBatchByIdsWithFill;
-import com.nb6868.onex.common.injector.methods.LogicDeleteByIdWithFill;
-import com.nb6868.onex.common.injector.methods.LogicDeleteByWrapperWithFill;
-import com.nb6868.onex.common.injector.methods.SelectCountById;
+import com.nb6868.onex.common.jpa.injector.methods.LogicDeleteBatchByIdsWithFill;
+import com.nb6868.onex.common.jpa.injector.methods.LogicDeleteByIdWithFill;
+import com.nb6868.onex.common.jpa.injector.methods.LogicDeleteByWrapperWithFill;
+import com.nb6868.onex.common.jpa.injector.methods.SelectCountById;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 

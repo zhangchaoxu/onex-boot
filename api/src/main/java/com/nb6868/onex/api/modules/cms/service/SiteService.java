@@ -6,7 +6,7 @@ import com.nb6868.onex.api.modules.cms.dao.SiteDao;
 import com.nb6868.onex.api.modules.cms.dto.SiteDTO;
 import com.nb6868.onex.api.modules.cms.entity.SiteEntity;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;

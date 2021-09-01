@@ -1,14 +1,13 @@
 package com.nb6868.onex.api.modules.shop.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.api.modules.shop.entity.GoodsCategoryEntity;
 import com.nb6868.onex.api.modules.shop.dao.GoodsCategoryDao;
 import com.nb6868.onex.api.modules.shop.dto.GoodsCategoryDTO;
 import com.nb6868.onex.api.modules.shop.dto.GoodsCategoryTreeDTO;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.common.util.WrapperUtils;

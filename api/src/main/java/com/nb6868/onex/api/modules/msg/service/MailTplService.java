@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.msg.dao.MailTplDao;
 import com.nb6868.onex.api.modules.msg.dto.MailTplDTO;
 import com.nb6868.onex.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.stereotype.Service;

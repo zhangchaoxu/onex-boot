@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.sys.dao;
 
-import com.nb6868.onex.common.dao.BaseDao;
+import com.nb6868.onex.common.jpa.BaseDao;
 import com.nb6868.onex.api.modules.sys.entity.ParamEntity;
 import org.apache.ibatis.annotations.Mapper;
 

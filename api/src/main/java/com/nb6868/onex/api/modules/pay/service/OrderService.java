@@ -12,7 +12,7 @@ import com.nb6868.onex.api.modules.pay.dto.OrderDTO;
 import com.nb6868.onex.api.modules.pay.entity.OrderEntity;
 import com.nb6868.onex.api.modules.pay.util.PayUtils;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;

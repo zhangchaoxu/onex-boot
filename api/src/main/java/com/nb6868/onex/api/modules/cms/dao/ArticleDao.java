@@ -2,7 +2,7 @@ package com.nb6868.onex.api.modules.cms.dao;
 
 import com.nb6868.onex.api.modules.cms.entity.ArticleEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.dao.BaseDao;
+import com.nb6868.onex.common.jpa.BaseDao;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;

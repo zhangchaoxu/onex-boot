@@ -1,12 +1,11 @@
 package com.nb6868.onex.api.modules.shop.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.api.modules.shop.entity.SupplierEntity;
 import com.nb6868.onex.api.modules.shop.dao.SupplierDao;
 import com.nb6868.onex.api.modules.shop.dto.SupplierDTO;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;

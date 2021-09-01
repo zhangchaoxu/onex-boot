@@ -2,13 +2,12 @@ package com.nb6868.onex.api.modules.crm.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.api.modules.crm.dao.ProductCategoryDao;
 import com.nb6868.onex.api.modules.crm.dto.ProductCategoryDTO;
 import com.nb6868.onex.api.modules.crm.entity.ProductCategoryEntity;
 import com.nb6868.onex.api.modules.crm.entity.ProductEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;

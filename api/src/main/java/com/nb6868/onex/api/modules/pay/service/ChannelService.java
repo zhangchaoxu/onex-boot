@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.pay.dao.ChannelDao;
 import com.nb6868.onex.api.modules.pay.dto.ChannelDTO;
 import com.nb6868.onex.api.modules.pay.entity.ChannelEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 

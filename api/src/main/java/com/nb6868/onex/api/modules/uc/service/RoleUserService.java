@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.uc.dao.RoleUserDao;
 import com.nb6868.onex.api.modules.uc.entity.RoleEntity;
 import com.nb6868.onex.api.modules.uc.entity.RoleUserEntity;
-import com.nb6868.onex.common.service.EntityService;
+import com.nb6868.onex.common.jpa.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;

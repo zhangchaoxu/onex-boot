@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.injector.methods;
+package com.nb6868.onex.common.jpa.injector.methods;
 
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;

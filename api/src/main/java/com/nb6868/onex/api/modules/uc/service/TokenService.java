@@ -8,7 +8,7 @@ import com.nb6868.onex.api.common.config.OnexProps;
 import com.nb6868.onex.api.modules.uc.dao.TokenDao;
 import com.nb6868.onex.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.EntityService;
+import com.nb6868.onex.common.jpa.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

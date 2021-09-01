@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.sys.dao.ParamDao;
 import com.nb6868.onex.api.modules.sys.dto.ParamDTO;
 import com.nb6868.onex.api.modules.sys.entity.ParamEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;

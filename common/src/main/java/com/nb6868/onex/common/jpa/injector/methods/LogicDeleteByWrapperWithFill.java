@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.injector.methods;
+package com.nb6868.onex.common.jpa.injector.methods;
 
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
@@ -14,27 +14,24 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
- * 根据 id 逻辑删除数据,并带字段填充功能
- *  * <p>注意入参是 entity !!! ,如果字段没有自动填充,就只是单纯的逻辑删除</p>
- *  * <p>
- *  * 自己的通用 mapper 如下使用:
- *  * <pre>
- *  * int deleteByIdWithFill(T entity);
- *  * </pre>
- *  * </p>
+ * 根据 Wrapper 逻辑删除数据,并带字段填充功能
+ * <p>注意入参有 entity !!! ,如果字段没有自动填充,就只是单纯的逻辑删除</p>
+ * <p>
+ * 自己的通用 mapper 如下使用:
+ * int deleteByWrapperWithFill(T entity, Wrapper wrapper);
  *
  * @author Charles
  */
-public class LogicDeleteByIdWithFill extends AbstractMethod {
+public class LogicDeleteByWrapperWithFill extends AbstractMethod {
 
     /**
      * mapper 对应的方法名
      */
-    private static final String MAPPER_METHOD = "deleteByIdWithFill";
+    private static final String MAPPER_METHOD = "deleteByWrapperWithFill";
 
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
-        SqlMethod sqlMethod = SqlMethod.LOGIC_DELETE_BY_ID;
+        SqlMethod sqlMethod = SqlMethod.LOGIC_DELETE;
         String sql;
         if (tableInfo.isWithLogicDelete()) {
             // 包含->逻辑删除
@@ -49,14 +46,14 @@ public class LogicDeleteByIdWithFill extends AbstractMethod {
                 // 不包含->自动填充字段
                 sqlSet = sqlLogicSet(tableInfo);
             }
-            sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), sqlSet, tableInfo.getKeyColumn(), tableInfo.getKeyProperty(), tableInfo.getLogicDeleteSql(true, true));
+            sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), sqlSet, sqlWhereEntityWrapper(true, tableInfo), sqlComment());
         } else {
             // 不包含->逻辑删除
-            sqlMethod = SqlMethod.DELETE_BY_ID;
-            sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), tableInfo.getKeyColumn(), tableInfo.getKeyProperty());
+            sqlMethod = SqlMethod.DELETE;
+            sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), sqlWhereEntityWrapper(true, tableInfo), sqlComment());
         }
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return addUpdateMappedStatement(mapperClass, modelClass, MAPPER_METHOD, sqlSource);
+        return this.addDeleteMappedStatement(mapperClass, MAPPER_METHOD, sqlSource);
     }
 
 }

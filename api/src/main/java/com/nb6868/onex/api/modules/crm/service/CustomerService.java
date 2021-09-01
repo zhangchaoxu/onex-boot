@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.crm.dao.CustomerDao;
 import com.nb6868.onex.api.modules.crm.dto.CustomerDTO;
 import com.nb6868.onex.api.modules.crm.entity.CustomerEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 
