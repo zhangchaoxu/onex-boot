@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.oss;
 
-import com.nb6868.onex.common.auth.LoginProps;
 import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
