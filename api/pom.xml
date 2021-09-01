@@ -18,9 +18,7 @@
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.4.0</easypoi.version>
         <aliyun.oss.version>3.13.0</aliyun.oss.version>
-        <weixin.pay.version>4.1.0</weixin.pay.version>
-        <weixin.miniapp.version>4.1.0</weixin.miniapp.version>
-        <weixin.mp.version>4.1.0</weixin.mp.version>
+        <weixin.version>4.1.0</weixin.version>
         <alipay.sdk.version>4.16.2.ALL</alipay.sdk.version>
         <jpush.version>3.4.9</jpush.version>
         <zxing.version>3.4.1</zxing.version>
@@ -90,19 +88,19 @@
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-miniapp</artifactId>
-            <version>${weixin.miniapp.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <!-- wechat pay -->
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-pay</artifactId>
-            <version>${weixin.pay.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <!-- wechat mp -->
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-mp</artifactId>
-            <version>${weixin.mp.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <!-- alipay sdk
         <dependency>
