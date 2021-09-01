@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.wx;
+package com.nb6868.onex.common.wechat;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
@@ -27,16 +27,19 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
-public class WxMaPropsConfig {
+public class WechatMaPropsConfig {
 
     @Autowired
-    WxMaProps properties;
+    WechatMaProps props;
 
     private static final Map<String, WxMaMessageRouter> routers = new HashMap<>();
-    private final static Map<String, WxMaService> maServices = new HashMap<>();
+    private final static Map<String, WxMaService> services = new HashMap<>();
 
-    public static WxMaService getMaService(String code) {
-        WxMaService wxService = maServices.get(code);
+    /**
+     * 获得服务
+     */
+    public static WxMaService getService(String code) {
+        WxMaService wxService = services.get(code);
         if (wxService == null) {
             throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置", code));
         }
@@ -55,18 +58,18 @@ public class WxMaPropsConfig {
 
     @PostConstruct
     public void init() {
-        properties.getConfigs().forEach((s, wxProp) -> {
+        props.getConfigs().forEach((s, prop) -> {
             WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
-            config.setAppid(wxProp.getAppid());
-            config.setSecret(wxProp.getSecret());
-            config.setToken(wxProp.getToken());
-            config.setAesKey(wxProp.getAesKey());
-            config.setMsgDataFormat(wxProp.getMsgDataFormat());
+            config.setAppid(prop.getAppid());
+            config.setSecret(prop.getSecret());
+            config.setToken(prop.getToken());
+            config.setAesKey(prop.getAesKey());
+            config.setMsgDataFormat(prop.getMsgDataFormat());
 
             WxMaService service = new WxMaServiceImpl();
             service.setWxMaConfig(config);
             routers.put(s, newRouter(service));
-            maServices.put(s, service);
+            services.put(s, service);
         });
     }
 

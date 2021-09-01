@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.wx;
+package com.nb6868.onex.common.wechat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +10,7 @@ import lombok.Data;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
-public class WxScanProps {
+public class WechatScanProps {
 
     @JsonIgnore
     @ApiModelProperty(value = "secret")

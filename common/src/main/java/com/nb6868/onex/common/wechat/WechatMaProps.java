@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.wx;
+package com.nb6868.onex.common.wechat;
 
 import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,9 +17,9 @@ import java.util.Map;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "wx.ma")
+@ConfigurationProperties(prefix = "wechat.ma")
 @PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
-public class WxMaProps implements Serializable {
+public class WechatMaProps implements Serializable {
 
     @ApiModelProperty(value = "配置项")
     private Map<String, Config> configs;
