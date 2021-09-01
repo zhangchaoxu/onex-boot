@@ -35,7 +35,7 @@ public class MultipartFileUtils {
      */
     private static String uploadPath;
 
-    @Value("${upload-path}")
+    @Value("${server.tomcat.basedir}")
     public void setUploadPath(String uploadPath) {
         MultipartFileUtils.uploadPath = uploadPath;
     }

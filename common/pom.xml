@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>1.7.6</version>
+        <version>1.7.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -15,10 +15,11 @@
         <druid.version>1.2.6</druid.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <mybatisplus.version>3.4.3.2</mybatisplus.version>
-        <hutool.version>5.7.10</hutool.version>
+        <hutool.version>5.7.11</hutool.version>
         <jsoup.version>1.14.2</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.1.0</weixin.version>
+        <aliyun.oss.version>3.13.1</aliyun.oss.version>
     </properties>
 
     <dependencies>
@@ -95,6 +96,14 @@
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-mp</artifactId>
             <version>${weixin.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <!-- aliyun oss -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${aliyun.oss.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

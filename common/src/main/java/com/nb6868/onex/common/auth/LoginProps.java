@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,8 +22,24 @@ import java.util.Map;
 @PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
 public class LoginProps {
 
+    @ApiModelProperty(value = "登录设置")
+    private Map<String, Settings> settings;
 
-    @ApiModelProperty(value = "配置项")
+    @Data
+    public static class Settings {
+
+        @ApiModelProperty(value = "注册")
+        private boolean register;
+
+        @ApiModelProperty(value = "修改密码")
+        private boolean forgetPassword;
+
+        @ApiModelProperty(value = "登录方式")
+        private List<String> types;
+
+    }
+
+    @ApiModelProperty(value = "登录配置项")
     private Map<String, Config> configs;
 
     @Data
@@ -45,7 +62,7 @@ public class LoginProps {
 
         @JsonIgnore
         @ApiModelProperty(value = "token有效时间")
-        private Long tokenExpire = 604800L;
+        private Integer tokenExpire = 604800;
 
         @JsonIgnore
         @ApiModelProperty(value = "token是否自动延期")
