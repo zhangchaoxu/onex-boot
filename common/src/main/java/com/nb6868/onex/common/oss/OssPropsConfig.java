@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.oss;
 
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,10 @@ public class OssPropsConfig {
 
     @PostConstruct
     public void init() {
+        if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
+            log.info("未配置存储信息");
+            return;
+        }
         props.getConfigs().forEach((s, prop) -> {
             if ("aliyun".equalsIgnoreCase(prop.getType())) {
                 ossServices.put(s, new AliyunOssService(prop));

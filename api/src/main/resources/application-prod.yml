@@ -1,9 +1,3 @@
-# Tomcat
-server:
-  tomcat:
-    # 配置tomcat的临时目录
-    basedir: /home/temp
-
 spring:
   ## 定时任务
   quartz:
