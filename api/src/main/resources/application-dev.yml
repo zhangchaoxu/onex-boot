@@ -1,4 +1,10 @@
 spring:
+  # redis
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
   ## 定时任务
   quartz:
     ## 启动开关
