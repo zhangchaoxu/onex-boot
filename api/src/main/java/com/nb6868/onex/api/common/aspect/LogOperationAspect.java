@@ -3,6 +3,7 @@ package com.nb6868.onex.api.common.aspect;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.api.modules.log.entity.OperationEntity;
 import com.nb6868.onex.api.modules.log.service.OperationService;
 import com.nb6868.onex.api.modules.uc.user.SecurityUser;
@@ -129,10 +130,10 @@ public class LogOperationAspect {
             if (actualParam.get(0) instanceof String || actualParam.get(0) instanceof Long || actualParam.get(0) instanceof Integer) {
                 return actualParam.get(0).toString();
             } else {
-                return JacksonUtils.pojoToJson(actualParam.get(0), null);
+                return JSONUtil.toJsonStr(actualParam.get(0));
             }
         } else if (actualParam.size() > 1) {
-            return JacksonUtils.pojoToJson(actualParam, null);
+            return JSONUtil.toJsonStr(actualParam);
         } else {
             return null;
         }

@@ -2,6 +2,8 @@ package com.nb6868.onex.api.modules.msg.email;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrSplitter;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onex.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onex.api.modules.msg.service.MailLogService;
@@ -64,7 +66,7 @@ public class EmailUtils {
      */
     public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
         // 序列化电子邮件配置
-        EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class);
+        EmailProps emailProps = JSONUtil.toBean(mailTpl.getParam(), EmailProps.class);
         AssertUtils.isNull(emailProps, "电子邮件配置参数异常");
         // 组装标题和内容
         String title = TemplateUtils.getTemplateContent("mailTitle", mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
