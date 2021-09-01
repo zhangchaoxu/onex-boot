@@ -1,6 +1,7 @@
 package com.nb6868.onex.api.common.handler;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.api.modules.log.entity.ErrorEntity;
 import com.nb6868.onex.api.modules.log.service.ErrorService;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -287,7 +288,7 @@ public class OnexExceptionHandler {
             log.setMethod(request.getMethod());
             Map<String, String> params = HttpContextUtils.getParameterMap(request);
             if (!CollectionUtils.isEmpty(params)) {
-                log.setParams(JacksonUtils.pojoToJson(params));
+                log.setParams(JSONUtil.toJsonStr(params));
             }
         }
         // 异常信息
