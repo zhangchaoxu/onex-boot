@@ -3,10 +3,9 @@ package com.nb6868.onex.api.modules.uc.service;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.nb6868.onex.api.common.config.LoginProps;
-import com.nb6868.onex.api.common.config.OnexProps;
 import com.nb6868.onex.api.modules.uc.dao.TokenDao;
 import com.nb6868.onex.api.modules.uc.entity.TokenEntity;
+import com.nb6868.onex.common.auth.LoginProps;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.jpa.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ import java.util.List;
  */
 @Service
 public class TokenService extends EntityService<TokenDao, TokenEntity> {
-
-    @Autowired
-    private OnexProps onexProps;
 
     /**
      * 通过token获取用户id和登录type
@@ -49,20 +45,20 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * 生成token
      *
      * @param userId      用户ID
-     * @param loginProps 登录配置
+     * @param loginConfig 登录配置
      * @return result
      */
-    public String createToken(Long userId, LoginProps loginProps) {
+    public String createToken(Long userId, LoginProps.Config loginConfig) {
         // 当前时间
         Date now = new Date();
         // 过期时间
-        Date expireTime = DateUtil.offsetSecond(now, loginProps.getTokenExpire().intValue());
+        Date expireTime = DateUtil.offsetSecond(now, loginConfig.getTokenExpire().intValue());
         // 生成的token
-        if (loginProps.isMultiLogin()) {
+        if (loginConfig.isMultiLogin()) {
             // 支持多点登录
         } else {
             // 不支持多点登录,注销该用户所有token
-            deleteTokenByUserId(userId, loginProps.getType());
+            deleteTokenByUserId(userId, loginConfig.getType());
         }
         // 不管逻辑，永远都是重新生成一个token
         TokenEntity tokenEntity = new TokenEntity();
@@ -70,7 +66,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
         tokenEntity.setToken(IdUtil.simpleUUID());
         tokenEntity.setUpdateTime(now);
         tokenEntity.setExpireTime(expireTime);
-        tokenEntity.setType(loginProps.getType());
+        tokenEntity.setType(loginConfig.getType());
 
         // 保存token
         this.save(tokenEntity);
@@ -85,7 +81,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @param expire 延长时间
      * @return result
      */
-    public boolean renewalToken(String token, Long expire) {
+    public boolean renewalToken(String token, Integer expire) {
         return update().setSql("expire_time = DATE_ADD(NOW(), interval " + expire + " second)").eq("token", token).update(new TokenEntity());
     }
 

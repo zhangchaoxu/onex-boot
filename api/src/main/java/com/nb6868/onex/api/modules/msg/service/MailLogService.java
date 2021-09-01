@@ -19,13 +19,14 @@ import com.nb6868.onex.api.modules.msg.email.EmailUtils;
 import com.nb6868.onex.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onex.api.modules.msg.entity.MailTplEntity;
 import com.nb6868.onex.api.modules.msg.sms.SmsFactory;
-import com.nb6868.onex.api.modules.uc.wx.WxProp;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.common.wechat.WechatMaPropsConfig;
+import com.nb6868.onex.common.wechat.WechatMpPropsConfig;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
@@ -113,17 +114,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             return SmsFactory.build(mailTpl.getPlatform()).sendSms(mailTpl, request.getMailTo(), request.getContentParam());
         } else if (MsgConst.MailChannelEnum.WX_MP_TEMPLATE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信模板消息
-            WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
-            AssertUtils.isNull(wxProp, "消息模板配置错误");
-
-            // 初始化service
-            WxMpService wxService = new WxMpServiceImpl();
-            WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();
-            config.setAppId(wxProp.getAppid());
-            config.setSecret(wxProp.getSecret());
-            config.setToken(wxProp.getToken());
-            config.setAesKey(wxProp.getAesKey());
-            wxService.setWxMpConfigStorage(config);
+            WxMpService wxService = WechatMpPropsConfig.getService(mailTpl.getParam());
 
             // 可能是发送多个
             List<String> openIds = StrSplitter.splitTrim(request.getMailTo(), ',', true);
@@ -131,7 +122,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
                 // 构建消息
                 WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
                         .toUser(openId)
-                        .templateId(wxProp.getTemplateId())
+                        //.templateId(wxProp.getTemplateId())
                         .url("")
                         .build();
 
@@ -167,18 +158,8 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             return true;
         } else if (MsgConst.MailChannelEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信小程序模板消息
-            WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
-            AssertUtils.isNull(wxProp, "消息模板配置错误");
-
-            // 初始化service
-            WxMaService wxService = new WxMaServiceImpl();
-            WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
-            config.setAppid(wxProp.getAppid());
-            config.setSecret(wxProp.getSecret());
-            config.setToken(wxProp.getToken());
-            config.setAesKey(wxProp.getAesKey());
-            config.setMsgDataFormat(wxProp.getMsgDataFormat());
-            wxService.setWxMaConfig(config);
+            // 微信模板消息
+            WxMaService wxService = WechatMaPropsConfig.getService(mailTpl.getParam());
 
             // 可能是发送多个
             List<String> openIds = StrSplitter.splitTrim(request.getMailTo(), ',', true);
@@ -186,7 +167,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
                 // 构建消息
                 WxMaSubscribeMessage templateMessage = WxMaSubscribeMessage.builder()
                         .toUser(openId)
-                        .templateId(wxProp.getTemplateId())
+                        //.templateId(wxProp.getTemplateId())
                         .build();
 
                 // 封装消息实际内容

@@ -7,7 +7,6 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.api.modules.sys.service.ParamService;
-import com.nb6868.onex.api.modules.uc.wx.WxProp;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -38,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "微信接口")
 public class WxController {
 
-    @Autowired
+    /*@Autowired
     ParamService paramService;
 
     @GetMapping("getJsapiSignature")
@@ -115,37 +114,6 @@ public class WxController {
         // 解密
         WxMaPhoneNumberInfo phoneNoInfo = wxService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
         return new Result<>().success(phoneNoInfo);
-    }
-
-    /**
-     * 获取微信公众号Service
-     */
-    private WxMaService getWxMaService(WxProp prop) {
-        // 初始化service
-        WxMaService wxService = new WxMaServiceImpl();
-        WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
-        config.setAppid(prop.getAppid());
-        config.setSecret(prop.getSecret());
-        config.setToken(prop.getToken());
-        config.setAesKey(prop.getAesKey());
-        config.setMsgDataFormat(prop.getMsgDataFormat());
-        wxService.setWxMaConfig(config);
-        return wxService;
-    }
-
-    /**
-     * 获取微信小程序Service
-     */
-    private WxMpService getWxMpService(WxProp prop) {
-        // 初始化service
-        WxMpService wxService = new WxMpServiceImpl();
-        WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();
-        config.setAppId(prop.getAppid());
-        config.setSecret(prop.getSecret());
-        config.setToken(prop.getToken());
-        config.setAesKey(prop.getAesKey());
-        wxService.setWxMpConfigStorage(config);
-        return wxService;
-    }
+    }*/
 
 }

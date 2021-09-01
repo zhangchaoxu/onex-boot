@@ -4,11 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.sys.dto.OssDTO;
-import com.nb6868.onex.api.modules.sys.oss.AbstractOssService;
-import com.nb6868.onex.api.modules.sys.oss.OssFactory;
 import com.nb6868.onex.api.modules.sys.entity.OssEntity;
 import com.nb6868.onex.api.modules.sys.service.OssService;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.oss.AbstractOssService;
+import com.nb6868.onex.common.oss.OssPropsConfig;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.MultipartFileUtils;
@@ -56,7 +56,7 @@ public class OssController {
     public Result<?> presignedUrl(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode,
                                   @RequestParam String objectName,
                                   @RequestParam(required = false, defaultValue = "36000") long expiration) {
-        String url = OssFactory.build(paramCode).generatePresignedUrl(objectName, expiration);
+        String url = OssPropsConfig.getService(paramCode).generatePresignedUrl(objectName, expiration);
 
         return new Result<>().success(url);
     }
@@ -64,7 +64,7 @@ public class OssController {
     @GetMapping("getSts")
     @ApiOperation(value = "获得STS临时访问token")
     public Result<?> getSts(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode) {
-        Dict dict = OssFactory.build(paramCode).getSts();
+        Dict dict = OssPropsConfig.getService(paramCode).getSts();
         return new Result<>().success(dict);
     }
 
@@ -76,7 +76,7 @@ public class OssController {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         // 上传文件
-        String url = OssFactory.build(paramCode).upload(prefix, file);
+        String url = OssPropsConfig.getService(paramCode).upload(prefix, file);
         //保存文件信息
         OssEntity oss = new OssEntity();
         oss.setUrl(url);
@@ -98,7 +98,7 @@ public class OssController {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         // 上传文件
-        String url = OssFactory.build(paramCode).upload(prefix, file);
+        String url = OssPropsConfig.getService(paramCode).upload(prefix, file);
         //保存文件信息
         OssEntity oss = new OssEntity();
         oss.setUrl(url);
@@ -117,7 +117,7 @@ public class OssController {
                                  @RequestParam(required = false, name = "路径前缀") String prefix) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
-        AbstractOssService abstractOssService = OssFactory.build(paramCode);
+        AbstractOssService abstractOssService = OssPropsConfig.getService(paramCode);
         for (MultipartFile file : files) {
             // 上传文件
             String url = abstractOssService.upload(prefix, file);

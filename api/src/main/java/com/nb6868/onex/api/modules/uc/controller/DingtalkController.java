@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.uc.controller;
 
 import com.nb6868.onex.common.annotation.AccessControl;
-import com.nb6868.onex.api.modules.uc.dingtalk.DingCallbackCrypto;
+import com.nb6868.onex.common.dingtalk.DingCallbackCrypto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
