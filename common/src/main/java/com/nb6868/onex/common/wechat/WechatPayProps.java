@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.wx;
+package com.nb6868.onex.common.wechat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(value = "微信支付信息")
-public class WxPayProp implements Serializable {
+public class WechatPayProps implements Serializable {
 
     @ApiModelProperty(value = "微信公众号或者小程序的appid")
     private String appId;
