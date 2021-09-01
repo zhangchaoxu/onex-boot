@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.uc.dao.RoleDao;
 import com.nb6868.onex.api.modules.uc.dto.RoleDTO;
 import com.nb6868.onex.api.modules.uc.entity.RoleEntity;
 import com.nb6868.onex.api.modules.uc.entity.RoleUserEntity;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

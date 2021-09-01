@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.sys.dao.RegionDao;
 import com.nb6868.onex.api.modules.sys.dto.RegionDTO;
 import com.nb6868.onex.api.modules.sys.dto.RegionTreeDTO;
 import com.nb6868.onex.api.modules.sys.entity.RegionEntity;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.common.util.WrapperUtils;

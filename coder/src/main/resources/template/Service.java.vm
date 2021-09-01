@@ -6,7 +6,7 @@ import ${package}.modules.${moduleName}.dao.${className}Dao;
 import ${package}.modules.${moduleName}.dto.${className}DTO;
 import ${package}.modules.${moduleName}.entity.${className}Entity;
 
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

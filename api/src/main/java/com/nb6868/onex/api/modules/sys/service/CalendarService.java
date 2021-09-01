@@ -2,7 +2,7 @@ package com.nb6868.onex.api.modules.sys.service;
 
 import com.nb6868.onex.api.modules.sys.dao.CalendarDao;
 import com.nb6868.onex.api.modules.sys.entity.CalendarEntity;
-import com.nb6868.onex.common.service.EntityService;
+import com.nb6868.onex.common.jpa.EntityService;
 import org.springframework.stereotype.Service;
 
 /**

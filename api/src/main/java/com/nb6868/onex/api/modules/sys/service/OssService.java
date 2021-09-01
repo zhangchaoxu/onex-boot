@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.sys.dao.OssDao;
 import com.nb6868.onex.api.modules.sys.dto.OssDTO;
 import com.nb6868.onex.api.modules.sys.entity.OssEntity;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 

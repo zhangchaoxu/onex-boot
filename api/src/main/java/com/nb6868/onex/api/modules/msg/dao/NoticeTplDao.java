@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.msg.dao;
 
 import com.nb6868.onex.api.modules.msg.entity.NoticeTplEntity;
-import com.nb6868.onex.common.dao.BaseDao;
+import com.nb6868.onex.common.jpa.BaseDao;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

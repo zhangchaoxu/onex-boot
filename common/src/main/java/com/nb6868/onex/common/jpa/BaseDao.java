@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.dao;
+package com.nb6868.onex.common.jpa;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

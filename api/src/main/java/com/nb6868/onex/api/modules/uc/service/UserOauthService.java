@@ -6,7 +6,7 @@ import com.nb6868.onex.api.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.dao.UserOauthDao;
 import com.nb6868.onex.api.modules.uc.dto.UserOauthDTO;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.springframework.stereotype.Service;
 

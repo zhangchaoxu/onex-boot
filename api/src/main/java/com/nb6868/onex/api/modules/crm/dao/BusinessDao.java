@@ -3,7 +3,7 @@ package com.nb6868.onex.api.modules.crm.dao;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.nb6868.onex.api.modules.crm.entity.BusinessEntity;
-import com.nb6868.onex.common.dao.BaseDao;
+import com.nb6868.onex.common.jpa.BaseDao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

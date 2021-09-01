@@ -2,15 +2,12 @@ package com.nb6868.onex.api.common.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.handler.TableNameHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.nb6868.onex.common.injector.MySqlInjector;
+import com.nb6868.onex.common.jpa.injector.MySqlInjector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.HashMap;
 
 /**
  * mybatis-plus配置

@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.service;
+package com.nb6868.onex.common.jpa;
 
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.nb6868.onex.common.dao.BaseDao;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.util.ConvertUtils;

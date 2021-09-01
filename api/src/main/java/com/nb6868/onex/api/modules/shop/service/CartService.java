@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.shop.dao.CartDao;
 import com.nb6868.onex.api.modules.shop.dto.CartDTO;
 import com.nb6868.onex.api.modules.shop.entity.CartEntity;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.stereotype.Service;
 

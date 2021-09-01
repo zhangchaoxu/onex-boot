@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.cms.dao.ArticleDao;
 import com.nb6868.onex.api.modules.cms.dto.ArticleDTO;
 import com.nb6868.onex.api.modules.cms.entity.ArticleEntity;
-import com.nb6868.onex.common.service.DtoService;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
