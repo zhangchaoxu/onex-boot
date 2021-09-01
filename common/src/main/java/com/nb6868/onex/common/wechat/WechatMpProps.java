@@ -11,15 +11,15 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 微信小程序配置
+ * 微信公众号配置
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "wechat.ma")
+@ConfigurationProperties(prefix = "wechat.mp")
 @PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
-public class WechatMaProps implements Serializable {
+public class WechatMpProps implements Serializable {
 
     @ApiModelProperty(value = "配置项")
     private Map<String, Config> configs;
@@ -38,12 +38,6 @@ public class WechatMaProps implements Serializable {
 
         @ApiModelProperty(value = "EncodingAESKey")
         private String aesKey;
-
-        @ApiModelProperty(value = "模板消息id")
-        private String templateId;
-
-        @ApiModelProperty(value = "消息格式，XML或者JSON")
-        private String msgDataFormat;
 
     }
 

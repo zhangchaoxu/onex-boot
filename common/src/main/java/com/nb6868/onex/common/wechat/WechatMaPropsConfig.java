@@ -7,9 +7,13 @@ import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.binarywang.wx.miniapp.message.WxMaMessageHandler;
 import cn.binarywang.wx.miniapp.message.WxMaMessageRouter;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,10 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 微信小程序服务配置
+ * 微信服务配置
  *
  * @author Charles zhangchaoxu@gmail.com
- * @see https://gitee.com/binary/weixin-java-miniapp-demo/blob/master/src/main/java/com/github/binarywang/demo/wx/miniapp/config/WxMaConfiguration.java
+ * @see {https://gitee.com/binary/weixin-java-miniapp-demo/blob/master/src/main/java/com/github/binarywang/demo/wx/miniapp/config/WxMaConfiguration.java}
  */
 @Slf4j
 @Configuration
@@ -32,23 +36,22 @@ public class WechatMaPropsConfig {
     @Autowired
     WechatMaProps props;
 
-    private static final Map<String, WxMaMessageRouter> routers = new HashMap<>();
-    private final static Map<String, WxMaService> services = new HashMap<>();
+    private static final Map<String, WxMaMessageRouter> maRouters = new HashMap<>();
+    private final static Map<String, WxMaService> maServices = new HashMap<>();
 
     /**
-     * 获得服务
+     * 获得小程序服务
      */
     public static WxMaService getService(String code) {
-        WxMaService wxService = services.get(code);
-        if (wxService == null) {
+        WxMaService service = maServices.get(code);
+        if (service == null) {
             throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置", code));
         }
-
-        return wxService;
+        return service;
     }
 
     public static WxMaMessageRouter getRouter(String code) {
-        WxMaMessageRouter messageRouter = routers.get(code);
+        WxMaMessageRouter messageRouter = maRouters.get(code);
         if (messageRouter == null) {
             throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置", code));
         }
@@ -58,6 +61,10 @@ public class WechatMaPropsConfig {
 
     @PostConstruct
     public void init() {
+        if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
+            log.info("未配置微信小程序");
+            return;
+        }
         props.getConfigs().forEach((s, prop) -> {
             WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
             config.setAppid(prop.getAppid());
@@ -68,8 +75,8 @@ public class WechatMaPropsConfig {
 
             WxMaService service = new WxMaServiceImpl();
             service.setWxMaConfig(config);
-            routers.put(s, newRouter(service));
-            services.put(s, service);
+            maRouters.put(s, newRouter(service));
+            maServices.put(s, service);
         });
     }
 
