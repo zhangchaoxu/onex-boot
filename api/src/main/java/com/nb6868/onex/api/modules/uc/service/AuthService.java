@@ -7,10 +7,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.msg.MsgConst;
 import com.nb6868.onex.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onex.api.modules.msg.service.MailLogService;
-import com.nb6868.onex.api.modules.uc.dingtalk.DingtalkScanProps;
-import com.nb6868.onex.api.common.config.LoginProps;
-import com.nb6868.onex.api.common.config.LoginPropsSource;
-import com.nb6868.onex.api.common.config.OnexProps;
 import com.nb6868.onex.api.modules.sys.service.ParamService;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.dto.LoginRequest;
@@ -19,7 +15,8 @@ import com.nb6868.onex.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.api.modules.uc.entity.UserEntity;
 import com.nb6868.onex.api.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
-import com.nb6868.onex.api.modules.uc.wx.WxScanProps;
+import com.nb6868.onex.common.auth.LoginProps;
+import com.nb6868.onex.common.dingtalk.DingtalkScanProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -42,7 +39,7 @@ import java.util.Set;
 public class AuthService {
 
     @Autowired
-    private OnexProps onexProps;
+    private LoginProps loginProps;
     @Autowired
     private MenuService menuService;
     @Autowired
@@ -53,8 +50,6 @@ public class AuthService {
     private RoleService roleService;
     @Autowired
     private TokenService tokenService;
-    @Autowired
-    private ParamService paramService;
     @Autowired
     private MenuScopeService menuScopeService;
     @Autowired
@@ -101,7 +96,7 @@ public class AuthService {
      * @param token  token
      * @param expire 续期时间
      */
-    public boolean renewalToken(String token, Long expire) {
+    public boolean renewalToken(String token, Integer expire) {
         return tokenService.renewalToken(token, expire);
     }
 
@@ -114,79 +109,15 @@ public class AuthService {
         return userService.getById(userId);
     }
 
-    /**
-     * 通过登录类型获取登录配置
-     *
-     * @param type 类型
-     * @return 登录配置
-     */
-    public LoginProps getLoginProps(String type) {
-        if (UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name().equalsIgnoreCase(type)
-                && null != onexProps.getLoginAdminProps().getUsernamePasswordLoginProps()
-                && onexProps.getLoginAdminProps().getUsernamePasswordLoginProps().getSource() == LoginPropsSource.PROPS) {
-            return onexProps.getLoginAdminProps().getUsernamePasswordLoginProps();
-        } else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(type)
-                && null != onexProps.getLoginAdminProps().getMobileSmscodeLoginProps()
-                && onexProps.getLoginAdminProps().getMobileSmscodeLoginProps().getSource() == LoginPropsSource.PROPS) {
-            return onexProps.getLoginAdminProps().getMobileSmscodeLoginProps();
-        } else if (UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name().equalsIgnoreCase(type)
-                && null != onexProps.getLoginAdminProps().getDingtalkScanLoginProps()
-                && onexProps.getLoginAdminProps().getDingtalkScanLoginProps().getSource() == LoginPropsSource.PROPS) {
-            return onexProps.getLoginAdminProps().getDingtalkScanLoginProps();
-        } else if (UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name().equalsIgnoreCase(type)
-                && null != onexProps.getLoginAdminProps().getWechatScanLoginProps()
-                && onexProps.getLoginAdminProps().getWechatScanLoginProps().getSource() == LoginPropsSource.PROPS) {
-            return onexProps.getLoginAdminProps().getWechatScanLoginProps();
-        }
-        return paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + type, LoginProps.class);
+    public LoginProps.Config getLoginConfig(String type) {
+        return loginProps.getConfigs().get(type);
     }
 
-    public OnexProps.LoginAppProps getLoginAppProps() {
-        OnexProps.LoginAppProps loginAppProps = onexProps.getLoginAppProps();
-        if (loginAppProps.getSource() == LoginPropsSource.DB) {
-            loginAppProps = paramService.getContentObject(UcConst.LOGIN_APP, OnexProps.LoginAppProps.class);
-        }
-        return loginAppProps;
+    public LoginProps.Settings getLoginSettings(String type) {
+        return loginProps.getSettings().get(type);
     }
 
-    /**
-     * 获得后台登录配置
-     */
-    public OnexProps.LoginAdminProps getLoginAdminProps() {
-        OnexProps.LoginAdminProps loginAdminProps = onexProps.getLoginAdminProps();
-        if (loginAdminProps.getSource() == LoginPropsSource.DB) {
-            loginAdminProps = paramService.getContentObject(UcConst.LOGIN_ADMIN, OnexProps.LoginAdminProps.class);
-        }
-        return loginAdminProps;
-    }
-
-    /**
-     * 获得详细的后台登录配置
-     */
-    public OnexProps.LoginAdminProps getLoginAdminDetailProps() {
-        OnexProps.LoginAdminProps loginAdminProps = getLoginAdminProps();
-        // 各个登录途径的登录配置,需要确认是否从db读取
-        if (loginAdminProps.isUsernamePasswordLogin() && loginAdminProps.getUsernamePasswordLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setUsernamePasswordLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name(), LoginProps.class));
-        }
-        if (loginAdminProps.isMobileSmscodeLogin() && loginAdminProps.getMobileSmscodeLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setMobileSmscodeLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name(), LoginProps.class));
-        }
-        if (loginAdminProps.isWechatScanLogin() && loginAdminProps.getWechatScanLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setWechatScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name(), LoginProps.class));
-            loginAdminProps.setWechatScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_WECHAT_SCAN.name() + "_CONFIG", WxScanProps.class));
-        }
-        if (loginAdminProps.isDingtalkScanLogin() && loginAdminProps.getDingtalkScanLoginProps().getSource() == LoginPropsSource.DB) {
-            loginAdminProps.setDingtalkScanLoginProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name(), LoginProps.class));
-            loginAdminProps.setDingtalkScanProps(paramService.getContentObject(UcConst.LOGIN_TYPE_PREFIX + UcConst.LoginTypeEnum.ADMIN_DINGTALK_SCAN.name() + "_CONFIG", DingtalkScanProps.class));
-        }
-        return loginAdminProps;
-    }
-
-    /**
-     * 登录获取用户
-     */
-    public UserEntity login(LoginRequest loginRequest, LoginProps loginProps) {
+    public UserEntity login(LoginRequest loginRequest, LoginProps.Config loginProps) {
         // 校验验证码
         if (loginProps.isCaptcha()) {
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.CaptchaGroup.class);

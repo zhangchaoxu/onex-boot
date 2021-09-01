@@ -3,9 +3,9 @@ package com.nb6868.onex.api.modules.pay.util;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
-import com.nb6868.onex.api.modules.uc.wx.WxPayProp;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.common.wechat.WechatPayProps;
 
 public class PayUtils {
 
@@ -15,7 +15,7 @@ public class PayUtils {
      * @return WxPayService
      */
     public static WxPayService getWxPayServiceByParam(String param) {
-        WxPayProp wxProp = JacksonUtils.jsonToPojo(param, WxPayProp.class, null);
+        WechatPayProps wxProp = JacksonUtils.jsonToPojo(param, WechatPayProps.class, null);
         AssertUtils.isNull(wxProp, "支付配置参数错误");
         // 初始化service
         WxPayService wxService = new WxPayServiceImpl();

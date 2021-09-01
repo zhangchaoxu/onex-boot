@@ -2,10 +2,10 @@ package com.nb6868.onex.api.modules.uc.shiro;
 
 import com.nb6868.onex.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.api.modules.uc.service.AuthService;
-import com.nb6868.onex.api.common.config.LoginProps;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.entity.UserEntity;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
+import com.nb6868.onex.common.auth.LoginProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.ConvertUtils;
@@ -79,11 +79,11 @@ public class ShiroRealm extends AuthorizingRealm {
         /*List<Long> deptIdList = authService.getDataScopeList(userDetail.getId());
         userDetail.setDeptIdList(deptIdList);*/
 
-        LoginProps loginProps = authService.getLoginProps(token.getType());
-        userDetail.setLoginProps(loginProps);
-        if (loginProps.isTokenRenewal()) {
+        LoginProps.Config loginConfig = authService.getLoginConfig(token.getType());
+        userDetail.setLoginConfig(loginConfig);
+        if (loginConfig != null && loginConfig.isTokenRenewal()) {
             // 更新token
-            authService.renewalToken(accessToken, loginProps.getTokenExpire());
+            authService.renewalToken(accessToken, loginConfig.getTokenExpire());
         }
 
         return new SimpleAuthenticationInfo(userDetail, accessToken, getName());
@@ -104,11 +104,11 @@ public class ShiroRealm extends AuthorizingRealm {
             info.setRoles(roles);
         } else {
             // 根据配置中的role和permission设置SimpleAuthorizationInfo
-            if (null != user.getLoginProps() && user.getLoginProps().isRoleBase()) {
+            if (null != user.getLoginConfig() && user.getLoginConfig().isRoleBase()) {
                 // 塞入角色列表
                 info.setRoles(authService.getUserRoles(user));
             }
-            if (null != user.getLoginProps() && user.getLoginProps().isPermissionBase()) {
+            if (null != user.getLoginConfig() && user.getLoginConfig().isPermissionBase()) {
                 // 塞入权限列表
                 info.setStringPermissions(authService.getUserPermissions(user));
             }

@@ -3,19 +3,14 @@ package com.nb6868.onex.api.common.interceptor;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.api.modules.uc.UcConst;
-import com.nb6868.onex.api.modules.uc.wx.WxProp;
-import com.nb6868.onex.api.modules.sys.service.ParamService;
 import com.nb6868.onex.common.annotation.WxWebAuth;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.HttpContextUtils;
-import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.common.wechat.WechatMpPropsConfig;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
-import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -47,7 +42,7 @@ public class WxWebAuthInterceptor implements HandlerInterceptor {
                 if (ObjectUtil.isEmpty(openid)) {
                     // 通过是否有code来判断是否回调
                     String code = request.getParameter("code");
-                    WxMpService wxService = getWxService(UcConst.WX_MP);
+                    WxMpService wxService = WechatMpPropsConfig.getService(UcConst.WX_MP);
                     if (StrUtil.isBlank(code)) {
                         String url = HttpContextUtils.getFullUrl(request);
                         String oauth2buildAuthorizationUrl = wxService.getOAuth2Service().buildAuthorizationUrl(url, annotation.scope(), "wx#wechat_redirect");
@@ -101,22 +96,4 @@ public class WxWebAuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    @Autowired
-    ParamService paramService;
-
-    private WxMpService getWxService(String paramCode) {
-        // 从参数表获取参数配置
-        WxProp wxProp = paramService.getContentObject(paramCode, WxProp.class);
-        AssertUtils.isNull(wxProp, ErrorCode.WX_CONFIG_ERROR);
-
-        // 初始化service
-        WxMpService wxService = new WxMpServiceImpl();
-        WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();
-        config.setAppId(wxProp.getAppid());
-        config.setSecret(wxProp.getSecret());
-        config.setToken(wxProp.getToken());
-        config.setAesKey(wxProp.getAesKey());
-        wxService.setWxMpConfigStorage(config);
-        return wxService;
-    }
 }

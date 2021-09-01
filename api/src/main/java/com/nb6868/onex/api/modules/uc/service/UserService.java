@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.msg.MsgConst;
 import com.nb6868.onex.api.modules.msg.entity.MailLogEntity;
 import com.nb6868.onex.api.modules.msg.service.MailLogService;
-import com.nb6868.onex.api.common.config.OnexProps;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.dao.UserDao;
 import com.nb6868.onex.api.modules.uc.dto.ChangePasswordByMailCodeRequest;
@@ -134,8 +133,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 通过短信验证码修改密码
      */
     public boolean changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
-        OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
-        AssertUtils.isFalse(loginAdminProps.isForgetPassword(), "未开放修改密码功能");
+        /*OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
+        AssertUtils.isFalse(loginAdminProps.isForgetPassword(), "未开放修改密码功能");*/
 
         // 登录用户
         UserEntity user = getOneByColumn("mobile", request.getMailTo());
@@ -159,8 +158,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 注册
      */
     public UserEntity register(RegisterRequest request) {
-        OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
-        AssertUtils.isFalse(loginAdminProps.isRegister(), "未开放注册");
+        /*OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
+        AssertUtils.isFalse(loginAdminProps.isRegister(), "未开放注册");*/
 
         // 登录用户
         AssertUtils.isTrue(hasDuplicated(null, "mobile", request.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已注册");

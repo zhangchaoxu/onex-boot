@@ -15,11 +15,7 @@ import com.nb6868.onex.api.modules.msg.service.MailLogService;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.api.common.config.LoginProps;
-import com.nb6868.onex.api.common.config.OnexProps;
 import com.nb6868.onex.api.modules.uc.UcConst;
-import com.nb6868.onex.api.modules.uc.dingtalk.DingTalkApi;
-import com.nb6868.onex.api.modules.uc.dingtalk.GetUserInfoByCodeResponse;
 import com.nb6868.onex.api.modules.uc.dto.*;
 import com.nb6868.onex.api.modules.uc.entity.UserEntity;
 import com.nb6868.onex.api.modules.uc.entity.UserOauthEntity;
@@ -27,7 +23,9 @@ import com.nb6868.onex.api.modules.uc.service.AuthService;
 import com.nb6868.onex.api.modules.uc.service.TokenService;
 import com.nb6868.onex.api.modules.uc.service.UserOauthService;
 import com.nb6868.onex.api.modules.uc.service.UserService;
-import com.nb6868.onex.api.modules.uc.wx.WxApiService;
+import com.nb6868.onex.common.auth.LoginProps;
+import com.nb6868.onex.common.dingtalk.DingTalkApi;
+import com.nb6868.onex.common.dingtalk.GetUserInfoByCodeResponse;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.Result;
@@ -37,6 +35,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.wechat.WechatMaPropsConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
@@ -66,22 +65,24 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
-    private WxApiService wxApiService;
-    @Autowired
     private MailLogService mailLogService;
 
-    @GetMapping("getLoginAdminProps")
-    @ApiOperation("获得后台登录配置")
-    public Result<?> getLoginAdminProps() {
-        OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminDetailProps();
-        return new Result<>().success(loginAdminProps);
+    @GetMapping("getLoginSettings")
+    @ApiOperation("获得登录设置")
+    public Result<?> getLoginSettings(@RequestParam String type) {
+        LoginProps.Settings loginSettings = authService.getLoginSettings(type);
+        AssertUtils.isNull(loginSettings, "未定义该类型");
+
+        return new Result<>().success(loginSettings);
     }
 
-    @GetMapping("getLoginAppProps")
-    @ApiOperation("获得前台登录配置")
-    public Result<?> getLoginAppProps() {
-        OnexProps.LoginAppProps loginAppProps = authService.getLoginAppProps();
-        return new Result<>().success(loginAppProps);
+    @GetMapping("getLoginConfig")
+    @ApiOperation("获得登录配置")
+    public Result<?> getLoginConfig(@RequestParam String type) {
+        LoginProps.Config loginConfig = authService.getLoginConfig(type);
+        AssertUtils.isNull(loginConfig, "未定义该类型");
+
+        return new Result<>().success(loginConfig);
     }
 
     @PostMapping("sendLoginCode")
@@ -102,14 +103,14 @@ public class AuthController {
     @LogLogin
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
         // 获得登录配置
-        LoginProps loginProps = authService.getLoginProps(loginRequest.getType());
-        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        LoginProps.Config loginConfig = authService.getLoginConfig(loginRequest.getType());
+        AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
-        UserEntity user = authService.login(loginRequest, loginProps);
+        UserEntity user = authService.login(loginRequest, loginConfig);
 
         // 登录成功
         Dict dict = Dict.create();
-        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginConfig));
         dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(dict);
     }
@@ -139,11 +140,12 @@ public class AuthController {
     @ApiOperation("Oauth授权登录")
     @LogLogin
     public Result<?> wxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
-        LoginProps loginProps = authService.getLoginProps(request.getParamCode());
-        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        // 获得登录配置
+        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录
-        WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+        WxMaService wxService = WechatMaPropsConfig.getService(request.getType());
         WxMaJscode2SessionResult jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
 
         // 用户信息校验
@@ -170,7 +172,7 @@ public class AuthController {
         }
         // 登录成功
         Dict dict = Dict.create();
-        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginConfig));
         dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(dict);
     }
@@ -179,11 +181,12 @@ public class AuthController {
     @ApiOperation("Oauth微信小程序授权登录")
     @LogLogin
     public Result<?> wxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
-        LoginProps loginProps = authService.getLoginProps(request.getParamCode());
-        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        // 获得登录配置
+        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
-        WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+        WxMaService wxService = WechatMaPropsConfig.getService(request.getType());
         WxMaJscode2SessionResult jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
         // 更新或者插入Oauth表
         UserOauthEntity userOauth = userOauthService.saveOrUpdateByWxMaJscode2SessionResult(wxService.getWxMaConfig().getAppid(), jscode2SessionResult);
@@ -202,7 +205,7 @@ public class AuthController {
         }
         // 登录成功
         Dict dict = Dict.create();
-        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginConfig));
         dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(dict);
     }
@@ -211,11 +214,12 @@ public class AuthController {
     @ApiOperation("Oauth微信小程序手机号授权登录")
     @LogLogin
     public Result<?> wxMaLoginByPhone(@Validated @RequestBody OauthWxMaLoginByCodeAndPhone request) throws WxErrorException {
-        LoginProps loginProps = authService.getLoginProps(request.getParamCode());
-        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        // 获得登录配置
+        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
-        WxMaService wxService = wxApiService.getWxMaService(request.getParamCode());
+        WxMaService wxService = WechatMaPropsConfig.getService(request.getType());
         WxMaJscode2SessionResult jscode2SessionResult = wxService.getUserService().getSessionInfo(request.getCode());
         // 解密用户手机号
         WxMaPhoneNumberInfo phoneNumberInfo = wxService.getUserService().getPhoneNoInfo(jscode2SessionResult.getSessionKey(), request.getEncryptedData(), request.getIv());
@@ -233,7 +237,7 @@ public class AuthController {
         }
         // 登录成功
         Dict dict = Dict.create();
-        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginProps));
+        dict.set(UcConst.TOKEN_HEADER, tokenService.createToken(user.getId(), loginConfig));
         dict.set("user", ConvertUtils.sourceToTarget(user, UserDTO.class));
         return new Result<>().success(dict);
     }
@@ -246,8 +250,9 @@ public class AuthController {
     @ApiOperation("钉钉扫码授权登录")
     @LogLogin
     public Result<?> dingtalkLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
-        LoginProps loginProps = authService.getLoginProps(request.getParamCode());
-        AssertUtils.isNull(loginProps, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        // 获得登录配置
+        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 1. 根据sns临时授权码获取用户信息
         GetUserInfoByCodeResponse userInfoByCodeResponse = DingTalkApi.getUserInfoByCode("", "", request.getCode());
