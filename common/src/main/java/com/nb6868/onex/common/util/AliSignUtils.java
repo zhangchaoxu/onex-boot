@@ -48,9 +48,7 @@ public class AliSignUtils {
             mac.init(new javax.crypto.spec.SecretKeySpec(key.getBytes(StandardCharsets.UTF_8.name()), algorithm));
             byte[] signData = mac.doFinal(data.getBytes(StandardCharsets.UTF_8.name()));
             // base64
-            String base64 = java.util.Base64.getEncoder().encodeToString(signData);
-            // 最后urlEncode
-            return urlEncode(base64);
+            return java.util.Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
             e.printStackTrace();
             log.error("ParamParseUtils", e);
@@ -73,5 +71,6 @@ public class AliSignUtils {
         }
         return stringJoiner.toString();
     }
+
 
 }

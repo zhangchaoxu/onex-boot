@@ -1,6 +1,9 @@
 package com.nb6868.onex.common.dingtalk;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.util.AliSignUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -13,7 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +29,8 @@ import java.util.Map;
  */
 public class DingTalkApi {
 
-    @Autowired
-    static Cache dingtalkTokenCache;
+    // token 缓存,有效时间2小时
+    static TimedCache<String, String> tokenCache = CacheUtil.newTimedCache(7200 * 1000);
 
     /**
      * 获取企业内部应用的access_token
@@ -37,7 +42,8 @@ public class DingTalkApi {
      * 通过临时授权码获取授权用户的个人信息
      * https://ding-doc.dingtalk.com/document/app/obtain-the-user-information-based-on-the-sns-temporary-authorization
      */
-    private final static String GET_USERINFO_BY_CODE = "https://oapi.dingtalk.com/sns/getuserinfo_bycode?accessKey={1}&timestamp={2}&signature={3}";
+    //private final static String GET_USERINFO_BY_CODE = "https://oapi.dingtalk.com/sns/getuserinfo_bycode?accessKey={1}&timestamp={2}&signature={3}";
+    private final static String GET_USERINFO_BY_CODE = "https://oapi.dingtalk.com/sns/getuserinfo_bycode";
 
     /**
      * 根据unionid获取用户userid
@@ -84,20 +90,37 @@ public class DingTalkApi {
     /**
      * 通过临时授权码获取授权用户的个人信息
      */
-    public static GetUserInfoByCodeResponse getUserInfoByCode(String accessKey, String appSecret, String code) {
+    public static GetUserInfoByCodeResponse getUserInfoByCode(String appId, String appSecret, String code) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("tmp_auth_code", code);
         String timestamp = String.valueOf(System.currentTimeMillis());
         String signature = AliSignUtils.signature(timestamp, appSecret, "HmacSHA256");
-        return restTemplate.postForObject(GET_USERINFO_BY_CODE, requestBody, GetUserInfoByCodeResponse.class, accessKey, timestamp, signature);
+        // fuck RestTemplate 自动会对url做encode
+        URI uri = UriComponentsBuilder
+                .fromHttpUrl(GET_USERINFO_BY_CODE)
+                .queryParam("accessKey", appId)
+                .queryParam("timestamp", timestamp)
+                .queryParam("signature", AliSignUtils.urlEncode(signature))
+                .build(true)
+                .toUri();
+
+        return restTemplate.postForObject(uri, requestBody, GetUserInfoByCodeResponse.class);
     }
 
     /**
-     * 通过临时授权码获取授权用户的个人信息
+     * 获取企业内部应用的access_token
      */
-    public static AccessTokenResponse getAccessToken(String appKey, String appSecret) {
-        return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
+    public static AccessTokenResponse getAccessToken(String appKey, String appSecret, boolean refresh) {
+        String token = tokenCache.get(appKey, false);
+        if (refresh || StrUtil.isBlank(token)) {
+            // 强制刷新,或者缓存为空
+            return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
+        }
+        AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
+        accessTokenResponse.setAccess_token(token);
+        accessTokenResponse.setExpires_in(0);
+        return accessTokenResponse;
     }
 
     /**
@@ -140,23 +163,38 @@ public class DingTalkApi {
     /**
      * 根据unionid获取用户userid
      */
-    public static GetUserIdByUnionidResponse getUserByUnionid(String unionid) {
-        //String token = dingtalkTokenCache.get("accessToken", String.class);
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("unionid", unionid);
-        return restTemplate.postForObject(GET_USER_BY_UNIONID, requestBody, GetUserIdByUnionidResponse.class, "accessToken");
+    public static GetUserIdByUnionidResponse getUserIdByUnionid(String accessKey, String appSecret, String unionid) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("unionid", unionid);
+            return restTemplate.postForObject(GET_USER_BY_UNIONID, requestBody, GetUserIdByUnionidResponse.class, tokenResponse.getAccess_token());
+        } else {
+            GetUserIdByUnionidResponse response = new GetUserIdByUnionidResponse();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
+            return response;
+        }
     }
 
     /**
-     * 根据unionid获取用户userid
+     * 根据userid获取用户详情
      */
-    public static GetUserDetailByUseridResponse getUserDetailByUserId(String userid) {
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("userid", userid);
-        requestBody.put("language", "zh_CN");//  通讯录语言 zh_CN/en_US
-        return restTemplate.postForObject(GET_USER_DETAIL_BY_USERID, requestBody, GetUserDetailByUseridResponse.class, "accessToken");
+    public static GetUserDetailByUseridResponse getUserDetailByUserId(String accessKey, String appSecret, String userid) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("userid", userid);
+            requestBody.put("language", "zh_CN");//  通讯录语言 zh_CN/en_US
+            return restTemplate.postForObject(GET_USER_DETAIL_BY_USERID, requestBody, GetUserDetailByUseridResponse.class, tokenResponse.getAccess_token());
+        } else {
+            GetUserDetailByUseridResponse response = new GetUserDetailByUseridResponse();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
+            return response;
+        }
     }
 
     /**

@@ -21,7 +21,7 @@ public class GetUserIdByUnionidResponse extends BaseResponse {
 
     @Data
     @EqualsAndHashCode(callSuper = false)
-    static class Result implements Serializable {
+    public static class Result implements Serializable {
         /**
          * 联系类型：
          * 0：企业内部员工
