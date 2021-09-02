@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
-@Component()
+@Component
 @ConfigurationProperties(prefix = "cros")
 @PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
 public class CrosProps {
