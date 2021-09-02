@@ -21,7 +21,7 @@ public class GetUserInfoByCodeResponse extends BaseResponse {
 
     @Data
     @EqualsAndHashCode(callSuper = false)
-    static class UserInfo implements Serializable {
+    public static class UserInfo implements Serializable {
         /**
          * 用户在钉钉上面的昵称
          */

@@ -21,7 +21,7 @@ public class GetUserDetailByUseridResponse extends BaseResponse {
 
     @Data
     @EqualsAndHashCode(callSuper = false)
-    static class Result implements Serializable {
+    public static class Result implements Serializable {
         /**
          * 唯一id
          */
