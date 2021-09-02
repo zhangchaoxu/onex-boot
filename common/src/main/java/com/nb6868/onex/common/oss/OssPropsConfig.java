@@ -33,7 +33,7 @@ public class OssPropsConfig {
     @PostConstruct
     public void init() {
         if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
-            log.info("未配置存储信息");
+            log.info("未配置存储信息,如有需要可配置到持久化");
             return;
         }
         props.getConfigs().forEach((s, prop) -> {
