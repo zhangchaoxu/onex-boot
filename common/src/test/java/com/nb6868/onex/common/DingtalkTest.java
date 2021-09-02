@@ -21,8 +21,8 @@ public class DingtalkTest {
     @Test
     @DisplayName("获得用户信息")
     void getUserInfoByCode() {
-        GetUserInfoByCodeResponse response = DingTalkApi.getUserInfoByCode("dingoadm6szm8j6izamqdy", "I8c5IXw9sd1cZgwWQOyc5p9hvF8T7T7joiBduEtfeHvWXxmis631MxwD_", "1234");
-        log.error(response.toString());
+        GetUserInfoByCodeResponse response = DingTalkApi.getUserInfoByCode("dingoadm6szm8j6izamqdy", "TXq0of-I8c5IXw9sd1cZgwWQOyc5p9hvF8T7T7joiBduEtfeHvWXxmis631MxwD_", "1234");
+        log.error(response.getErrcode() + ":" + response.getErrmsg());
     }
 
 }
