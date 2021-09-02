@@ -72,5 +72,4 @@ public class AliSignUtils {
         return stringJoiner.toString();
     }
 
-
 }
