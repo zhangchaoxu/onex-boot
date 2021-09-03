@@ -1,13 +1,16 @@
 package com.nb6868.onex.common.wechat;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.WxMpConfigStorage;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -21,6 +24,8 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
+@ConditionalOnProperty(prefix = "wechat.mp.enabled")
+@PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
 public class WechatMpPropsConfig {
 
     @Autowired

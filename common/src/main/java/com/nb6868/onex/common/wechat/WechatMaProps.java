@@ -21,6 +21,9 @@ import java.util.Map;
 @PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
 public class WechatMaProps implements Serializable {
 
+    @ApiModelProperty(value = "是否生效")
+    private boolean enabled;
+
     @ApiModelProperty(value = "配置项")
     private Map<String, Config> configs;
 

@@ -39,6 +39,14 @@ public class GetUserDetailByUseridResponse extends BaseResponse {
          */
         private String avatar;
         /**
+         * 国际电话区号
+         */
+        private String state_code;
+        /**
+         * 直属主管的userId
+         */
+        private String manager_userid;
+        /**
          * 手机号
          */
         private String mobile;
@@ -50,6 +58,14 @@ public class GetUserDetailByUseridResponse extends BaseResponse {
          * 邮箱
          */
         private String email;
+        /**
+         * 职位
+         */
+        private String title;
+        /**
+         * 职位
+         */
+        private String remark;
     }
 
 }
