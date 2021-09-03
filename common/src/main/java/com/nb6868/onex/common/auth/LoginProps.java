@@ -54,7 +54,7 @@ public class LoginProps {
          */
         @JsonIgnore
         @ApiModelProperty(value = "支持多客户端登录")
-        private boolean multiLogin = false;
+        private boolean multiLogin = true;
 
         @JsonIgnore
         @ApiModelProperty(value = "token策略")

@@ -1,9 +1,12 @@
 package com.nb6868.onex.common.oss;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -11,6 +14,8 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
+@ConditionalOnProperty(prefix = "oss.enabled")
+@PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
 public class OssPropsConfig {
 
     @Autowired
