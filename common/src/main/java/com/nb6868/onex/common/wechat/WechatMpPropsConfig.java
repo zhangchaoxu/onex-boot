@@ -43,7 +43,7 @@ public class WechatMpPropsConfig {
     public void init() {
         mpServices = new WxMpServiceImpl();
         if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
-            log.info("未配置微信公众号");
+            log.info("未配置微信公众号,如有需要可配置到onex.yml或持久化");
             return;
         }
         Map<String, WxMpConfigStorage> configStorages = new HashMap<>();
