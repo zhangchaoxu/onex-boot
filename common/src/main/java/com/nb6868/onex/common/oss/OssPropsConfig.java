@@ -26,14 +26,13 @@ public class OssPropsConfig {
         if (service == null) {
             throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置", code));
         }
-
         return service;
     }
 
     @PostConstruct
     public void init() {
         if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
-            log.info("未配置存储信息,如有需要可配置到持久化");
+            log.info("未配置存储信息,如有需要可配置到onex.yml或持久化");
             return;
         }
         props.getConfigs().forEach((s, prop) -> {
