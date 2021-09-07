@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>1.9.3</version>
+        <version>1.9.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -23,6 +23,12 @@
     </properties>
 
     <dependencies>
+        <!-- quartz -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- commons -->
         <dependency>
             <groupId>commons-fileupload</groupId>
