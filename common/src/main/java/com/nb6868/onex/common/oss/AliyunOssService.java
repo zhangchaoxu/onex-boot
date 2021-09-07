@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.oss;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
@@ -18,6 +19,7 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -40,6 +42,11 @@ public class AliyunOssService extends AbstractOssService {
     }
 
     @Override
+    public String upload(File file) {
+        return upload(null, file);
+    }
+
+    @Override
     public String upload(String prefix, MultipartFile file) {
         String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
         if (StrUtil.isNotEmpty(prefix)) {
@@ -58,6 +65,33 @@ public class AliyunOssService extends AbstractOssService {
             }
             ossClient.putObject(config.getBucketName(), objectKey, file.getInputStream());
         } catch (OSSException | com.aliyun.oss.ClientException | IOException e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        } finally {
+            ossClient.shutdown();
+        }
+
+        return config.getDomain() + objectKey;
+    }
+
+    @Override
+    public String upload(String prefix, File file) {
+        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
+        if (StrUtil.isNotEmpty(prefix)) {
+            if (StrUtil.isNotEmpty(prefixTotal)) {
+                prefixTotal += "/" + prefix;
+            } else {
+                prefixTotal = prefix;
+            }
+        }
+        String objectKey = buildUploadPath(prefixTotal, FileNameUtil.getName(file), config.getKeepFileName(), false);
+        OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
+        try {
+            if (ossClient.doesObjectExist(config.getBucketName(), objectKey)) {
+                // 文件已存在,则需要对文件重命名
+                objectKey = buildUploadPath(prefixTotal, FileNameUtil.getName(file), config.getKeepFileName(), true);
+            }
+            ossClient.putObject(config.getBucketName(), objectKey, file);
+        } catch (OSSException | com.aliyun.oss.ClientException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         } finally {
             ossClient.shutdown();
