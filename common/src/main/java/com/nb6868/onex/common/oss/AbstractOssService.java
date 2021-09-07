@@ -8,6 +8,8 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+
 /**
  * 存储服务(阿里云、本地)
  *
@@ -74,11 +76,28 @@ public abstract class AbstractOssService {
     /**
      * 文件上传
      *
+     * @param file 文件
+     * @return 返回http地址
+     */
+    public abstract String upload(File file);
+
+    /**
+     * 文件上传
+     *
      * @param prefix 文件路径前缀
      * @param file 文件
      * @return 返回http地址
      */
     public abstract String upload(String prefix, MultipartFile file);
+
+    /**
+     * 文件上传
+     *
+     * @param prefix 文件路径前缀
+     * @param file 文件
+     * @return 返回http地址
+     */
+    public abstract String upload(String prefix, File file);
 
     /**
      * 生成访问时间
