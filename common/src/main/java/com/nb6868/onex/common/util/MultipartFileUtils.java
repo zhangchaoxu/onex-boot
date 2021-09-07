@@ -9,11 +9,14 @@ import cn.hutool.core.util.StrUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,14 +33,28 @@ import java.util.Base64;
 @Component
 public class MultipartFileUtils {
 
-    /**
-     * value注解不能直接给静态变量赋值
-     */
     private static String uploadPath;
 
-    @Value("${server.tomcat.basedir}")
-    public void setUploadPath(String uploadPath) {
-        MultipartFileUtils.uploadPath = uploadPath;
+    @Autowired
+    private Environment env;
+
+    @PostConstruct
+    public void init() {
+        String path = env.getProperty("upload-path");
+        if (StrUtil.isBlank(path)) {
+            path = env.getProperty("server.tomcat.basedir");
+            if (StrUtil.isNotBlank(path)) {
+                path = new File(path).getParentFile().getPath();
+            }
+        }
+        uploadPath = path;
+    }
+
+    /**
+     * 获得上传路径
+     */
+    public static String getUploadPath() {
+        return uploadPath;
     }
 
     /**
