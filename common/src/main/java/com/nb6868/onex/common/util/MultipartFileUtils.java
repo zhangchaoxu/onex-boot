@@ -44,7 +44,7 @@ public class MultipartFileUtils {
         if (StrUtil.isBlank(path)) {
             path = env.getProperty("server.tomcat.basedir");
             if (StrUtil.isNotBlank(path)) {
-                path = new File(path).getParentFile().getPath();
+                path = new File(path).getParentFile().getPath() + File.separator + "upload";
             }
         }
         uploadPath = path;
