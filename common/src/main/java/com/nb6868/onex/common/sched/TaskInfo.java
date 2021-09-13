@@ -32,10 +32,6 @@ public class TaskInfo implements Serializable {
      */
     private String cron;
     /**
-     * 运行的环境
-     */
-    private String runEnv;
-    /**
      * 任务状态  0：暂停  1：正常
      */
     private Integer state;

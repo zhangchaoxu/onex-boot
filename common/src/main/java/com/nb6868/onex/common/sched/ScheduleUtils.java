@@ -44,17 +44,17 @@ public class ScheduleUtils {
         try {
             // 启动调度器
             scheduler.start();
-            //构建job信息
+            // 构建job信息
             JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(getJobKey(taskInfo.getId())).build();
-            //表达式调度构建器
+            // 表达式调度构建器
             CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(taskInfo.getCron()).withMisfireHandlingInstructionDoNothing();
-            //按新的cronExpression表达式构建一个新的trigger
+            // 按新的cronExpression表达式构建一个新的trigger
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(taskInfo.getId())).withSchedule(scheduleBuilder).build();
-            //放入参数，运行时的方法可以获取
+            // 放入参数，运行时的方法可以获取
             jobDetail.getJobDataMap().put(SchedConst.JOB_PARAM_KEY, taskInfo);
             scheduler.scheduleJob(jobDetail, trigger);
 
-            //暂停任务
+            // 暂停任务
             if (taskInfo.getState() == SchedConst.TaskState.PAUSE.getValue()) {
                 pauseJob(scheduler, taskInfo.getId());
             }
@@ -71,15 +71,15 @@ public class ScheduleUtils {
             // 启动调度器
             scheduler.start();
             TriggerKey triggerKey = getTriggerKey(taskInfo.getId());
-            //表达式调度构建器
+            // 表达式调度构建器
             CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(taskInfo.getCron()).withMisfireHandlingInstructionDoNothing();
             CronTrigger trigger = getCronTrigger(scheduler, taskInfo.getId());
-            //按新的cronExpression表达式重新构建trigger
+            // 按新的cronExpression表达式重新构建trigger
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
-            //参数
+            // 参数
             trigger.getJobDataMap().put(SchedConst.JOB_PARAM_KEY, taskInfo);
             scheduler.rescheduleJob(triggerKey, trigger);
-            //暂停任务
+            // 暂停任务
             if (taskInfo.getState() == SchedConst.TaskState.PAUSE.getValue()) {
                 pauseJob(scheduler, taskInfo.getId());
             }
