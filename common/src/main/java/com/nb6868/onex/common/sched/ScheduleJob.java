@@ -3,10 +3,13 @@ package com.nb6868.onex.common.sched;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.text.StrSplitter;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.lang.reflect.Method;
@@ -19,9 +22,21 @@ import java.lang.reflect.Method;
 @Slf4j
 public class ScheduleJob extends QuartzJobBean {
 
+    /**
+     * 当前运行环境
+     */
+    @Value("${spring.profiles.active}")
+    private String env;
+
     @Override
     protected void executeInternal(JobExecutionContext context) {
         TaskInfo task = (TaskInfo) context.getMergedJobDataMap().get(SchedConst.JOB_PARAM_KEY);
+
+        // 检查运行环境,若指定了运行环境,并且不包含当前运行环境,则跳出不执行
+        if (StrUtil.isNotBlank(task.getRunEnv()) && !StrSplitter.splitTrim(task.getRunEnv(), ',', true).contains(env)) {
+            log.info("task指定环境{},不匹配当前环境{}", task.getRunEnv(), env);
+            return;
+        }
 
         //任务开始时间
         TimeInterval timer = DateUtil.timer();
