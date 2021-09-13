@@ -3,6 +3,7 @@ package com.nb6868.onex.common.sched;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class ScheduleJob extends QuartzJobBean {
             //执行任务
             log.info("任务准备执行，任务ID：{}", task.getId());
             Object target = SpringContextUtils.getBean(task.getName());
-            Method method = target.getClass().getDeclaredMethod("run", String.class);
+            Method method = target.getClass().getDeclaredMethod("run", JSONObject.class);
             Object invokeResult = method.invoke(target, task.getParams());
             result = invokeResult.toString();
             log.info("任务执行完毕，任务ID：{}", task.getId());
