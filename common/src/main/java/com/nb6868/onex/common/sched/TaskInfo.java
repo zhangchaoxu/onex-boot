@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.sched;
 
+import cn.hutool.json.JSONObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,7 +27,7 @@ public class TaskInfo implements Serializable {
     /**
      * 参数
      */
-    private String params;
+    private JSONObject params;
     /**
      * cron表达式
      */
