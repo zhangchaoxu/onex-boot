@@ -3,13 +3,10 @@ package com.nb6868.onex.common.sched;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.text.StrSplitter;
-import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.lang.reflect.Method;
@@ -22,66 +19,46 @@ import java.lang.reflect.Method;
 @Slf4j
 public class ScheduleJob extends QuartzJobBean {
 
-    /**
-     * 当前运行环境
-     */
-    @Value("${spring.profiles.active}")
-    private String env;
-
     @Override
     protected void executeInternal(JobExecutionContext context) {
         TaskInfo task = (TaskInfo) context.getMergedJobDataMap().get(SchedConst.JOB_PARAM_KEY);
-
-        // 检查运行环境,若指定了运行环境,并且不包含当前运行环境,则跳出不执行
-        if (StrUtil.isNotBlank(task.getRunEnv()) && !StrSplitter.splitTrim(task.getRunEnv(), ',', true).contains(env)) {
-            log.info("task指定环境{},不匹配当前环境{}", task.getRunEnv(), env);
-            return;
-        }
-
-        //任务开始时间
+        // 任务计时器
         TimeInterval timer = DateUtil.timer();
-        long timeInterval = 0;
-        int result = Const.ResultEnum.SUCCESS.value();
-        String errorMsg = null;
+        // 任务执行状态
+        int state = Const.ResultEnum.SUCCESS.value();
+        // 任务执行结果
+        String result = null;
         try {
             //执行任务
             log.info("任务准备执行，任务ID：{}", task.getId());
             Object target = SpringContextUtils.getBean(task.getName());
             Method method = target.getClass().getDeclaredMethod("run", String.class);
-            method.invoke(target, task.getParams());
-
-            //任务执行总时长
-            timeInterval = timer.interval();
-            //任务状态
-            result = Const.ResultEnum.SUCCESS.value();
-            log.info("任务执行完毕，任务ID：{}  总共耗时：{} 毫秒", task.getId(), timeInterval);
+            Object invokeResult = method.invoke(target, task.getParams());
+            result = invokeResult.toString();
+            log.info("任务执行完毕，任务ID：{}", task.getId());
         } catch (Exception e) {
-            //任务执行总时长
-            //任务执行总时长
-            timeInterval = timer.interval();
             //任务状态
-            result = Const.ResultEnum.FAIL.value();
+            state = Const.ResultEnum.FAIL.value();
             // 错误消息
-            errorMsg = ExceptionUtil.stacktraceToString(e);
+            result = ExceptionUtil.stacktraceToString(e);
             log.error("任务执行失败，任务ID：{}", task.getId(), e);
         } finally {
-            saveTaskLog(task, timeInterval, result, errorMsg);
+            saveTaskLog(task, timer.interval(), state, result);
         }
     }
 
     /**
      * 保存任务日志
      */
-    protected void saveTaskLog(TaskInfo task, long timeInterval, int result, String errorMsg) {
-        // 获取spring bean
+    protected void saveTaskLog(TaskInfo task, long timeInterval, int state, String result) {
         /*TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
         TaskLogEntity log = new TaskLogEntity();
-        log.setTaskId(task.getId());
+        log.setTaskId(Long.valueOf(task.getId()));
         log.setTaskName(task.getName());
         log.setParams(task.getParams());
         log.setTimes(timeInterval);
-        log.setState(result);
-        log.setError(errorMsg);
+        log.setState(state);
+        log.setResult(result);
         taskLogService.save(log);*/
     }
 
