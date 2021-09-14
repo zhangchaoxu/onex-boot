@@ -59,11 +59,4 @@ public class XssUtils extends Safelist {
             .addProtocols("embed", "src", "http", "https");
     }
 
-    public static void main(String[] args) {
-        StringBuilder html = new StringBuilder();
-        html.append("<a href=\"https://www.baidu.com\" target=\"_blank\">百度</a>");
-
-        System.out.println(filter(html.toString()));
-    }
-
 }
