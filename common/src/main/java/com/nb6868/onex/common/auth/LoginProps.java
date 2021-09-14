@@ -61,6 +61,10 @@ public class LoginProps {
         private String tokenPolicy = "uuid";
 
         @JsonIgnore
+        @ApiModelProperty(value = "token密钥")
+        private String tokenKey = "onex@2021";
+
+        @JsonIgnore
         @ApiModelProperty(value = "token有效时间")
         private Integer tokenExpire = 604800;
 
