@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
 
@@ -44,7 +46,7 @@ public class JacksonUtils {
      *
      * @return ObjectMapper实例
      */
-    private static ObjectMapper getMapper() {
+    public static ObjectMapper getMapper() {
         if (JacksonUtils.mapper != null) {
             return JacksonUtils.mapper;
         }
@@ -57,6 +59,12 @@ public class JacksonUtils {
             JacksonUtils.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             JacksonUtils.mapper.setDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
             JacksonUtils.mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+            // Long类型转String类型
+            // 解决js中Long型数据精度丢失的问题 {https://mybatis.plus/guide/faq.html#id-worker-生成主键太长导致-js-精度丢失}
+            SimpleModule simpleModule = new SimpleModule();
+            simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+            simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+            JacksonUtils.mapper.registerModule(simpleModule);
             // 设置
             JacksonUtils.mapper.disable(MapperFeature.USE_ANNOTATIONS);
             return JacksonUtils.mapper;
