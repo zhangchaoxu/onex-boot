@@ -4,6 +4,7 @@ import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class CrosProps {
 
     String allowCredentials = "true";
-    String allowHeaders = "content-type,token,device,Authorization";
+    String allowHeaders = HttpHeaders.CONTENT_TYPE + ",device,Authorization,token,auth-token,jwt-token";
     String allowMethods = "GET,POST,PUT,DELETE,OPTIONS";
     String maxAge = "3600";
 
