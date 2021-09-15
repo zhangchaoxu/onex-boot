@@ -10,6 +10,7 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -46,9 +47,9 @@ public class ExcelUtils {
     public static void downloadExcel(HttpServletResponse response, String fileName, ExportParams exportParams, Class<?> pojoClass, Collection<?> list) {
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setHeader("content-Type", "application/vnd.ms-excel");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel");
         try {
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
             ServletOutputStream out = response.getOutputStream();
             workbook.write(out);
             out.flush();
@@ -96,9 +97,9 @@ public class ExcelUtils {
 
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setHeader("content-Type", "application/vnd.ms-excel");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel");
         try {
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
             ServletOutputStream out = response.getOutputStream();
             workbook.write(out);
             out.flush();

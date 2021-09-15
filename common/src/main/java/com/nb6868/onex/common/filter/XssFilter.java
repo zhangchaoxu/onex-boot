@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * XSS过滤
+ * XSS 过滤器
  *
  * @author Charles zhangchaoxu@gmail.com
  */
