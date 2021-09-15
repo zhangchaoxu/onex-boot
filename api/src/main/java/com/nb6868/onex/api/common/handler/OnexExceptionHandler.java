@@ -8,7 +8,6 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
-import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -110,8 +109,8 @@ public class OnexExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public Object handleNoHandlerFoundException(HttpServletRequest request, HttpServletResponse response, NoHandlerFoundException e) {
         // 解决跨域问题
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader(HttpHeaders.ORIGIN));
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, request.getHeader(HttpHeaders.ORIGIN));
         return handleExceptionResult(request, ErrorCode.NOT_FOUND);
     }
 

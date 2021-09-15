@@ -16,6 +16,7 @@
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <mybatisplus.version>3.4.3.3</mybatisplus.version>
         <hutool.version>5.7.12</hutool.version>
+        <bcprov.version>1.69</bcprov.version>
         <jsoup.version>1.14.2</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.1.0</weixin.version>
@@ -28,12 +29,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <!-- commons -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>${commons.fileupload.version}</version>
         </dependency>
         <!-- druid -->
         <dependency>
@@ -69,6 +64,13 @@
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
+        <!-- bcprov -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>${bcprov.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- jsoup -->
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -80,6 +82,7 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- wechat miniapp -->
         <dependency>

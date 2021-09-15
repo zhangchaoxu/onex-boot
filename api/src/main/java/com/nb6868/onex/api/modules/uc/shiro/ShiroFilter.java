@@ -10,6 +10,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -84,9 +85,9 @@ public class ShiroFilter extends AuthenticatingFilter {
     @SneakyThrows
     protected void responseUnauthorized(ServletRequest request, ServletResponse response, Exception e) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        httpResponse.setContentType("application/json;charset=utf-8");
-        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        httpResponse.setHeader("Access-Control-Allow-Origin", ((HttpServletRequest) request).getHeader(HttpHeaders.ORIGIN));
+        httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, ((HttpServletRequest) request).getHeader(HttpHeaders.ORIGIN));
 
         // 处理登录失败的异常
         if (e == null) {
