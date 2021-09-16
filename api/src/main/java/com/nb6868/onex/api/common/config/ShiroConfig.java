@@ -3,7 +3,6 @@ package com.nb6868.onex.api.common.config;
 import cn.hutool.core.util.ClassUtil;
 import com.nb6868.onex.api.modules.uc.shiro.ShiroFilter;
 import com.nb6868.onex.api.modules.uc.shiro.ShiroRealm;
-import com.nb6868.onex.api.modules.uc.shiro.SimpleShiroFilter;
 import com.nb6868.onex.common.annotation.AccessControl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
@@ -58,7 +57,6 @@ public class ShiroConfig {
         // shiro过滤
         Map<String, Filter> filters = new HashMap<>();
         filters.put("shiro", new ShiroFilter());
-        filters.put("simpleShiro", new SimpleShiroFilter());
         shiroFilter.setFilters(filters);
         /*
          * 自定义url规则 {http://shiro.apache.org/web.html#urls-}

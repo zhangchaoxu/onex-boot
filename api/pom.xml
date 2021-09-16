@@ -13,6 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
+        <knife4j.version>2.0.9</knife4j.version>
         <dynamic.datasource.version>3.4.1</dynamic.datasource.version>
         <shiro.version>1.7.1</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
@@ -37,6 +38,17 @@
             <artifactId>coder</artifactId>
             <version>1.9.15</version>
             <scope>test</scope>
+        </dependency>
+        <!-- knife4j -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
+        </dependency>
+        <!-- quartz -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
         <!-- springboot cache -->
         <dependency>

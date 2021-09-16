@@ -34,12 +34,12 @@ public class TaskLogEntity extends BaseEntity {
 	 */
 	private Integer state;
 	/**
-	 * 失败信息
+	 * 结果
 	 */
-	private String error;
+	private String result;
 	/**
 	 * 耗时(单位：毫秒)
 	 */
-	private Integer times;
+	private Long times;
 
 }

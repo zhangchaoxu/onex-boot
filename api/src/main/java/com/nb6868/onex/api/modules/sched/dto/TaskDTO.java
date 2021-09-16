@@ -33,7 +33,7 @@ public class TaskDTO extends BaseDTO {
     private String cron;
 
     @ApiModelProperty(value = "状态  0：暂停  1：正常")
-    @Range(min = 0, max = 1, message = "状态值错误", groups = DefaultGroup.class)
+    @Range(min = 0, max = 1, message = "状态", groups = DefaultGroup.class)
     private Integer state;
 
     @ApiModelProperty(value = "备注")
