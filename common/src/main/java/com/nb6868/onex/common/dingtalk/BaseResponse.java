@@ -1,24 +1,19 @@
 package com.nb6868.onex.common.dingtalk;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 
-/**
- * 钉钉基础返回消息
- *
- * @author Charles zhangchaoxu@gmail.com
- */
+@ApiModel(value = "钉钉基础,返回体")
 @Data
 public class BaseResponse implements Serializable {
 
-    /**
-     * 返回码
-     */
+    @ApiModelProperty(value = "返回码")
     private int errcode;
-    /**
-     * 返回描述
-     */
+
+    @ApiModelProperty(value = "返回描述")
     private String errmsg;
 
     /**

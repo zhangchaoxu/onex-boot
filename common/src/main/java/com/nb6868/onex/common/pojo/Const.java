@@ -56,6 +56,14 @@ public interface Const {
      */
     String LIMIT = "limit";
     /**
+     * 限制条数
+     */
+    String LIMIT_FMT = "limit {}";
+    /**
+     * 限制条数,范围
+     */
+    String LIMIT_RANGE_FMT = "limit {},{}";
+    /**
      * 排序字段
      */
     String ORDER_FIELD = "orderField";

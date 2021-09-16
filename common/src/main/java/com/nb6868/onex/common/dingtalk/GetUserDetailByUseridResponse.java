@@ -1,70 +1,55 @@
 package com.nb6868.onex.common.dingtalk;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
-/**
- * 根据userid获取用户详情, 返回体
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
+@ApiModel(value = "根据userid获取用户详情")
 @EqualsAndHashCode(callSuper = false)
 public class GetUserDetailByUseridResponse extends BaseResponse {
 
-    /**
-     * 用户信息
-     */
+    @ApiModelProperty(value = "用户信息")
     private Result result;
 
     @Data
     @EqualsAndHashCode(callSuper = false)
     public static class Result implements Serializable {
-        /**
-         * 唯一id
-         */
+
+        @ApiModelProperty(value = "唯一id")
         private String unionid;
-        /**
-         * 用户的userid
-         */
+
+        @ApiModelProperty(value = "用户userid")
         private String userid;
-        /**
-         * 名称
-         */
+
+        @ApiModelProperty(value = "名称")
         private String name;
-        /**
-         * 头像
-         */
+
+        @ApiModelProperty(value = "头像")
         private String avatar;
-        /**
-         * 国际电话区号
-         */
+
+        @ApiModelProperty(value = "国际电话区号")
         private String state_code;
-        /**
-         * 直属主管的userId
-         */
+
+        @ApiModelProperty(value = "直属主管userId")
         private String manager_userid;
-        /**
-         * 手机号
-         */
+
+        @ApiModelProperty(value = "手机号")
         private String mobile;
-        /**
-         * 工号
-         */
+
+        @ApiModelProperty(value = "工号")
         private String job_number;
-        /**
-         * 邮箱
-         */
+
+        @ApiModelProperty(value = "邮箱")
         private String email;
-        /**
-         * 职位
-         */
+
+        @ApiModelProperty(value = "职位")
         private String title;
-        /**
-         * 职位
-         */
+
+        @ApiModelProperty(value = "备注")
         private String remark;
     }
 

@@ -1,20 +1,16 @@
 package com.nb6868.onex.common.dingtalk;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * 调用结果
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
+@ApiModel(value = "调用结果,返回体")
 @EqualsAndHashCode(callSuper = false)
 public class ResultResponse<T> extends BaseResponse {
 
-    /**
-     * 结果
-     */
+    @ApiModelProperty(value = "结果")
     private T result;
 
 }

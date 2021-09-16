@@ -1,36 +1,28 @@
 package com.nb6868.onex.common.dingtalk;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
-/**
- * 根据unionid获取用户userid, 返回体
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
+@ApiModel(value = "根据unionid获取用户userid,返回体")
 @EqualsAndHashCode(callSuper = false)
 public class GetUserIdByUnionidResponse extends BaseResponse {
 
-    /**
-     * 用户信息
-     */
+    @ApiModelProperty(value = "用户信息")
     private Result result;
 
     @Data
     @EqualsAndHashCode(callSuper = false)
     public static class Result implements Serializable {
-        /**
-         * 联系类型：
-         * 0：企业内部员工
-         * 1：企业外部联系人
-         */
+
+        @ApiModelProperty(value = "联系类型,0：企业内部员工/1：企业外部联系人")
         private int contact_type;
-        /**
-         * 用户的userid
-         */
+
+        @ApiModelProperty(value = "用户userid")
         private String userid;
     }
 
