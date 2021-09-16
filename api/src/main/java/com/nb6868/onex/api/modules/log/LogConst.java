@@ -7,5 +7,4 @@ package com.nb6868.onex.api.modules.log;
  */
 public interface LogConst {
 
-
 }

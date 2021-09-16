@@ -19,11 +19,18 @@ import javax.servlet.Filter;
 @Configuration
 public class FilterConfig {
 
+    // CrosFilter注入了CrosProps
+    // filter的初始化在bean之前，所以实际拿不到内容，需要在这里用Bean初始化
+    @Bean
+    public Filter crosFilter() {
+        return new CrosFilter();
+    }
+
     @Bean
     public FilterRegistrationBean<?> crosFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setDispatcherTypes(DispatcherType.REQUEST);
-        registration.setFilter(new CrosFilter());
+        registration.setFilter(crosFilter());
         registration.addUrlPatterns("/*");
         registration.setName("crosFilter");
         registration.setOrder(Integer.MAX_VALUE - 2);

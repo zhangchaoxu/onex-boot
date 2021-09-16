@@ -37,11 +37,4 @@ public class UserDetail implements Serializable {
      */
     private LoginProps.Config loginConfig;
 
-    /**
-     * 是否匿名用户
-     */
-    public boolean isAnon() {
-        return getId() != null && -1L == getId();
-    }
-
 }
