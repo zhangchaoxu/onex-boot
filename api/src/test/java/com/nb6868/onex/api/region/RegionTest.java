@@ -10,6 +10,8 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,12 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 区域测试
  * see {https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov/}
- *
- * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
+@DisplayName("区域测试")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RegionTest {
 
@@ -33,8 +33,6 @@ public class RegionTest {
     private RegionDao regionDao;
     @Autowired
     private RegionService regionService;
-    @Autowired
-    private DbUtils dbUtils;
 
     /**
      * 导入4级区域数据,【四级】省市区镇
@@ -76,7 +74,7 @@ public class RegionTest {
     public void importGeo() {
         // 先清空数据
         //regionDao.update(new RegionEntity(), new UpdateWrapper<RegionEntity>().set("geo", null).set("polygon", null));
-        String sql = "select * from ok_geo";
+        /*String sql = "select * from ok_geo";
         List<Map<String, Object>> list = dbUtils.executeQuerySql(sql);
         log.info("list size = " + list.size());
         list.forEach(item -> {
@@ -87,7 +85,7 @@ public class RegionTest {
         });
         regionService.update().set("geo", null).eq("geo", "EMPTY").update();
         regionService.update().set("polygon", null).eq("polygon", "EMPTY").update();
-        log.info("3级区域数据边界-更新完成");
+        log.info("3级区域数据边界-更新完成");*/
     }
 
 }
