@@ -22,6 +22,9 @@ import java.util.Map;
 @PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
 public class LoginProps {
 
+    @ApiModelProperty(value = "token key")
+    private String tokenKey = "auth-token";
+
     @ApiModelProperty(value = "登录设置")
     private Map<String, Settings> settings;
 
