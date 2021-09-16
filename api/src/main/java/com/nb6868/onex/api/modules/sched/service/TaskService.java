@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.api.modules.sched.dto.TaskDTO;
 import com.nb6868.onex.api.modules.sched.entity.TaskEntity;
-import com.nb6868.onex.api.modules.sched.utils.ScheduleUtils;
 import com.nb6868.onex.api.modules.sched.SchedConst;
 import com.nb6868.onex.api.modules.sched.dao.TaskDao;
 import com.nb6868.onex.common.jpa.DtoService;
