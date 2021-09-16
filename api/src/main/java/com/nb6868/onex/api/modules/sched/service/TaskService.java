@@ -1,13 +1,17 @@
 package com.nb6868.onex.api.modules.sched.service;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.api.modules.sched.dto.TaskDTO;
 import com.nb6868.onex.api.modules.sched.entity.TaskEntity;
-import com.nb6868.onex.api.modules.sched.SchedConst;
 import com.nb6868.onex.api.modules.sched.dao.TaskDao;
+import com.nb6868.onex.api.modules.sched.utils.ScheduleTaskJob;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.common.sched.SchedConst;
+import com.nb6868.onex.common.sched.ScheduleUtils;
+import com.nb6868.onex.common.sched.TaskInfo;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import org.quartz.Scheduler;
@@ -48,8 +52,8 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 		boolean ret = save(entity);
 		// copy主键值到dto
 		BeanUtils.copyProperties(entity, dto);
-		//
-		ScheduleUtils.createScheduleJob(scheduler, entity);
+		// 新增数量
+		ScheduleUtils.createScheduleJob(ScheduleTaskJob.class, scheduler, getTaskInfoFromTask(entity));
 		return ret;
 	}
 
@@ -57,9 +61,9 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updateDto(TaskDTO dto) {
 		TaskEntity entity = ConvertUtils.sourceToTarget(dto, TaskEntity.class);
+		// 更新数据
 		boolean ret = updateById(entity);
-		//
-		ScheduleUtils.updateScheduleJob(scheduler, entity);
+		ScheduleUtils.updateScheduleJob(scheduler, getTaskInfoFromTask(entity));
 		return ret;
 	}
 
@@ -67,7 +71,7 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
 		boolean ret = super.logicDeleteByIds(idList);
 		// 删除任务
-		idList.forEach((Consumer<Serializable>) serializable -> ScheduleUtils.deleteScheduleJob(scheduler, (Long) serializable));
+		idList.forEach((Consumer<Serializable>) serializable -> ScheduleUtils.deleteScheduleJob(scheduler, String.valueOf(serializable)));
 		return ret;
 	}
 
@@ -83,9 +87,7 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void run(List<Long> ids) {
-		for (Long id : ids) {
-			ScheduleUtils.run(scheduler, this.getById(id));
-		}
+		ids.forEach(id -> ScheduleUtils.run(scheduler, getTaskInfoFromTask(this.getById(id))));
 	}
 
 	/**
@@ -93,9 +95,7 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void pause(List<Long> ids) {
-		for (Long id : ids) {
-			ScheduleUtils.pauseJob(scheduler, id);
-		}
+		ids.forEach(id -> ScheduleUtils.pauseJob(scheduler, String.valueOf(id)));
 
 		changeState(ids, SchedConst.TaskState.PAUSE.getValue());
 	}
@@ -106,9 +106,23 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	@Transactional(rollbackFor = Exception.class)
 	public void resume(List<Long> ids) {
 		for (Long id : ids) {
-			ScheduleUtils.resumeJob(scheduler, id);
+			ScheduleUtils.resumeJob(scheduler, String.valueOf(id));
 		}
 
 		changeState(ids, SchedConst.TaskState.NORMAL.getValue());
 	}
+
+	/**
+	 * 从TaskEntity获得TaskInfo
+	 */
+	private TaskInfo getTaskInfoFromTask(TaskEntity taskEntity) {
+		TaskInfo taskInfo = new TaskInfo();
+		taskInfo.setId(String.valueOf(taskEntity.getId()));
+		taskInfo.setName(taskEntity.getName());
+		taskInfo.setState(taskEntity.getState());
+		taskInfo.setParams(JSONUtil.parseObj(taskEntity.getParams()));
+		taskInfo.setCron(taskEntity.getCron());
+		return taskInfo;
+	}
+
 }

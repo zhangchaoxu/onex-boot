@@ -47,13 +47,6 @@ public class ShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authToken) throws AuthenticationException {
         String accessToken = (String) authToken.getPrincipal();
-        if (UcConst.TOKEN_ANON.equalsIgnoreCase(accessToken)) {
-            // 匿名访问
-            UserDetail userDetail = new UserDetail();
-            userDetail.setId(-1L);
-            userDetail.setType(-100);
-            return new SimpleAuthenticationInfo(userDetail, UcConst.TOKEN_ANON, getName());
-        }
         // 根据accessToken，查询用户信息
         TokenEntity token = authService.getUserIdAndTypeByToken(accessToken);
         // token失效
@@ -97,21 +90,14 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         UserDetail user = (UserDetail) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        if (user.isAnon()) {
-            // 匿名用户
-            Set<String> roles = new HashSet<>();
-            roles.add(UcConst.ROLE_CODE_ANON);
-            info.setRoles(roles);
-        } else {
-            // 根据配置中的role和permission设置SimpleAuthorizationInfo
-            if (null != user.getLoginConfig() && user.getLoginConfig().isRoleBase()) {
-                // 塞入角色列表
-                info.setRoles(authService.getUserRoles(user));
-            }
-            if (null != user.getLoginConfig() && user.getLoginConfig().isPermissionBase()) {
-                // 塞入权限列表
-                info.setStringPermissions(authService.getUserPermissions(user));
-            }
+        // 根据配置中的role和permission设置SimpleAuthorizationInfo
+        if (null != user.getLoginConfig() && user.getLoginConfig().isRoleBase()) {
+            // 塞入角色列表
+            info.setRoles(authService.getUserRoles(user));
+        }
+        if (null != user.getLoginConfig() && user.getLoginConfig().isPermissionBase()) {
+            // 塞入权限列表
+            info.setStringPermissions(authService.getUserPermissions(user));
         }
         return info;
     }

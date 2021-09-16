@@ -76,12 +76,10 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
             strictInsertFill(metaObject, TENANT_ID, Long.class, user.getTenantId());
             strictInsertFill(metaObject, TENANT_NAME, String.class, user.getTenantName());
         }
-        if (!user.isAnon()) {
-            strictInsertFill(metaObject, CREATE_ID, Long.class, user.getId());
-            strictInsertFill(metaObject, CREATE_NAME, String.class, user.getUsername());
-            strictInsertFill(metaObject, UPDATE_ID, Long.class, user.getId());
-            strictInsertFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
-        }
+        strictInsertFill(metaObject, CREATE_ID, Long.class, user.getId());
+        strictInsertFill(metaObject, CREATE_NAME, String.class, user.getUsername());
+        strictInsertFill(metaObject, UPDATE_ID, Long.class, user.getId());
+        strictInsertFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
     }
 
     /**
@@ -92,10 +90,8 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         UserDetail user = SecurityUser.getUser();
         Date date = new Date();
         strictUpdateFill(metaObject, UPDATE_TIME, Date.class, date);
-        if (!user.isAnon()) {
-            strictUpdateFill(metaObject, UPDATE_ID, Long.class, user.getId());
-            strictUpdateFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
-        }
+        strictUpdateFill(metaObject, UPDATE_ID, Long.class, user.getId());
+        strictUpdateFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
     }
 
 }

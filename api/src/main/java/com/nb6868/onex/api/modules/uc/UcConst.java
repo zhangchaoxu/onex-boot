@@ -8,14 +8,6 @@ package com.nb6868.onex.api.modules.uc;
 public interface UcConst {
 
     /**
-     * 匿名角色编码
-     */
-    String ROLE_CODE_ANON = "ANON";
-    /**
-     * 匿名用户token
-     */
-    String TOKEN_ANON = "00000000000000000000000000000000";
-    /**
      * 管理平台登录配置
      */
     String LOGIN_ADMIN = "LOGIN_ADMIN";
