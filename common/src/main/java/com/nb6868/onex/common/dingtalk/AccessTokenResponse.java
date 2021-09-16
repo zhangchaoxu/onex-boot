@@ -1,24 +1,19 @@
 package com.nb6868.onex.common.dingtalk;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * 企业内部应用的access_token
- *
- * @author Charles zhangchaoxu@gmail.com
- */
+@ApiModel(value = "企业内部应用的access_token,返回体")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class AccessTokenResponse extends BaseResponse {
 
-    /**
-     * access_token的过期时间，单位秒
-     */
+    @ApiModelProperty(value = "access_token的过期时间，单位秒")
     private int expires_in;
-    /**
-     * access_token
-     */
+
+    @ApiModelProperty(value = "access_token")
     private String access_token;
 
 }

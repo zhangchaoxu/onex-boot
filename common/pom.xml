@@ -24,6 +24,13 @@
     </properties>
 
     <dependencies>
+        <!-- commons -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons.fileupload.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- quartz -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

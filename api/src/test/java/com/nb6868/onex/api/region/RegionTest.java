@@ -8,7 +8,6 @@ import com.nb6868.onex.api.modules.sys.entity.RegionEntity;
 import com.nb6868.onex.api.modules.sys.service.RegionService;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.DbUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
