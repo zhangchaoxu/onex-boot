@@ -25,7 +25,8 @@ public class CrosFilter implements Filter {
     CrosProps crosProps;
 
     @Override
-    public void init(FilterConfig config) {
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
     }
 
     /**
@@ -53,6 +54,7 @@ public class CrosFilter implements Filter {
 
     @Override
     public void destroy() {
+        Filter.super.destroy();
     }
 
 }
