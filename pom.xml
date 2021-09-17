@@ -67,11 +67,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-        <!-- spring-boot-websocket -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
         <!-- validation is needed for springboot 2.3.0+  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -92,23 +87,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- mail -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-        <!-- freemarker -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
-        </dependency>
-        <!-- devtools
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency> -->
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
