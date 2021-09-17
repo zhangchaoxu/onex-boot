@@ -1,11 +1,9 @@
 package com.nb6868.onex.common.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,8 +16,7 @@ import java.util.Map;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "login")
-@PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "onex.login")
 public class LoginProps {
 
     @ApiModelProperty(value = "token key")
