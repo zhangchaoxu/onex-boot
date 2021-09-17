@@ -10,6 +10,7 @@ import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.JwtUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.ObjectUtils;
@@ -31,8 +32,10 @@ public class JwtTokenFilter implements Filter {
      * 所以在init的时候是null
      * 需要在filterConfig中用@Bean注入
      */
+    @Value("${onex.login.auth-token-key:auth-token}")
+    private String authTokenKey;
     @Autowired
-    LoginProps loginProps;
+    private LoginProps loginProps;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -42,7 +45,7 @@ public class JwtTokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // 请求token
-        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) servletRequest, loginProps.getTokenKey());
+        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) servletRequest, authTokenKey);
         if (ObjectUtils.isEmpty(token)) {
             // 如果token不存在，直接返回401
             responseUnauthorized(servletRequest, servletResponse, null);

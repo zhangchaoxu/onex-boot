@@ -21,6 +21,7 @@
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.1.0</weixin.version>
         <aliyun.oss.version>3.13.1</aliyun.oss.version>
+        <shiro.version>1.7.1</shiro.version>
     </properties>
 
     <dependencies>
@@ -117,6 +118,19 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>${aliyun.oss.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- shiro -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
