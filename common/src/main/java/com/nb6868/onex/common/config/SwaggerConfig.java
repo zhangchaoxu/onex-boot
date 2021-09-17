@@ -33,8 +33,8 @@ public class SwaggerConfig {
     private String description;
     @Value("${knife4j.version:1.0.0}")
     private String version;
-    @Value("${onex.login.auth-token:auth-token}")
-    private String authToken;
+    @Value("${onex.login.auth-token-key:auth-token}")
+    private String authTokenKey;
 
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
@@ -68,13 +68,13 @@ public class SwaggerConfig {
     }
 
     private List<SecurityScheme> securitySchemes() {
-        return Collections.singletonList(new ApiKey(authToken, authToken, io.swagger.models.auth.In.HEADER.toValue()));
+        return Collections.singletonList(new ApiKey(authTokenKey, authTokenKey, io.swagger.models.auth.In.HEADER.toValue()));
     }
 
     private List<SecurityContext> securityContexts() {
         return Collections.singletonList(
                 SecurityContext.builder().securityReferences(Collections.singletonList(
-                        new SecurityReference(authToken, new AuthorizationScope[]{ new AuthorizationScope("global", "") }))
+                        new SecurityReference(authTokenKey, new AuthorizationScope[]{ new AuthorizationScope("global", "") }))
                 ).build()
         );
     }
