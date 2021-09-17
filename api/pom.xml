@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <knife4j.version>2.0.9</knife4j.version>
         <dynamic.datasource.version>3.4.1</dynamic.datasource.version>
         <shiro.version>1.7.1</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
@@ -39,11 +38,10 @@
             <version>1.9.17</version>
             <scope>test</scope>
         </dependency>
-        <!-- knife4j -->
+        <!-- spring-boot-websocket -->
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
         <!-- quartz -->
         <dependency>
@@ -55,6 +53,23 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+        <!-- mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!-- freemarker -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+        <!-- devtools
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency> -->
         <!-- redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
