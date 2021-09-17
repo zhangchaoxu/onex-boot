@@ -1,10 +1,8 @@
 package com.nb6868.onex.common.wechat;
 
-import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -17,8 +15,7 @@ import java.util.Map;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "wechat.ma")
-@PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "onex.wechat.ma")
 public class WechatMaProps implements Serializable {
 
     @ApiModelProperty(value = "配置项")

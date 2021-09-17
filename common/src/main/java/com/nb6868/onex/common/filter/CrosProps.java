@@ -1,9 +1,7 @@
 package com.nb6868.onex.common.filter;
 
-import com.nb6868.onex.common.config.YamlPropertySourceFactory;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "cros")
-@PropertySource(value = "classpath:onex.yml", factory = YamlPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "onex.cros")
 public class CrosProps {
 
     String allowCredentials = "true";
