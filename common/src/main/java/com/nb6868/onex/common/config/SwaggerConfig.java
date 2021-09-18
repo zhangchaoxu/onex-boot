@@ -33,7 +33,7 @@ public class SwaggerConfig {
     private String description;
     @Value("${knife4j.version:1.0.0}")
     private String version;
-    @Value("${onex.login.auth-token-key:auth-token}")
+    @Value("${onex.auth.token-key:auth-token}")
     private String authTokenKey;
 
     private final OpenApiExtensionResolver openApiExtensionResolver;

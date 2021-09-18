@@ -16,7 +16,7 @@ import java.util.Map;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "onex.login")
+@ConfigurationProperties(prefix = "onex.auth")
 public class LoginProps {
 
     @ApiModelProperty(value = "token key")
