@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.config;
 
 import com.nb6868.onex.common.filter.CrosFilter;
+import com.nb6868.onex.common.filter.JwtTokenFilter;
 import com.nb6868.onex.common.filter.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,6 @@ import javax.servlet.Filter;
 @Configuration
 public class FilterConfig {
 
-    // CrosFilter注入了CrosProps
     // filter的初始化在bean之前，无法Autowired
     // 需要在这里用Bean初始化
     @Bean
@@ -34,7 +34,7 @@ public class FilterConfig {
         registration.setFilter(crosFilter());
         registration.addUrlPatterns("/*");
         registration.setName("crosFilter");
-        registration.setOrder(Integer.MAX_VALUE - 2);
+        registration.setOrder(Integer.MAX_VALUE - 100);
         return registration;
     }
 
@@ -47,9 +47,25 @@ public class FilterConfig {
         registration.setEnabled(true);
         registration.addUrlPatterns("/*");
         registration.setName("shiroFilter");
-        registration.setOrder(Integer.MAX_VALUE - 1);
+        registration.setOrder(Integer.MAX_VALUE - 90);
         return registration;
     }
+
+   /* @Bean
+    public Filter jwtTokenFilter() {
+        return new JwtTokenFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean<?> jwtTokenFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+        registration.setDispatcherTypes(DispatcherType.REQUEST);
+        registration.setFilter(jwtTokenFilter());
+        registration.addUrlPatterns("/*");
+        registration.setName("jwtTokenFilter");
+        registration.setOrder(Integer.MAX_VALUE - 80);
+        return registration;
+    }*/
 
     @Bean
     public FilterRegistrationBean<?> xssFilterRegistration() {
