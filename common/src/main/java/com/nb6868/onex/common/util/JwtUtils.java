@@ -34,4 +34,15 @@ public class JwtUtils {
         JWT jwt = parseToken(token);
         return null != jwt && jwt.setKey(token.getBytes()).verify() && new Date(jwt.getPayload().getClaimsJson().getLong("exp") * 1000).after(new Date());
     }
+
+    /**
+     * 验证密码
+     */
+    public static boolean verifyKey(String token, String key) {
+        if (StrUtil.isBlank(token) || StrUtil.isBlank(key)) {
+            return false;
+        }
+        JWT jwt = parseToken(token);
+        return null != jwt && jwt.setKey(token.getBytes()).verify();
+    }
 }

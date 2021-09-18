@@ -14,7 +14,7 @@ import com.nb6868.onex.api.modules.uc.entity.TokenEntity;
 import com.nb6868.onex.api.modules.uc.entity.UserEntity;
 import com.nb6868.onex.api.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
-import com.nb6868.onex.common.auth.LoginProps;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -37,7 +37,7 @@ import java.util.Set;
 public class AuthService {
 
     @Autowired
-    private LoginProps loginProps;
+    private AuthProps loginProps;
     @Autowired
     private MenuService menuService;
     @Autowired
@@ -107,15 +107,15 @@ public class AuthService {
         return userService.getById(userId);
     }
 
-    public LoginProps.Config getLoginConfig(String type) {
+    public AuthProps.Config getLoginConfig(String type) {
         return loginProps.getConfigs().get(type);
     }
 
-    public LoginProps.Settings getLoginSettings(String type) {
+    public AuthProps.Settings getLoginSettings(String type) {
         return loginProps.getSettings().get(type);
     }
 
-    public UserEntity login(LoginRequest loginRequest, LoginProps.Config loginProps) {
+    public UserEntity login(LoginRequest loginRequest, AuthProps.Config loginProps) {
         // 校验验证码
         if (loginProps.isCaptcha()) {
             ValidatorUtils.validateEntity(loginRequest, LoginRequest.CaptchaGroup.class);

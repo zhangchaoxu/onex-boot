@@ -23,7 +23,7 @@ import com.nb6868.onex.api.modules.uc.service.AuthService;
 import com.nb6868.onex.api.modules.uc.service.TokenService;
 import com.nb6868.onex.api.modules.uc.service.UserOauthService;
 import com.nb6868.onex.api.modules.uc.service.UserService;
-import com.nb6868.onex.common.auth.LoginProps;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
 import com.nb6868.onex.common.dingtalk.GetUserInfoByCodeResponse;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -70,7 +70,7 @@ public class AuthController {
     @GetMapping("getLoginSettings")
     @ApiOperation("获得登录设置")
     public Result<?> getLoginSettings(@RequestParam String type) {
-        LoginProps.Settings loginSettings = authService.getLoginSettings(type);
+        AuthProps.Settings loginSettings = authService.getLoginSettings(type);
         AssertUtils.isNull(loginSettings, "未定义该类型");
 
         return new Result<>().success(loginSettings);
@@ -79,7 +79,7 @@ public class AuthController {
     @GetMapping("getLoginConfig")
     @ApiOperation("获得登录配置")
     public Result<?> getLoginConfig(@RequestParam String type) {
-        LoginProps.Config loginConfig = authService.getLoginConfig(type);
+        AuthProps.Config loginConfig = authService.getLoginConfig(type);
         AssertUtils.isNull(loginConfig, "未定义该类型");
 
         return new Result<>().success(loginConfig);
@@ -103,7 +103,7 @@ public class AuthController {
     @LogLogin
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginRequest loginRequest) {
         // 获得登录配置
-        LoginProps.Config loginConfig = authService.getLoginConfig(loginRequest.getType());
+        AuthProps.Config loginConfig = authService.getLoginConfig(loginRequest.getType());
         AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         UserEntity user = authService.login(loginRequest, loginConfig);
@@ -141,7 +141,7 @@ public class AuthController {
     @LogLogin
     public Result<?> wxMaLoginByCodeAndUserInfo(@Validated @RequestBody OauthWxMaLoginByCodeAndUserInfoRequest request) throws WxErrorException {
         // 获得登录配置
-        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AuthProps.Config loginConfig = authService.getLoginConfig(request.getType());
         AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录
@@ -182,7 +182,7 @@ public class AuthController {
     @LogLogin
     public Result<?> wxMaLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) throws WxErrorException {
         // 获得登录配置
-        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AuthProps.Config loginConfig = authService.getLoginConfig(request.getType());
         AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
@@ -215,7 +215,7 @@ public class AuthController {
     @LogLogin
     public Result<?> wxMaLoginByPhone(@Validated @RequestBody OauthWxMaLoginByCodeAndPhone request) throws WxErrorException {
         // 获得登录配置
-        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AuthProps.Config loginConfig = authService.getLoginConfig(request.getType());
         AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 微信登录(小程序)
@@ -251,7 +251,7 @@ public class AuthController {
     @LogLogin
     public Result<?> dingtalkLoginByCode(@Validated @RequestBody OauthLoginByCodeRequest request) {
         // 获得登录配置
-        LoginProps.Config loginConfig = authService.getLoginConfig(request.getType());
+        AuthProps.Config loginConfig = authService.getLoginConfig(request.getType());
         AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
 
         // 1. 根据sns临时授权码获取用户信息

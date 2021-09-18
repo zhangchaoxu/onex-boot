@@ -5,10 +5,9 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.api.modules.uc.dao.TokenDao;
 import com.nb6868.onex.api.modules.uc.entity.TokenEntity;
-import com.nb6868.onex.common.auth.LoginProps;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.jpa.EntityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -48,7 +47,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @param loginConfig 登录配置
      * @return result
      */
-    public String createToken(Long userId, LoginProps.Config loginConfig) {
+    public String createToken(Long userId, AuthProps.Config loginConfig) {
         // 当前时间
         Date now = new Date();
         // 过期时间

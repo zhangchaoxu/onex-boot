@@ -5,7 +5,7 @@ import com.nb6868.onex.api.modules.uc.service.AuthService;
 import com.nb6868.onex.api.modules.uc.UcConst;
 import com.nb6868.onex.api.modules.uc.entity.UserEntity;
 import com.nb6868.onex.api.modules.uc.user.UserDetail;
-import com.nb6868.onex.common.auth.LoginProps;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.ConvertUtils;
@@ -17,9 +17,6 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Shiro认证
@@ -72,7 +69,7 @@ public class ShiroRealm extends AuthorizingRealm {
         /*List<Long> deptIdList = authService.getDataScopeList(userDetail.getId());
         userDetail.setDeptIdList(deptIdList);*/
 
-        LoginProps.Config loginConfig = authService.getLoginConfig(token.getType());
+        AuthProps.Config loginConfig = authService.getLoginConfig(token.getType());
         userDetail.setLoginConfig(loginConfig);
         if (loginConfig != null && loginConfig.isTokenRenewal()) {
             // 更新token

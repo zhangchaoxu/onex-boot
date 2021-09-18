@@ -1,11 +1,14 @@
 package com.nb6868.onex.common.filter;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.jwt.JWT;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
+import com.nb6868.onex.common.util.JwtUtils;
 import lombok.SneakyThrows;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -21,16 +24,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Shiro过滤器
+ * JWT Shiro过滤器
  * 代码的执行流程preHandle->isAccessAllowed->isLoginAttempt->executeLogin
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class ShiroFilter extends AuthenticatingFilter {
+public class JwtShiroFilter extends AuthenticatingFilter {
 
     private final AuthProps authProps;
 
-    public ShiroFilter(AuthProps authProps) {
+    public JwtShiroFilter(AuthProps authProps) {
         this.authProps = authProps;
     }
 
@@ -39,19 +42,29 @@ public class ShiroFilter extends AuthenticatingFilter {
         // 请求token
         String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, authProps.getTokenKey());
         if (StrUtil.isNotBlank(token)) {
-            return new AuthenticationToken() {
-                @Override
-                public String getPrincipal() {
-                    // 身份
-                    return token;
-                }
+            // 验证token
+            JWT jwt = JwtUtils.parseToken(token);
+            if (null != jwt && StrUtil.isNotBlank(jwt.getPayload().getClaimsJson().getStr("type"))) {
+                // 用密码校验
+                AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr("type"));
+                // 只验证了密码,没验证有效期
+                if (null != loginConfig && JwtUtils.verifyKey(token, loginConfig.getTokenKey())) {
+                    // 提交给realm进行登入
+                    return new AuthenticationToken() {
+                        @Override
+                        public JSONObject getPrincipal() {
+                            // 身份
+                            return jwt.getPayload().getClaimsJson();
+                        }
 
-                @Override
-                public String getCredentials() {
-                    // 证明
-                    return token;
+                        @Override
+                        public String getCredentials() {
+                            // 证明
+                            return token;
+                        }
+                    };
                 }
-            };
+            }
         }
         return null;
     }
@@ -64,16 +77,7 @@ public class ShiroFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        // 请求token
-        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, authProps.getTokenKey());
-        if (ObjectUtils.isEmpty(token)) {
-            // 如果token不存在，直接返回401
-            responseUnauthorized(request, response, null);
-            return false;
-        } else {
-            // 会调用createToken,提交给realm进行登入
-            return executeLogin(request, response);
-        }
+        return executeLogin(request, response);
     }
 
     /**

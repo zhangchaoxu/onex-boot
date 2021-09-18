@@ -17,10 +17,13 @@ import java.util.Map;
 @Data
 @Component
 @ConfigurationProperties(prefix = "onex.auth")
-public class LoginProps {
+public class AuthProps {
 
     @ApiModelProperty(value = "token key")
     private String tokenKey = "auth-token";
+
+    @ApiModelProperty
+    private String accessScanPackage;
 
     @ApiModelProperty(value = "登录设置")
     private Map<String, Settings> settings;
@@ -47,6 +50,9 @@ public class LoginProps {
 
         @ApiModelProperty(value = "登录类型")
         private String type;
+
+        @ApiModelProperty(value = "验证方式:jwtSimple,jwt,full")
+        private String verifyType = "jwt";
 
         /**
          * 支持多端登录,表示可以在不同客户端登录,创建token的时候不判断原先的

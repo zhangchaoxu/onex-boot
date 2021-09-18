@@ -2,13 +2,14 @@ package com.nb6868.onex.common.filter;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
-import com.nb6868.onex.common.auth.LoginProps;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.JwtUtils;
 import lombok.SneakyThrows;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -32,10 +33,8 @@ public class JwtTokenFilter implements Filter {
      * 所以在init的时候是null
      * 需要在filterConfig中用@Bean注入
      */
-    @Value("${onex.auth.token-key:auth-token}")
-    private String authTokenKey;
     @Autowired
-    private LoginProps loginProps;
+    private AuthProps authProps;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -45,7 +44,7 @@ public class JwtTokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // 请求token
-        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) servletRequest, authTokenKey);
+        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) servletRequest, authProps.getTokenKey());
         if (ObjectUtils.isEmpty(token)) {
             // 如果token不存在，直接返回401
             responseUnauthorized(servletRequest, servletResponse, null);
@@ -56,7 +55,7 @@ public class JwtTokenFilter implements Filter {
                 responseUnauthorized(servletRequest, servletResponse, null);
             } else {
                 // 用密码校验
-                LoginProps.Config loginConfig = loginProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr("type"));
+                AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr("type"));
                 boolean verify = null != loginConfig && JwtUtils.verifyKeyAndExp(token, loginConfig.getTokenKey());
                 if (verify) {
                     filterChain.doFilter(servletRequest, servletResponse);
