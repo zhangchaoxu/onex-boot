@@ -8,7 +8,6 @@ import lombok.SneakyThrows;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.ObjectUtils;
@@ -27,8 +26,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ShiroFilter extends AuthenticatingFilter {
 
-    @Value("${onex.login.auth-token-key:auth-token}")
-    private String authTokenKey;
+    private final String authTokenKey;
+
+    public ShiroFilter(String authTokenKey) {
+        this.authTokenKey = authTokenKey;
+    }
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {

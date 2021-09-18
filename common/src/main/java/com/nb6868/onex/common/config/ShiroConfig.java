@@ -101,7 +101,6 @@ public class ShiroConfig implements EnvironmentAware {
         return shiroFilter;
     }
 
-
     /**
      * 初始化过滤map
      */

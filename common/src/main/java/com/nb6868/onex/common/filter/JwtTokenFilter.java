@@ -32,7 +32,7 @@ public class JwtTokenFilter implements Filter {
      * 所以在init的时候是null
      * 需要在filterConfig中用@Bean注入
      */
-    @Value("${onex.login.auth-token-key:auth-token}")
+    @Value("${onex.auth.token-key:auth-token}")
     private String authTokenKey;
     @Autowired
     private LoginProps loginProps;
