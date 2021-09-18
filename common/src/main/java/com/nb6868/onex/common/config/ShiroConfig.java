@@ -50,10 +50,7 @@ public class ShiroConfig implements EnvironmentAware {
         shiroFilter.setSecurityManager(securityManager);
 
         // shiro过滤
-        Map<String, Filter> filters = new HashMap<>();
-        filters.put("shiro", new ShiroFilter());
-        filters.put("jwtToken", new JwtTokenFilter());
-        shiroFilter.setFilters(filters);
+        shiroFilter.setFilters(initFilters());
         /*
          * 自定义url规则 {http://shiro.apache.org/web.html#urls-}
          * *注意*
@@ -63,7 +60,7 @@ public class ShiroConfig implements EnvironmentAware {
         Map<String, String> filterMap = initFilterMap();
         // 扫描RequestMapping类
         Set<Class<?>> requestMapClassSet = new HashSet<>();
-        StrSplitter.splitTrim(environment.getProperty("onex.access-control.package-scan"), ',', true).forEach(s -> requestMapClassSet.addAll(ClassUtil.scanPackageByAnnotation(s, RequestMapping.class)));
+        StrSplitter.splitTrim(environment.getProperty("onex.auth.access-scan-package"), ',', true).forEach(s -> requestMapClassSet.addAll(ClassUtil.scanPackageByAnnotation(s, RequestMapping.class)));
         requestMapClassSet.forEach(cls -> {
             // 方法中获取注解
             RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);
@@ -99,6 +96,16 @@ public class ShiroConfig implements EnvironmentAware {
         // 加入注解中含有anon的
         shiroFilter.setFilterChainDefinitionMap(filterMap);
         return shiroFilter;
+    }
+
+    /**
+     * 初始化filters
+     */
+    protected Map<String, Filter> initFilters() {
+        Map<String, Filter> filters = new HashMap<>();
+        filters.put("shiro", new ShiroFilter(environment.getProperty("onex.auth.token-key")));
+        filters.put("jwtToken", new JwtTokenFilter());
+        return filters;
     }
 
     /**
