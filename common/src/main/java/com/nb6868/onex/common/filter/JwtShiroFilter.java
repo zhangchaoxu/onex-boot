@@ -36,7 +36,7 @@ public class JwtShiroFilter extends BaseShiroFilter {
                 // 用密码校验
                 AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr("type"));
                 // 只验证了密码,没验证有效期
-                if (null != loginConfig && JwtUtils.verifyKey(token, loginConfig.getTokenKey())) {
+                if (null != loginConfig && JwtUtils.verifyKey(token, loginConfig.getTokenKey().getBytes())) {
                     // 提交给realm进行登入
                     return new AuthenticationToken() {
                         @Override
