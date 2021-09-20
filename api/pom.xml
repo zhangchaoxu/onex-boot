@@ -14,7 +14,7 @@
 
     <properties>
         <dynamic.datasource.version>3.4.1</dynamic.datasource.version>
-        <shiro.version>1.7.1</shiro.version>
+        <shiro.version>1.8.0</shiro.version>
         <easy.captcha.version>1.6.2</easy.captcha.version>
         <easypoi.version>4.4.0</easypoi.version>
         <aliyun.oss.version>3.13.0</aliyun.oss.version>
