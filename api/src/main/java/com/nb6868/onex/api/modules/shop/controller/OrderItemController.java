@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -40,7 +40,7 @@ public class OrderItemController {
     @Autowired
     private OrderItemService orderItemService;
 
-    @DataFilter(tableAlias = "shop_order_item", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_order_item", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("shop:orderItem:list")
@@ -50,7 +50,7 @@ public class OrderItemController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "shop_order_item", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_order_item", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("shop:orderItem:page")

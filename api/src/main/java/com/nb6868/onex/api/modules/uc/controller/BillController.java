@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.uc.controller;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.uc.dto.BillDTO;
@@ -40,7 +40,7 @@ public class BillController {
     @Autowired
     private BillService billService;
 
-    @DataFilter(tableAlias = "uc_bill", tenantFilter = true)
+    @DataSqlScope(tableAlias = "uc_bill", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("uc:bill:list")
@@ -50,7 +50,7 @@ public class BillController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "uc_bill", tenantFilter = true)
+    @DataSqlScope(tableAlias = "uc_bill", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("uc:bill:page")

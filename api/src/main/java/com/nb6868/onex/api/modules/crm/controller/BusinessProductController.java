@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.crm.controller;
 
 import com.nb6868.onex.api.modules.crm.service.BusinessProductService;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.crm.dto.BusinessProductDTO;
@@ -38,7 +38,7 @@ public class BusinessProductController {
     @Autowired
     private BusinessProductService businessProductService;
 
-    @DataFilter(tableAlias = "crm_business_product",tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business_product",tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("crm:businessProduct:list")
@@ -48,7 +48,7 @@ public class BusinessProductController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "crm_business_product",tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business_product",tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("crm:businessProduct:page")
@@ -107,7 +107,7 @@ public class BusinessProductController {
         return new Result<>();
     }
 
-    @DataFilter(tableAlias = "crm_business_product",tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business_product",tenantFilter = true)
     @GetMapping("export")
     @ApiOperation("导出")
     @LogOperation("导出")

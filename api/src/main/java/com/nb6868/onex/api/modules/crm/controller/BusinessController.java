@@ -3,7 +3,7 @@ package com.nb6868.onex.api.modules.crm.controller;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.nb6868.onex.api.modules.crm.service.BusinessProductService;
 import com.nb6868.onex.api.modules.crm.service.BusinessService;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.crm.dto.BusinessDTO;
@@ -46,7 +46,7 @@ public class BusinessController {
     @Autowired
     private BusinessProductService businessProductService;
 
-    @DataFilter(tableAlias = "crm_business", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("crm:business:list")
@@ -56,7 +56,7 @@ public class BusinessController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "crm_business", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("crm:business:page")
@@ -119,7 +119,7 @@ public class BusinessController {
         return new Result<>();
     }
 
-    @DataFilter(tableAlias = "crm_business", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business", tenantFilter = true)
     @GetMapping("export")
     @ApiOperation("导出")
     @LogOperation("导出")

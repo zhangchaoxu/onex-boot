@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller.app;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.shop.dto.AppReceiverRequest;
 import com.nb6868.onex.api.modules.shop.dto.ReceiverDTO;
@@ -36,7 +36,7 @@ public class AppReceiverController {
     @Autowired
     private ReceiverService receiverService;
 
-    @DataFilter(tableAlias = "shop_receiver", userFilter = true, userId = "user_id")
+    @DataSqlScope(tableAlias = "shop_receiver", userFilter = true, userId = "user_id")
     @GetMapping("list")
     @ApiOperation("列表")
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {

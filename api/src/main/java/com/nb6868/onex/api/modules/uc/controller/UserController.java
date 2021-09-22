@@ -4,7 +4,7 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.annotation.AccessControl;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
@@ -61,7 +61,7 @@ public class UserController {
     @Autowired
     DeptService deptService;
 
-    @DataFilter(tableAlias = "uc_user", tenantFilter = true)
+    @DataSqlScope(tableAlias = "uc_user", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("uc:user:list")
@@ -71,7 +71,7 @@ public class UserController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "uc_user", tenantFilter = true)
+    @DataSqlScope(tableAlias = "uc_user", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("uc:user:page")

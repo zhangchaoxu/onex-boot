@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.crm.controller;
 
 import com.nb6868.onex.api.modules.crm.service.ContractProductService;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.crm.dto.ContractProductDTO;
@@ -38,7 +38,7 @@ public class ContractProductController {
     @Autowired
     private ContractProductService contractProductService;
 
-    @DataFilter(tableAlias = "crm_contract_product",tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_contract_product",tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("crm:contractProduct:list")
@@ -48,7 +48,7 @@ public class ContractProductController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "crm_contract_product",tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_contract_product",tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("crm:contractProduct:page")
@@ -107,7 +107,7 @@ public class ContractProductController {
         return new Result<>();
     }
 
-    @DataFilter(tableAlias = "crm_contract_product",tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_contract_product",tenantFilter = true)
     @GetMapping("export")
     @ApiOperation("导出")
     @LogOperation("导出")

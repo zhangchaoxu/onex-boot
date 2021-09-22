@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -39,7 +39,7 @@ public class StockLogController {
     @Autowired
     private StockLogService stockLogService;
 
-    @DataFilter(tableAlias = "shop_stock_log", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_stock_log", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("shop:stockLog:list")
@@ -49,7 +49,7 @@ public class StockLogController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "shop_stock_log", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_stock_log", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("shop:stockLog:page")

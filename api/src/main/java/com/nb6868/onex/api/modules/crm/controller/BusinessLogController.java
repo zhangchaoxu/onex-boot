@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.crm.controller;
 
 import com.nb6868.onex.api.modules.crm.service.BusinessLogService;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.crm.dto.BusinessLogDTO;
@@ -38,7 +38,7 @@ public class BusinessLogController {
     @Autowired
     private BusinessLogService businessLogService;
 
-    @DataFilter(tableAlias = "crm_business_log", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business_log", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("crm:businessLog:list")
@@ -48,7 +48,7 @@ public class BusinessLogController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "crm_business_log", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business_log", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("crm:businessLog:page")
@@ -107,7 +107,7 @@ public class BusinessLogController {
         return new Result<>();
     }
 
-    @DataFilter(tableAlias = "crm_business_log", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_business_log", tenantFilter = true)
     @GetMapping("export")
     @ApiOperation("导出")
     @LogOperation("导出")

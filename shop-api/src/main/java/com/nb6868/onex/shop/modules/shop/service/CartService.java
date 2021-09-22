@@ -1,15 +1,11 @@
 package com.nb6868.onex.shop.modules.shop.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.nb6868.onex.common.jpa.DtoService;
-import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.WrapperUtils;
+import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.shop.modules.shop.dao.CartDao;
-import com.nb6868.onex.shop.modules.shop.dto.CartDTO;
 import com.nb6868.onex.shop.modules.shop.entity.CartEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.math.BigDecimal;
 
 /**
  * 购物车
@@ -17,14 +13,23 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Service
-public class CartService extends DtoService<CartDao, CartEntity, CartDTO> {
+public class CartService extends EntityService<CartDao, CartEntity> {
 
-    @Override
-    public QueryWrapper<CartEntity> getWrapper(String method, Map<String, Object> params) {
-        return new WrapperUtils<CartEntity>(new QueryWrapper<>(), params)
-                .eq("id", "id")
-                .apply(Const.SQL_FILTER)
-                .getQueryWrapper();
+    /**
+     * 计算当前购物车的总费用
+     */
+    public BigDecimal calcCartTotalPrice() {
+        return new BigDecimal(0);
+    }
+
+    /**
+     * 计算总数
+     */
+    public Long count(Long userId) {
+        return query()
+                .eq("state", 1)
+                .eq("user_id", userId)
+                .count();
     }
 
 }

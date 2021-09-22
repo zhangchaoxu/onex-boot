@@ -1,7 +1,7 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
 import cn.hutool.core.map.MapUtil;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.shop.dto.GoodsCategoryDTO;
 import com.nb6868.onex.api.modules.shop.dto.GoodsCategoryTreeDTO;
@@ -40,7 +40,7 @@ public class GoodsCategoryController {
     @Autowired
     private GoodsCategoryService categoryService;
 
-    @DataFilter(tableAlias = "shop_goods_category", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_goods_category", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("shop:goodsCategory:list")
@@ -50,7 +50,7 @@ public class GoodsCategoryController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "shop_goods_category", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_goods_category", tenantFilter = true)
     @GetMapping("tree")
     @ApiOperation("树表")
     @RequiresPermissions("shop:goodsCategory:list")
