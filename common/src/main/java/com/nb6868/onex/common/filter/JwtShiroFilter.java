@@ -32,9 +32,9 @@ public class JwtShiroFilter extends BaseShiroFilter {
         if (StrUtil.isNotBlank(token)) {
             // 验证token
             JWT jwt = JwtUtils.parseToken(token);
-            if (null != jwt && StrUtil.isNotBlank(jwt.getPayload().getClaimsJson().getStr("type"))) {
+            if (null != jwt && StrUtil.isNotBlank(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()))) {
                 // 用密码校验
-                AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr("type"));
+                AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()));
                 // 只验证了密码,没验证有效期
                 if (null != loginConfig && JwtUtils.verifyKey(token, loginConfig.getTokenKey().getBytes())) {
                     // 提交给realm进行登入

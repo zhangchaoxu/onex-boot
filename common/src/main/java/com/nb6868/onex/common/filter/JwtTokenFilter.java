@@ -51,12 +51,12 @@ public class JwtTokenFilter implements Filter {
         } else {
             // 验证token
             JWT jwt = JwtUtils.parseToken(token);
-            if (null == jwt || StrUtil.isEmpty(jwt.getPayload().getClaimsJson().getStr("type"))) {
+            if (null == jwt || StrUtil.isEmpty(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()))) {
                 responseUnauthorized(servletRequest, servletResponse, null);
             } else {
                 // 用密码校验
-                AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr("type"));
-                boolean verify = null != loginConfig && JwtUtils.verifyKeyAndExp(token, loginConfig.getTokenKey());
+                AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()));
+                boolean verify = null != loginConfig && JwtUtils.verifyKeyAndExp(token, loginConfig.getTokenKey().getBytes());
                 if (verify) {
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {
