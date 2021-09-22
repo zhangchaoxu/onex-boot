@@ -2,7 +2,7 @@ package com.nb6868.onex.api.modules.crm.controller;
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.nb6868.onex.api.modules.crm.service.CustomerService;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.common.util.TenantUtils;
@@ -48,7 +48,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @DataFilter(tableAlias = "crm_customer", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_customer", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("crm:customer:list")
@@ -58,7 +58,7 @@ public class CustomerController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "crm_customer", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_customer", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("crm:customer:page")
@@ -120,7 +120,7 @@ public class CustomerController {
         return new Result<>();
     }
 
-    @DataFilter(tableAlias = "crm_customer", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_customer", tenantFilter = true)
     @GetMapping("export")
     @ApiOperation("导出")
     @LogOperation("导出")

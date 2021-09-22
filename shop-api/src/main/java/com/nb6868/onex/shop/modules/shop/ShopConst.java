@@ -10,6 +10,12 @@ import java.util.Optional;
  */
 public interface ShopConst {
 
+    // 购物车最大限量
+    int CART_MAX_LIMIT = 20;
+
+    // 地址最大限量
+    int RECEIVER_MAX_LIMIT = 20;
+
     /**
      * 订单状态类型
      */

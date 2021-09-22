@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.shop.dto.SupplierDTO;
@@ -39,7 +39,7 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
-    @DataFilter(tableAlias = "shop_supplier", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_supplier", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("shop:supplier:list")
@@ -49,7 +49,7 @@ public class SupplierController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "shop_supplier", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_supplier", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("shop:supplier:page")

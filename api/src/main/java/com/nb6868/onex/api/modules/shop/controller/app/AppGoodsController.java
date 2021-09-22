@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller.app;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.api.modules.shop.dto.GoodsDTO;
 import com.nb6868.onex.api.modules.shop.service.GoodsService;
 import com.nb6868.onex.common.pojo.PageData;
@@ -31,7 +31,7 @@ public class AppGoodsController {
     @Autowired
     private GoodsService goodsService;
 
-    @DataFilter(tableAlias = "shop_goods", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_goods", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {

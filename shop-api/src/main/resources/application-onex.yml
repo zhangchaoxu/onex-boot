@@ -1,8 +1,8 @@
 ## swagger
 knife4j:
+  enable: true
   title: Onex-Shop-API
   description: Onex商城接口
-  enable: true
   setting:
     enableFooter: false
     enableFooterCustom: true

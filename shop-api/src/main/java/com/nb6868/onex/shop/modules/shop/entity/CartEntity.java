@@ -31,7 +31,7 @@ public class CartEntity extends BaseTenantEntity {
      */
     private BigDecimal qty;
     /**
-     * 状态0 未下单 1 已下单
+     * 状态 0未下单 1已下单
      */
     private Integer state;
     /**

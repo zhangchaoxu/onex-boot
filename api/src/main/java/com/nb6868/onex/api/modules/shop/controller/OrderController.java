@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.pay.dto.PayRequest;
@@ -53,7 +53,7 @@ public class OrderController {
     @Autowired
     ParamService paramService;
 
-    @DataFilter(tableAlias = "shop_order", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_order", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("shop:order:list")
@@ -63,7 +63,7 @@ public class OrderController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "shop_order", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_order", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("shop:order:page")
@@ -73,7 +73,7 @@ public class OrderController {
         return new Result<>().success(page);
     }
 
-    @DataFilter(tableAlias = "shop_order", userFilter = true)
+    @DataSqlScope(tableAlias = "shop_order", userFilter = true)
     @GetMapping("myPage")
     @ApiOperation("分页")
     public Result<?> myPage(@ApiIgnore @RequestParam Map<String, Object> params) {
@@ -126,7 +126,7 @@ public class OrderController {
         return new Result<>();
     }
 
-    @DataFilter(tableAlias = "shop_order", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_order", tenantFilter = true)
     @GetMapping("export")
     @ApiOperation("导出")
     @LogOperation("导出")

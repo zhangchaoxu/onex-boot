@@ -3,7 +3,7 @@ package com.nb6868.onex.api.modules.crm.controller;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.nb6868.onex.api.modules.crm.service.ProductCategoryService;
 import com.nb6868.onex.api.modules.crm.service.ProductService;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.crm.dto.ProductDTO;
@@ -52,7 +52,7 @@ public class ProductController {
     @Autowired
     private ProductCategoryService productCategoryService;
 
-    @DataFilter(tableAlias = "crm_product", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_product", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("crm:product:list")
@@ -62,7 +62,7 @@ public class ProductController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "crm_product", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_product", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("crm:product:page")
@@ -121,7 +121,7 @@ public class ProductController {
         return new Result<>();
     }
 
-    @DataFilter(tableAlias = "crm_product", tenantFilter = true)
+    @DataSqlScope(tableAlias = "crm_product", tenantFilter = true)
     @GetMapping("export")
     @ApiOperation("导出")
     @LogOperation("导出")

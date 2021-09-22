@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.cms.controller;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.modules.cms.dto.AxdDTO;
 import com.nb6868.onex.api.modules.cms.service.AxdService;
@@ -38,7 +38,7 @@ public class AxdController {
     @Autowired
     private AxdService axdService;
 
-    @DataFilter(tableAlias = "cms_axd", tenantFilter = true)
+    @DataSqlScope(tableAlias = "cms_axd", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("cms:axd:list")
@@ -48,7 +48,7 @@ public class AxdController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "cms_axd", tenantFilter = true)
+    @DataSqlScope(tableAlias = "cms_axd", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("cms:axd:page")

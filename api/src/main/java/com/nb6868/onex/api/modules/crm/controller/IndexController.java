@@ -5,7 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import com.nb6868.onex.api.modules.crm.service.BusinessService;
 import com.nb6868.onex.api.modules.crm.service.ContractService;
 import com.nb6868.onex.api.modules.crm.service.CustomerService;
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.pojo.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class IndexController {
     @Autowired
     ContractService contractService;
 
-    @DataFilter(tenantFilter = true)
+    @DataSqlScope(tenantFilter = true)
     @GetMapping("count")
     @ApiOperation("统计数据")
     public Result<?> count(@RequestParam Map<String, Object> params) {

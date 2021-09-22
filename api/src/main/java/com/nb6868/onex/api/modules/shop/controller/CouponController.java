@@ -1,6 +1,6 @@
 package com.nb6868.onex.api.modules.shop.controller;
 
-import com.nb6868.onex.common.annotation.DataFilter;
+import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.api.common.util.ExcelUtils;
 import com.nb6868.onex.api.modules.shop.dto.CouponDTO;
@@ -40,7 +40,7 @@ public class CouponController {
     @Autowired
     private CouponService couponService;
 
-    @DataFilter(tableAlias = "shop_coupon", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_coupon", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("shop:coupon:list")
@@ -50,7 +50,7 @@ public class CouponController {
         return new Result<>().success(list);
     }
 
-    @DataFilter(tableAlias = "shop_coupon", tenantFilter = true)
+    @DataSqlScope(tableAlias = "shop_coupon", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("shop:coupon:page")
