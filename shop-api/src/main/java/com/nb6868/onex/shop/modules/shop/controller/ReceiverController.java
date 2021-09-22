@@ -1,6 +1,5 @@
 package com.nb6868.onex.shop.modules.shop.controller;
 
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
@@ -28,15 +27,14 @@ import java.util.List;
 @RequestMapping("/shop/receiver")
 @Validated
 @Slf4j
-@Api(tags="收货地址")
-@ApiSupport(order = 90)
+@Api(tags="收货地址", position = 90)
 public class ReceiverController {
 
     @Autowired
     private ReceiverService receiverService;
 
     @GetMapping("list")
-    @ApiOperation("列表")
+    @ApiOperation(value = "列表", position = 10)
     public Result<?> list() {
         // 按条件获得列表
         List<ReceiverEntity> entityList = receiverService.query()
@@ -49,7 +47,7 @@ public class ReceiverController {
     }
 
     @GetMapping("info")
-    @ApiOperation("信息")
+    @ApiOperation(value = "信息", position = 20)
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         ReceiverEntity entity = receiverService.getByIdAndUserId(id, SecurityUser.getUserId());
         AssertUtils.isNull(entity, ErrorCode.DB_RECORD_EXISTS);
@@ -60,7 +58,7 @@ public class ReceiverController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @ApiOperation(value = "保存", position = 30)
     @LogOperation("保存")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody ReceiverDTO dto) {
         // todo 注意. 检查内容以及默认项
@@ -68,7 +66,7 @@ public class ReceiverController {
     }
 
     @PutMapping("update")
-    @ApiOperation("修改")
+    @ApiOperation(value = "修改", position = 40)
     @LogOperation("修改")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody ReceiverDTO dto) {
         // todo 注意. 检查内容以及默认项
@@ -76,8 +74,8 @@ public class ReceiverController {
     }
 
     @PutMapping("setDefaultItem")
-    @ApiOperation("设置默认")
-    @LogOperation("设置默认")
+    @ApiOperation(value = "设为默认地址", position = 50)
+    @LogOperation("设为默认地址")
     public Result<?> setDefaultItem(@NotNull(message = "{id.require}") @RequestParam Long id) {
         Long userId = SecurityUser.getUserId();
         // 按条件获得数据
@@ -91,7 +89,7 @@ public class ReceiverController {
     }
 
     @DeleteMapping("delete")
-    @ApiOperation("删除")
+    @ApiOperation(value = "删除", position = 100)
     public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
         Long userId = SecurityUser.getUserId();
         // 按条件获得数据
