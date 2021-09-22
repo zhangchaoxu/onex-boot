@@ -22,6 +22,9 @@ public class AuthProps {
     @ApiModelProperty(value = "token key")
     private String tokenKey = "auth-token";
 
+    @ApiModelProperty(value = "token类型在jwt中的key")
+    private String tokenTypeKey = "sub";
+
     @ApiModelProperty
     private String accessScanPackage;
 
@@ -64,7 +67,7 @@ public class AuthProps {
 
         @JsonIgnore
         @ApiModelProperty(value = "token策略")
-        private String tokenPolicy = "uuid";
+        private String tokenPolicy = "jwt";
 
         @JsonIgnore
         @ApiModelProperty(value = "token密钥")
