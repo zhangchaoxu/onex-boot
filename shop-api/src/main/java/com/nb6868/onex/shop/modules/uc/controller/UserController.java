@@ -1,6 +1,8 @@
 package com.nb6868.onex.shop.modules.uc.controller;
 
 import cn.hutool.core.lang.Dict;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.auth.OauthWxMaLoginByCodeAndPhone;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/uc/user")
 @Validated
 @Api(tags = "用户")
+@ApiSupport(order = 10)
 @Slf4j
 public class UserController {
 

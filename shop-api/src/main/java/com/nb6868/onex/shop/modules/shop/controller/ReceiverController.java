@@ -1,5 +1,6 @@
 package com.nb6868.onex.shop.modules.shop.controller;
 
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
@@ -28,6 +29,7 @@ import java.util.List;
 @Validated
 @Slf4j
 @Api(tags="收货地址")
+@ApiSupport(order = 90)
 public class ReceiverController {
 
     @Autowired
