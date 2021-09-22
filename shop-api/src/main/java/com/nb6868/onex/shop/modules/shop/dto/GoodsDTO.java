@@ -1,4 +1,4 @@
-package com.nb6868.onex.api.modules.shop.dto;
+package com.nb6868.onex.shop.modules.shop.dto;
 
 import com.nb6868.onex.common.pojo.BaseTenantDTO;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
