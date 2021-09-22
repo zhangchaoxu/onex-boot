@@ -1,8 +1,6 @@
 package com.nb6868.onex.shop.modules.uc.controller;
 
 import cn.hutool.core.lang.Dict;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogLogin;
 import com.nb6868.onex.common.auth.OauthWxMaLoginByCodeAndPhone;
@@ -25,8 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController("UcUserController")
 @RequestMapping("/uc/user")
 @Validated
-@Api(tags = "用户")
-@ApiSupport(order = 10)
+@Api(tags = "用户", position = 10)
 @Slf4j
 public class UserController {
 
@@ -34,7 +31,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/wxMaLoginByPhone")
-    @ApiOperation("微信小程序手机号授权登录")
+    @ApiOperation(value = "微信小程序手机号授权登录", position = 10)
     @LogLogin
     @AccessControl("/wxMaLoginByPhone")
     public Result<Dict> wxMaLoginByPhone(@Validated(value = {DefaultGroup.class}) @RequestBody OauthWxMaLoginByCodeAndPhone request) {
@@ -78,7 +75,7 @@ public class UserController {
     }
 
     @GetMapping("userInfo")
-    @ApiOperation("登录用户信息")
+    @ApiOperation(value = "登录用户信息", position = 100)
     public Result<?> userInfo() {
         UserEntity entity = userService.getById(SecurityUser.getUserId());
         AssertUtils.isNull(entity, ErrorCode.DB_RECORD_EXISTS);

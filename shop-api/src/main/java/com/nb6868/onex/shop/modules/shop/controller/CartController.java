@@ -2,8 +2,6 @@ package com.nb6868.onex.shop.modules.shop.controller;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.Result;
@@ -31,16 +29,14 @@ import java.util.List;
 @RestController("ShopCartController")
 @RequestMapping("/shop/cart")
 @Validated
-@Api(tags = "购物车")
-@ApiSupport(order = 50)
+@Api(tags = "购物车", position = 50)
 @Slf4j
 public class CartController {
     @Autowired
     private CartService cartService;
 
-    @ApiOperationSupport(order = 10)
     @GetMapping("list")
-    @ApiOperation("列表")
+    @ApiOperation(value = "列表", position = 10)
     public Result<?> list() {
         Long userId = SecurityUser.getUserId();
         // 按条件获得列表
@@ -57,9 +53,8 @@ public class CartController {
         return new Result<>().success(dict);
     }
 
-    @ApiOperationSupport(order = 20)
     @GetMapping("count")
-    @ApiOperation("购物车商品数量")
+    @ApiOperation(value = "商品数量", position = 20)
     public Result<?> count() {
         Long userId = SecurityUser.getUserId();
         // 按条件获得总数
@@ -70,9 +65,8 @@ public class CartController {
         return new Result<>().success(count);
     }
 
-    @ApiOperationSupport(order = 30)
     @PostMapping("save")
-    @ApiOperation("保存(加入购物车)")
+    @ApiOperation(value = "保存(加入购物车)", position = 30)
     @LogOperation("保存(加入购物车)")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody CartDTO dto) {
         Long userId = SecurityUser.getUserId();
@@ -93,9 +87,8 @@ public class CartController {
         return new Result<>().success(dict);
     }
 
-    @ApiOperationSupport(order = 40)
     @DeleteMapping("deleteBatch")
-    @ApiOperation("批量删除(移出购物车)")
+    @ApiOperation(value = "批量删除(移出购物车)", position = 40)
     @LogOperation("批量删除(移出购物车)")
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         Long userId = SecurityUser.getUserId();
@@ -109,9 +102,8 @@ public class CartController {
         return new Result<>();
     }
 
-    @ApiOperationSupport(order = 50)
     @PostMapping("checkedAll")
-    @ApiOperation("勾选所有")
+    @ApiOperation(value = "勾选所有", position = 50)
     public Result<?> checkedAll() {
         Long userId = SecurityUser.getUserId();
         cartService.update()
@@ -126,9 +118,8 @@ public class CartController {
         return new Result<>().success(dict);
     }
 
-    @ApiOperationSupport(order = 60)
     @PostMapping("uncheckedAll")
-    @ApiOperation("取消勾选所有")
+    @ApiOperation(value = "取消勾选所有", position = 60)
     public Result<?> uncheckedAll() {
         Long userId = SecurityUser.getUserId();
         cartService.update().set("checked", 0)
@@ -143,9 +134,8 @@ public class CartController {
         return new Result<>().success(dict);
     }
 
-    @ApiOperationSupport(order = 70)
     @PostMapping("changeQty")
-    @ApiOperation("修改数量")
+    @ApiOperation(value = "修改数量", position = 70)
     public Result<?> changeQty(@Validated(value = {DefaultGroup.class}) @RequestBody CartQtyChangeRequest request) {
         Long userId = SecurityUser.getUserId();
         // 检查cart和商品是否存在
