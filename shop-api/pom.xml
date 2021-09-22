@@ -12,6 +12,10 @@
     <artifactId>shop-api</artifactId>
 
     <properties>
+        <dynamic.datasource.version>3.4.1</dynamic.datasource.version>
+        <shiro.version>1.8.0</shiro.version>
+        <aliyun.oss.version>3.13.1</aliyun.oss.version>
+        <weixin.version>4.1.0</weixin.version>
     </properties>
 
     <dependencies>
@@ -20,6 +24,41 @@
             <groupId>com.nb6868.onex</groupId>
             <artifactId>common</artifactId>
             <version>1.9.29</version>
+        </dependency>
+        <!-- dynamic.datasource -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>${dynamic.datasource.version}</version>
+        </dependency>
+        <!-- mysql driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- shiro -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <!-- wechat miniapp -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+            <version>${weixin.version}</version>
+        </dependency>
+        <!-- aliyun oss -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${aliyun.oss.version}</version>
         </dependency>
     </dependencies>
 
