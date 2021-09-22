@@ -19,8 +19,10 @@ onex:
       SHOP_WXMA_PHONE:
         type: SHOP_WXMA_PHONE
         token-policy: jwt
-        verify-type: full
-        permission-base: false
+        token-key: e9HCUI@cYR
+        verify-type: jwt
+        ## 不做权限和角色控制
+        permission-base: true
         role-base: false
   # 存储配置
   oss:
