@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.config;
 
 import com.nb6868.onex.common.filter.CrosFilter;
-import com.nb6868.onex.common.filter.JwtTokenFilter;
 import com.nb6868.onex.common.filter.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

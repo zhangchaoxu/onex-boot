@@ -1,6 +1,7 @@
 package com.nb6868.onex.shop;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
+import com.nb6868.onex.common.config.WebSocketConfig;
 import com.nb6868.onex.common.util.SpringBeanNameGenerator;
 import com.nb6868.onex.common.wechat.WechatMpPropsConfig;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +17,10 @@ import org.springframework.context.annotation.FilterType;
         // 扫描包
         basePackages = {"com.nb6868.onex.**"},
         // 排除指定类
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {WechatMpPropsConfig.class})
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+                WechatMpPropsConfig.class,
+                WebSocketConfig.class
+        })
 )
 public class ShopApiApplication extends SpringBootServletInitializer {
 

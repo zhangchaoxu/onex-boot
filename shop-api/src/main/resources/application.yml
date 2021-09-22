@@ -15,9 +15,9 @@ server:
         http-only: true
 
 spring:
-  # 环境 dev|nbgjwl
+  # 环境 dev|prod
   profiles:
-    active: dev
+    active: onex,dev
   messages:
     encoding: UTF-8
     basename: i18n/messages
@@ -66,17 +66,6 @@ spring:
         wall:
           config:
             multi-statement-allow: true
-    dynamic:
-      druid:
-        filters: stat
-      datasource:
-        master:
-          driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/shop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
-          username: root
-          password: 123456
-          druid:
-            initial-size: 5
 
 # mybatis plus
 # see {https://mybatis.plus/config/}
