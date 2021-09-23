@@ -14,12 +14,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public abstract class BaseTenantDTO extends BaseDTO {
 
-    @ApiModelProperty(value = "租户id")
+    @ApiModelProperty(value = "租户编码")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long tenantId;
-
-    @ApiModelProperty(value = "租户名称")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String tenantName;
+    private String tenantCode;
 
 }

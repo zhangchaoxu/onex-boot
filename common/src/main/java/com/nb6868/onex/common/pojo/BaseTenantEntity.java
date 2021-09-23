@@ -17,14 +17,9 @@ import lombok.EqualsAndHashCode;
 public abstract class BaseTenantEntity extends BaseEntity {
 
     /**
-     * 租户id
+     * 租户编码
      */
     @TableField(fill = FieldFill.INSERT)
-    private Long tenantId;
-    /**
-     * 租户名称
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private String tenantName;
+    private String tenantCode;
 
 }
