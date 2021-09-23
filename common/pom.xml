@@ -22,6 +22,7 @@
         <weixin.version>4.1.0</weixin.version>
         <aliyun.oss.version>3.13.1</aliyun.oss.version>
         <shiro.version>1.8.0</shiro.version>
+        <easypoi.version>4.4.0</easypoi.version>
     </properties>
 
     <dependencies>
@@ -135,6 +136,13 @@
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring</artifactId>
             <version>${shiro.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- easypoi -->
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-spring-boot-starter</artifactId>
+            <version>${easypoi.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
