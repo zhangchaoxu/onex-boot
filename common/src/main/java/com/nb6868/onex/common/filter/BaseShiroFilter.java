@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.filter;
 
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -73,14 +74,11 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
         httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, ((HttpServletRequest) request).getHeader(HttpHeaders.ORIGIN));
 
         // 处理登录失败的异常
-        if (e == null) {
-            String json = JacksonUtils.pojoToJson(new Result<>().error(ErrorCode.UNAUTHORIZED));
-            httpResponse.getWriter().print(json);
-        } else {
-            Throwable throwable = e.getCause() == null ? e : e.getCause();
-            String json = JacksonUtils.pojoToJson(new Result<>().error(ErrorCode.UNAUTHORIZED), throwable.getMessage());
-            httpResponse.getWriter().print(json);
+        Result<?> result = new Result<>().error(ErrorCode.UNAUTHORIZED);
+        if (e != null && e.getCause() != null && StrUtil.isNotBlank(e.getCause().getMessage())) {
+            result.setMsg(e.getCause().getMessage());
         }
+        httpResponse.getWriter().print(JacksonUtils.pojoToJson(result));
     }
 
 }

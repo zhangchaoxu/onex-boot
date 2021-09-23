@@ -80,14 +80,11 @@ public class JwtTokenFilter implements Filter {
         httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, ((HttpServletRequest) request).getHeader(HttpHeaders.ORIGIN));
 
         // 处理登录失败的异常
-        if (e == null) {
-            String json = JacksonUtils.pojoToJson(new Result<>().error(ErrorCode.UNAUTHORIZED));
-            httpResponse.getWriter().print(json);
-        } else {
-            Throwable throwable = e.getCause() == null ? e : e.getCause();
-            String json = JacksonUtils.pojoToJson(new Result<>().error(ErrorCode.UNAUTHORIZED), throwable.getMessage());
-            httpResponse.getWriter().print(json);
+        Result<?> result = new Result<>().error(ErrorCode.UNAUTHORIZED);
+        if (e != null && e.getCause() != null && StrUtil.isNotBlank(e.getCause().getMessage())) {
+            result.setMsg(e.getCause().getMessage());
         }
+        httpResponse.getWriter().print(JacksonUtils.pojoToJson(result));
     }
 
 }
