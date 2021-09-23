@@ -12,6 +12,13 @@ import java.lang.annotation.*;
 @Documented
 public @interface LogOperation {
 
+    // 日志记录
     String value() default "";
+
+    // 日志类型
+    String type() default "operation";
+
+    // 存储类型, db/logger
+    String storeType() default "db";
 
 }
