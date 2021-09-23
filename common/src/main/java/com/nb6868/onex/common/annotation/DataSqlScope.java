@@ -48,7 +48,7 @@ public @interface DataSqlScope {
      */
     boolean tenantFilter() default false;
     /**
-     * 租户ID
+     * 租户编码
      */
-    String tenantId() default "tenant_id";
+    String tenantCode() default "tenant_code";
 }
