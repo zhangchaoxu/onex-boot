@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.pojo;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -13,7 +12,6 @@ import java.util.List;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
-@ApiModel(value = "分页数据")
 public class PageData<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +32,6 @@ public class PageData<T> implements Serializable {
 
     /**
      * 分页
-     *
      * @param list  列表数据
      * @param total 总记录数
      */
