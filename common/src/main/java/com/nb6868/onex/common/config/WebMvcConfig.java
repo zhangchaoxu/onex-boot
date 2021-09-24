@@ -1,5 +1,7 @@
 package com.nb6868.onex.common.config;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
@@ -124,7 +126,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(JacksonUtils.getMapper());
+        ObjectMapper objectMapper = JacksonUtils.getMapper();
+        // 打开USE_ANNOTATIONS,否则swagger ApiModelProperty中的内容会无法解析,导致页面上无法显示
+        objectMapper.enable(MapperFeature.USE_ANNOTATIONS);
+        converter.setObjectMapper(objectMapper);
         return converter;
     }
 

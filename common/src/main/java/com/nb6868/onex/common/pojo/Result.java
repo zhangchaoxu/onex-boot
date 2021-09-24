@@ -2,7 +2,6 @@ package com.nb6868.onex.common.pojo;
 
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.MessageUtils;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -18,7 +17,6 @@ import java.time.Instant;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="接口返回对象")
 public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -46,10 +46,15 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
+                .apiInfo(new ApiInfoBuilder()
+                        .title(title)
+                        .description(description)
+                        .version(version)
+                        .build())
                 .select()
+                // 扫描注解,生成接口文档
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // 包下的类，生成接口文档
+                // 包下的类,生成接口文档
                 //.apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.modules.*.controller"))
                 .paths(PathSelectors.any())
                 .build()
@@ -57,14 +62,6 @@ public class SwaggerConfig {
                 .directModelSubstitute(java.util.Date.class, String.class)
                 .securitySchemes(securitySchemes())
                 .securityContexts(securityContexts());
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title(title)
-                .description(description)
-                .version(version)
-                .build();
     }
 
     private List<SecurityScheme> securitySchemes() {
