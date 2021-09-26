@@ -23,6 +23,9 @@
         <aliyun.oss.version>3.13.1</aliyun.oss.version>
         <shiro.version>1.8.0</shiro.version>
         <easypoi.version>4.4.0</easypoi.version>
+        <eventbus.version>3.2.0</eventbus.version>
+        <!-- 打包跳过单元测试 -->
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
@@ -31,6 +34,12 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>${commons.fileupload.version}</version>
+        </dependency>
+        <!-- eventbus -->
+        <dependency>
+            <groupId>org.greenrobot</groupId>
+            <artifactId>eventbus</artifactId>
+            <version>${eventbus.version}</version>
         </dependency>
         <!-- quartz -->
         <dependency>
