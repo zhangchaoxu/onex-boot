@@ -127,7 +127,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = JacksonUtils.getMapper();
-        // 打开USE_ANNOTATIONS,否则swagger ApiModelProperty中的内容会无法解析,导致页面上无法显示
+        // enable USE_ANNOTATIONS,否则swagger ApiModelProperty中的内容会无法解析,导致页面上无法显示
         objectMapper.enable(MapperFeature.USE_ANNOTATIONS);
         converter.setObjectMapper(objectMapper);
         return converter;
