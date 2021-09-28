@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,12 @@ public class ScheduleJob extends QuartzJobBean {
             Object invokeResult = method.invoke(target, task.getParams());
             result = invokeResult.toString();
             log.info("任务执行完毕，任务ID：{}", task.getId());
+        } catch (OnexException oe) {
+            //任务状态
+            state = oe.getCode();
+            // 错误消息
+            result = oe.getMsg();
+            log.error("任务执行失败任务状态，任务ID：{}", task.getId(), oe);
         } catch (Exception e) {
             //任务状态
             state = Const.ResultEnum.FAIL.value();
@@ -52,15 +59,21 @@ public class ScheduleJob extends QuartzJobBean {
      * 保存任务日志
      */
     protected void saveTaskLog(TaskInfo task, long timeInterval, int state, String result) {
-        /*TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
-        TaskLogEntity log = new TaskLogEntity();
-        log.setTaskId(Long.valueOf(task.getId()));
-        log.setTaskName(task.getName());
-        log.setParams(task.getParams());
-        log.setTimes(timeInterval);
-        log.setState(state);
-        log.setResult(result);
-        taskLogService.save(log);*/
+        /*// 获取spring bean
+        TaskLogEntity logEntity = new TaskLogEntity();
+        logEntity.setTaskId(Long.valueOf(task.getId()));
+        logEntity.setTaskName(task.getName());
+        logEntity.setParams(task.getParams().toString());
+        logEntity.setTimes(timeInterval);
+        logEntity.setState(state);
+        logEntity.setError(result);
+        if (ErrorCode.JOB_NO_RUN == state) {
+            // 指定结果不存db
+            log.info("task log={}", JSONUtil.toJsonStr(logEntity));
+        } else {
+            TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
+            taskLogService.save(logEntity);
+        }*/
     }
 
 }
