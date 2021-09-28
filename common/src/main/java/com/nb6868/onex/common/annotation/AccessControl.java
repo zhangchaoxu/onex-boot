@@ -21,4 +21,19 @@ public @interface AccessControl {
      */
     String filter() default "anon";
 
+    /**
+     * ip过滤器模式支持 none无过滤/white名单/black黑名单
+     */
+    String ipFilter() default "none";
+
+    /**
+     * ip白名单
+     */
+    String[] ipWhite() default {};
+
+    /**
+     * ip黑名单
+     */
+    String[] ipBlack() default {};
+
 }
