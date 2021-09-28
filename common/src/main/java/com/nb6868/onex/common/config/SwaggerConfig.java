@@ -38,6 +38,10 @@ public class SwaggerConfig {
 
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
+    /**
+     * 注意需要knife4j.enable: true
+     * 否则会提示注入失败
+     */
     @Autowired
     public SwaggerConfig(OpenApiExtensionResolver openApiExtensionResolver) {
         this.openApiExtensionResolver = openApiExtensionResolver;

@@ -75,6 +75,7 @@ public interface ErrorCode {
     int EXCEL_IMPORT_ERROR = 10055;
     int OAUTH_NOT_BIND_ERROR = 10056;
     int IP_BLACK = 10060;
+    int JOB_NO_RUN = 10070;
 
     int WX_CONFIG_ERROR = 11000;
     int WX_API_ERROR = 11001;
