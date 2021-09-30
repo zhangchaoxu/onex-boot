@@ -61,7 +61,7 @@ public class DingTalkApi {
      * 自定义机器人消息发送
      * https://ding-doc.dingtalk.com/document/app/custom-robot-access
      */
-    private final static String ROBOT_SEND = "https://oapi.dingtalk.com/robot/send?access_token={1}&timestamp={2}&sign={3}";
+    private final static String ROBOT_SEND = "https://oapi.dingtalk.com/robot/send?access_token={1}";
 
     /**
      * 上传媒体文件
@@ -200,11 +200,9 @@ public class DingTalkApi {
     /**
      * 自定义机器人消息发送
      */
-    public static BaseResponse sendRobotMsg(String accessToken, String signKey, Dict requestBody) {
+    public static BaseResponse sendRobotMsg(String accessToken, Dict requestBody) {
         RestTemplate restTemplate = new RestTemplate();
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        String signature = AliSignUtils.signature(timestamp + "\n" + signKey, signKey, "HmacSHA256");
-        return restTemplate.postForObject(ROBOT_SEND, requestBody, GetUserDetailByUseridResponse.class, accessToken, timestamp, signature);
+        return restTemplate.postForObject(ROBOT_SEND, requestBody, GetUserDetailByUseridResponse.class, accessToken);
     }
 
     /**
