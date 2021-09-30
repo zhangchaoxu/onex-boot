@@ -1,6 +1,8 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.core.lang.Dict;
 import com.nb6868.onex.common.dingtalk.AccessTokenResponse;
+import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
 import com.nb6868.onex.common.dingtalk.GetUserInfoByCodeResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -24,5 +26,23 @@ public class DingtalkTest {
         GetUserInfoByCodeResponse response = DingTalkApi.getUserInfoByCode("dingoadm6szm8j6izamqdy", "TXq0of-I8c5IXw9sd1cZgwWQOyc5p9hvF8T7T7joiBduEtfeHvWXxmis631MxwD_", "1234");
         log.error(response.getErrcode() + ":" + response.getErrmsg());
     }
+
+    @Test
+    @DisplayName("获得用户信息")
+    void sendRobotMsg() {
+        Dict dict = Dict.create();
+        // 实际只有txt可以@
+        /*dict.set("msgtype", "markdown")
+                .set("at", Dict.create().set("atMobiles", new String[]{""}))
+                .set("markdown", Dict.create()
+                        .set("title", "*Robot*我是标题")
+                        .set("text", "#### 我是具体消息\n[详见](https://"));*/
+        dict.set("msgtype", "text")
+                .set("text", Dict.create().set("content", "*Robot*提醒\nssssss"))
+                .set("at", Dict.create().set("atMobiles", new String[]{""}));
+        BaseResponse response = DingTalkApi.sendRobotMsg("", dict);
+        System.out.println(response);
+    }
+
 
 }

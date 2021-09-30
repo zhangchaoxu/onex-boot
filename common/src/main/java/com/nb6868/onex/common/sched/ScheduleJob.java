@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -31,24 +32,23 @@ public class ScheduleJob extends QuartzJobBean {
         // 任务执行结果
         String result = null;
         try {
-            //执行任务
+            // 执行任务
             log.info("任务准备执行，任务ID：{}", task.getId());
             Object target = SpringContextUtils.getBean(task.getName());
             Method method = target.getClass().getDeclaredMethod("run", JSONObject.class);
             Object invokeResult = method.invoke(target, task.getParams());
             result = invokeResult.toString();
             log.info("任务执行完毕，任务ID：{}", task.getId());
-        } catch (OnexException oe) {
-            //任务状态
-            state = oe.getCode();
-            // 错误消息
-            result = oe.getMsg();
-            log.error("任务执行失败任务状态，任务ID：{}", task.getId(), oe);
         } catch (Exception e) {
-            //任务状态
-            state = Const.ResultEnum.FAIL.value();
-            // 错误消息
-            result = ExceptionUtil.stacktraceToString(e);
+            // 无法捕捉到OnexException,返回的是InvocationTargetException
+            if (e instanceof InvocationTargetException && ((InvocationTargetException) e).getTargetException() instanceof OnexException) {
+                OnexException onexException = (OnexException) ((InvocationTargetException) e).getTargetException();
+                state = onexException.getCode();
+                result = onexException.getMsg();
+            } else {
+                state = Const.ResultEnum.FAIL.value();
+                result = ExceptionUtil.stacktraceToString(e);
+            }
             log.error("任务执行失败，任务ID：{}", task.getId(), e);
         } finally {
             saveTaskLog(task, timer.interval(), state, result);
