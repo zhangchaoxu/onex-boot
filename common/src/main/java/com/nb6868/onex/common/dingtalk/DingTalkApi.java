@@ -59,7 +59,7 @@ public class DingTalkApi {
 
     /**
      * 自定义机器人消息发送
-     * https://ding-doc.dingtalk.com/document/app/custom-robot-access
+     * https://developers.dingtalk.com/document/robots/custom-robot-access
      */
     private final static String ROBOT_SEND = "https://oapi.dingtalk.com/robot/send?access_token={1}";
 
@@ -201,8 +201,7 @@ public class DingTalkApi {
      * 自定义机器人消息发送
      */
     public static BaseResponse sendRobotMsg(String accessToken, Dict requestBody) {
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.postForObject(ROBOT_SEND, requestBody, GetUserDetailByUseridResponse.class, accessToken);
+        return new RestTemplate().postForObject(ROBOT_SEND, requestBody, GetUserDetailByUseridResponse.class, accessToken);
     }
 
     /**
