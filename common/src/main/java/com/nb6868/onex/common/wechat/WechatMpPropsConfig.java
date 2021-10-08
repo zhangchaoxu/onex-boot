@@ -7,6 +7,7 @@ import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.WxMpConfigStorage;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
+@ConditionalOnProperty(name = "onex.wechat.mp.enabled", havingValue = "true")
 public class WechatMpPropsConfig {
 
     @Autowired

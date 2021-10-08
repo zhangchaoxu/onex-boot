@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
+@ConditionalOnProperty(name = "onex.wechat.ma.enabled", havingValue = "true")
 public class WechatMaPropsConfig {
 
     @Autowired
