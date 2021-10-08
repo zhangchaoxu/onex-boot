@@ -3,6 +3,7 @@ package com.nb6868.onex.common.oss;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@ConditionalOnProperty(name = "onex.oss.enabled", havingValue = "true")
 @Configuration
 public class OssPropsConfig {
 
