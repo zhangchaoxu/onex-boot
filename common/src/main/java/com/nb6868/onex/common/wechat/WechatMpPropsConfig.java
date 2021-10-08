@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "onex.wechat.mp.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "onex.wechat.mp.enable", havingValue = "true")
 public class WechatMpPropsConfig {
 
     @Autowired
@@ -56,6 +56,7 @@ public class WechatMpPropsConfig {
             config.setToken(prop.getToken());
             config.setAesKey(prop.getAesKey());
             configStorages.put(s, config);
+            log.info("load config wechat mp [{}]", s);
         });
         mpServices.setMultiConfigStorages(configStorages);
     }
