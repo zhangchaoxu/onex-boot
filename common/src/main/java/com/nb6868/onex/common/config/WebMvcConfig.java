@@ -6,6 +6,7 @@ import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,7 @@ import java.util.Locale;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
+@ConditionalOnProperty(name = "onex.webmvc.enable", havingValue = "true")
 public class WebMvcConfig implements WebMvcConfigurer {
 
     /**

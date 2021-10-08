@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "onex.wechat.ma.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "onex.wechat.ma.enable", havingValue = "true")
 public class WechatMaPropsConfig {
 
     @Autowired
@@ -76,6 +76,7 @@ public class WechatMaPropsConfig {
             service.setWxMaConfig(config);
             maRouters.put(s, newRouter(service));
             maServices.put(s, service);
+            log.info("load config wechat ma [{}]", s);
         });
     }
 

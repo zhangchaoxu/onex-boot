@@ -2,6 +2,7 @@ package com.nb6868.onex.common.config;
 
 import com.nb6868.onex.common.filter.CrosFilter;
 import com.nb6868.onex.common.filter.XssFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import javax.servlet.Filter;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
+@ConditionalOnProperty(name = "onex.filter.enable", havingValue = "true")
 public class FilterConfig {
 
     // filter的初始化在bean之前，无法Autowired

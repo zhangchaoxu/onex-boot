@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInt
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.nb6868.onex.common.jpa.injector.MySqlInjector;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
+@ConditionalOnProperty(name = "onex.mybatisplus.enable", havingValue = "true")
 public class MybatisPlusConfig {
 
     /***
