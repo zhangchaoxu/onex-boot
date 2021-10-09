@@ -29,7 +29,7 @@ import java.util.List;
 @ConditionalOnProperty(name = "onex.swagger.enable", havingValue = "true")
 public class SwaggerConfig {
 
-    @Value("${knife4j.title:Govsz-Plus-API}")
+    @Value("${knife4j.title:OneX-API}")
     private String title;
     @Value("${knife4j.description:API}")
     private String description;

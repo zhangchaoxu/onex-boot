@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 
 /**
@@ -16,7 +17,7 @@ public class PasswordUtils {
      * @return 返回加密字符串
      */
     public static String encode(String raw) {
-        return DigestUtil.bcrypt(raw);
+        return encode(raw, "bcrypt");
     }
 
     /**
@@ -27,6 +28,34 @@ public class PasswordUtils {
      * @return 匹配结果
      */
     public static boolean verify(String raw, String encoded) {
+        return verify(raw, encoded, "bcrypt");
+    }
+
+    /**
+     * 加密
+     *
+     * @param raw 字符串
+     * @param secure 算法
+     * @return 返回加密字符串
+     */
+    public static String encode(String raw, String secure) {
+        if ("sm3".equalsIgnoreCase(secure)) {
+            return SmUtil.sm3(raw);
+        }
+        return DigestUtil.bcrypt(raw);
+    }
+
+    /**
+     * 比较密码是否相等
+     *
+     * @param raw     明文密码
+     * @param encoded 加密后密码
+     * @return 匹配结果
+     */
+    public static boolean verify(String raw, String encoded, String secure) {
+        if ("sm3".equalsIgnoreCase(secure)) {
+            return encoded.equalsIgnoreCase(encode(raw, secure));
+        }
         return DigestUtil.bcryptCheck(raw, encoded);
     }
 
