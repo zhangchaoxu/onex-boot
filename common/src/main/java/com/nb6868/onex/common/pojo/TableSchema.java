@@ -32,6 +32,6 @@ public class TableSchema {
     private String minWidth;
 
     @ApiModelProperty(value = "当内容过长被隐藏时显示 tooltip")
-    private String showOverflowTooltip;
+    private boolean showOverflowTooltip = true;
 
 }
