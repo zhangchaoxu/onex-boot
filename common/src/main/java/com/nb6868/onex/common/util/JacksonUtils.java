@@ -218,7 +218,7 @@ public class JacksonUtils {
     }
 
     /**
-     * JSON字符串转Nide。
+     * JSON字符串转Node。
      *
      * @param json       JSON串
      * @return 转换的Node实例
