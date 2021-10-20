@@ -87,6 +87,10 @@ public class ShiroConfig {
         filterMap.put("/editor-app/**", "anon");
         filterMap.put("/diagram-viewer/**", "anon");
         filterMap.put("/modeler.html", "anon");
+        // easypoi
+        filterMap.put("/easypoi-preview.html", "anon");
+        filterMap.put("/easypoijs/**", "anon");
+        filterMap.put("/easypoi/wps/**", "anon");
         // 扫描RequestMapping类
         Set<Class<?>> requestMapClassSet = new HashSet<>();
         StrSplitter.splitTrim(authProps.getAccessScanPackage(), ',', true).forEach(s -> requestMapClassSet.addAll(ClassUtil.scanPackageByAnnotation(s, RequestMapping.class)));
