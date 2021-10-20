@@ -6,8 +6,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel(value = "钉钉基础,返回体")
 @Data
+@ApiModel(value = "钉钉基础,返回体")
 public class BaseResponse implements Serializable {
 
     @ApiModelProperty(value = "返回码")
