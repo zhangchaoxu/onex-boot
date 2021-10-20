@@ -71,12 +71,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
          *     proxy_set_header REMOTE-HOST $remote_addr;
          * }
          */
+        // favicon/webjars/static
+        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         // knife4j(swagger) doc
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
-        // webjars and static support
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/static/");
         // easy poi wps
         registry.addResourceHandler("/easypoi-preview.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/easypoijs/**").addResourceLocations("classpath:/META-INF/resources/easypoijs/");
