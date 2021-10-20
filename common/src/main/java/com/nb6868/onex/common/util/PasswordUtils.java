@@ -59,5 +59,4 @@ public class PasswordUtils {
         return DigestUtil.bcryptCheck(raw, encoded);
     }
 
-
 }

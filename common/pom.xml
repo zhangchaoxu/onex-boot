@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>1.9.53</version>
+        <version>1.9.54</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -23,7 +23,6 @@
         <aliyun.oss.version>3.13.1</aliyun.oss.version>
         <shiro.version>1.8.0</shiro.version>
         <easypoi.version>4.4.0</easypoi.version>
-        <eventbus.version>3.2.0</eventbus.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -33,13 +32,6 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>${commons.fileupload.version}</version>
-        </dependency>
-        <!-- eventbus -->
-        <dependency>
-            <groupId>org.greenrobot</groupId>
-            <artifactId>eventbus</artifactId>
-            <version>${eventbus.version}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- quartz -->
         <dependency>
