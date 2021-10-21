@@ -13,7 +13,7 @@ import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import ${package}.common.util.ExcelUtils;
+import com.nb6868.onex.common.util.ExcelUtils;
 import ${package}.modules.${moduleName}.dto.${className}DTO;
 import ${package}.modules.${moduleName}.excel.${className}Excel;
 import ${package}.modules.${moduleName}.service.${className}Service;
