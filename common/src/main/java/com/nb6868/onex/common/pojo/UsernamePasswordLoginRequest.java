@@ -13,11 +13,11 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value = "用户名密码登录请求")
 public class UsernamePasswordLoginRequest {
 
-    @ApiModelProperty(value = "用户名")
+    @ApiModelProperty(value = "用户名", required = true)
     @NotEmpty(message = "用户名不能为空", groups = {DefaultGroup.class})
     private String username;
 
-    @ApiModelProperty(value = "密码")
+    @ApiModelProperty(value = "密码", required = true)
     @NotEmpty(message = "密码不能为空", groups = {DefaultGroup.class})
     private String password;
 
