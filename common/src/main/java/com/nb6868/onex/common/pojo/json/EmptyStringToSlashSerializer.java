@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.pojo.serializer;
+package com.nb6868.onex.common.pojo.json;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
