@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * 存储服务(阿里云、本地)
@@ -98,6 +99,13 @@ public abstract class AbstractOssService {
      * @return 返回http地址
      */
     public abstract String upload(String prefix, File file);
+
+    /**
+     * 文件下载
+     *
+     * @param objectKey 文件名
+     */
+    public abstract InputStream download(String objectKey);
 
     /**
      * 生成访问时间

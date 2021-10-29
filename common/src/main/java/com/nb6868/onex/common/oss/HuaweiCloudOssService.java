@@ -7,11 +7,11 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.obs.services.ObsClient;
 import com.obs.services.exception.ObsException;
+import com.obs.services.model.ObsObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * 华为云OBS存储
@@ -24,6 +24,29 @@ public class HuaweiCloudOssService extends AbstractOssService {
 
     public HuaweiCloudOssService(OssProps.Config config) {
         this.config = config;
+    }
+
+    @Override
+    public InputStream download(String objectKey) {
+        ObsClient ossClient = null;
+        ObsObject ossObject = null;
+        try {
+            ossClient = new ObsClient(config.getAccessKeyId(), config.getAccessKeySecret(), config.getEndPoint());
+            ossObject = ossClient.getObject(config.getBucketName(), objectKey);
+            return ossObject.getObjectContent();
+        } catch (ObsException e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        } finally {
+            // 关闭ObsClient实例，如果是全局ObsClient实例，可以不在每个方法调用完成后关闭
+            // ObsClient在调用ObsClient.close方法关闭后不能再次使用
+            if (ossClient != null) {
+                try {
+                    ossClient.close();
+                } catch (IOException e) {
+                    log.error("huaweicloud obs client close error", e);
+                }
+            }
+        }
     }
 
     @Override

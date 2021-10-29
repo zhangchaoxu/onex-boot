@@ -8,11 +8,15 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import com.obs.services.ObsClient;
+import com.obs.services.exception.ObsException;
+import com.obs.services.model.ObsObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 本地上传
@@ -23,6 +27,16 @@ public class LocalOssService extends AbstractOssService {
 
     public LocalOssService(OssProps.Config config) {
         this.config = config;
+    }
+
+    @Override
+    public InputStream download(String objectKey) {
+        File localFile = new File(config.getLocalPath() + File.separator + objectKey);
+        if (localFile.exists()) {
+            return IoUtil.toStream(localFile);
+        } else {
+            return null;
+        }
     }
 
     @Override

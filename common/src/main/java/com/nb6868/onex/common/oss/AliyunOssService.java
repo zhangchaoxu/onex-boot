@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.OSSObject;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.auth.sts.AssumeRoleRequest;
 import com.aliyuncs.auth.sts.AssumeRoleResponse;
@@ -17,10 +18,12 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 
@@ -30,10 +33,35 @@ import java.util.Date;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
 public class AliyunOssService extends AbstractOssService {
 
     public AliyunOssService(OssProps.Config config) {
         this.config = config;
+    }
+
+    @Override
+    public InputStream download(String objectKey) {
+        OSS ossClient = null;
+        OSSObject ossObject = null;
+        try {
+            ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
+            ossObject = ossClient.getObject(config.getBucketName(), objectKey);
+            return ossObject.getObjectContent();
+        } catch (OSSException | com.aliyun.oss.ClientException e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+            if (ossObject != null) {
+                try {
+                    ossObject.close();
+                } catch (IOException e) {
+                    log.error("aliyun oss close error", e);
+                }
+            }
+        }
     }
 
     @Override
