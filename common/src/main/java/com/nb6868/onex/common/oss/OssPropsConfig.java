@@ -41,11 +41,14 @@ public class OssPropsConfig {
             if ("aliyun".equalsIgnoreCase(prop.getType())) {
                 ossServices.put(s, new AliyunOssService(prop));
                 log.info("load config oss aliyun [{}]", s);
+            } else if ("huaweicloud".equalsIgnoreCase(prop.getType())) {
+                ossServices.put(s, new HuaweiCloudOssService(prop));
+                log.info("load config oss aliyun [{}]", s);
             } else if ("local".equalsIgnoreCase(prop.getType())) {
                 ossServices.put(s, new LocalOssService(prop));
                 log.info("load config oss local [{}]", s);
             } else {
-                log.info("load config fail oss [{}] [{}], only support aliyun/local", prop.getType(), s);
+                log.info("load config fail oss [{}] [{}], only support aliyun/huaweicloud/local", prop.getType(), s);
             }
         });
     }

@@ -23,7 +23,7 @@ public class OssProps {
     @Data
     public static class Config {
 
-        @ApiModelProperty(value = "类型 aliyun：阿里云  local：本地上传")
+        @ApiModelProperty(value = "类型 aliyun阿里云/huaweicloud华为云/local本地")
         private String type;
 
         @ApiModelProperty(value = "绑定的域名")
