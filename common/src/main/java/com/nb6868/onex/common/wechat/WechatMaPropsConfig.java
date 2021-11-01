@@ -61,7 +61,7 @@ public class WechatMaPropsConfig {
     @PostConstruct
     public void init() {
         if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
-            log.info("未配置微信小程序,如有需要可配置到onex.yml或持久化");
+            log.error("未配置微信小程序,如有需要可配置到onex.yml或持久化");
             return;
         }
         props.getConfigs().forEach((s, prop) -> {

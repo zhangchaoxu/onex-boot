@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class AuthProps {
     private String accessScanPackage;
 
     @ApiModelProperty(value = "登录设置")
-    private Map<String, Settings> settings;
+    private Map<String, Settings> settings = new HashMap<>();
 
     @Data
     public static class Settings {
@@ -46,7 +47,7 @@ public class AuthProps {
     }
 
     @ApiModelProperty(value = "登录配置项")
-    private Map<String, Config> configs;
+    private Map<String, Config> configs = new HashMap<>();
 
     @Data
     public static class Config {

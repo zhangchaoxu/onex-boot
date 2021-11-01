@@ -32,7 +32,7 @@ public class OauthWxMaLoginByCodeAndPhone implements Serializable {
     @NotBlank(message = "encryptedData不能为空")
     private String encryptedData;
 
-    @ApiModelProperty(value = "用户信息iv,wx.getUserInfo获取", required = true)
+    @ApiModelProperty(value = "用户信息iv,wx.getPhoneNumber获取", required = true)
     @NotBlank(message = "iv不能为空")
     private String iv;
 

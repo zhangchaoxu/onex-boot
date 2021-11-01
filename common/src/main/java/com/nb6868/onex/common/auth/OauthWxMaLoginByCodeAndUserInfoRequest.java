@@ -12,6 +12,7 @@ import java.io.Serializable;
  * 微信小程序通过code和用户信息登录请求
  * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/login/wx.login.html
  * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html
+ * https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -21,9 +22,11 @@ import java.io.Serializable;
 public class OauthWxMaLoginByCodeAndUserInfoRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "配置信息编码", required = true)
-    @NotBlank(message = "配置信息编码不能为空")
-    private String type = "WX_MA";
+    @ApiModelProperty(value = "登录配置编码", example = "WX_MA")
+    private String authConfigKey = "WX_MA";
+
+    @ApiModelProperty(value = "登录配置编码", example = "WX_MA")
+    private String wechatMaConfigKey = "WX_MA";
 
     @ApiModelProperty(value = "登录凭证wx.login获取", required = true)
     @NotBlank(message = "code不能为空")
