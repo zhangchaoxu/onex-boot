@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Map;
 public class WechatMaProps implements Serializable {
 
     @ApiModelProperty(value = "配置项")
-    private Map<String, Config> configs;
+    private Map<String, Config> configs = new HashMap<>();
 
     @Data
     public static class Config {
