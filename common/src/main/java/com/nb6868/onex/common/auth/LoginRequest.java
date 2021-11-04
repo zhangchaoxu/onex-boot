@@ -8,11 +8,6 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
-/**
- * 登录请求
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "登录请求")
@@ -40,7 +35,7 @@ public class LoginRequest implements Serializable {
     public interface AppleGroup { }
 
     @ApiModelProperty(value = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
-    private String authConfigKey;
+    private String authConfigType;
 
     @ApiModelProperty(value = "用户名")
     @NotEmpty(message = "用户名不能为空", groups = {UsernamePasswordGroup.class})
