@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * C#日期反序列化
+ * C# 格式 日期反序列化
  * /Date(-62135596800000)/
  *
  * @author Charles zhangchaoxu@gmail.com
@@ -20,6 +20,7 @@ public class DateCSharpFormatDeserializer extends JsonDeserializer<Date> {
     public Date deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException {
         String txt = jsonParser.getText();
         if ("/Date(-62135596800000)/".equalsIgnoreCase(txt)) {
+            // -62135596800000是WCF或MVC webservice返回的空日期
             return null;
         } else {
             return DateUtil.date(Long.parseLong(txt.replaceAll("/Date\\(", "").replaceAll("\\)/", "")));
