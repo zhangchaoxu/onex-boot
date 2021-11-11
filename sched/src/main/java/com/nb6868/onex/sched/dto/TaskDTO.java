@@ -28,6 +28,10 @@ public class TaskDTO extends BaseDTO {
     @ApiModelProperty(value = "执行环境")
     private String env;
 
+    @ApiModelProperty(value = "日志记录类型")
+    @NotBlank(message = "日志记录类型不能为空", groups = DefaultGroup.class)
+    private String logType;
+
     @ApiModelProperty(value = "参数")
     private String params;
 
