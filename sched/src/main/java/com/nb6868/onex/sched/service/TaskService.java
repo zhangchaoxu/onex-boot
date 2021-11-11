@@ -11,7 +11,7 @@ import com.nb6868.onex.sched.SchedConst;
 import com.nb6868.onex.sched.dao.TaskDao;
 import com.nb6868.onex.sched.dto.TaskDTO;
 import com.nb6868.onex.sched.entity.TaskEntity;
-import com.nb6868.onex.sched.utils.ScheduleTaskJob;
+import com.nb6868.onex.sched.utils.ScheduleJob;
 import com.nb6868.onex.sched.utils.ScheduleUtils;
 import com.nb6868.onex.sched.utils.TaskInfo;
 import org.quartz.Scheduler;
@@ -53,7 +53,7 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 		// copy主键值到dto
 		BeanUtils.copyProperties(entity, dto);
 		//
-		ScheduleUtils.createScheduleJob(ScheduleTaskJob.class, scheduler, getTaskInfoFromTask(entity));
+		ScheduleUtils.createScheduleJob(ScheduleJob.class, scheduler, getTaskInfoFromTask(entity));
 		return ret;
 	}
 
