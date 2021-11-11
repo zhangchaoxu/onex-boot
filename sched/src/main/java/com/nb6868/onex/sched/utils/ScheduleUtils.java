@@ -1,7 +1,8 @@
-package com.nb6868.onex.common.sched;
+package com.nb6868.onex.sched.utils;
 
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.sched.SchedConst;
 import org.quartz.*;
 
 /**

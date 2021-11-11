@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.sched;
+package com.nb6868.onex.sched.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
@@ -7,6 +7,7 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
+import com.nb6868.onex.sched.SchedConst;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -59,21 +60,7 @@ public class ScheduleJob extends QuartzJobBean {
      * 保存任务日志
      */
     protected void saveTaskLog(TaskInfo task, long timeInterval, int state, String result) {
-        /*// 获取spring bean
-        TaskLogEntity logEntity = new TaskLogEntity();
-        logEntity.setTaskId(Long.valueOf(task.getId()));
-        logEntity.setTaskName(task.getName());
-        logEntity.setParams(task.getParams().toString());
-        logEntity.setTimes(timeInterval);
-        logEntity.setState(state);
-        logEntity.setError(result);
-        if (ErrorCode.JOB_NO_RUN == state) {
-            // 指定结果不存db
-            log.info("task log={}", JSONUtil.toJsonStr(logEntity));
-        } else {
-            TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
-            taskLogService.save(logEntity);
-        }*/
+
     }
 
 }
