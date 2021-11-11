@@ -1,0 +1,42 @@
+## swagger
+knife4j:
+  enable: true
+  setting:
+    enableGroup: true
+    enableSwaggerModels: true
+    ## 自定义footer
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Copyright 2021-current[nb6868](https://onex.nb6868.com/)
+    ## 自定义首页
+    enableHomeCustom: true
+    homeCustomLocation: classpath:README.md
+
+## onex
+onex:
+  # 过滤器
+  filter:
+    enable: true
+  # mybatis配置
+  mybatisplus:
+    enable: true
+  # swagger
+  swagger:
+    enable: true
+  # WebMVC
+  webmvc:
+    enable: true
+  # WebSocket
+  websocket:
+    enable: false
+  # async
+  async:
+    enable: false
+  # 登录配置
+  auth:
+    settings:
+      admin:
+        register: false
+        forget-password: false
+        types:
+          - ADMIN_USERNAME_PASSWORD
