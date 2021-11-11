@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class ScheduleTaskJob extends QuartzJobBean {
+public class ScheduleJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
