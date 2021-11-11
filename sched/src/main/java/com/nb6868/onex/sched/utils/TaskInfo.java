@@ -19,7 +19,6 @@ public class TaskInfo implements Serializable {
      * ID
      */
     private String id;
-
     /**
      * spring bean名称
      */
