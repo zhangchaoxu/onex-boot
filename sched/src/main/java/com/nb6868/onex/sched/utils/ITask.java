@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.sched;
+package com.nb6868.onex.sched.utils;
 
 import cn.hutool.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.sched;
+package com.nb6868.onex.sched.utils;
 
 import cn.hutool.json.JSONObject;
 import lombok.Data;
@@ -33,7 +33,7 @@ public class TaskInfo implements Serializable {
      */
     private String cron;
     /**
-     * 任务状态  0：暂停  1：正常
+     * 状态  0暂停/1正常
      */
     private Integer state;
 

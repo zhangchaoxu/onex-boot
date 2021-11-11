@@ -28,17 +28,11 @@
     </properties>
 
     <dependencies>
-        <!-- commons -->
+        <!-- commons fileupload -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>${commons.fileupload.version}</version>
-        </dependency>
-        <!-- quartz -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-quartz</artifactId>
-            <scope>provided</scope>
         </dependency>
         <!-- spring-boot-websocket -->
         <dependency>
