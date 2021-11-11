@@ -25,6 +25,10 @@ public class TaskEntity extends BaseEntity {
      */
     private String env;
     /**
+     * 日志记录类型
+     */
+    private String logType;
+    /**
      * 参数
      */
     private String params;

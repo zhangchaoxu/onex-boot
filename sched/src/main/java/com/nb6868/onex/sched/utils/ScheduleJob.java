@@ -3,20 +3,14 @@ package com.nb6868.onex.sched.utils;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.sched.SchedConst;
-import com.nb6868.onex.sched.entity.TaskLogEntity;
 import com.nb6868.onex.sched.service.TaskLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -30,50 +24,33 @@ public class ScheduleJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) {
         TaskInfo task = (TaskInfo) context.getMergedJobDataMap().get(SchedConst.JOB_PARAM_KEY);
+        TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
         // 任务计时器
         TimeInterval timer = DateUtil.timer();
-        // 任务执行状态
-        int state = Const.ResultEnum.SUCCESS.value();
-        // 任务执行结果
-        String result = null;
+        Long taskLogId = 0L;
         try {
             // 执行任务
             log.info("任务准备执行，任务ID：{}", task.getId());
+            // 记录初始化日志
+            taskLogId = taskLogService.saveLog(task, 0L, SchedConst.TaskLogState.INIT.getValue(), null);
+            // 通过bean获取实现ITask的Task
             Object target = SpringContextUtils.getBean(task.getName());
-            Method method = target.getClass().getDeclaredMethod("run", JSONObject.class);
-            Object invokeResult = method.invoke(target, task.getParams());
-            result = invokeResult.toString();
+            // 通过反射执行run方法
+            Method method = target.getClass().getDeclaredMethod("run", TaskInfo.class, Long.class);
+            ScheduleRunResult invokeResult = (ScheduleRunResult) method.invoke(target, task, taskLogId);
+            // 保存完成结果日志
+            if (!"db".equalsIgnoreCase(task.getLogType()) && invokeResult.getLogToDb()) {
+                task.setLogType("db");
+                taskLogService.saveLog(task, timer.interval(), SchedConst.TaskLogState.COMPLETED.getValue(), JSONUtil.toJsonStr(invokeResult));
+            } else {
+                taskLogService.updateLog(taskLogId, task, timer.interval(), SchedConst.TaskLogState.COMPLETED.getValue(), JSONUtil.toJsonStr(invokeResult));
+            }
             log.info("任务执行完毕，任务ID：{}", task.getId());
         } catch (Exception e) {
-            // 无法捕捉到OnexException,返回的是InvocationTargetException
-            if (e instanceof InvocationTargetException && ((InvocationTargetException) e).getTargetException() instanceof OnexException) {
-                OnexException onexException = (OnexException) ((InvocationTargetException) e).getTargetException();
-                state = onexException.getCode();
-                result = onexException.getMsg();
-            } else {
-                state = Const.ResultEnum.FAIL.value();
-                result = ExceptionUtil.stacktraceToString(e);
-            }
             log.error("任务执行失败，任务ID：{}", task.getId(), e);
-        } finally {
-            saveTaskLog(task, timer.interval(), state, result);
+            // 保存错误日志,发生错误强制存入db
+            taskLogService.saveErrorLog(taskLogId, task, timer.interval(), ExceptionUtil.stacktraceToString(e));
         }
     }
 
-    protected void saveTaskLog(TaskInfo task, long timeInterval, int state, String result) {
-        TaskLogEntity logEntity = new TaskLogEntity();
-        logEntity.setTaskId(Long.valueOf(task.getId()));
-        logEntity.setTaskName(task.getName());
-        logEntity.setParams(task.getParams().toString());
-        logEntity.setTimes(timeInterval);
-        logEntity.setState(state);
-        logEntity.setResult(result);
-        if (ErrorCode.JOB_NO_RUN == state) {
-            // 指定结果不存db
-            log.info("task log={}", JSONUtil.toJsonStr(logEntity));
-        } else {
-            TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
-            taskLogService.save(logEntity);
-        }
-    }
 }

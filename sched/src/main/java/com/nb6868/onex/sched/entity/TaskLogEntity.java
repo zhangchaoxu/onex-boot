@@ -30,13 +30,17 @@ public class TaskLogEntity extends BaseEntity {
 	 */
 	private String params;
 	/**
-	 * 状态 0失败/1成功
+	 * 状态
 	 */
 	private Integer state;
 	/**
 	 * 结果
 	 */
 	private String result;
+	/**
+	 * 错误信息
+	 */
+	private String error;
 	/**
 	 * 耗时(单位：毫秒)
 	 */

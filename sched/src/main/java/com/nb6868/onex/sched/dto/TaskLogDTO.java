@@ -26,11 +26,14 @@ public class TaskLogDTO extends BaseDTO {
     @ApiModelProperty(value = "参数")
     private String params;
 
-    @ApiModelProperty(value = "任务状态    0：失败    1：成功")
+    @ApiModelProperty(value = "状态")
     private Integer state;
 
     @ApiModelProperty(value = "结果")
     private String result;
+
+    @ApiModelProperty(value = "错误信息")
+    private String error;
 
     @ApiModelProperty(value = "耗时(单位：毫秒)")
     private Long times;

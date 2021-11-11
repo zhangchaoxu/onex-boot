@@ -18,11 +18,15 @@ public class TaskInfo implements Serializable {
     /**
      * ID
      */
-    private String id;
+    private Long id;
     /**
      * spring bean名称
      */
     private String name;
+    /**
+     * 指定执行环境
+     */
+    private String env;
     /**
      * 参数
      */
@@ -31,6 +35,10 @@ public class TaskInfo implements Serializable {
      * cron表达式
      */
     private String cron;
+    /**
+     * 日志记录类型
+     */
+    private String logType;
     /**
      * 状态  0暂停/1正常
      */
