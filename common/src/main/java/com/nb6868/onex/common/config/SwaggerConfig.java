@@ -49,14 +49,35 @@ public class SwaggerConfig {
         this.openApiExtensionResolver = openApiExtensionResolver;
     }
 
-    @Bean
-    public Docket createRestApi() {
+    @Bean("sched")
+    public Docket createSchedApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
                         .title(title)
                         .description(description)
                         .version(version)
                         .build())
+                .groupName("sched")
+                .select()
+                // 包下的类,生成接口文档
+                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.sched.controller"))
+                .paths(PathSelectors.any())
+                .build()
+                .extensions(openApiExtensionResolver.buildSettingExtensions())
+                .directModelSubstitute(java.util.Date.class, String.class)
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+    }
+
+    @Bean("default")
+    public Docket createDefaultApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(new ApiInfoBuilder()
+                        .title(title)
+                        .description(description)
+                        .version(version)
+                        .build())
+                .groupName("default")
                 .select()
                 // 扫描注解,生成接口文档
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
