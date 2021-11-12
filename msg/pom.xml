@@ -37,6 +37,11 @@
             <artifactId>spring-boot-starter-mail</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- freemarker
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency> -->
     </dependencies>
 
 </project>

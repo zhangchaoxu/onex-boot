@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrSplitter;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
+import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.dto.MailSendRequest;
 import com.nb6868.onex.msg.entity.MailLogEntity;
@@ -67,8 +68,8 @@ public class EmailUtils {
         EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class);
         AssertUtils.isNull(emailProps, "电子邮件配置参数异常");
         // 组装标题和内容
-        String title = TemplateUtils.getTemplateContent("mailTitle", mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
-        String content = TemplateUtils.getTemplateContent("mailContent", mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()));
+        String title = TemplateUtils.renderRaw(mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
+        String content = TemplateUtils.renderRaw(mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()));
         // 创建发送器和邮件消息
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
