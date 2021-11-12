@@ -2,6 +2,7 @@ package com.nb6868.onex.common.config;
 
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.filter.JwtShiroFilter;
@@ -93,36 +94,38 @@ public class ShiroConfig {
         filterMap.put("/easypoi/wps/**", "anon");
         // 扫描RequestMapping类
         Set<Class<?>> requestMapClassSet = new HashSet<>();
-        StrSplitter.splitTrim(authProps.getAccessScanPackage(), ',', true).forEach(s -> requestMapClassSet.addAll(ClassUtil.scanPackageByAnnotation(s, RequestMapping.class)));
-        requestMapClassSet.forEach(cls -> {
-            // 方法中获取注解
-            RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);
-            if (null != requestMappingAnnotation) {
-                // 先判断是否有类注解
-                AccessControl accessControlClassAnnotation = cls.getAnnotation(AccessControl.class);
-                if (null == accessControlClassAnnotation) {
-                    // 没有类注解,判断方法注解
-                    Method[] methods = cls.getDeclaredMethods();
-                    if (!ObjectUtils.isEmpty(methods)) {
-                        for (Method method : methods) {
-                            AccessControl accessControlMethodAnnotation =  method.getAnnotation(AccessControl.class);
-                            if (accessControlMethodAnnotation != null) {
-                                for (String value : accessControlMethodAnnotation.value()) {
-                                    for (String requestMappingValue : requestMappingAnnotation.value()) {
-                                        filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
+        if (StrUtil.isNotBlank(authProps.getAccessScanPackage())) {
+            StrUtil.splitTrim(authProps.getAccessScanPackage(), ',').forEach(s -> requestMapClassSet.addAll(ClassUtil.scanPackageByAnnotation(s, RequestMapping.class)));
+            requestMapClassSet.forEach(cls -> {
+                // 方法中获取注解
+                RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);
+                if (null != requestMappingAnnotation) {
+                    // 先判断是否有类注解
+                    AccessControl accessControlClassAnnotation = cls.getAnnotation(AccessControl.class);
+                    if (null == accessControlClassAnnotation) {
+                        // 没有类注解,判断方法注解
+                        Method[] methods = cls.getDeclaredMethods();
+                        if (!ObjectUtils.isEmpty(methods)) {
+                            for (Method method : methods) {
+                                AccessControl accessControlMethodAnnotation =  method.getAnnotation(AccessControl.class);
+                                if (accessControlMethodAnnotation != null) {
+                                    for (String value : accessControlMethodAnnotation.value()) {
+                                        for (String requestMappingValue : requestMappingAnnotation.value()) {
+                                            filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                } else {
-                    // 有类注解,不再判断方法注解
-                    for (String value : accessControlClassAnnotation.value()) {
-                        filterMap.put(value, accessControlClassAnnotation.filter());
+                    } else {
+                        // 有类注解,不再判断方法注解
+                        for (String value : accessControlClassAnnotation.value()) {
+                            filterMap.put(value, accessControlClassAnnotation.filter());
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
         // 除上述anon外,其它都需要过jwt shiro
         filterMap.put("/**", "jwtShiro");
         // filterMap.forEach((s, s2) -> log.debug("shiro key={}, filter={}", s, s2));
