@@ -1,0 +1,106 @@
+# Tomcat
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    threads:
+      max: 1000
+      min-spare: 30
+  servlet:
+    session:
+      cookie:
+        http-only: true
+
+spring:
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  # 自定义404
+  mvc:
+    # 出现错误时, 直接抛出异常
+    throw-exception-if-no-handler-found: true
+  # freemarker
+  freemarker:
+    suffix: .html
+    request-context-attribute: ctx
+  web:
+    resources:
+      # 不为工程中的资源文件建立映射
+      add-mappings: false
+  # fix easypoi duplicated bean issue
+  main:
+    allow-bean-definition-overriding: true
+  # quartz 定时任务
+  quartz:
+    ## 任务存储方式
+    job-store-type: jdbc
+
+# mybatis plus
+# see {https://mybatis.plus/config/}
+mybatis-plus:
+  global-config:
+    # 数据库相关配置
+    db-config:
+      # 主键类型
+      id-type: ASSIGN_ID
+      # 字段策略
+      insert-strategy: NOT_NULL
+      update-strategy: NOT_NULL
+      # 逻辑删除配置
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+    # 关闭mp3.0自带的banner
+    banner: false
+  #原生配置
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
+
+## swagger
+knife4j:
+  enable: true
+  setting:
+    enableGroup: true
+    enableSwaggerModels: true
+    ## 自定义footer
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Copyright 2021-current[nb6868](https://onex.nb6868.com/)
+    ## 自定义首页
+    enableHomeCustom: true
+    homeCustomLocation: classpath:README.md
+
+## onex
+onex:
+  # 过滤器
+  filter:
+    enable: true
+  # mybatis配置
+  mybatisplus:
+    enable: true
+  # swagger
+  swagger:
+    enable: true
+  # WebMVC
+  webmvc:
+    enable: true
+  # WebSocket
+  websocket:
+    enable: false
+  # async
+  async:
+    enable: false
+  # 登录配置
+  auth:
+    settings:
+      admin:
+        register: false
+        forget-password: false
+        types:
+          - ADMIN_USERNAME_PASSWORD

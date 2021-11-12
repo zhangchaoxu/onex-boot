@@ -6,14 +6,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * 定时任务日志
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "定时任务日志")
+@ApiModel(value = "定时任务执行日志")
 public class TaskLogDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 

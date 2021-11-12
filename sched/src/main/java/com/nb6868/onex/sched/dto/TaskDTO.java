@@ -10,11 +10,6 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 
-/**
- * 定时任务
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "定时任务")
