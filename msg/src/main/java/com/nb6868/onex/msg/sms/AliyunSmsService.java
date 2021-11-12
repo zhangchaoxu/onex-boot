@@ -1,12 +1,14 @@
 package com.nb6868.onex.msg.sms;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.AliSignUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
+import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,14 +32,7 @@ import java.util.Map;
 @Slf4j
 public class AliyunSmsService extends AbstractSmsService {
 
-    /** 格式化时间参数 **/
-    private final java.text.SimpleDateFormat simpleDateFormat;
-
-    public AliyunSmsService() {
-        // 设置时间参数格式化和时区
-        simpleDateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        simpleDateFormat.setTimeZone(new java.util.SimpleTimeZone(0, "GMT"));
-    }
+    public AliyunSmsService() {}
 
     @Override
     public boolean sendSms(MailTplEntity mailTpl, String phoneNumbers, String params) {
@@ -64,7 +60,7 @@ public class AliyunSmsService extends AbstractSmsService {
         mailLog.setTplType(mailTpl.getType());
         mailLog.setContentParams(params);
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(TemplateUtils.getTemplateContent("smsContent", mailTpl.getContent(), paramMap));
+        mailLog.setContent(TemplateUtils.renderRaw(mailTpl.getContent(), paramMap));
         mailLog.setState(Const.ResultEnum.FAIL.value());
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
@@ -75,7 +71,7 @@ public class AliyunSmsService extends AbstractSmsService {
         paras.put("SignatureNonce", UUID.randomUUID().toString());
         paras.put("AccessKeyId", smsProps.getAppKey());
         paras.put("SignatureVersion", "1.0");
-        paras.put("Timestamp", simpleDateFormat.format(new java.util.Date()));
+        paras.put("Timestamp", DateUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
         paras.put("Format", "JSON");
         paras.put("Action", "SendSms");
         paras.put("Version", "2017-05-25");
