@@ -19,6 +19,9 @@ import java.util.Date;
 public class MailLogDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty(value = "租户编码")
+	private String tenantCode;
+
 	@ApiModelProperty(value = "模板编码")
 	private String tplCode;
 

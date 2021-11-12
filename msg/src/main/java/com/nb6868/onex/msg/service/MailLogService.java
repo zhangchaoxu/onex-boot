@@ -1,14 +1,24 @@
 package com.nb6868.onex.msg.service;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
+import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.dao.MailLogDao;
 import com.nb6868.onex.msg.dto.MailLogDTO;
 import com.nb6868.onex.msg.dto.MailSendRequest;
-import com.nb6868.onex.msg.email.EmailUtils;
 import com.nb6868.onex.msg.entity.MailLogEntity;
+import com.nb6868.onex.msg.entity.MailTplEntity;
+import com.nb6868.onex.msg.mail.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +34,6 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
 
     @Autowired
     private MailTplService mailTplService;
-    @Autowired
-    private EmailUtils emailUtils;
 
     @Override
     public QueryWrapper<MailLogEntity> getWrapper(String method, Map<String, Object> params) {
@@ -66,9 +74,9 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
      * 发送消息
      */
     public boolean send(MailSendRequest request) {
-        return true;
-        /*MailTplEntity mailTpl = mailTplService.getOneByColumn("code", request.getTplCode());
+        MailTplEntity mailTpl = mailTplService.getOneByColumn("code", request.getTplCode());
         AssertUtils.isNull(mailTpl, "未定义的消息模板:" + request.getTplCode());
+
         // 检查消息模板是否有时间限制
         if (mailTpl.getTimeLimit() > 0) {
             // 先校验该收件人是否timeLimit秒内发送过
@@ -81,113 +89,31 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             request.setContentParam(JacksonUtils.pojoToJson(Dict.create().set("code", RandomUtil.randomNumbers(4))));
         }
 
+        AbstractMailService mailService;
         if (MsgConst.MailChannelEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 邮件
-            return emailUtils.sendMail(mailTpl, request);
+            mailService = new EmailMailService();
         } else if (MsgConst.MailChannelEnum.SMS.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 短信
-            // 获取短信服务，发送短信
-            return SmsFactory.build(mailTpl.getPlatform()).sendSms(mailTpl, request.getMailTo(), request.getContentParam());
+            if ("aliyun".equalsIgnoreCase(mailTpl.getPlatform())) {
+                mailService = new SmsAliyunMailService();
+            } else if ("juhe".equalsIgnoreCase(mailTpl.getPlatform())) {
+                mailService = new SmsJuheMailService();
+            } else if ("hwcloud".equalsIgnoreCase(mailTpl.getPlatform())) {
+                mailService = new SmsHwcloudMailService();
+            } else {
+                throw new OnexException("未定义的短信平台:" + mailTpl.getPlatform());
+            }
         } else if (MsgConst.MailChannelEnum.WX_MP_TEMPLATE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信模板消息
-            *//*WxProp wxProp = JacksonUtils.jsonToPojo(mailTpl.getParam(), WxProp.class);
-            AssertUtils.isNull(wxProp, "消息模板配置错误");
-
-            // 初始化service
-            WxMpService wxService = new WxMpServiceImpl();
-            WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();
-            config.setAppId(wxProp.getAppid());
-            config.setSecret(wxProp.getSecret());
-            config.setToken(wxProp.getToken());
-            config.setAesKey(wxProp.getAesKey());
-            wxService.setWxMpConfigStorage(config);
-
-            // 可能是发送多个
-            List<String> openIds = StrSplitter.splitTrim(request.getMailTo(), ',', true);
-            for (String openId : openIds) {
-                // 构建消息
-                WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
-                        .toUser(openId)
-                        .templateId(wxProp.getTemplateId())
-                        .url("")
-                        .build();
-
-                // 封装消息实际内容
-                Map<String, Object> contentParam = JacksonUtils.jsonToMap(request.getContentParam());
-                String content = TemplateUtils.getTemplateContent("wxTemplateContent", mailTpl.getContent(), contentParam);
-
-                for (String key : contentParam.keySet()) {
-                    templateMessage.addData(new WxMpTemplateData(key, contentParam.get(key).toString()));
-                }
-
-                Const.ResultEnum state = Const.ResultEnum.FAIL;
-                String result;
-                try {
-                    result = wxService.getTemplateMsgService().sendTemplateMsg(templateMessage);
-                    state = Const.ResultEnum.SUCCESS;
-                } catch (WxErrorException e) {
-                    e.printStackTrace();
-                    result = e.getError().getJson();
-                }
-                // 保存记录
-                MailLogEntity mailLog = new MailLogEntity();
-                mailLog.setMailTo(openId);
-                mailLog.setState(state.value());
-                mailLog.setResult(result);
-                mailLog.setContent(content);
-                mailLog.setTplCode(mailTpl.getCode());
-                mailLog.setTplType(mailTpl.getType());
-                mailLog.setContentParams(request.getContentParam());
-                mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-                save(mailLog);
-            }*//*
-            return true;
+            mailService = new WxMpTemplateMailService();
         } else if (MsgConst.MailChannelEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信小程序模板消息
-            WxMaService wxMaService = WechatMaPropsConfig.getService("");
-
-            // 可能是发送多个
-            List<String> openIds = StrSplitter.splitTrim(request.getMailTo(), ',', true);
-            for (String openId : openIds) {
-                // 构建消息
-                WxMaSubscribeMessage templateMessage = WxMaSubscribeMessage.builder()
-                        .toUser(openId)
-                        //.templateId(request.getTemplateId())
-                        .build();
-
-                // 封装消息实际内容
-                Map<String, Object> contentParam = JacksonUtils.jsonToMap(request.getContentParam());
-                String content = TemplateUtils.getTemplateContent("wxTemplateContent", mailTpl.getContent(), contentParam);
-
-                for (String key : contentParam.keySet()) {
-                    templateMessage.addData(new WxMaSubscribeMessage.MsgData(key, contentParam.get(key).toString()));
-                }
-
-                Const.ResultEnum state = Const.ResultEnum.FAIL;
-                String result = "success";
-                try {
-                    wxMaService.getMsgService().sendSubscribeMsg(templateMessage);
-                    state = Const.ResultEnum.SUCCESS;
-                } catch (WxErrorException e) {
-                    e.printStackTrace();
-                    result = e.getError().getJson();
-                }
-                // 保存记录
-                MailLogEntity mailLog = new MailLogEntity();
-                mailLog.setMailTo(openId);
-                mailLog.setState(state.value());
-                mailLog.setResult(result);
-                mailLog.setContent(content);
-                mailLog.setTplCode(mailTpl.getCode());
-                mailLog.setTplType(mailTpl.getType());
-                mailLog.setContentParams(request.getContentParam());
-                mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-                save(mailLog);
-            }
-            return true;
-        } else  {
-            return false;
-        }*/
+            mailService = new WxMaSubscribeMailService();
+        } else {
+            throw new OnexException("未定义的消息渠道:" + mailTpl.getChannel());
+        }
+        return mailService.sendMail(mailTpl, request);
     }
 
 }
