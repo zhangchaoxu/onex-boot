@@ -8,7 +8,7 @@
         <version>2.0.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>sched</artifactId>
+    <artifactId>msg</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -31,10 +31,11 @@
             <version>${shiro.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- quartz -->
+        <!-- mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-quartz</artifactId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
