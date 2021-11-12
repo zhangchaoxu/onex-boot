@@ -1,7 +1,7 @@
 package com.nb6868.onex.msg.email;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.text.StrSplitter;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
@@ -90,8 +90,12 @@ public class EmailUtils {
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
             messageHelper.setFrom(emailProps.getUsername());
-            messageHelper.setTo(StrSplitter.splitToArray(request.getMailTo(), ',', -1, true, true));
-            messageHelper.setCc(StrSplitter.splitToArray(request.getMailCc(), ',', -1, true, true));
+            if (StrUtil.isNotBlank(request.getMailTo())) {
+                messageHelper.setTo(StrUtil.splitToArray(request.getMailTo(), ',', -1));
+            }
+            if (StrUtil.isNotBlank(request.getMailCc())) {
+                messageHelper.setCc(StrUtil.splitToArray(request.getMailCc(), ',', -1));
+            }
             messageHelper.setSubject(title);
             messageHelper.setText(content, true);
             // 附件

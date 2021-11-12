@@ -28,7 +28,7 @@ public class MailSendRequest implements Serializable {
     private String tplCode = MsgConst.SMS_TPL_LOGIN;
 
     @ApiModelProperty(value = "收件人", required = true)
-    @NotEmpty(message = "收件人不能为空", groups = AddGroup.class)
+    @NotBlank(message = "收件人不能为空", groups = AddGroup.class)
     private String mailTo;
 
     @ApiModelProperty(value = "抄送人")
