@@ -1,7 +1,5 @@
 package com.nb6868.onex.msg.controller;
 
-import com.govsz.nfjc.modules.msg.dto.MailTplDTO;
-import com.govsz.nfjc.modules.msg.service.MailTplService;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.PageData;
@@ -10,6 +8,8 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
+import com.nb6868.onex.msg.dto.MailTplDTO;
+import com.nb6868.onex.msg.service.MailTplService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -39,7 +39,7 @@ public class MailTplController {
 
     @GetMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("msg:mailTpl:list")
+    @RequiresPermissions("msg:mailTpl:info")
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<?> list = mailTplService.listDto(params);
         return new Result<>().success(list);
@@ -47,7 +47,7 @@ public class MailTplController {
 
     @GetMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("msg:mailTpl:page")
+    @RequiresPermissions("msg:mailTpl:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<?> page = mailTplService.pageDto(params);
 
@@ -67,7 +67,7 @@ public class MailTplController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("msg:mailTpl:save")
+    @RequiresPermissions("msg:mailTpl:update")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MailTplDTO dto) {
         mailTplService.saveDto(dto);
 
@@ -87,7 +87,7 @@ public class MailTplController {
     @DeleteMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("msg:mailTpl:delete")
+    @RequiresPermissions("msg:mailTpl:update")
     public Result<?> delete(@NotBlank(message = "{id.require}") @RequestParam String id) {
         mailTplService.logicDeleteById(id);
 
