@@ -47,6 +47,7 @@
         <module>common</module>
         <module>coder</module>
         <module>sched</module>
+        <module>msg</module>
     </modules>
 
     <properties>
