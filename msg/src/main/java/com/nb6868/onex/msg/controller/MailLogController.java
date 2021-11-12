@@ -41,27 +41,17 @@ public class MailLogController {
 
     @GetMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("msg:mailLog:page")
+    @RequiresPermissions("msg:mailLog:info")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<MailLogDTO> page = mailLogService.pageDto(params);
 
         return new Result<>().success(page);
     }
 
-    @DeleteMapping("delete")
-    @ApiOperation("删除")
-    @LogOperation("删除")
-    @RequiresPermissions("msg:mailLog:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        mailLogService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
     @DeleteMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
-    @RequiresPermissions("msg:mailLog:deleteBatch")
+    @RequiresPermissions("msg:mailLog:delete")
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         mailLogService.logicDeleteByIds(ids);
 
@@ -71,7 +61,7 @@ public class MailLogController {
     @PostMapping("/send")
     @ApiOperation("发送消息")
     @LogOperation("发送消息")
-    @RequiresPermissions("msg:mailLog:save")
+    @RequiresPermissions("msg:mailLog:send")
     public Result<?> send(@Validated(value = {AddGroup.class}) @RequestBody MailSendRequest dto) {
         boolean flag = mailLogService.send(dto);
         if (flag) {
