@@ -21,6 +21,9 @@ import javax.validation.constraints.NotNull;
 public class MailTplDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty(value = "租户编码")
+	private String tenantCode;
+
 	@ApiModelProperty(value = "编码")
 	@NotBlank(message = "编码不能为空", groups = DefaultGroup.class)
 	private String code;

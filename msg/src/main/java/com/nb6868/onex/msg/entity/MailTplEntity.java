@@ -21,7 +21,11 @@ public class MailTplEntity extends BaseEntity {
 	 * 编码
 	 */
 	private String code;
-    /**
+	/**
+	 * 租户编码
+	 */
+	private String tenantCode;
+	/**
      * 名称
      */
 	private String name;

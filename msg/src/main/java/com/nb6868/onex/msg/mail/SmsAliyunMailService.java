@@ -1,6 +1,5 @@
-package com.nb6868.onex.msg.sms;
+package com.nb6868.onex.msg.mail;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -10,9 +9,11 @@ import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.msg.dto.MailSendRequest;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
+import com.nb6868.onex.msg.mail.sms.SmsProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,25 +24,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 阿里云短信服务
- * see https://help.aliyun.com/document_detail/101414.html
- * see https://help.aliyun.com/document_detail/101485.htm
+ * 短信 阿里云 消息服务
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class AliyunSmsService extends AbstractSmsService {
-
-    public AliyunSmsService() {}
+public class SmsAliyunMailService extends AbstractMailService {
 
     @Override
-    public boolean sendSms(MailTplEntity mailTpl, String phoneNumbers, String params) {
+    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
         SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
-        Map<String, Object> paramMap = JacksonUtils.jsonToMap(params);
+        Map<String, Object> paramMap = JacksonUtils.jsonToMap(request.getContentParam());
         paramMap.forEach((key, value) -> {
             if (null == value) {
                 // 不允许为空,为空则替换为
@@ -55,10 +52,10 @@ public class AliyunSmsService extends AbstractSmsService {
         // 消息记录
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
-        mailLog.setMailTo(phoneNumbers);
+        mailLog.setMailTo(request.getMailTo());
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
-        mailLog.setContentParams(params);
+        mailLog.setContentParams(request.getContentParam());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         mailLog.setContent(TemplateUtils.renderRaw(mailTpl.getContent(), paramMap));
         mailLog.setState(Const.ResultEnum.FAIL.value());
@@ -76,7 +73,7 @@ public class AliyunSmsService extends AbstractSmsService {
         paras.put("Action", "SendSms");
         paras.put("Version", "2017-05-25");
         paras.put("RegionId", "cn-hangzhou");
-        paras.put("PhoneNumbers", phoneNumbers);
+        paras.put("PhoneNumbers", request.getMailTo());
         paras.put("SignName", smsProps.getSign());
         paras.put("TemplateParam", JacksonUtils.mapToJson(paramMap));
         paras.put("TemplateCode", smsProps.getTplId());
@@ -105,11 +102,6 @@ public class AliyunSmsService extends AbstractSmsService {
 
         mailLogService.updateById(mailLog);
         return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
-    }
-
-    @Override
-    public boolean sendBatchSms(MailTplEntity mailTpl, String[] phoneNumbers, String params) {
-        return sendSms(mailTpl, CollUtil.join(CollUtil.newArrayList(phoneNumbers), ","), params);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.nb6868.onex.msg.sms;
+package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -6,9 +6,11 @@ import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.msg.dto.MailSendRequest;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
+import com.nb6868.onex.msg.mail.sms.SmsProps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,28 +20,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 聚合短信服务
- * see {https://www.juhe.cn/docs/api/id/54}
+ * 短信 聚合 消息服务
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class JuheSmsService extends AbstractSmsService {
-
-    public JuheSmsService() {
-    }
+public class SmsJuheMailService extends AbstractMailService {
 
     private static final String JUHE_SMS_SEND_URL = "http://v.juhe.cn/sms/send?key={1}&mobile={2}&tpl_id={3}&tpl_value={4}";
 
     @Override
-    public boolean sendSms(MailTplEntity mailTpl, String phoneNumber, String params) {
+    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
         SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         StringBuilder paramJuhe = new StringBuilder();
         String content = mailTpl.getContent();
-        Map<String, Object> paramJson = JacksonUtils.jsonToMap(params, new HashMap<>());
+        Map<String, Object> paramJson = JacksonUtils.jsonToMap(request.getContentParam(), new HashMap<>());
         for (String key : paramJson.keySet()) {
             // 遍历json,拼装参数
             if (StrUtil.isNotBlank(paramJuhe)) {
@@ -51,11 +49,11 @@ public class JuheSmsService extends AbstractSmsService {
         }
         // 发送记录记录
         MailLogEntity mailLog = new MailLogEntity();
-        mailLog.setMailTo(phoneNumber);
+        mailLog.setMailTo(request.getMailTo());
         mailLog.setContent(content);
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setTplType(mailTpl.getType());
-        mailLog.setContentParams(params);
+        mailLog.setContentParams(request.getContentParam());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
 
         // 调用接口发送
@@ -63,7 +61,7 @@ public class JuheSmsService extends AbstractSmsService {
         RestTemplate restTemplate = new RestTemplate();
         String result;
         try {
-            result = restTemplate.getForObject(JUHE_SMS_SEND_URL, String.class, smsProps.getAppKey(), phoneNumber, smsProps.getTplId(), URLEncoder.encode(paramJuhe.toString(), StandardCharsets.UTF_8.name()));
+            result = restTemplate.getForObject(JUHE_SMS_SEND_URL, String.class, smsProps.getAppKey(), request.getMailTo(), smsProps.getTplId(), URLEncoder.encode(paramJuhe.toString(), StandardCharsets.UTF_8.name()));
         } catch (Exception e) {
             // 接口调用失败
             log.error("JuheSms", e);
@@ -80,11 +78,4 @@ public class JuheSmsService extends AbstractSmsService {
         return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
     }
 
-    @Override
-    public boolean sendBatchSms(MailTplEntity mailTpl, String[] phoneNumbers, String params) {
-        for (String phoneNumber : phoneNumbers) {
-            sendSms(mailTpl, phoneNumber, params);
-        }
-        return true;
-    }
 }

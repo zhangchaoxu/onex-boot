@@ -1,40 +1,35 @@
-package com.nb6868.onex.msg.email;
+package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
+import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.mail.email.EmailProps;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
- * 电子邮件工具类
+ * 电子邮件 消息服务
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-@Component
-public class EmailUtils {
-
-    @Autowired
-    MailLogService mailLogService;
+public class EmailMailService extends AbstractMailService {
 
     /**
      * 实现邮件发送器
@@ -56,13 +51,7 @@ public class EmailUtils {
         return sender;
     }
 
-    /**
-     * 发送邮件
-     *
-     * @param mailTpl 发送模板
-     * @param request 邮件发送请求
-     * @return 发送结果
-     */
+    @Override
     public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
         // 序列化电子邮件配置
         EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class);
@@ -112,8 +101,8 @@ public class EmailUtils {
             log.error("send error", e);
             mailLog.setState(Const.ResultEnum.FAIL.value());
         }
+        MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         mailLogService.save(mailLog);
         return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
     }
-
 }

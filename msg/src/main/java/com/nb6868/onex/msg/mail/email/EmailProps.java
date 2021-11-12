@@ -1,4 +1,4 @@
-package com.nb6868.onex.msg.email;
+package com.nb6868.onex.msg.mail.email;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

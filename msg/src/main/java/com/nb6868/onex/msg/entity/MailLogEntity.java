@@ -20,6 +20,10 @@ import java.util.Date;
 public class MailLogEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 租户编码
+	 */
+	private String tenantCode;
     /**
      * 模板编码
      */

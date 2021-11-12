@@ -41,8 +41,7 @@ public interface MsgConst {
         SMS("短信"),
         EMAIL("电子邮件"),
         WX_MP_TEMPLATE("微信公众号模板消息"),
-        WX_MA_SUBSCRIBE("微信小程序订阅消息"),
-        APP_PUSH("APP推送");
+        WX_MA_SUBSCRIBE("微信小程序订阅消息");
 
         private String code;
 
