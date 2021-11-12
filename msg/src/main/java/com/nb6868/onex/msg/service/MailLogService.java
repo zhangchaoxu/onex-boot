@@ -10,6 +10,7 @@ import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
+import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
@@ -22,6 +23,7 @@ import com.nb6868.onex.msg.mail.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -89,7 +91,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             request.setContentParam(JacksonUtils.pojoToJson(Dict.create().set("code", RandomUtil.randomNumbers(4))));
         }
 
-        AbstractMailService mailService;
+        AbstractMailService mailService = null;
         if (MsgConst.MailChannelEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 邮件
             mailService = new EmailMailService();
@@ -99,10 +101,6 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
                 mailService = new SmsAliyunMailService();
             } else if ("juhe".equalsIgnoreCase(mailTpl.getPlatform())) {
                 mailService = new SmsJuheMailService();
-            } else if ("hwcloud".equalsIgnoreCase(mailTpl.getPlatform())) {
-                mailService = new SmsHwcloudMailService();
-            } else {
-                throw new OnexException("未定义的短信平台:" + mailTpl.getPlatform());
             }
         } else if (MsgConst.MailChannelEnum.WX_MP_TEMPLATE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信模板消息
@@ -110,10 +108,18 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
         } else if (MsgConst.MailChannelEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信小程序模板消息
             mailService = new WxMaSubscribeMailService();
-        } else {
-            throw new OnexException("未定义的消息渠道:" + mailTpl.getChannel());
         }
-        return mailService.sendMail(mailTpl, request);
+        if (null != mailService) {
+            return mailService.sendMail(mailTpl, request);
+        } else {
+            // 对于未定义的消息类型,需要实例化
+            // 通过bean获取实现Service
+            // Object target = SpringContextUtils.getBean(task.getName());
+            // 通过反射执行run方法
+            // Method method = target.getClass().getDeclaredMethod("sendMail", MailTplEntity.class, MailSendRequest.class);
+            // ScheduleRunResult invokeResult = (ScheduleRunResult) method.invoke(target, task, taskLogId);
+            return false;
+        }
     }
 
 }
