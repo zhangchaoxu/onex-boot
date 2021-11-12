@@ -87,7 +87,7 @@ public class MailTplController {
     @DeleteMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("msg:mailTpl:update")
+    @RequiresPermissions("msg:mailTpl:delete")
     public Result<?> delete(@NotBlank(message = "{id.require}") @RequestParam String id) {
         mailTplService.logicDeleteById(id);
 
