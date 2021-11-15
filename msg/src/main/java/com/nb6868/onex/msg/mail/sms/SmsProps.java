@@ -37,4 +37,7 @@ public class SmsProps implements Serializable {
     @ApiModelProperty(value = "regionId")
     private String regionId;
 
+    @ApiModelProperty(value = "通道号")
+    private String channelId;
+
 }

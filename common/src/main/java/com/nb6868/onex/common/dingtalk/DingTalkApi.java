@@ -201,7 +201,11 @@ public class DingTalkApi {
      * 自定义机器人消息发送
      */
     public static BaseResponse sendRobotMsg(String accessToken, Dict requestBody) {
-        return new RestTemplate().postForObject(ROBOT_SEND, requestBody, GetUserDetailByUseridResponse.class, accessToken);
+        try {
+            return new RestTemplate().postForObject(ROBOT_SEND, requestBody, BaseResponse.class, accessToken);
+        } catch (Exception e) {
+            return new BaseResponse().error(1000, "接口调用失败:" + e.getMessage());
+        }
     }
 
     /**
@@ -214,7 +218,7 @@ public class DingTalkApi {
         requestBody.put("token", token);
         requestBody.put("url", url);
         requestBody.put("call_back_tag", callbackTag);
-        return restTemplate.postForObject(REGISTER_CALLBACK, requestBody, GetUserDetailByUseridResponse.class, accessToken);
+        return restTemplate.postForObject(REGISTER_CALLBACK, requestBody, BaseResponse.class, accessToken);
     }
 
 }
