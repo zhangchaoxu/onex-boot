@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -113,12 +114,17 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             return mailService.sendMail(mailTpl, request);
         } else {
             // 对于未定义的消息类型,需要实例化
+            String serviceName = StrUtil.format("{}{}Service", StrUtil.nullToEmpty(StrUtil.upperFirst(mailTpl.getChannel())), StrUtil.nullToEmpty(StrUtil.upperFirst(mailTpl.getParam())));
             // 通过bean获取实现Service
-            // Object target = SpringContextUtils.getBean(task.getName());
+            Object target = SpringContextUtils.getBean(serviceName);
             // 通过反射执行run方法
-            // Method method = target.getClass().getDeclaredMethod("sendMail", MailTplEntity.class, MailSendRequest.class);
-            // ScheduleRunResult invokeResult = (ScheduleRunResult) method.invoke(target, task, taskLogId);
-            return false;
+            try {
+                Method method = target.getClass().getDeclaredMethod("sendMail", MailTplEntity.class, MailSendRequest.class);
+                return (boolean) method.invoke(target, mailTpl, request);
+            } catch (Exception e) {
+                log.error("发送消息发生错误", e);
+                return false;
+            }
         }
     }
 
