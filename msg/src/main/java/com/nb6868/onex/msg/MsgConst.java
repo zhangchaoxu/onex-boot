@@ -40,6 +40,7 @@ public interface MsgConst {
          */
         SMS("短信"),
         EMAIL("电子邮件"),
+        ROBOT("机器人"),
         WX_MP_TEMPLATE("微信公众号模板消息"),
         WX_MA_SUBSCRIBE("微信小程序订阅消息");
 

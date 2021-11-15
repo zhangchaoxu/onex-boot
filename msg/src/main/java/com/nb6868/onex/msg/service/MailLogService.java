@@ -114,7 +114,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             return mailService.sendMail(mailTpl, request);
         } else {
             // 对于未定义的消息类型,需要实例化
-            String serviceName = StrUtil.format("{}{}Service", StrUtil.nullToEmpty(StrUtil.upperFirst(mailTpl.getChannel())), StrUtil.nullToEmpty(StrUtil.upperFirst(mailTpl.getParam())));
+            String serviceName = StrUtil.format("{}{}MailService", StrUtil.nullToEmpty(StrUtil.upperFirst(StrUtil.toCamelCase(mailTpl.getChannel()))), StrUtil.nullToEmpty(StrUtil.upperFirst(StrUtil.toCamelCase(mailTpl.getPlatform()))));
             // 通过bean获取实现Service
             Object target = SpringContextUtils.getBean(serviceName);
             // 通过反射执行run方法
