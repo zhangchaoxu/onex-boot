@@ -9,4 +9,4 @@
 - 代码自动生成
 
 [GitHub](https://github.com/zhangchaoxu/onex-boot/)
-[Getting Started](#onex)
+[ReadyGo](#onex)
