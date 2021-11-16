@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>onex-boot</artifactId>
+        <groupId>com.nb6868.onex</groupId>
+        <version>2.0.8</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>uc</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <onex-common.version>2.0.8</onex-common.version>
+        <shiro.version>1.8.0</shiro.version>
+    </properties>
+
+    <dependencies>
+        <!-- common -->
+        <dependency>
+            <groupId>com.nb6868.onex</groupId>
+            <artifactId>common</artifactId>
+            <version>${onex-common.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- shiro -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>
