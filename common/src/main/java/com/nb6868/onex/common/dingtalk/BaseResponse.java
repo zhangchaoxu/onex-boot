@@ -10,6 +10,9 @@ import java.io.Serializable;
 @ApiModel(value = "钉钉基础,返回体")
 public class BaseResponse implements Serializable {
 
+    @ApiModelProperty(value = "请求ID")
+    private String request_id;
+
     @ApiModelProperty(value = "返回码")
     private int errcode;
 
