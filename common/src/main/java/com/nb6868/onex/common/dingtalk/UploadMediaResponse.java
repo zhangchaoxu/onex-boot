@@ -4,8 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @ApiModel(value = "上传媒体文件,返回体")
 @EqualsAndHashCode(callSuper = false)
 public class UploadMediaResponse extends BaseResponse {
@@ -18,5 +21,9 @@ public class UploadMediaResponse extends BaseResponse {
 
     @ApiModelProperty(value = "媒体文件上传时间戳")
     private Long created_at;
+
+    public UploadMediaResponse(int errcode, String errmsg) {
+        super(errcode, errmsg);
+    }
 
 }

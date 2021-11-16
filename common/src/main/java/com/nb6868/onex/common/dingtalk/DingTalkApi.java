@@ -91,7 +91,6 @@ public class DingTalkApi {
      * 通过临时授权码获取授权用户的个人信息
      */
     public static GetUserInfoByCodeResponse getUserInfoByCode(String appId, String appSecret, String code) {
-        RestTemplate restTemplate = new RestTemplate();
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("tmp_auth_code", code);
         String timestamp = String.valueOf(System.currentTimeMillis());
@@ -105,7 +104,11 @@ public class DingTalkApi {
                 .build(true)
                 .toUri();
 
-        return restTemplate.postForObject(uri, requestBody, GetUserInfoByCodeResponse.class);
+        try {
+            return new RestTemplate().postForObject(uri, requestBody, GetUserInfoByCodeResponse.class);
+        } catch (Exception e) {
+            return new GetUserInfoByCodeResponse(1000, "getuserinfo_bycode接口调用失败," + e.getMessage());
+        }
     }
 
     /**
@@ -115,9 +118,13 @@ public class DingTalkApi {
         String token = tokenCache.get(appKey, false);
         if (refresh || StrUtil.isBlank(token)) {
             // 强制刷新,或者缓存为空
-            return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
+            try {
+                return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
+            } catch (Exception e) {
+                return new AccessTokenResponse(1000, "gettoken接口调用失败," + e.getMessage());
+            }
         }
-        AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
+        AccessTokenResponse accessTokenResponse = new AccessTokenResponse(0, "ok");
         accessTokenResponse.setAccess_token(token);
         accessTokenResponse.setExpires_in(0);
         return accessTokenResponse;
@@ -134,7 +141,12 @@ public class DingTalkApi {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(form, headers);
 
-        return new RestTemplate().postForObject(UPLOAD_MEDIA, requestEntity, UploadMediaResponse.class, accessToken);
+        try {
+            return new RestTemplate().postForObject(UPLOAD_MEDIA, requestEntity, UploadMediaResponse.class, accessToken);
+        } catch (Exception e) {
+            return new UploadMediaResponse(1000, "media.upload接口调用失败," + e.getMessage());
+        }
+
     }
 
     /**
@@ -143,9 +155,14 @@ public class DingTalkApi {
     public static String asrVoiceTranslate(String mediaId, String accessToken) {
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.add("media_id", mediaId);
-        return new RestTemplate().exchange(ASR_VOICE_TRANSLATE, HttpMethod.POST,
-                new HttpEntity<>(form), new ParameterizedTypeReference<String>() {
-                }, accessToken).getBody();
+
+        try {
+            return new RestTemplate().exchange(ASR_VOICE_TRANSLATE, HttpMethod.POST,
+                    new HttpEntity<>(form), new ParameterizedTypeReference<String>() {
+                    }, accessToken).getBody();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -155,9 +172,13 @@ public class DingTalkApi {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("type", type);
         form.add("mediaUrl", mediaUrl);
-        return new RestTemplate().exchange(OCR_STRUCTURED_RECOGNIZE, HttpMethod.POST,
-                new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<String>>() {
-                }, accessToken).getBody();
+        try {
+            return new RestTemplate().exchange(OCR_STRUCTURED_RECOGNIZE, HttpMethod.POST,
+                    new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<String>>() {
+                    }, accessToken).getBody();
+        } catch (Exception e) {
+            return new ResultResponse<>(1000, "ocr.structured.recognize接口调用失败," + e.getMessage());
+        }
     }
 
     /**
@@ -166,15 +187,15 @@ public class DingTalkApi {
     public static GetUserIdByUnionidResponse getUserIdByUnionid(String accessKey, String appSecret, String unionid) {
         AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
         if (tokenResponse.isSuccess()) {
-            RestTemplate restTemplate = new RestTemplate();
             Map<String, String> requestBody = new HashMap<>();
             requestBody.put("unionid", unionid);
-            return restTemplate.postForObject(GET_USER_BY_UNIONID, requestBody, GetUserIdByUnionidResponse.class, tokenResponse.getAccess_token());
+            try {
+                return new RestTemplate().postForObject(GET_USER_BY_UNIONID, requestBody, GetUserIdByUnionidResponse.class, tokenResponse.getAccess_token());
+            } catch (Exception e) {
+                return new GetUserIdByUnionidResponse(1000, "getbyunionid接口调用失败," + e.getMessage());
+            }
         } else {
-            GetUserIdByUnionidResponse response = new GetUserIdByUnionidResponse();
-            response.setErrcode(tokenResponse.getErrcode());
-            response.setErrmsg(tokenResponse.getErrmsg());
-            return response;
+            return new GetUserIdByUnionidResponse(tokenResponse.getErrcode(), tokenResponse.getErrmsg());
         }
     }
 
@@ -184,16 +205,16 @@ public class DingTalkApi {
     public static GetUserDetailByUseridResponse getUserDetailByUserId(String accessKey, String appSecret, String userid) {
         AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
         if (tokenResponse.isSuccess()) {
-            RestTemplate restTemplate = new RestTemplate();
             Map<String, String> requestBody = new HashMap<>();
             requestBody.put("userid", userid);
             requestBody.put("language", "zh_CN");//  通讯录语言 zh_CN/en_US
-            return restTemplate.postForObject(GET_USER_DETAIL_BY_USERID, requestBody, GetUserDetailByUseridResponse.class, tokenResponse.getAccess_token());
+            try {
+                return new RestTemplate().postForObject(GET_USER_DETAIL_BY_USERID, requestBody, GetUserDetailByUseridResponse.class, tokenResponse.getAccess_token());
+            } catch (Exception e) {
+                return new GetUserDetailByUseridResponse(1000, "topapi/v2/user/get接口调用失败," + e.getMessage());
+            }
         } else {
-            GetUserDetailByUseridResponse response = new GetUserDetailByUseridResponse();
-            response.setErrcode(tokenResponse.getErrcode());
-            response.setErrmsg(tokenResponse.getErrmsg());
-            return response;
+            return new GetUserDetailByUseridResponse(tokenResponse.getErrcode(), tokenResponse.getErrmsg());
         }
     }
 
@@ -204,7 +225,7 @@ public class DingTalkApi {
         try {
             return new RestTemplate().postForObject(ROBOT_SEND, requestBody, BaseResponse.class, accessToken);
         } catch (Exception e) {
-            return new BaseResponse().error(1000, "接口调用失败:" + e.getMessage());
+            return new BaseResponse(1000, "robot/send接口调用失败," + e.getMessage());
         }
     }
 
@@ -218,7 +239,11 @@ public class DingTalkApi {
         requestBody.put("token", token);
         requestBody.put("url", url);
         requestBody.put("call_back_tag", callbackTag);
-        return restTemplate.postForObject(REGISTER_CALLBACK, requestBody, BaseResponse.class, accessToken);
+        try {
+            return new RestTemplate().postForObject(REGISTER_CALLBACK, requestBody, BaseResponse.class, accessToken);
+        } catch (Exception e) {
+            return new BaseResponse(1000, "call_back/register_call_back接口调用失败," + e.getMessage());
+        }
     }
 
 }
