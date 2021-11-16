@@ -46,6 +46,13 @@ public class DingTalkApi {
     private final static String GET_USERINFO_BY_CODE = "https://oapi.dingtalk.com/sns/getuserinfo_bycode";
 
     /**
+     * 通过免登码获取用户信息
+     * 1. https://developers.dingtalk.com/document/app/logon-free-process
+     * 2. https://developers.dingtalk.com/document/app/obtain-the-userid-of-a-user-by-using-the-log-free
+     */
+    private final static String GET_USERINFO_V2_BY_CODE = "https://oapi.dingtalk.com/topapi/v2/user/getuserinfo?access_token={1}";
+
+    /**
      * 根据unionid获取用户userid
      * https://ding-doc.dingtalk.com/document/app/query-a-user-by-the-union-id
      */
@@ -131,53 +138,22 @@ public class DingTalkApi {
     }
 
     /**
-     * 上传媒体文件
+     * 通过免登码code获取用户信息
      */
-    public static UploadMediaResponse uploadMedia(String type, String filePath, String accessToken) {
-        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-        form.add("type", type);
-        form.add("media", new FileSystemResource(filePath));
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(form, headers);
-
-        try {
-            return new RestTemplate().postForObject(UPLOAD_MEDIA, requestEntity, UploadMediaResponse.class, accessToken);
-        } catch (Exception e) {
-            return new UploadMediaResponse(1000, "media.upload接口调用失败," + e.getMessage());
-        }
-
-    }
-
-    /**
-     * ASR 一句话语音识别
-     */
-    public static String asrVoiceTranslate(String mediaId, String accessToken) {
-        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-        form.add("media_id", mediaId);
-
-        try {
-            return new RestTemplate().exchange(ASR_VOICE_TRANSLATE, HttpMethod.POST,
-                    new HttpEntity<>(form), new ParameterizedTypeReference<String>() {
-                    }, accessToken).getBody();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * OCR文字识别
-     */
-    public static ResultResponse<String> ocrStructuredRecognize(String type, String mediaUrl, String accessToken) {
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("type", type);
-        form.add("mediaUrl", mediaUrl);
-        try {
-            return new RestTemplate().exchange(OCR_STRUCTURED_RECOGNIZE, HttpMethod.POST,
-                    new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<String>>() {
-                    }, accessToken).getBody();
-        } catch (Exception e) {
-            return new ResultResponse<>(1000, "ocr.structured.recognize接口调用失败," + e.getMessage());
+    public static ResultResponse<UserGetByCodeResponse> getUserInfoV2ByCode(String accessKey, String appSecret, String code) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+            form.add("code", code);
+            try {
+                return new RestTemplate().exchange(GET_USERINFO_V2_BY_CODE, HttpMethod.POST,
+                        new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<UserGetByCodeResponse>>() {
+                        }, tokenResponse.getAccess_token()).getBody();
+            } catch (Exception e) {
+                return new ResultResponse<>(1000, "topapi/v2/user/getuserinfo接口调用失败," + e.getMessage());
+            }
+        } else {
+            return new ResultResponse<>(tokenResponse.getErrcode(), tokenResponse.getErrmsg());
         }
     }
 
@@ -243,6 +219,56 @@ public class DingTalkApi {
             return new RestTemplate().postForObject(REGISTER_CALLBACK, requestBody, BaseResponse.class, accessToken);
         } catch (Exception e) {
             return new BaseResponse(1000, "call_back/register_call_back接口调用失败," + e.getMessage());
+        }
+    }
+
+    /**
+     * 上传媒体文件
+     */
+    public static UploadMediaResponse uploadMedia(String type, String filePath, String accessToken) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("type", type);
+        form.add("media", new FileSystemResource(filePath));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(form, headers);
+
+        try {
+            return new RestTemplate().postForObject(UPLOAD_MEDIA, requestEntity, UploadMediaResponse.class, accessToken);
+        } catch (Exception e) {
+            return new UploadMediaResponse(1000, "media.upload接口调用失败," + e.getMessage());
+        }
+
+    }
+
+    /**
+     * ASR 一句话语音识别
+     */
+    public static String asrVoiceTranslate(String mediaId, String accessToken) {
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("media_id", mediaId);
+        try {
+            return new RestTemplate().exchange(ASR_VOICE_TRANSLATE, HttpMethod.POST,
+                    new HttpEntity<>(form), new ParameterizedTypeReference<String>() {
+                    }, accessToken).getBody();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * OCR文字识别
+     */
+    public static ResultResponse<String> ocrStructuredRecognize(String type, String mediaUrl, String accessToken) {
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("type", type);
+        form.add("mediaUrl", mediaUrl);
+        try {
+            return new RestTemplate().exchange(OCR_STRUCTURED_RECOGNIZE, HttpMethod.POST,
+                    new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<String>>() {
+                    }, accessToken).getBody();
+        } catch (Exception e) {
+            return new ResultResponse<>(1000, "ocr.structured.recognize接口调用失败," + e.getMessage());
         }
     }
 
