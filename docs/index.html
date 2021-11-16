@@ -2,26 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>OneX</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="./themes/vue.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">Loading ...</div>
   <script>
     window.$docsify = {
 	  // 搜索
-	  search: 'auto',
+      search: 'auto',
 	  // 侧边栏
 	  loadSidebar: true,
+      // 封面
+      coverpage: true,
+      //
+      auto2top: true,
       name: 'OneX',
       repo: 'https://github.com/zhangchaoxu/onex-boot'
+      /*plugins: [
+        // https://github.com/njleonzhang/docsify-edit-on-github
+        EditOnGithubPlugin.create('https://github.com/zhangchaoxu//onex-boot/blob/master/docs/', null, 'Edit on GitHub')
+      ]*/
     }
   </script>
-  <!-- Docsify v4 -->
+  <!-- Docsify -->
   <script src="./js/docsify.min.js"></script>
   <script src="./js/search.min.js"></script>
+  <script src="./js/docsify-edit-on-github.js"></script>
 </body>
 </html>
