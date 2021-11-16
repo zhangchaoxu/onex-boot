@@ -1,12 +1,12 @@
-![logo](_media/icon.svg)
+![logo](_media/icon_128.png)
 
 # OneX <small>2.0.x</small>
 
-> A magical documentation site generator.
+> 助力于提高日常工作效率.
 
-- Simple and lightweight
-- No statically built html files
-- Multiple themes
+- 实现常见功能需求
+- 开箱即用,按需引入
+- 代码自动生成
 
 [GitHub](https://github.com/zhangchaoxu/onex-boot/)
-[Getting Started](#readme)
+[Getting Started](#onex)
