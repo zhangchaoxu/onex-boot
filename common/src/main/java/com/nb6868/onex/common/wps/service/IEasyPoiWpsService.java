@@ -7,7 +7,6 @@ import com.nb6868.onex.common.wps.entity.resreq.WpsFileHistoryResponse;
 import com.nb6868.onex.common.wps.entity.resreq.WpsFileResponse;
 import com.nb6868.onex.common.wps.entity.resreq.WpsUserRequest;
 import org.springframework.web.multipart.MultipartFile;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -161,7 +160,8 @@ public interface IEasyPoiWpsService {
      * @return
      */
     default WpsFileEntity fileSave(String fileId, String userId, MultipartFile file) {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
+        return null;
     }
 
     /**
@@ -190,7 +190,8 @@ public interface IEasyPoiWpsService {
      * @return
      */
     default String getDownLoadUrl(String filepath, Integer version) {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
+        return null;
     }
 
     /**
@@ -201,7 +202,7 @@ public interface IEasyPoiWpsService {
      * @param name
      */
     default void rename(String fileId, String userId, String name) {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
     }
 
     /**
@@ -211,6 +212,7 @@ public interface IEasyPoiWpsService {
      * @return
      */
     default WpsFileHistoryResponse getHistory(WpsFileHistoryRequest req) {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
+        return null;
     }
 }

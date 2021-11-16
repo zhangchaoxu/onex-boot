@@ -1,6 +1,8 @@
 package com.nb6868.onex.common.wps.entity;
 
 import cn.hutool.core.date.DateUtil;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.nb6868.onex.common.pojo.json.LongToLongSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -39,11 +41,13 @@ public class WpsFileEntity implements Serializable {
     /**
      * 创建时间，时间戳，单位为秒
      */
-    private long create_time = DateUtil.second(new Date());
+    @JsonSerialize(using = LongToLongSerializer.class)
+    private Long create_time = DateUtil.currentSeconds();
     /**
      * 修改时间，时间戳，单位为秒
      */
-    private long modify_time = DateUtil.second(new Date());
+    @JsonSerialize(using = LongToLongSerializer.class)
+    private Long modify_time = DateUtil.currentSeconds();
     /**
      * 文档下载地址
      */
