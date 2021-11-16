@@ -4,13 +4,20 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @ApiModel(value = "调用结果,返回体")
 @EqualsAndHashCode(callSuper = false)
 public class ResultResponse<T> extends BaseResponse {
 
     @ApiModelProperty(value = "结果")
     private T result;
+
+    public ResultResponse(int errcode, String errmsg) {
+        super(errcode, errmsg);
+    }
 
 }

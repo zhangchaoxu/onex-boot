@@ -4,16 +4,23 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
-@Data
+@Setter
+@Getter
 @ApiModel(value = "根据userid获取用户详情")
 @EqualsAndHashCode(callSuper = false)
 public class GetUserDetailByUseridResponse extends BaseResponse {
 
     @ApiModelProperty(value = "用户信息")
     private Result result;
+
+    public GetUserDetailByUseridResponse(int errcode, String errmsg) {
+        super(errcode, errmsg);
+    }
 
     @Data
     @EqualsAndHashCode(callSuper = false)
