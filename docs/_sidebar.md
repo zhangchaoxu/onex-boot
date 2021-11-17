@@ -2,7 +2,6 @@
 * 入门
   
   * [Set Up](Setup.md)
-  * [QA](QA.md)
   
 * 接口开发
 
