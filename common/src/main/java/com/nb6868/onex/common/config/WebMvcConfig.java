@@ -78,8 +78,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // knife4j(swagger) doc
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
         // easy poi wps
-        registry.addResourceHandler("/easypoi-preview.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/easypoijs/**").addResourceLocations("classpath:/META-INF/resources/easypoijs/");
+        // registry.addResourceHandler("/easypoi-preview.html").addResourceLocations("classpath:/META-INF/resources/");
+        // registry.addResourceHandler("/easypoijs/**").addResourceLocations("classpath:/META-INF/resources/easypoijs/");
     }
 
     /**
