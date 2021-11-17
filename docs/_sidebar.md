@@ -25,6 +25,7 @@
   * [ActiveMQ](boot/ActiveMQ.md)
   * [异步任务](boot/AsyncTask.md)
   * [API限流](boot/AccessLimit.md)
+  * [代码生成器](boot/coder.md)
     
 * 前端
   * [前端](ui/portal.md)
@@ -42,6 +43,4 @@
   * [Linux Cheat Sheet](cheat-sheet/Linux.md)
   * [MySQL Cheat Sheet](cheat-sheet/MySQL.md)
 
-* [代码生成器](coder.md)
-
-* [问题集](Issues.md)
+* [Issues](Issues.md)
