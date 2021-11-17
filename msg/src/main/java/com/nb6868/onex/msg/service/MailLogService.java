@@ -100,6 +100,8 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             // 短信
             if ("aliyun".equalsIgnoreCase(mailTpl.getPlatform())) {
                 mailService = new SmsAliyunMailService();
+            } else if ("hwcloud".equalsIgnoreCase(mailTpl.getPlatform())) {
+                mailService = new SmsHwcloudMailService();
             } else if ("juhe".equalsIgnoreCase(mailTpl.getPlatform())) {
                 mailService = new SmsJuheMailService();
             }
@@ -109,6 +111,11 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
         } else if (MsgConst.MailChannelEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信小程序模板消息
             mailService = new WxMaSubscribeMailService();
+        } else if (MsgConst.MailChannelEnum.ROBOT.name().equalsIgnoreCase(mailTpl.getChannel())) {
+            // 钉钉机器人
+            if ("dingtalk".equalsIgnoreCase(mailTpl.getPlatform())) {
+                mailService = new RobotDingtalkMailService();
+            }
         }
         if (null != mailService) {
             return mailService.sendMail(mailTpl, request);
