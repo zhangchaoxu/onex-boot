@@ -21,12 +21,12 @@ public class RobotDingtalkMailService extends AbstractMailService {
     public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
         JSONObject tplParam = JSONUtil.parseObj(mailTpl.getParam());
         JSONObject sendParam = JSONUtil.parseObj(request.getContentParam());
-        String msgtype =  sendParam.getStr("msgtype");
-        String keywords =  tplParam.getStr("keywords");
+        String msgtype = sendParam.getStr("msgtype");
+        String keywords = tplParam.getStr("keywords");
         if ("text".equalsIgnoreCase(msgtype)) {
             // text类型消息,要求有关键词,但实际未包含,补充上
             if (StrUtil.isNotBlank(keywords) && !StrUtil.contains(sendParam.getJSONObject("text").getStr("content"), keywords)) {
-                sendParam.set("text", new JSONObject().set("content", keywords + "\n" + sendParam.getJSONObject("text").getStr("content")));
+                sendParam.getJSONObject("text").set("content", keywords + "\n" + sendParam.getJSONObject("text").getStr("content"));
             }
         }
         // https://oapi.dingtalk.com/robot/send?access_token=xxxx
