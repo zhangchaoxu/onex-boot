@@ -16,11 +16,18 @@
       search: 'auto',
 	  // 侧边栏
 	  loadSidebar: true,
+      // 同时设置 loadSidebar 和 autoHeader 后，可以根据 _sidebar.md 的内容自动为每个页面增加标题
+      autoHeader: true,
       // 封面
       coverpage: true,
-      //
+      // 切换页面后是否自动跳转到页面顶部
       auto2top: true,
+      // logo
+      logo: '/_media/icon_128.png',
+      // 文档标题
       name: 'OneX',
+      // 路由模式，决定是否带上#
+      routerMode: 'history',
       repo: 'https://github.com/zhangchaoxu/onex-boot'
       /*plugins: [
         // https://github.com/njleonzhang/docsify-edit-on-github
