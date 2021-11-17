@@ -1,4 +1,4 @@
-![logo](_media/icon_128.png)
+![logo](_media/icon.svg ':size=120x120')
 
 # OneX <small>2.0.x</small>
 
