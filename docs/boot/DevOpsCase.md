@@ -153,7 +153,7 @@ location /onex-boot-api
 
 2. 部署接口
 将接口编译后的jar文件上传至/www/wwwroot/api目录    
-将[start.sh](start.sh)上传至/www/wwwroot/api目录    
+将[start.sh](../_media/start.sh)上传至/www/wwwroot/api目录    
 修改start.sh文件的可执行权限
 
 ## 数据库自动备份(Optional)
