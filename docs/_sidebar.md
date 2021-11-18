@@ -1,4 +1,5 @@
-* [About Me](../README.md)
+* [About Me](https://github.com/zhangchaoxu/zhangchaoxu/blob/main/README.md)
+* 
 * 入门
   
   * [Set Up](Setup.md)
