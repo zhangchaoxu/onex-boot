@@ -6,6 +6,7 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,7 +35,27 @@ import java.util.List;
  */
 public class ExcelUtils {
 
+    private final static String CONTENT_TYPE_XLS = "application/vnd.ms-excel";
+    private final static String FILENAME_XLS_FMT = "attachment;filename={}.xls";
+
     // [导出相关]
+    /**
+     * 通过workbook 下载excel
+     */
+    public static void downloadExcelFromWorkbook(HttpServletResponse response, String fileName, Workbook workbook) {
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType(CONTENT_TYPE_XLS);
+        try {
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(FILENAME_XLS_FMT, URLEncoder.encode(fileName, StandardCharsets.UTF_8.name())));
+            ServletOutputStream out = response.getOutputStream();
+            workbook.write(out);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
+        }
+    }
+
     /**
      * 下载excel
      *
@@ -46,17 +67,7 @@ public class ExcelUtils {
      */
     public static void downloadExcel(HttpServletResponse response, String fileName, ExportParams exportParams, Class<?> pojoClass, Collection<?> list) {
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType("application/vnd.ms-excel");
-        try {
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
-            ServletOutputStream out = response.getOutputStream();
-            workbook.write(out);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
-        }
+        downloadExcelFromWorkbook(response, fileName, workbook);
     }
 
     /**
@@ -96,17 +107,7 @@ public class ExcelUtils {
         fileName += DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
 
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType("application/vnd.ms-excel");
-        try {
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + ".xls");
-            ServletOutputStream out = response.getOutputStream();
-            workbook.write(out);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
-        }
+        downloadExcelFromWorkbook(response, fileName, workbook);
     }
 
     // [导入相关]
