@@ -1,8 +1,10 @@
 package com.nb6868.onex.coder.utils;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.db.Entity;
 import com.nb6868.onex.coder.entity.CodeGenerateConfig;
 import com.nb6868.onex.coder.entity.ColumnEntity;
 import com.nb6868.onex.coder.entity.TableEntity;
@@ -57,7 +59,7 @@ public class GenUtils {
      * @param zip                输出的压缩包
      */
     public static void generatorCode(Map<String, Object> table,
-                                     List<Map<String, Object>> columns,
+                                     List<Entity> columns,
                                      CodeGenerateConfig codeGenerateConfig,
                                      ZipOutputStream zip) {
         //配置信息
@@ -74,7 +76,7 @@ public class GenUtils {
 
         //列信息
         List<ColumnEntity> columnsList = new ArrayList<>();
-        for (Map<String, Object> column : columns) {
+        for (Entity column : columns) {
             ColumnEntity columnEntity = new ColumnEntity();
             columnEntity.setColumnName(MapUtil.getStr(column, "column_name"));
             columnEntity.setDataType(MapUtil.getStr(column, "data_type"));
@@ -135,7 +137,7 @@ public class GenUtils {
         map.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
         for (int i = 0; i <= 10; i++) {
-            map.put("id" + i, IdUtil.getWorkerId(1,  1));
+            map.put("id" + i, IdUtil.getSnowflake(1,  1).nextId());
         }
 
         VelocityContext context = new VelocityContext(map);
@@ -146,7 +148,6 @@ public class GenUtils {
             StringWriter sw = new StringWriter();
             Template tpl = Velocity.getTemplate(template, "UTF-8");
             tpl.merge(context, sw);
-
             try {
                 //添加到zip
                 zip.putNextEntry(new ZipEntry(getFileName(template, tableEntity.getClassName(), codeGenerateConfig.getPackageName(), codeGenerateConfig.getModuleName(), (String) map.get("pathNameDash"))));
