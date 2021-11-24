@@ -2,6 +2,7 @@ package com.nb6868.onex.coder.utils;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.IdUtil;
 import com.nb6868.onex.coder.entity.CodeGenerateConfig;
 import com.nb6868.onex.coder.entity.ColumnEntity;
 import com.nb6868.onex.coder.entity.TableEntity;
@@ -134,7 +135,7 @@ public class GenUtils {
         map.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
         for (int i = 0; i <= 10; i++) {
-            map.put("id" + i, IdWorker.getId());
+            map.put("id" + i, IdUtil.getWorkerId(1,  1));
         }
 
         VelocityContext context = new VelocityContext(map);
