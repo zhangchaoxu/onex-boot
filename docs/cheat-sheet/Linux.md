@@ -140,3 +140,9 @@ kill -9 {pid}
 ```shell
 chattr -i .user.ini
 ```
+
+### 文本搜索
+搜索文本中的内容关键词
+```shell
+find . | xargs grep -ri '{keywords}'
+```
