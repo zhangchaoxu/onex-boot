@@ -1,0 +1,7 @@
+spring:
+  # quartz 定时任务
+  quartz:
+    ## 任务存储方式
+    job-store-type: jdbc
+    ## 自动启动
+    auto-startup: true
