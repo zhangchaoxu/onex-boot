@@ -3,6 +3,7 @@ package com.nb6868.onex.common.util;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,6 +19,10 @@ public class SpringContextUtils implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringContextUtils.applicationContext = applicationContext;
+    }
+
+    public static Environment getEnvironment() {
+        return applicationContext.getEnvironment();
     }
 
     public static Object getBean(String name) {
