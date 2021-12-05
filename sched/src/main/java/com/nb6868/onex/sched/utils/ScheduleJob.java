@@ -55,9 +55,9 @@ public class ScheduleJob extends QuartzJobBean {
                 // 保存完成结果日志
                 if (!"db".equalsIgnoreCase(task.getLogType()) && invokeResult.getLogToDb()) {
                     task.setLogType("db");
-                    taskLogService.saveLog(task, timer.interval(), SchedConst.TaskLogState.COMPLETED.getValue(), JSONUtil.toJsonStr(invokeResult));
+                    taskLogService.saveLog(task, timer.interval(), SchedConst.TaskLogState.COMPLETED.getValue(), JSONUtil.toJsonStr(invokeResult.getResult()));
                 } else {
-                    taskLogService.updateLog(taskLogId, task, timer.interval(), SchedConst.TaskLogState.COMPLETED.getValue(), JSONUtil.toJsonStr(invokeResult));
+                    taskLogService.updateLog(taskLogId, task, timer.interval(), SchedConst.TaskLogState.COMPLETED.getValue(), JSONUtil.toJsonStr(invokeResult.getResult()));
                 }
                 log.info("任务执行完毕，任务ID：{}", task.getId());
             } catch (Exception e) {
