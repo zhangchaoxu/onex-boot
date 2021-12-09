@@ -27,15 +27,8 @@ public class ScheduleJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) {
         TaskInfo task = (TaskInfo) context.getMergedJobDataMap().get(SchedConst.JOB_PARAM_KEY);
-        // 判断环境
-        Environment env = SpringContextUtils.getEnvironment();
-        boolean activeContainAllow = true;
-        if (StrUtil.isNotBlank(task.getEnv())) {
-            // 指定了执行环境
-            String[] activeProfiles = env.getActiveProfiles();
-            String[] allowProfiles = StrUtil.splitToArray(task.getEnv(), ",");
-            activeContainAllow = ArrayUtil.containsAny(activeProfiles, allowProfiles);
-        }
+        // 未指定环境或者当前环境包含了指定环境
+        boolean activeContainAllow = StrUtil.isBlank(task.getEnv()) || ArrayUtil.containsAny(SpringContextUtils.getEnvironment().getActiveProfiles(), StrUtil.splitToArray(task.getEnv(), ","));
         if (activeContainAllow) {
             // 执行
             TaskLogService taskLogService = SpringContextUtils.getBean(TaskLogService.class);
