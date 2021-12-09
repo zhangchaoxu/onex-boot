@@ -75,6 +75,11 @@ public class AliyunOssService extends AbstractOssService {
     }
 
     @Override
+    public String upload(InputStream inputStream, String fileName) {
+        return upload(null, inputStream, fileName);
+    }
+
+    @Override
     public String upload(String prefix, MultipartFile file) {
         String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
         if (StrUtil.isNotEmpty(prefix)) {
@@ -119,6 +124,32 @@ public class AliyunOssService extends AbstractOssService {
                 objectKey = buildUploadPath(prefixTotal, FileNameUtil.getName(file), config.getKeepFileName(), true);
             }
             ossClient.putObject(config.getBucketName(), objectKey, file);
+        } catch (OSSException | com.aliyun.oss.ClientException e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        } finally {
+            ossClient.shutdown();
+        }
+
+        return config.getDomain() + objectKey;
+    }
+
+    public String upload(String prefix, InputStream inputStream, String fileName) {
+        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
+        if (StrUtil.isNotEmpty(prefix)) {
+            if (StrUtil.isNotEmpty(prefixTotal)) {
+                prefixTotal += "/" + prefix;
+            } else {
+                prefixTotal = prefix;
+            }
+        }
+        String objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), false);
+        OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
+        try {
+            if (ossClient.doesObjectExist(config.getBucketName(), objectKey)) {
+                // 文件已存在,则需要对文件重命名
+                objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), true);
+            }
+            ossClient.putObject(config.getBucketName(), objectKey, inputStream);
         } catch (OSSException | com.aliyun.oss.ClientException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         } finally {
