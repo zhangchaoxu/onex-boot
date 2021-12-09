@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Base64;
 
 /**
  * MultipartFile转换工具
@@ -109,11 +109,10 @@ public class MultipartFileUtils {
      * base64转文件
      */
     public static File base64ToFile(String base64) {
-        String[] baseStrs = base64.split(",");
+        // data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64_string}
         String fileName = uploadPath + File.separator + IdUtil.simpleUUID();
-
         try {
-            Files.write(Paths.get(fileName), Base64.getDecoder().decode(baseStrs[1]), StandardOpenOption.CREATE);
+            Files.write(Paths.get(fileName), Base64.decode(base64.contains(",") ? base64 : base64.split(",")[1]), StandardOpenOption.CREATE);
         } catch (IOException e) {
             return null;
         }
