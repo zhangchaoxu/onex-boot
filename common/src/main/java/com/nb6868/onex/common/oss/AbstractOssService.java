@@ -23,9 +23,9 @@ public abstract class AbstractOssService {
     /**
      * 文件路径
      *
-     * @param pathPrefix 路径前缀
-     * @param fileName 文件扩展名
-     * @param keepFileName 是否保留原文件名
+     * @param pathPrefix      路径前缀
+     * @param fileName        文件名
+     * @param keepFileName    是否保留原文件名
      * @param appendTimestamp 文件名追加时间戳
      * @return 返回上传路径
      */
@@ -85,8 +85,27 @@ public abstract class AbstractOssService {
     /**
      * 文件上传
      *
+     * @param inputStream 文件流
+     * @param fileName    文件名
+     * @return 返回http地址
+     */
+    public abstract String upload(InputStream inputStream, String fileName);
+
+    /**
+     * 文件上传
+     *
+     * @param prefix      文件路径前缀
+     * @param inputStream 文件流
+     * @param fileName    文件名
+     * @return 返回http地址
+     */
+    public abstract String upload(String prefix, InputStream inputStream, String fileName);
+
+    /**
+     * 文件上传
+     *
      * @param prefix 文件路径前缀
-     * @param file 文件
+     * @param file   文件
      * @return 返回http地址
      */
     public abstract String upload(String prefix, MultipartFile file);
@@ -95,7 +114,7 @@ public abstract class AbstractOssService {
      * 文件上传
      *
      * @param prefix 文件路径前缀
-     * @param file 文件
+     * @param file   文件
      * @return 返回http地址
      */
     public abstract String upload(String prefix, File file);

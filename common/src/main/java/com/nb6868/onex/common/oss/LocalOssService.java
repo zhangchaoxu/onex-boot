@@ -4,7 +4,9 @@ package com.nb6868.onex.common.oss;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.stream.StreamUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -91,6 +93,32 @@ public class LocalOssService extends AbstractOssService {
             objectKey = buildUploadPath(prefixTotal, FileNameUtil.getName(file), config.getKeepFileName(), true);
         }
         FileUtil.copy(file, localFile, true);
+        return config.getDomain() + objectKey;
+    }
+
+    @Override
+    public String upload(InputStream inputStream, String fileName) {
+        return this.upload(null, inputStream, fileName);
+    }
+
+    @Override
+    public String upload(String prefix, InputStream inputStream, String fileName) {
+        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
+        if (StrUtil.isNotEmpty(prefix)) {
+            if (StrUtil.isNotEmpty(prefixTotal)) {
+                prefixTotal += "/" + prefix;
+            } else {
+                prefixTotal = prefix;
+            }
+        }
+        String objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), false);
+        File localFile = new File(config.getLocalPath() + File.separator + objectKey);
+        if (localFile.exists()) {
+            // 文件已存在,则需要对文件重命名
+            objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), true);
+        }
+        new FileWriter(localFile).writeFromStream(inputStream, true);
+        //FileUtil.copy(inputStream, localFile, true);
         return config.getDomain() + objectKey;
     }
 
