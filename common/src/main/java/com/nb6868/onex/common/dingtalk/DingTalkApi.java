@@ -114,7 +114,10 @@ public class DingTalkApi {
         try {
             return new RestTemplate().postForObject(uri, requestBody, GetUserInfoByCodeResponse.class);
         } catch (Exception e) {
-            return new GetUserInfoByCodeResponse(1000, "getuserinfo_bycode接口调用失败," + e.getMessage());
+            GetUserInfoByCodeResponse response = new GetUserInfoByCodeResponse();
+            response.setErrcode(1000);
+            response.setErrmsg("getuserinfo_bycode接口调用失败," + e.getMessage());
+            return response;
         }
     }
 
@@ -128,10 +131,13 @@ public class DingTalkApi {
             try {
                 return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
             } catch (Exception e) {
-                return new AccessTokenResponse(1000, "gettoken接口调用失败," + e.getMessage());
+                AccessTokenResponse response = new AccessTokenResponse();
+                response.setErrcode(1000);
+                response.setErrmsg("gettoken接口调用失败," + e.getMessage());
+                return response;
             }
         }
-        AccessTokenResponse accessTokenResponse = new AccessTokenResponse(0, "ok");
+        AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
         accessTokenResponse.setAccess_token(token);
         accessTokenResponse.setExpires_in(0);
         return accessTokenResponse;
@@ -150,10 +156,16 @@ public class DingTalkApi {
                         new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<UserGetByCodeResponse>>() {
                         }, tokenResponse.getAccess_token()).getBody();
             } catch (Exception e) {
-                return new ResultResponse<>(1000, "topapi/v2/user/getuserinfo接口调用失败," + e.getMessage());
+                ResultResponse<UserGetByCodeResponse> response = new ResultResponse<>();
+                response.setErrcode(1000);
+                response.setErrmsg("topapi/v2/user/getuserinfo接口调用失败,," + e.getMessage());
+                return response;
             }
         } else {
-            return new ResultResponse<>(tokenResponse.getErrcode(), tokenResponse.getErrmsg());
+            ResultResponse<UserGetByCodeResponse> response = new ResultResponse<>();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
+            return response;
         }
     }
 
@@ -168,10 +180,16 @@ public class DingTalkApi {
             try {
                 return new RestTemplate().postForObject(GET_USER_BY_UNIONID, requestBody, GetUserIdByUnionidResponse.class, tokenResponse.getAccess_token());
             } catch (Exception e) {
-                return new GetUserIdByUnionidResponse(1000, "getbyunionid接口调用失败," + e.getMessage());
+                GetUserIdByUnionidResponse response = new GetUserIdByUnionidResponse();
+                response.setErrcode(1000);
+                response.setErrmsg("getbyunionid接口调用失败," + e.getMessage());
+                return response;
             }
         } else {
-            return new GetUserIdByUnionidResponse(tokenResponse.getErrcode(), tokenResponse.getErrmsg());
+            GetUserIdByUnionidResponse response = new GetUserIdByUnionidResponse();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
+            return response;
         }
     }
 
@@ -187,10 +205,16 @@ public class DingTalkApi {
             try {
                 return new RestTemplate().postForObject(GET_USER_DETAIL_BY_USERID, requestBody, GetUserDetailByUseridResponse.class, tokenResponse.getAccess_token());
             } catch (Exception e) {
-                return new GetUserDetailByUseridResponse(1000, "topapi/v2/user/get接口调用失败," + e.getMessage());
+                GetUserDetailByUseridResponse response = new GetUserDetailByUseridResponse();
+                response.setErrcode(1000);
+                response.setErrmsg("topapi/v2/user/get接口调用失败,," + e.getMessage());
+                return response;
             }
         } else {
-            return new GetUserDetailByUseridResponse(tokenResponse.getErrcode(), tokenResponse.getErrmsg());
+            GetUserDetailByUseridResponse response = new GetUserDetailByUseridResponse();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
+            return response;
         }
     }
 
@@ -201,7 +225,10 @@ public class DingTalkApi {
         try {
             return new RestTemplate().postForObject(ROBOT_SEND, requestBody, BaseResponse.class, accessToken);
         } catch (Exception e) {
-            return new BaseResponse(1000, "robot/send接口调用失败," + e.getMessage());
+            BaseResponse response = new BaseResponse();
+            response.setErrcode(1000);
+            response.setErrmsg("robot/send接口调用失败," + e.getMessage());
+            return response;
         }
     }
 
@@ -218,7 +245,10 @@ public class DingTalkApi {
         try {
             return new RestTemplate().postForObject(REGISTER_CALLBACK, requestBody, BaseResponse.class, accessToken);
         } catch (Exception e) {
-            return new BaseResponse(1000, "call_back/register_call_back接口调用失败," + e.getMessage());
+            BaseResponse response = new BaseResponse();
+            response.setErrcode(1000);
+            response.setErrmsg("call_back/register_call_back接口调用失败," + e.getMessage());
+            return response;
         }
     }
 
@@ -236,7 +266,10 @@ public class DingTalkApi {
         try {
             return new RestTemplate().postForObject(UPLOAD_MEDIA, requestEntity, UploadMediaResponse.class, accessToken);
         } catch (Exception e) {
-            return new UploadMediaResponse(1000, "media.upload接口调用失败," + e.getMessage());
+            UploadMediaResponse response = new UploadMediaResponse();
+            response.setErrcode(1000);
+            response.setErrmsg("media.upload接口调用失败," + e.getMessage());
+            return response;
         }
 
     }
@@ -268,7 +301,10 @@ public class DingTalkApi {
                     new HttpEntity<>(form), new ParameterizedTypeReference<ResultResponse<String>>() {
                     }, accessToken).getBody();
         } catch (Exception e) {
-            return new ResultResponse<>(1000, "ocr.structured.recognize接口调用失败," + e.getMessage());
+            ResultResponse<String> response = new ResultResponse<>();
+            response.setErrcode(1000);
+            response.setErrmsg("ocr.structured.recognize接口调用失败," + e.getMessage());
+            return response;
         }
     }
 

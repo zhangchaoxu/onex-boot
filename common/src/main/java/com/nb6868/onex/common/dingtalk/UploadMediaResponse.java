@@ -22,8 +22,4 @@ public class UploadMediaResponse extends BaseResponse {
     @ApiModelProperty(value = "媒体文件上传时间戳")
     private Long created_at;
 
-    public UploadMediaResponse(int errcode, String errmsg) {
-        super(errcode, errmsg);
-    }
-
 }

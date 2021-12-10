@@ -18,10 +18,6 @@ public class GetUserIdByUnionidResponse extends BaseResponse {
     @ApiModelProperty(value = "用户信息")
     private Result result;
 
-    public GetUserIdByUnionidResponse(int errcode, String errmsg) {
-        super(errcode, errmsg);
-    }
-
     @Data
     @EqualsAndHashCode(callSuper = false)
     public static class Result implements Serializable {

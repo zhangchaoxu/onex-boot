@@ -16,8 +16,4 @@ public class ResultResponse<T> extends BaseResponse {
     @ApiModelProperty(value = "结果")
     private T result;
 
-    public ResultResponse(int errcode, String errmsg) {
-        super(errcode, errmsg);
-    }
-
 }

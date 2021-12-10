@@ -18,10 +18,6 @@ public class GetUserInfoByCodeResponse extends BaseResponse {
     @ApiModelProperty(value = "用户信息")
     private UserInfo user_info;
 
-    public GetUserInfoByCodeResponse(int errcode, String errmsg) {
-        super(errcode, errmsg);
-    }
-
     @Data
     @EqualsAndHashCode(callSuper = false)
     public static class UserInfo implements Serializable {

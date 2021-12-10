@@ -14,15 +14,10 @@ public class BaseResponse implements Serializable {
     private String request_id;
 
     @ApiModelProperty(value = "返回码")
-    private int errcode;
+    private int errcode = 0;
 
     @ApiModelProperty(value = "返回描述")
-    private String errmsg;
-
-    public BaseResponse(int errcode, String errmsg) {
-        this.errcode = errcode;
-        this.errmsg = errmsg;
-    }
+    private String errmsg = "ok";
 
     /**
      * 是否执行成功
