@@ -19,8 +19,4 @@ public class AccessTokenResponse extends BaseResponse {
     @ApiModelProperty(value = "access_token")
     private String access_token;
 
-    public AccessTokenResponse(int errcode, String errmsg) {
-        super(errcode, errmsg);
-    }
-
 }

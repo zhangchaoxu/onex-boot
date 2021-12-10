@@ -4,6 +4,11 @@
 注意点
 1. 默认线程数8,超过数量后可以通过spring.task.execution.pool.core-size来设置,建议不要超过CPU核心数
 2. 超过最大核心数后,发起的任务会进入等待
+3. 当集成了shiro后,使用异步任务处理任务,若处理时长超过默认session有效期(30min),会报错,可以将Shiro的session有效时间改为无限制
+```
+org.apache.shiro.session.ExpiredSessionException: Session with id [uuid] has expired. 
+Session timeout is set to 1800 seconds (30 minutes)
+```
 
 ### 第一步: 配置最大核心数
 ```
