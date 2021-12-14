@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.config;
 
-import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
@@ -32,7 +31,8 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        // shiro session默认30min,在一个web中处理异步长耗时任务时,时间超30min,会报org.apache.shiro.session.ExpiredSessionException
+        // shiro session默认30min,
+        // web中处理异步长耗时任务若超30min,会报org.apache.shiro.session.ExpiredSessionException
         sessionManager.setGlobalSessionTimeout(-1);
         sessionManager.setSessionValidationSchedulerEnabled(false);
         sessionManager.setSessionIdUrlRewritingEnabled(false);
