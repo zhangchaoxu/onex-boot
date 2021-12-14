@@ -19,6 +19,11 @@ rm ./blank.txt
 df -h
 ```
 
+### 查看目录占用
+```shell
+du -h --max-depth=1
+```
+
 ### 查看本地IP
 ```shell
 ip addr
