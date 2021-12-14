@@ -6,6 +6,7 @@ import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,6 +24,7 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
+@Slf4j
 public class AccessControlAspect {
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.AccessControl)")
@@ -62,8 +64,9 @@ public class AccessControlAspect {
             } else {
                 return joinPoint.proceed();
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("AccessControl around error", e);
+            // 遇到错误直接放行
             return joinPoint.proceed();
         }
     }

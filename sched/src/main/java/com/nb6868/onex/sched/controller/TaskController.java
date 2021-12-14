@@ -25,11 +25,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 定时任务
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
 @RequestMapping("/sched/task")
 @Validated

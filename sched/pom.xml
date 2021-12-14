@@ -24,17 +24,17 @@
             <version>${onex-common.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- quartz -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
         <!-- shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
             <version>${shiro.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- quartz -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
     </dependencies>
 
