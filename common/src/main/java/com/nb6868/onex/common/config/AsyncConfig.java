@@ -45,6 +45,8 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setThreadNamePrefix(taskExecutionProperties.getThreadNamePrefix());
         // 拒绝策略
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        // 初始化executor
+        executor.initialize();
         return executor;
     }
 

@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.config;
+package com.nb6868.onex.common.websocket;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
