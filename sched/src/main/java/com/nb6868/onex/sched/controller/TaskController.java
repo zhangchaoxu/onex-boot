@@ -10,6 +10,7 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.sched.dto.TaskDTO;
 import com.nb6868.onex.sched.dto.TaskLogDTO;
+import com.nb6868.onex.sched.dto.TaskRunWithParamsBody;
 import com.nb6868.onex.sched.service.TaskLogService;
 import com.nb6868.onex.sched.service.TaskService;
 import io.swagger.annotations.Api;
@@ -81,6 +82,16 @@ public class TaskController {
     @RequiresPermissions("sched:task:update")
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         taskService.logicDeleteByIds(ids);
+
+        return new Result<>();
+    }
+
+    @PutMapping("/runWithParams")
+    @ApiOperation("指定参数立即执行")
+    @LogOperation("指定参数立即执行")
+    @RequiresPermissions("sched:task:update")
+    public Result<?> runWithParams(@Validated(value = {DefaultGroup.class}) @RequestBody TaskRunWithParamsBody requestBody) {
+        taskService.runWithParams(requestBody);
 
         return new Result<>();
     }

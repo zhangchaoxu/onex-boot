@@ -14,6 +14,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sched.SchedConst;
 import com.nb6868.onex.sched.dao.TaskDao;
 import com.nb6868.onex.sched.dto.TaskDTO;
+import com.nb6868.onex.sched.dto.TaskRunWithParamsBody;
 import com.nb6868.onex.sched.entity.TaskEntity;
 import com.nb6868.onex.sched.utils.ScheduleJob;
 import com.nb6868.onex.sched.utils.ScheduleUtils;
@@ -99,6 +100,23 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 		for (Long id : ids) {
 			ScheduleUtils.run(scheduler, getTaskInfoFromTask(this.getById(id)));
 		}
+	}
+
+	/**
+	 * 立即执行
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public void runWithParams(TaskRunWithParamsBody requestBody) {
+		TaskInfo taskInfo = getTaskInfoFromTask(getById(requestBody.getId()));
+		JSONObject params = null;
+		try {
+			params = JSONUtil.parseObj(requestBody.getParams());
+		} catch (JSONException e) {
+			log.error("序列化参数失败", e);
+		} finally {
+			taskInfo.setParams(params);
+		}
+		ScheduleUtils.run(scheduler, taskInfo);
 	}
 
 	/**
