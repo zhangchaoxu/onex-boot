@@ -20,6 +20,7 @@ import java.util.Date;
 @Aspect
 @Slf4j
 public class AsyncTaskMonitor {
+
     @Autowired
     AsyncTaskManager manager;
 

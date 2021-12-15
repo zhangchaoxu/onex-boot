@@ -43,7 +43,6 @@ import java.util.Map;
 @Slf4j
 public class LogOperationAspect {
 
-    @Qualifier("LogService")
     @Autowired
     private BaseLogService logService;
 
