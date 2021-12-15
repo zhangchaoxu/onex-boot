@@ -9,13 +9,13 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.Serializable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -35,8 +35,9 @@ public class AsyncConfig implements AsyncConfigurer {
     @Autowired
     private BaseLogService logService;
 
+    @Bean("AsyncExecutor")
     @Override
-    public Executor getAsyncExecutor() {
+    public ThreadPoolTaskExecutor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(taskExecutionProperties.getPool().getCoreSize()); //核心线程数
         executor.setMaxPoolSize(taskExecutionProperties.getPool().getMaxSize());  //最大线程数
@@ -44,6 +45,10 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setKeepAliveSeconds((int) taskExecutionProperties.getPool().getKeepAlive().getSeconds()); //线程最大空闲时间
         executor.setThreadNamePrefix(taskExecutionProperties.getThreadNamePrefix());
         // 拒绝策略
+        // AbortPolicy 丢弃任务，抛运行时异常
+        // CallerRunsPolicy 执行任务
+        // DiscardPolicy 忽视,什么都不会发生
+        // DiscardOldestPolicy 从队列中踢出最先进入队列（最后一个执行）的任务
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         // 初始化executor
         executor.initialize();
