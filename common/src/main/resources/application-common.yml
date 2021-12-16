@@ -44,6 +44,22 @@ spring:
   quartz:
     ## 任务存储方式
     job-store-type: jdbc
+    ## 自动启动
+    auto-startup: false
+  task:
+    execution:
+      # 线程名前缀
+      thread-name-prefix: onex-thread-
+      pool:
+        # 核心线程数,控制可以启动的异步任务量
+        core-size: 32
+        # 最大线程数
+        max-size: 64
+        # 队列大小
+        queue-capacity: 1024
+        # 现成最大空闲时间(s)
+        keep-alive: 300
+
 
 # mybatis plus
 # see {https://mybatis.plus/config/}
