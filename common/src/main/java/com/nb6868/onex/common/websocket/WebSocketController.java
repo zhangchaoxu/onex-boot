@@ -22,7 +22,6 @@ public class WebSocketController {
 
     @GetMapping("getOpenSockets")
     @ApiOperation("获得目前连接的Socket")
-    @RequiresRoles("SuperAdmin")
     public Result<?> getOpenSockets() {
         List<String> sidList = webSocketServer.getSidList();
         return new Result<>().success(sidList);
@@ -30,7 +29,6 @@ public class WebSocketController {
 
     @PostMapping("sendMultiMessage")
     @ApiOperation("发送批量消息")
-    @RequiresRoles("SuperAdmin")
     public Result<?> sendMultiMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendMultiGroup.class}) @RequestBody WebSocketSendForm form) {
         webSocketServer.sendMultiMessage(form.getSidList(), form.getContent());
         return new Result<>();
@@ -38,7 +36,6 @@ public class WebSocketController {
 
     @PostMapping("sendOneMessage")
     @ApiOperation("发送单点消息")
-    @RequiresRoles("SuperAdmin")
     public Result<?> sendOneMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendOneGroup.class}) @RequestBody WebSocketSendForm form) {
         boolean result = webSocketServer.sendOneMessage(form.getSid(), form.getContent());
         if (result) {
@@ -50,7 +47,6 @@ public class WebSocketController {
 
     @PostMapping("sendAllMessage")
     @ApiOperation("发送广播消息")
-    @RequiresRoles("SuperAdmin")
     public Result<?> sendAllMessage(@Validated(value = {DefaultGroup.class}) @RequestBody WebSocketSendForm socketSendRequest) {
         webSocketServer.sendAllMessage(socketSendRequest.getContent());
         return new Result<>();
