@@ -8,10 +8,9 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * WebSocketServer
@@ -25,9 +24,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WebSocketServer {
 
     // 线程安全Set，存放每个客户端对应的MyWebSocket对象
-    private final static CopyOnWriteArraySet<WebSocketServer> webSockets = new CopyOnWriteArraySet<>();
-    private final static Map<String, Session> sessionPool = new HashMap<>();
-
+    private final static Map<String, WebSocketServer> webSockets = new ConcurrentHashMap<>();
     // 与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
 
@@ -36,7 +33,7 @@ public class WebSocketServer {
      */
     public List<String> getSidList() {
         List<String> sidList = new ArrayList<>();
-        sessionPool.forEach((s, session) -> sidList.add(s));
+        webSockets.forEach((sid, webSocketServer) -> sidList.add(sid));
         return sidList;
     }
 
@@ -44,10 +41,9 @@ public class WebSocketServer {
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam(value = "sid") String sid) {
+    public void onOpen(@PathParam(value = "sid") String sid, Session session) {
         this.session = session;
-        webSockets.add(this);
-        sessionPool.put(sid, session);
+        webSockets.put(sid, this);
         log.info("[websocket], OnOpen, sid={}, total={}", sid, webSockets.size());
     }
 
@@ -55,8 +51,8 @@ public class WebSocketServer {
      * 连接关闭调用的方法
      */
     @OnClose
-    public void onClose() {
-        webSockets.remove(this);
+    public void onClose(@PathParam(value = "sid") String sid) {
+        webSockets.remove(sid);
         log.info("[websocket], OnClose, total={}", webSockets.size());
     }
 
@@ -66,8 +62,8 @@ public class WebSocketServer {
      * @ Param message 客户端发送过来的消息
      */
     @OnMessage
-    public void onMessage(String message) {
-        log.info("[websocket], OnMessage, message={}", message);
+    public void onMessage(@PathParam(value = "sid") String sid, String message) {
+        log.info("[websocket], OnMessage, sid={}, message={}", sid, message);
     }
 
     @OnError
@@ -80,7 +76,7 @@ public class WebSocketServer {
      */
     public void sendAllMessage(String message) {
         log.info("[websocket] sendAllMessage, message={}", message);
-        webSockets.forEach(webSocketServer -> {
+        webSockets.forEach((sid, webSocketServer) -> {
             try {
                 webSocketServer.session.getAsyncRemote().sendText(message);
             } catch (Exception e) {
@@ -93,17 +89,12 @@ public class WebSocketServer {
      * 发送单点消息
      */
     public boolean sendOneMessage(String sid, String message) {
-        if (session != null && session.isOpen()) {
-            try {
-                session.getAsyncRemote().sendText(message);
-                log.info("[websocket] sendOneMessage, sid={}, message={}, result={}", sid, message, "success");
-                return true;
-            } catch (Exception e) {
-                log.error("[websocket] sendOneMessage, sid={}, message={}, result={}", sid, message, e.getMessage());
-                return false;
-            }
-        } else {
-            log.info("[websocket] sendOneMessage, sid={}, message={}, result={}", sid, message, "sid不存在或已关闭");
+        try {
+            webSockets.get(sid).session.getAsyncRemote().sendText(message);
+            log.info("[websocket] sendOneMessage, sid={}, message={}, result={}", sid, message, "success");
+            return true;
+        } catch (Exception e) {
+            log.error("[websocket] sendOneMessage, sid={}, message={}, result={}", sid, message, e.getMessage());
             return false;
         }
     }
