@@ -113,6 +113,9 @@ public class MultipartFileUtils {
         return base64ToFile(base64, filePath);
     }
 
+    /**
+     * base64转文件,指定文件
+     */
     public static File base64ToFile(String base64, String filePath) {
         // data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64_string}
         try {
@@ -122,10 +125,16 @@ public class MultipartFileUtils {
         }
     }
 
+    /**
+     * base64转MultipartFile
+     */
     public static MultipartFile base64ToMultipartFile(String base64) {
         return fileToMultipartFile(base64ToFile(base64));
     }
 
+    /**
+     * base64转MultipartFile,指定路径
+     */
     public static MultipartFile base64ToMultipartFile(String base64, String filePath) {
         return fileToMultipartFile(base64ToFile(base64, filePath));
     }

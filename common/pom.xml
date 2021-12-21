@@ -21,7 +21,7 @@
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.2.0</weixin.version>
         <aliyun.oss.version>3.13.2</aliyun.oss.version>
-        <huaweicloud.obs.version>3.21.8.1</huaweicloud.obs.version>
+        <huaweicloud.obs.version>3.21.11</huaweicloud.obs.version>
         <shiro.version>1.8.0</shiro.version>
         <easypoi.version>4.4.0</easypoi.version>
         <skipTests>true</skipTests>
