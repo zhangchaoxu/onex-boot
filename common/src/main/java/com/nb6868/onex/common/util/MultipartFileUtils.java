@@ -7,8 +7,8 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,9 +20,6 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 /**
  * MultipartFile转换工具
@@ -30,8 +27,12 @@ import java.nio.file.StandardOpenOption;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Component
+@Slf4j
 public class MultipartFileUtils {
 
+    /**
+     * 文件上传路径
+     */
     private static String uploadPath;
 
     @Autowired
@@ -39,12 +40,11 @@ public class MultipartFileUtils {
 
     @PostConstruct
     public void init() {
-        String path = env.getProperty("upload-path");
+        // 若定义了upload-path,则获取上传路径
+        // 若无定义,则获取server.tomcat.basedir同路径下创建upload路径
+        String path = env.getProperty("onex.upload-path");
         if (StrUtil.isBlank(path)) {
-            path = env.getProperty("server.tomcat.basedir");
-            if (StrUtil.isNotBlank(path)) {
-                path = new File(path).getParentFile().getPath() + File.separator + "upload";
-            }
+            path = new File(env.getProperty("server.tomcat.basedir")).getParentFile().getPath() + File.separator + "upload";
         }
         uploadPath = path;
     }
@@ -94,8 +94,8 @@ public class MultipartFileUtils {
         if (file == null || !file.exists()) {
             return null;
         }
-        FileItemFactory factory = new DiskFileItemFactory(16, null);
-        FileItem fileItem = factory.createItem("textField", "text/plain", true, file.getName());
+        FileItem fileItem = new DiskFileItemFactory(16, null)
+                .createItem("textField", "text/plain", true, file.getName());
         try {
             IoUtil.copy(new FileInputStream(file), fileItem.getOutputStream());
         } catch (Exception e) {
@@ -109,18 +109,25 @@ public class MultipartFileUtils {
      * base64转文件
      */
     public static File base64ToFile(String base64) {
+        String filePath = uploadPath + File.separator + IdUtil.simpleUUID();
+        return base64ToFile(base64, filePath);
+    }
+
+    public static File base64ToFile(String base64, String filePath) {
         // data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64_string}
-        String fileName = uploadPath + File.separator + IdUtil.simpleUUID();
         try {
-            Files.write(Paths.get(fileName), Base64.decode(base64.contains(",") ? base64 : base64.split(",")[1]), StandardOpenOption.CREATE);
-        } catch (IOException e) {
+            return Base64.decodeToFile(base64.contains(",") ? base64.split(",")[1] : base64, new File(filePath));
+        } catch (Exception e) {
             return null;
         }
-        return new File(fileName);
     }
 
     public static MultipartFile base64ToMultipartFile(String base64) {
         return fileToMultipartFile(base64ToFile(base64));
+    }
+
+    public static MultipartFile base64ToMultipartFile(String base64, String filePath) {
+        return fileToMultipartFile(base64ToFile(base64, filePath));
     }
 
 }
