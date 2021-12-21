@@ -6,6 +6,7 @@ import cn.hutool.crypto.SecureUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -34,8 +35,8 @@ public class SignUtils {
     /**
      * 加密
      *
-     * @param data 明文
-     * @param key 密钥
+     * @param data      明文
+     * @param key       密钥
      * @param algorithm 算法 如:HmacSHA1/HmacSHA256
      * @return 密文
      */
@@ -68,7 +69,11 @@ public class SignUtils {
     public static String paramToQueryString(Map<String, Object> params, String paramDelimiter, String keyValueDelimiter) {
         StrJoiner stringJoiner = new StrJoiner(paramDelimiter);
         // 参数KEY排序
-        MapUtil.sort(params).forEach((key, value) -> stringJoiner.append(urlEncode(key) + keyValueDelimiter + urlEncode(value.toString())));
+        MapUtil.sort(params).forEach((key, value) -> {
+            if (!(value instanceof File)) {
+                stringJoiner.append(urlEncode(key) + keyValueDelimiter + urlEncode(value.toString()));
+            }
+        });
         return stringJoiner.toString();
     }
 
