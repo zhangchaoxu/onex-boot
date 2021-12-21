@@ -1,6 +1,6 @@
 package com.nb6868.onex.msg.mail;
 
-import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 
 /**
@@ -11,7 +11,7 @@ import com.nb6868.onex.msg.entity.MailTplEntity;
 public class WxMpTemplateMailService extends AbstractMailService {
 
     @Override
-    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
+    public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
         /*WxMaService wxMaService = WechatMaPropsConfig.getService("");
 
         // 可能是发送多个

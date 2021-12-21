@@ -7,7 +7,7 @@ import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.mail.email.EmailProps;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
@@ -52,7 +52,7 @@ public class EmailMailService extends AbstractMailService {
     }
 
     @Override
-    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
+    public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
         // 序列化电子邮件配置
         EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class);
         AssertUtils.isNull(emailProps, "电子邮件配置参数异常");

@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "消息发送请求")
-public class MailSendRequest implements Serializable {
+public class MailSendForm implements Serializable {
 
     @ApiModelProperty(value = "模板编码", required = true)
     @NotBlank(message = "模板编码不能为空", groups = AddGroup.class)
