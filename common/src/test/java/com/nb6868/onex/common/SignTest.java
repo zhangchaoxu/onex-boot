@@ -4,6 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.util.SignUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,9 @@ public class SignTest {
                 paramJoin.append(key + apiParamSplit + value);
             }
         });
+        String paramJoin2 = SignUtils.paramToQueryString(apiParams, "", "");
         log.info("参数拼接,字符串={}", paramJoin);
+        log.info("参数拼接,字符串2={}", paramJoin2);
         log.info("参数拼接+body,字符串={}", paramJoin + apiBody.toString());
         log.info("参数拼接+body+method,字符串={}", paramJoin + apiBody.toString() + apiMethod.toUpperCase());
         log.info("参数拼接+body+method+url,字符串={}", paramJoin + apiBody.toString() + apiMethod.toUpperCase() + apiPath);
@@ -51,6 +54,7 @@ public class SignTest {
         log.info("##############");
         String md5Hutool = SecureUtil.md5(rawString);
         String md5Spring = DigestUtils.md5DigestAsHex(rawString.getBytes());
+        // 3b9f4c773c7818b81d793ed4830401ab
         log.info("hutool最终结果32位16进制md5,sign={}", md5Hutool);
         log.info("java最终结果32位16进制md5,sign={}", md5Spring);
         log.info("https://api.zillionsource.com/v1/devices?clientkey={}&_t={}&sign={}", MapUtil.getStr(apiParams, "clientkey"), MapUtil.getStr(apiParams,"_t"), md5Hutool);
