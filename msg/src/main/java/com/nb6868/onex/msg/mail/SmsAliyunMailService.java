@@ -4,10 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.AliSignUtils;
-import com.nb6868.onex.common.util.JacksonUtils;
-import com.nb6868.onex.common.util.SpringContextUtils;
-import com.nb6868.onex.common.util.TemplateUtils;
+import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.dto.MailSendRequest;
 import com.nb6868.onex.msg.entity.MailLogEntity;
@@ -64,7 +61,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         mailLogService.save(mailLog);
 
         // 封装阿里云接口参数
-        Map<String, String> paras = new HashMap<>();
+        Map<String, Object> paras = new HashMap<>();
         paras.put("SignatureMethod", "HMAC-SHA1");
         paras.put("SignatureNonce", UUID.randomUUID().toString());
         paras.put("AccessKeyId", smsProps.getAppKey());
@@ -82,9 +79,9 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.put("OutId", String.valueOf(mailLog.getId()));
         // 去除签名关键字Key
         paras.remove("Signature");
-        String sortedQueryString = AliSignUtils.paramToQueryString(paras);
+        String sortedQueryString = SignUtils.paramToQueryString(paras);
         // 参数签名
-        String sign = AliSignUtils.signature( "GET" + "&" + AliSignUtils.urlEncode("/") + "&" + AliSignUtils.urlEncode(sortedQueryString),smsProps.getAppSecret() + "&", "HmacSHA1");
+        String sign = SignUtils.signToBase64( "GET" + "&" + SignUtils.urlEncode("/") + "&" + SignUtils.urlEncode(sortedQueryString),smsProps.getAppSecret() + "&", "HmacSHA1");
 
         // 调用接口发送
         try {
