@@ -7,7 +7,6 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -17,7 +16,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.dao.MailLogDao;
 import com.nb6868.onex.msg.dto.MailLogDTO;
-import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.mail.*;
@@ -76,7 +75,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
     /**
      * 发送消息
      */
-    public boolean send(MailSendRequest request) {
+    public boolean send(MailSendForm request) {
         MailTplEntity mailTpl = mailTplService.getOneByColumn("code", request.getTplCode());
         AssertUtils.isNull(mailTpl, "未定义的消息模板:" + request.getTplCode());
 
@@ -126,7 +125,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
             Object target = SpringContextUtils.getBean(serviceName);
             // 通过反射执行run方法
             try {
-                Method method = target.getClass().getDeclaredMethod("sendMail", MailTplEntity.class, MailSendRequest.class);
+                Method method = target.getClass().getDeclaredMethod("sendMail", MailTplEntity.class, MailSendForm.class);
                 return (boolean) method.invoke(target, mailTpl, request);
             } catch (Exception e) {
                 log.error("发送消息发生错误", e);

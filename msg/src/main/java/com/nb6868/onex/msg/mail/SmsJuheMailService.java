@@ -6,7 +6,7 @@ import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
@@ -30,7 +30,7 @@ public class SmsJuheMailService extends AbstractMailService {
     private static final String JUHE_SMS_SEND_URL = "http://v.juhe.cn/sms/send?key={1}&mobile={2}&tpl_id={3}&tpl_value={4}";
 
     @Override
-    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
+    public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
         SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 

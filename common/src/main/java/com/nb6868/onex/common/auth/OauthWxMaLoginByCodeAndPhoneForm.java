@@ -17,8 +17,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "微信小程序通过code和用户手机号登录请求")
-public class OauthWxMaLoginByCodeAndPhone implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class OauthWxMaLoginByCodeAndPhoneForm implements Serializable {
 
     @ApiModelProperty(value = "登录配置编码", example = "WX_MA")
     private String authConfigType = "WX_MA";

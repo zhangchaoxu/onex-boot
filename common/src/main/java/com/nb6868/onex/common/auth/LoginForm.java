@@ -11,9 +11,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "登录请求")
-public class LoginRequest implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class LoginForm implements Serializable {
     /**
      * 验证码校验
      */

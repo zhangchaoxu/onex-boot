@@ -18,8 +18,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "通过code第三方登录请求")
-public class OauthLoginByCodeRequest implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class OauthLoginByCodeForm implements Serializable {
 
     @ApiModelProperty(value = "配置信息编码", required = true)
     @NotBlank(message = "配置信息编码")

@@ -6,7 +6,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
-import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 
 /**
@@ -18,7 +18,7 @@ import com.nb6868.onex.msg.entity.MailTplEntity;
 public class RobotDingtalkMailService extends AbstractMailService {
 
     @Override
-    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
+    public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
         JSONObject tplParam = JSONUtil.parseObj(mailTpl.getParam());
         JSONObject sendParam = JSONUtil.parseObj(request.getContentParam());
         String msgtype = sendParam.getStr("msgtype");

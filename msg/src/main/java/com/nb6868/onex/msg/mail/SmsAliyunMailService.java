@@ -9,7 +9,7 @@ import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
@@ -33,7 +33,7 @@ import java.util.Map;
 public class SmsAliyunMailService extends AbstractMailService {
 
     @Override
-    public boolean sendMail(MailTplEntity mailTpl, MailSendRequest request) {
+    public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
         SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
