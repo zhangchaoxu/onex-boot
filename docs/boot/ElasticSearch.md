@@ -8,6 +8,15 @@
 3. 执行,后台执行
 `./bin/elasticsearch -d`
 4. 验证,访问ip:9002,注意防火墙
+5. 重启方法
+```
+# jps或者ps -ef|grep elastic查看进程
+jps
+# kill
+kill -9 {pid}
+# 启动
+./elasticsearch -d
+```
 
 ### 注意点
 1. ES不允许使用root账户执行,否则会提示错误can not run elasticsearch as root,需要创建用户`adduser elasticsearch`
