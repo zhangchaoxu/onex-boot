@@ -97,3 +97,10 @@ exclude中加了DruidDataSourceAutoConfigure.class是为了适配[Dynamic Dataso
 - 起因: 在本地用EasyConnect开启一个VPN代理以后，在IDEA运行java程序，网络请求没有从代理走。
 - 解决: 在java启动参数中加上`-Djava.net.preferIPv4Stack=true`
   ![img](../_media/issue-ipv4-stack.png)
+
+## 10. 宝塔面板跳过强制登录
+- 起因: 宝塔面板新版本，强制要求登录
+- 解决: 
+```shell
+mv /www/server/panel/data/bind.pl /www/server/panel/data/bind.pl.bak
+```
