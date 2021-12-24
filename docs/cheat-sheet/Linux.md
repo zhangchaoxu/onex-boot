@@ -93,9 +93,7 @@ vi /etc/logrotate.conf
 ```shell
 # keep 4 weeks worth of backlogs
 rotate 26
-
-......
-
+# 省略其它代码
 # no packages own wtmp and btmp -- we'll rotate them here
 /var/log/wtmp {
     monthly
@@ -150,4 +148,49 @@ chattr -i .user.ini
 搜索文本中的内容关键词
 ```shell
 find . | xargs grep -ri '{keywords}'
+```
+
+### 磁盘挂载
+目前需要云服务器的磁盘提供的云磁盘,需要用户手动挂载,常用的方法是fdisk格式化云磁盘,然后将磁盘挂载到服务器,具体见[初始化Linux数据盘（fdisk）](https://support.huaweicloud.com/qs-evs/evs_01_0033.html)
+```shell
+# 查看新磁盘
+fdisk -l
+
+# 进入新增盘,“/dev/vdb”为例
+fdisk /dev/vdb
+
+# 开始新建分区
+n
+
+# 选择分区类型
+p
+
+# 选择分区序号
+1
+
+# 选择分区起始点
+
+# 查看新建分区的详细信息
+p
+
+# 将分区结果写入分区表
+w
+
+# 将新的分区表变更同步至操作系统
+partprobe
+
+# 将新建分区文件系统设为系统所需格式
+mkfs -t ext4 /dev/vdb1
+
+# 新建挂载目录
+mkdir /mnt/sdc
+
+# 挂载
+mount /dev/vdb1 /mnt/sdc
+
+# 查看挂载结果
+df -TH
+
+
+
 ```
