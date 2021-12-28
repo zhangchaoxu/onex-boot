@@ -101,7 +101,6 @@ rotate 26
         minsize 1M
     rotate 3
 }
-
 /var/log/btmp {
     missingok
     monthly
