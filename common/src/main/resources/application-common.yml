@@ -58,8 +58,7 @@ spring:
         # 队列大小
         queue-capacity: 1024
         # 现成最大空闲时间(s)
-        keep-alive: 300
-
+        keep-alive: 300s
 
 # mybatis plus
 # see {https://mybatis.plus/config/}
@@ -102,16 +101,16 @@ knife4j:
 onex:
   # 过滤器
   filter:
-    enable: true
+    enable: false
   # mybatis配置
   mybatisplus:
-    enable: true
+    enable: false
   # swagger
   swagger:
-    enable: true
+    enable: false
   # WebMVC
   webmvc:
-    enable: true
+    enable: false
   # WebSocket
   websocket:
     enable: false
