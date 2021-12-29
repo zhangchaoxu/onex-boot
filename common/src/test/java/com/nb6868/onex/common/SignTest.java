@@ -42,7 +42,7 @@ public class SignTest {
                 paramJoin.append(key + apiParamSplit + value);
             }
         });
-        String paramJoin2 = SignUtils.paramToQueryString(apiParams, "", "");
+        String paramJoin2 = SignUtils.paramToQueryString(apiParams, "", "", true);
         log.info("参数拼接,字符串={}", paramJoin);
         log.info("参数拼接,字符串2={}", paramJoin2);
         log.info("参数拼接+body,字符串={}", paramJoin + apiBody.toString());

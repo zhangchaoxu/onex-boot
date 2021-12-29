@@ -55,7 +55,11 @@ public class SignUtils {
     }
 
     public static String paramToQueryString(Map<String, Object> params) {
-        return paramToQueryString(params, "&", "=");
+        return paramToQueryString(params, "&", "=", true);
+    }
+
+    public static String paramToQueryString(Map<String, Object> params, boolean urlEncode) {
+        return paramToQueryString(params, "&", "=", urlEncode);
     }
 
     /**
@@ -66,12 +70,16 @@ public class SignUtils {
      * @param keyValueDelimiter 参数键值之间分隔符 默认=
      * @return 拼接后的内容
      */
-    public static String paramToQueryString(Map<String, Object> params, String paramDelimiter, String keyValueDelimiter) {
+    public static String paramToQueryString(Map<String, Object> params, String paramDelimiter, String keyValueDelimiter, boolean urlEncode) {
         StrJoiner stringJoiner = new StrJoiner(paramDelimiter);
         // 参数KEY排序
         MapUtil.sort(params).forEach((key, value) -> {
             if (!(value instanceof File)) {
-                stringJoiner.append(urlEncode(key) + keyValueDelimiter + urlEncode(value.toString()));
+                if (urlEncode) {
+                    stringJoiner.append(urlEncode(key) + keyValueDelimiter + urlEncode(value.toString()));
+                } else {
+                    stringJoiner.append(key + keyValueDelimiter + value.toString());
+                }
             }
         });
         return stringJoiner.toString();
