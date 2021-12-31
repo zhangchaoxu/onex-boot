@@ -92,11 +92,15 @@ public class LogOperationAspect {
         // 登录用户信息
         if ("login".equalsIgnoreCase(logType)) {
             // 登录
-            JSONObject loginRequest = JSONUtil.parseObj(requestParam);
-            logEntity.setCreateName(MapUtil.getStr(loginRequest, "username"));
-            // 移除登录密码,否则会导致密码泄露
-            loginRequest.remove("password");
-            logEntity.setParams(JSONUtil.toJsonStr(loginRequest));
+            try {
+                JSONObject loginRequest = JSONUtil.parseObj(requestParam);
+                logEntity.setCreateName(MapUtil.getStr(loginRequest, "username"));
+                // 移除登录密码,否则会导致密码泄露
+                loginRequest.remove("password");
+                logEntity.setParams(JSONUtil.toJsonStr(loginRequest));
+            } catch (Exception e) {
+                logEntity.setParams(requestParam);
+            }
         } else {
            /* UserDetail user = SecurityUser.getUser();
             logEntity.setCreateName(user.getUsername());*/
