@@ -19,7 +19,7 @@ public class JwtUtils {
     public static JWT parseToken(String token) {
         try {
             return JWT.of(token);
-        } catch (JWTException e) {
+        } catch (Exception e) {
             return null;
         }
     }
