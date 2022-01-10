@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -25,6 +26,7 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 @Slf4j
+@Order(100)
 public class AccessControlAspect {
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.AccessControl)")
@@ -33,40 +35,34 @@ public class AccessControlAspect {
 
     @Around("pointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        try {
-            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-            Method method = joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
-            AccessControl annotation = method.getAnnotation(AccessControl.class);
-            if (annotation != null) {
-                if ("white".equalsIgnoreCase(annotation.ipFilter()) && ObjectUtil.isNotEmpty(annotation.ipWhite())) {
-                    // 白名单
-                    String ip = HttpContextUtils.getIpAddr(HttpContextUtils.getHttpServletRequest());
-                    for (String s : annotation.ipWhite()) {
-                        if (ReUtil.isMatch(s, ip)) {
-                            return joinPoint.proceed();
-                        }
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
+        AccessControl annotation = method.getAnnotation(AccessControl.class);
+        if (annotation != null) {
+            if ("white".equalsIgnoreCase(annotation.ipFilter()) && ObjectUtil.isNotEmpty(annotation.ipWhite())) {
+                // 白名单
+                String ip = HttpContextUtils.getIpAddr(HttpContextUtils.getHttpServletRequest());
+                for (String s : annotation.ipWhite()) {
+                    if (ReUtil.isMatch(s, ip)) {
+                        return joinPoint.proceed();
                     }
-                    // 返回错误
-                    return new Result<>().error(ErrorCode.IP_BLACK);
-                } else if ("black".equalsIgnoreCase(annotation.ipFilter()) && ObjectUtil.isNotEmpty(annotation.ipBlack())) {
-                    // 黑名单
-                    String ip = HttpContextUtils.getIpAddr(HttpContextUtils.getHttpServletRequest());
-                    for (String s : annotation.ipBlack()) {
-                        if (ReUtil.isMatch(s, ip)) {
-                            return new Result<>().error(ErrorCode.IP_BLACK);
-                        }
-                    }
-                    return joinPoint.proceed();
-                } else {
-                    // 放行
-                    return joinPoint.proceed();
                 }
+                // 返回错误
+                return new Result<>().error(ErrorCode.IP_BLACK);
+            } else if ("black".equalsIgnoreCase(annotation.ipFilter()) && ObjectUtil.isNotEmpty(annotation.ipBlack())) {
+                // 黑名单
+                String ip = HttpContextUtils.getIpAddr(HttpContextUtils.getHttpServletRequest());
+                for (String s : annotation.ipBlack()) {
+                    if (ReUtil.isMatch(s, ip)) {
+                        return new Result<>().error(ErrorCode.IP_BLACK);
+                    }
+                }
+                return joinPoint.proceed();
             } else {
+                // 放行
                 return joinPoint.proceed();
             }
-        } catch (Exception e) {
-            log.error("AccessControl around error", e);
-            // 遇到错误直接放行
+        } else {
             return joinPoint.proceed();
         }
     }
