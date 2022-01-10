@@ -20,6 +20,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -41,6 +42,7 @@ import java.util.Map;
 @Aspect
 @Component
 @Slf4j
+@Order(200)
 public class LogOperationAspect {
 
     @Autowired
