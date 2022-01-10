@@ -346,7 +346,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
             Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
             String keyProperty = tableInfo.getKeyProperty();
             Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-            Object idVal = ReflectionKit.getFieldValue(entity, tableInfo.getKeyProperty());
+            Object idVal = tableInfo.getPropertyValue(entity, tableInfo.getKeyProperty());
             return StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal)) ? save(entity) : updateById(entity);
         }
         return false;
@@ -360,7 +360,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         String keyProperty = tableInfo.getKeyProperty();
         Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
         return SqlHelper.saveOrUpdateBatch(this.entityClass, this.mapperClass, this.log, entityList, batchSize, (sqlSession, entity) -> {
-            Object idVal = ReflectionKit.getFieldValue(entity, keyProperty);
+            Object idVal = tableInfo.getPropertyValue(entity, keyProperty);
             return StringUtils.checkValNull(idVal)
                     || CollectionUtils.isEmpty(sqlSession.selectList(getSqlStatement(SqlMethod.SELECT_BY_ID), entity));
         }, (sqlSession, entity) -> {
@@ -436,6 +436,68 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      */
     protected <E> boolean executeBatch(Collection<E> list, BiConsumer<SqlSession, E> consumer) {
         return executeBatch(list, DEFAULT_BATCH_SIZE, consumer);
+    }
+
+    @Override
+    public boolean removeById(Serializable id) {
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
+        if (tableInfo.isWithLogicDelete() && tableInfo.isWithUpdateFill()) {
+            return removeById(id, true);
+        }
+        return SqlHelper.retBool(getBaseMapper().deleteById(id));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeByIds(Collection<?> list) {
+        if (CollectionUtils.isEmpty(list)) {
+            return false;
+        }
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
+        if (tableInfo.isWithLogicDelete() && tableInfo.isWithUpdateFill()) {
+            return removeBatchByIds(list, true);
+        }
+        return SqlHelper.retBool(getBaseMapper().deleteBatchIds(list));
+    }
+
+    @Override
+    public boolean removeById(Serializable id, boolean useFill) {
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+        if (useFill && tableInfo.isWithLogicDelete()) {
+            if (!entityClass.isAssignableFrom(id.getClass())) {
+                T instance = tableInfo.newInstance();
+                tableInfo.setPropertyValue(instance, tableInfo.getKeyProperty(), id);
+                return removeById(instance);
+            }
+        }
+        return SqlHelper.retBool(getBaseMapper().deleteById(id));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeBatchByIds(Collection<?> list, int batchSize) {
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+        return removeBatchByIds(list, batchSize, tableInfo.isWithLogicDelete() && tableInfo.isWithUpdateFill());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeBatchByIds(Collection<?> list, int batchSize, boolean useFill) {
+        String sqlStatement = getSqlStatement(SqlMethod.DELETE_BY_ID);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+        return executeBatch(list, batchSize, (sqlSession, e) -> {
+            if (useFill && tableInfo.isWithLogicDelete()) {
+                if (entityClass.isAssignableFrom(e.getClass())) {
+                    sqlSession.update(sqlStatement, e);
+                } else {
+                    T instance = tableInfo.newInstance();
+                    tableInfo.setPropertyValue(instance, tableInfo.getKeyProperty(), e);
+                    sqlSession.update(sqlStatement, instance);
+                }
+            } else {
+                sqlSession.update(sqlStatement, e);
+            }
+        });
     }
     // [-] ServiceImpl
 
