@@ -70,7 +70,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.put("AccessKeyId", smsProps.getAppKey());
         paras.put("SignatureVersion", "1.0");
         // "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        paras.put("Timestamp", DateUtil.format(new Date(), DatePattern.UTC_PATTERN));
+        paras.put("Timestamp", DateUtil.format(new Date(), DatePattern.UTC_FORMAT));
         paras.put("Format", "JSON");
         paras.put("Action", "SendSms");
         paras.put("Version", "2017-05-25");
