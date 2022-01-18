@@ -2,6 +2,7 @@ package com.nb6868.onex.common.websocket;
 
 import cn.hutool.core.collection.CollUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -23,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint("/ws/{sid}")
 public class WebSocketServer {
 
+    @Value("${onex.websocket.max-idle-timeout:3600000}")
+    private long maxIdleTimeout;
+
     // 线程安全Set，存放每个客户端对应的MyWebSocket对象
     private final static Map<String, WebSocketServer> webSockets = new ConcurrentHashMap<>();
     // 与某个客户端的连接会话，需要通过它来给客户端发送数据
@@ -42,6 +46,7 @@ public class WebSocketServer {
      */
     @OnOpen
     public void onOpen(@PathParam(value = "sid") String sid, Session session) {
+        session.setMaxIdleTimeout(maxIdleTimeout);
         this.session = session;
         webSockets.put(sid, this);
         log.info("[websocket], OnOpen, sid={}, total={}", sid, webSockets.size());
