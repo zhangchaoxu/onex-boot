@@ -2,6 +2,7 @@ package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
@@ -57,8 +58,8 @@ public class EmailMailService extends AbstractMailService {
         EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class);
         AssertUtils.isNull(emailProps, "电子邮件配置参数异常");
         // 组装标题和内容
-        String title = TemplateUtils.renderRaw(mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()));
-        String content = TemplateUtils.renderRaw(mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()));
+        String title = TemplateUtils.renderRaw(mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()), FreemarkerEngine.class);
+        String content = TemplateUtils.renderRaw(mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()), FreemarkerEngine.class);
         // 创建发送器和邮件消息
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();

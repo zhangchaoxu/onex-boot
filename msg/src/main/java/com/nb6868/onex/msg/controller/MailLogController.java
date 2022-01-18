@@ -5,6 +5,7 @@ import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
+import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.dto.MailLogDTO;
 import com.nb6868.onex.msg.dto.MailSendForm;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.groups.Default;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +58,7 @@ public class MailLogController {
     @ApiOperation("发送消息")
     @LogOperation("发送消息")
     @RequiresPermissions("msg:mailLog:send")
-    public Result<?> send(@Validated(value = {AddGroup.class}) @RequestBody MailSendForm dto) {
+    public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm dto) {
         boolean flag = mailLogService.send(dto);
         if (flag) {
             return new Result<>();
@@ -68,7 +70,7 @@ public class MailLogController {
     @PostMapping("sendCode")
     @ApiOperation("发送验证码消息")
     @LogOperation("发送验证码消息")
-    public Result<?> sendCode(@Validated(value = {AddGroup.class}) @RequestBody MailSendForm dto) {
+    public Result<?> sendCode(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm dto) {
         // 只允许发送CODE_开头的模板
         AssertUtils.isFalse(dto.getTplCode().startsWith(MsgConst.SMS_CODE_TPL_PREFIX), "只支持" + MsgConst.SMS_CODE_TPL_PREFIX + "类型模板发送");
         boolean flag = mailLogService.send(dto);
