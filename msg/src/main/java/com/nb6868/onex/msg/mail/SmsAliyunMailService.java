@@ -2,9 +2,8 @@ package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.*;
@@ -58,7 +57,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         mailLog.setTplType(mailTpl.getType());
         mailLog.setContentParams(request.getContentParam());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(TemplateUtils.renderRaw(mailTpl.getContent(), paramMap, FreemarkerEngine.class));
+        mailLog.setContent(StrUtil.format(mailTpl.getContent(), paramMap));
         mailLog.setState(Const.ResultEnum.FAIL.value());
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
