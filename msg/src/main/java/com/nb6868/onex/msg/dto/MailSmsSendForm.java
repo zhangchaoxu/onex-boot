@@ -15,7 +15,7 @@ import java.io.Serializable;
 @ApiModel(value = "短信发送请求")
 public class MailSmsSendForm implements Serializable {
 
-    @ApiModelProperty(value = "模板编码", required = true)
+    @ApiModelProperty(value = "模板编码", required = true, example = "CODE_LOGIN")
     @NotBlank(message = "模板编码不能为空", groups = Default.class)
     private String tplCode = MsgConst.SMS_TPL_LOGIN;
 
