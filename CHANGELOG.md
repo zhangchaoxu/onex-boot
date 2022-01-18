@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [2.1.36] 2022.01.18
+## [2.1.37] 2022.01.18
 - fix: 消息模板引擎指定问题
+- fix: 阿里云短信发送问题
 - 
 ## [2.1.34] 2022.01.10
 - fix: AccessControl和LogOperation注解冲突,导致LogOperation切片过了两次的bug
