@@ -1,6 +1,6 @@
 package com.nb6868.onex.msg.mail;
 
-import com.nb6868.onex.msg.dto.MailSendRequest;
+import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 
 /**
@@ -13,9 +13,9 @@ public abstract class AbstractMailService {
     /**
      * 发送消息
      * @param mailTpl 消息模板
-     * @param request 消息请求
+     * @param mailSendForm 消息请求
      * @return 发送结果
      */
-    public abstract boolean sendMail(MailTplEntity mailTpl, MailSendRequest request);
+    public abstract boolean sendMail(MailTplEntity mailTpl, MailSendForm mailSendForm);
 
 }
