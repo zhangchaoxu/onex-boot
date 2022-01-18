@@ -1,6 +1,5 @@
 package com.nb6868.onex.msg.dto;
 
-import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.msg.MsgConst;
 import io.swagger.annotations.ApiModel;
@@ -18,7 +17,7 @@ import java.util.List;
 @ApiModel(value = "消息发送请求")
 public class MailSendForm implements Serializable {
 
-    @ApiModelProperty(value = "模板编码", required = true)
+    @ApiModelProperty(value = "模板编码", required = true, example = "CODE_LOGIN")
     @NotBlank(message = "模板编码不能为空", groups = DefaultGroup.class)
     private String tplCode = MsgConst.SMS_TPL_LOGIN;
 

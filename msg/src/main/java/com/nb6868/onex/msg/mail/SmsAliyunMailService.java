@@ -1,7 +1,9 @@
 package com.nb6868.onex.msg.mail;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
@@ -64,10 +66,11 @@ public class SmsAliyunMailService extends AbstractMailService {
         // 封装阿里云接口参数
         Map<String, Object> paras = new HashMap<>();
         paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", UUID.randomUUID().toString());
+        paras.put("SignatureNonce", IdUtil.fastUUID());
         paras.put("AccessKeyId", smsProps.getAppKey());
         paras.put("SignatureVersion", "1.0");
-        paras.put("Timestamp", DateUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+        // "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        paras.put("Timestamp", DateUtil.format(new Date(), DatePattern.UTC_PATTERN));
         paras.put("Format", "JSON");
         paras.put("Action", "SendSms");
         paras.put("Version", "2017-05-25");
@@ -82,8 +85,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.remove("Signature");
         String sortedQueryString = SignUtils.paramToQueryString(paras);
         // 参数签名
-        String sign = SignUtils.signToBase64( "GET" + "&" + SignUtils.urlEncode("/") + "&" + SignUtils.urlEncode(sortedQueryString),smsProps.getAppSecret() + "&", "HmacSHA1");
-
+        String sign = SignUtils.urlEncode(SignUtils.signToBase64( "GET" + "&" + SignUtils.urlEncode("/") + "&" + SignUtils.urlEncode(sortedQueryString),smsProps.getAppSecret() + "&", "HmacSHA1"));
         // 调用接口发送
         try {
             // 直接get RestTemplate会将参数直接做UrlEncode,需要使用UriComponentsBuilder先build一下
