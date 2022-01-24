@@ -3,6 +3,7 @@
 ## [2.2.0] 2022.01.24
 - upgrade: aliyun oss to 3.14.0
 - upgrade: springboot to 2.6.3
+- upgrade: hutool to 5.7.20
 
 ## [2.1.39] 2022.01.18
 - fix: 消息模板引擎指定问题
