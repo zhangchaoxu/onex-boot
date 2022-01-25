@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [2.2.1] 2022.01.25
+- upgrade: MybatisPlus to 3.5.1
+
 ## [2.2.0] 2022.01.24
 - upgrade: aliyun oss to 3.14.0
 - upgrade: springboot to 2.6.3
