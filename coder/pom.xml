@@ -12,10 +12,10 @@
     <packaging>jar</packaging>
 
     <properties>
-        <mybatisplus.version>3.4.3.4</mybatisplus.version>
+        <mybatisplus.version>3.5.1</mybatisplus.version>
         <druid.version>1.2.8</druid.version>
         <commons.configuration.version>1.10</commons.configuration.version>
-        <hutool.version>5.7.19</hutool.version>
+        <hutool.version>5.7.20</hutool.version>
         <velocity.version>1.7</velocity.version>
         <commons.collections.version>3.2.2</commons.collections.version>
         <screw.version>1.0.5</screw.version>
