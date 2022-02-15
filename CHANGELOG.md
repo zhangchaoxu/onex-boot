@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [2.2.1] 2022.02.15
+- upgrade: hutool to 5.7.21
+- 
 ## [2.2.1] 2022.01.25
 - upgrade: MybatisPlus to 3.5.1
 
