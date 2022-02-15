@@ -41,7 +41,10 @@
   * [地图](ui/Map.md)
     
 * [DevOps](DevOps.md)
-    * [运维实践](DevOpsCase.md)
+  * [运维实践](DevOpsCase.md)
+
+* 系统功能
+  * [地理区域](GEO.md)
 
 * Cheat Sheet
   * [Linux Cheat Sheet](cheat-sheet/Linux.md)
