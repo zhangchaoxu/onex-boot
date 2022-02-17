@@ -1,11 +1,14 @@
 package com.nb6868.onex.common.config;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 
 import java.util.Map;
 
 /**
  * 动态表名参数传递辅助类
+ *
+ * @author Charles zhangchaoxu@gmail.com
  */
 public class DynamicTableParamHelper {
 
@@ -24,18 +27,10 @@ public class DynamicTableParamHelper {
     }
 
     /**
-     * 获取请求参数
-     *
-     * @param param 请求参数
-     * @return 请求参数 MAP 对象
+     * 清空请求参数
      */
-    @SuppressWarnings("unchecked")
-    public static <T> T getParamData(String param) {
-        Map<String, Object> dataMap = getParamData();
-        if (CollectionUtils.isNotEmpty(dataMap)) {
-            return (T) dataMap.get(param);
-        }
-        return null;
+    public static void removeParamData() {
+        PARAM_DATA.remove();
     }
 
     /**
@@ -45,6 +40,31 @@ public class DynamicTableParamHelper {
      */
     public static Map<String, Object> getParamData() {
         return PARAM_DATA.get();
+    }
+
+    /**
+     * 获取请求参数
+     *
+     * @param key  请求参数
+     * @param type 数据类型
+     * @return 请求参数 MAP 对象
+     */
+    public static <T> T getParamData(String key, Class<T> type) {
+        Map<String, Object> dataMap = getParamData();
+        return MapUtil.get(dataMap, key, type);
+    }
+
+    /**
+     * 获取请求参数
+     *
+     * @param key 请求参数
+     * @param type 数据类型
+     * @param defaultValue 默认值
+     * @return 请求参数 MAP 对象
+     */
+    public static <T> T getParamData(String key, Class<T> type, T defaultValue) {
+        Map<String, Object> dataMap = getParamData();
+        return MapUtil.get(dataMap, key, type, defaultValue);
     }
 
 }
