@@ -1,8 +1,11 @@
 # CHANGELOG
 
-## [2.2.1] 2022.02.15
+## [2.2.2] 2022.02.15
 - upgrade: hutool to 5.7.21
-- 
+- optimize: optimize file upload
+- new: add upload base64
+- new: add Base64FileUtils 
+
 ## [2.2.1] 2022.01.25
 - upgrade: MybatisPlus to 3.5.1
 
