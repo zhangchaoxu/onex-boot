@@ -4,9 +4,7 @@ import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
-import com.nb6868.onex.common.util.AliSignUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
+import com.nb6868.onex.common.util.SignUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -101,13 +99,13 @@ public class DingTalkApi {
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("tmp_auth_code", code);
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String signature = AliSignUtils.signature(timestamp, appSecret, "HmacSHA256");
+        String signature = SignUtils.signToBase64(timestamp, appSecret, "HmacSHA256");
         // fuck RestTemplate 自动会对url做encode
         URI uri = UriComponentsBuilder
                 .fromHttpUrl(GET_USERINFO_BY_CODE)
                 .queryParam("accessKey", appId)
                 .queryParam("timestamp", timestamp)
-                .queryParam("signature", AliSignUtils.urlEncode(signature))
+                .queryParam("signature", SignUtils.urlEncode(signature))
                 .build(true)
                 .toUri();
 

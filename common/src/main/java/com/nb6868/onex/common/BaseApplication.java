@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class BaseApplication extends SpringBootServletInitializer {
+public class   BaseApplication extends SpringBootServletInitializer {
 
     /**
      * 打印出环境信息

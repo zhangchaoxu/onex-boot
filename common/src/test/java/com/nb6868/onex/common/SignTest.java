@@ -3,10 +3,11 @@ package com.nb6868.onex.common;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.util.SignUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.DigestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,20 +20,15 @@ public class SignTest {
     @DisplayName("接口签名")
     void signApi() {
         // 加密字符串
-        String secret = "abcd1234";
+        String secret = "znrlZErG74WKWv6VLLbKFmUQ93VebesE";
         // 接口参数
         Map<String, Object> apiParams = new HashMap<>();
-        apiParams.put("outerId", "190948777859");
-        apiParams.put("presHash", "presHash");
-        apiParams.put("presTitle", "拼多多-190948777859");
-        apiParams.put("presType", "199");
-        apiParams.put("presEntityType", "1");
-        apiParams.put("presEntityCode", "91330");
-        apiParams.put("appKey", "190948777859");
+        apiParams.put("_t", System.currentTimeMillis());
+        apiParams.put("clientkey", "K3OWcL9PBqzavTdrmlUDmID0FTnbUvdN");
         String apiParamSplit = ""; // "&"
         String apiParamJoin = ""; // "="
         // 接口Body
-        Object apiBody = new JSONObject().set("h", 1);
+        Object apiBody = "";
         // 接口方法
         String apiMethod = "get";
         // 接口路径
@@ -46,13 +42,21 @@ public class SignTest {
                 paramJoin.append(key + apiParamSplit + value);
             }
         });
+        String paramJoin2 = SignUtils.paramToQueryString(apiParams, "", "", true);
         log.info("参数拼接,字符串={}", paramJoin);
+        log.info("参数拼接,字符串2={}", paramJoin2);
         log.info("参数拼接+body,字符串={}", paramJoin + apiBody.toString());
         log.info("参数拼接+body+method,字符串={}", paramJoin + apiBody.toString() + apiMethod.toUpperCase());
         log.info("参数拼接+body+method+url,字符串={}", paramJoin + apiBody.toString() + apiMethod.toUpperCase() + apiPath);
+        String rawString = secret + paramJoin + apiBody + apiMethod.toUpperCase() + apiPath + secret;
+        log.info("加密前明文,字符串={}", rawString);
         log.info("##############");
-        String md5 = SecureUtil.md5(secret + paramJoin + apiBody.toString() + apiMethod.toUpperCase() + apiPath + secret);
-        log.info("最终结果32位16进制md5,sign={}", md5);
+        String md5Hutool = SecureUtil.md5(rawString);
+        String md5Spring = DigestUtils.md5DigestAsHex(rawString.getBytes());
+        // 3b9f4c773c7818b81d793ed4830401ab
+        log.info("hutool最终结果32位16进制md5,sign={}", md5Hutool);
+        log.info("java最终结果32位16进制md5,sign={}", md5Spring);
+        log.info("https://api.zillionsource.com/v1/devices?clientkey={}&_t={}&sign={}", MapUtil.getStr(apiParams, "clientkey"), MapUtil.getStr(apiParams,"_t"), md5Hutool);
     }
 
 }
