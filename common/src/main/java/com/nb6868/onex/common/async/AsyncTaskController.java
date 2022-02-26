@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Api(tags = "异步任务")
 public class AsyncTaskController {
 
-    @Autowired
+    /*@Autowired
     private ThreadPoolTaskExecutor asyncExecutor;
 
     @GetMapping("asyncTaskExecutorStatus")
@@ -33,6 +33,6 @@ public class AsyncTaskController {
                 .set("queueSize", threadPoolExecutor.getQueue().size())
                 .set("queueRemainingCapacity", threadPoolExecutor.getQueue().remainingCapacity());
         return new Result<>().success(dict);
-    }
+    }*/
 
 }

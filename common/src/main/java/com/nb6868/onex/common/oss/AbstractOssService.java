@@ -1,14 +1,21 @@
 package com.nb6868.onex.common.oss;
 
+import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.exception.OnexException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -72,7 +79,9 @@ public abstract class AbstractOssService {
      * @param file 文件
      * @return 返回http地址
      */
-    public abstract String upload(MultipartFile file);
+    public String upload(MultipartFile file) {
+        return upload(null, file);
+    }
 
     /**
      * 文件上传
@@ -80,7 +89,9 @@ public abstract class AbstractOssService {
      * @param file 文件
      * @return 返回http地址
      */
-    public abstract String upload(File file);
+    public String upload(File file) {
+        return upload(null, file);
+    }
 
     /**
      * 文件上传
@@ -89,7 +100,9 @@ public abstract class AbstractOssService {
      * @param fileName    文件名
      * @return 返回http地址
      */
-    public abstract String upload(InputStream inputStream, String fileName);
+    public String upload(InputStream inputStream, String fileName) {
+        return upload(null, inputStream, fileName);
+    }
 
     /**
      * 文件上传
@@ -108,7 +121,15 @@ public abstract class AbstractOssService {
      * @param file   文件
      * @return 返回http地址
      */
-    public abstract String upload(String prefix, MultipartFile file);
+    public String upload(String prefix, MultipartFile file) {
+        InputStream inputStream;
+        try {
+            inputStream = file.getInputStream();
+        } catch (IOException e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        }
+        return upload(prefix, inputStream, file.getOriginalFilename());
+    }
 
     /**
      * 文件上传
@@ -117,7 +138,40 @@ public abstract class AbstractOssService {
      * @param file   文件
      * @return 返回http地址
      */
-    public abstract String upload(String prefix, File file);
+    public String upload(String prefix, File file) {
+        BufferedInputStream inputStream = FileUtil.getInputStream(file);
+        return upload(prefix, inputStream, FileNameUtil.getName(file));
+    }
+
+    /**
+     * base64 上传文件
+     *
+     * @param prefix
+     * @param base64
+     * @return
+     */
+    public String uploadBase64(String prefix, String base64, String fileName) {
+        InputStream inputStream;
+        try {
+            if (base64.split(",").length > 1) {
+                base64 = base64.split(",")[1];
+            }
+            inputStream = IoUtil.toStream(Base64Decoder.decode(base64));
+        } catch (Exception e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        }
+        return upload(prefix, inputStream, fileName);
+    }
+
+    /**
+     * base64 上传文件
+     * @param base64
+     * @param fileName
+     * @return
+     */
+    public String uploadBase64(String base64, String fileName) {
+        return uploadBase64(null, base64, fileName);
+    }
 
     /**
      * 文件下载

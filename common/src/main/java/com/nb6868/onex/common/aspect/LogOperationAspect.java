@@ -20,6 +20,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -41,6 +42,7 @@ import java.util.Map;
 @Aspect
 @Component
 @Slf4j
+@Order(200)
 public class LogOperationAspect {
 
     @Autowired
@@ -54,7 +56,7 @@ public class LogOperationAspect {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         // 记录开始执行时间
         TimeInterval timer = DateUtil.timer();
-        // 需要先把param拿出来,不然processed以后可能会被修改赋值
+        // 先把param拿出来,不然processed以后可能会被修改赋值
         String requestParam = getRequestParam(joinPoint);
         try {
             // 执行方法
@@ -92,11 +94,17 @@ public class LogOperationAspect {
         // 登录用户信息
         if ("login".equalsIgnoreCase(logType)) {
             // 登录
-            JSONObject loginRequest = JSONUtil.parseObj(requestParam);
-            logEntity.setCreateName(MapUtil.getStr(loginRequest, "username"));
-            // 移除登录密码,否则会导致密码泄露
-            loginRequest.remove("password");
-            logEntity.setParams(JSONUtil.toJsonStr(loginRequest));
+            try {
+                JSONObject loginRequest = JSONUtil.parseObj(requestParam);
+                logEntity.setCreateName(MapUtil.getStr(loginRequest, "username"));
+                // 移除登录密码,否则会导致密码泄露
+                if (loginRequest.containsKey("password")) {
+                    loginRequest.set("password", "");
+                }
+                logEntity.setParams(JSONUtil.toJsonStr(loginRequest));
+            } catch (Exception e) {
+                logEntity.setParams(requestParam);
+            }
         } else {
            /* UserDetail user = SecurityUser.getUser();
             logEntity.setCreateName(user.getUsername());*/

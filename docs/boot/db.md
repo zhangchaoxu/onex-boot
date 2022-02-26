@@ -54,6 +54,17 @@ _注意_ 对于update方法只有update\(entity, updateWrapper\)才会自动填�
 数据库设计中一律采用小写表名和字段名,其中定时任务默认创建表为大写,建议将mysql设置为大小写不敏感。  
 修改/etc/my.cnf文件,在[mysqld]节点加入配置`lower_case_table_names = 1`,然后重启mysql(`service mysqld restart`)即可
 
+## json
+json是mysql 5.7引入，然后在mysql 8.0得到优化的功能
+对于开发，可以是Entity中定义为json，或者
+```java
+@TableName(value = "table_demo", autoResultMap = true)
+public class DemoEntity extends BaseEntity {
+   @TableField(typeHandler = JacksonTypeHandler.class)
+   private JSONObject params;    
+}
+```
+
 ## ref
 
 * [并发扣款，如何保证数据的一致性？](https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962738&idx=1&sn=d2d91a380bad06af9f7b9f7a80db26b3)

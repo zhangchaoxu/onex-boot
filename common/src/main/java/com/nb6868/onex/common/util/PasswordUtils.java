@@ -10,6 +10,23 @@ import cn.hutool.crypto.digest.DigestUtil;
  */
 public class PasswordUtils {
 
+    // 至少八个字符，至少一个字母和一个数字
+    public static String PATTERN_RULE_1 = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    // 至少八个字符，至少一个字母，一个数字和一个特殊字符
+    public static String PATTERN_RULE_2 = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$";
+    // 最少八个字符，至少一个大写字母，一个小写字母和一个数字
+    public static String PATTERN_RULE_3 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
+    // 至少八个字符，至少一个大写字母，一个小写字母，一个数字和一个特殊字符
+    public static String PATTERN_RULE_4 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,}";
+    // 8-20个字符，至少一个字母和一个数字
+    public static String PATTERN_RULE_5 = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,20}$";
+    // 8-20个字符，至少一个字母，一个数字和一个特殊字符
+    public static String PATTERN_RULE_6 = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,20}$";
+    // 8-20个字符，至少一个大写字母，一个小写字母和一个数字
+    public static String PATTERN_RULE_7 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,20}$";
+    // 8-20个字符，至少一个大写字母，一个小写字母，一个数字和一个特殊字符
+    public static String PATTERN_RULE_8 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,20}";
+
     /**
      * 加密
      *

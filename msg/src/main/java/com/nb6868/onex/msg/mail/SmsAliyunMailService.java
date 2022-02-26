@@ -1,13 +1,12 @@
 package com.nb6868.onex.msg.mail;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.AliSignUtils;
-import com.nb6868.onex.common.util.JacksonUtils;
-import com.nb6868.onex.common.util.SpringContextUtils;
-import com.nb6868.onex.common.util.TemplateUtils;
+import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailLogEntity;
@@ -58,18 +57,19 @@ public class SmsAliyunMailService extends AbstractMailService {
         mailLog.setTplType(mailTpl.getType());
         mailLog.setContentParams(request.getContentParam());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(TemplateUtils.renderRaw(mailTpl.getContent(), paramMap));
+        mailLog.setContent(StrUtil.format(mailTpl.getContent(), paramMap));
         mailLog.setState(Const.ResultEnum.FAIL.value());
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
 
         // 封装阿里云接口参数
-        Map<String, String> paras = new HashMap<>();
+        Map<String, Object> paras = new HashMap<>();
         paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", UUID.randomUUID().toString());
+        paras.put("SignatureNonce", IdUtil.fastUUID());
         paras.put("AccessKeyId", smsProps.getAppKey());
         paras.put("SignatureVersion", "1.0");
-        paras.put("Timestamp", DateUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+        // "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        paras.put("Timestamp", DateUtil.format(new Date(), DatePattern.UTC_FORMAT));
         paras.put("Format", "JSON");
         paras.put("Action", "SendSms");
         paras.put("Version", "2017-05-25");
@@ -82,10 +82,9 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.put("OutId", String.valueOf(mailLog.getId()));
         // 去除签名关键字Key
         paras.remove("Signature");
-        String sortedQueryString = AliSignUtils.paramToQueryString(paras);
+        String sortedQueryString = SignUtils.paramToQueryString(paras);
         // 参数签名
-        String sign = AliSignUtils.signature( "GET" + "&" + AliSignUtils.urlEncode("/") + "&" + AliSignUtils.urlEncode(sortedQueryString),smsProps.getAppSecret() + "&", "HmacSHA1");
-
+        String sign = SignUtils.urlEncode(SignUtils.signToBase64( "GET" + "&" + SignUtils.urlEncode("/") + "&" + SignUtils.urlEncode(sortedQueryString),smsProps.getAppSecret() + "&", "HmacSHA1"));
         // 调用接口发送
         try {
             // 直接get RestTemplate会将参数直接做UrlEncode,需要使用UriComponentsBuilder先build一下

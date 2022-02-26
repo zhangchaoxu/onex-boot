@@ -19,7 +19,6 @@
   * [支付](boot/Pay.md)
   * [POI操作](boot/Poi.md)
   * [多数据源](boot/DynamicDatasource.md)
-  * [MongDB支持](boot/MongoDB.md)
   * [Test](boot/Test.md)
   * [日志](boot/Log.md)
   * [ActiveMQ](boot/ActiveMQ.md)
@@ -27,7 +26,11 @@
   * [API限流](boot/AccessLimit.md)
   * [代码生成器](boot/coder.md)
   * [文档在线预览](boot/OfficePreview.md)
-    
+  
+* 中间件
+  * [ElasticSearch](boot/ElasticSearch.md)
+  * [MongDB](boot/MongoDB.md)
+
 * 前端
   * [前端](ui/portal.md)
   * [UI和UX](ui/UIAndUX.md)
@@ -38,7 +41,10 @@
   * [地图](ui/Map.md)
     
 * [DevOps](DevOps.md)
-    * [运维实践](DevOpsCase.md)
+  * [运维实践](DevOpsCase.md)
+
+* 系统功能
+  * [地理区域](GEO.md)
 
 * Cheat Sheet
   * [Linux Cheat Sheet](cheat-sheet/Linux.md)

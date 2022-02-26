@@ -97,3 +97,26 @@ exclude中加了DruidDataSourceAutoConfigure.class是为了适配[Dynamic Dataso
 - 起因: 在本地用EasyConnect开启一个VPN代理以后，在IDEA运行java程序，网络请求没有从代理走。
 - 解决: 在java启动参数中加上`-Djava.net.preferIPv4Stack=true`
   ![img](../_media/issue-ipv4-stack.png)
+
+## 10. 宝塔面板跳过强制登录
+- v7.8.0版本已失效
+- 起因: 宝塔面板新版本，强制要求登录
+- 解决: 
+```shell
+mv /www/server/panel/data/bind.pl /www/server/panel/data/bind.pl.bak
+```
+
+## 11. 远程调试
+在部分开发时候,需要使用服务器的环境,然后服务器上无法debug,可以使用使用Intellij IDEA的远程调试功能
+
+1. 在IDEA中添加一个远程调试
+   ![img](../_media/remote_debug.png)
+2. 在服务端开启运行的参数加入
+`-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8890`
+3. 开启debug,加入断点即可
+
+- 注意: 
+1. 该端口为调试通信用端口,不是工程运行端口,端口需开通防火墙
+2. 本地代码与远程代码需要保持一致
+3. console不会打印出信息,只能在断点寻找需要的信息
+
