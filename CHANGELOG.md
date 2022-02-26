@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [2.2.2] 2022.02.xx
+- upgrade: springboot to 2.6.4
+
 ## [2.2.2] 2022.02.15
 - upgrade: hutool to 5.7.21
 - optimize: optimize file upload

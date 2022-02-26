@@ -92,7 +92,7 @@ knife4j:
     ## 自定义footer
     enableFooter: false
     enableFooterCustom: true
-    footerCustomContent: Copyright 2021-current[nb6868](https://onex.nb6868.com/)
+    footerCustomContent: Copyright 2021-current[nb6868] (https://onex.nb6868.com/)
     ## 自定义首页
     enableHomeCustom: true
     homeCustomLocation: classpath:README.md
