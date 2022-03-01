@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [2.2.2] 2022.02.xx
+## [2.2.3] 2022.03.01
 - upgrade: springboot to 2.6.4
+- upgrade: hutool to 5.7.22
 
 ## [2.2.2] 2022.02.15
 - upgrade: hutool to 5.7.21
