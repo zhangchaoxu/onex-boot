@@ -18,7 +18,7 @@ public class CommonForm implements Serializable {
     /**
      * 单个校验
      */
-    public interface SingleGroup {}
+    public interface OneGroup {}
 
     /**
      * 多个校验
@@ -26,11 +26,11 @@ public class CommonForm implements Serializable {
     public interface ListGroup { }
 
     @ApiModelProperty(value = "ids")
-    @NotEmpty(message = "ids不能为空", groups = ListGroup.class)
+    @NotEmpty(message = "{ids.require}", groups = ListGroup.class)
     private List<Long> ids;
 
     @ApiModelProperty(value = "id")
-    @NotNull(message = "id不能为空", groups = SingleGroup.class)
+    @NotNull(message = "{id.require}", groups = OneGroup.class)
     private Long id;
 
     @ApiModelProperty(value = "备注")

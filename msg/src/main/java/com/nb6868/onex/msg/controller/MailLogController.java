@@ -1,6 +1,7 @@
 package com.nb6868.onex.msg.controller;
 
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.pojo.CommonForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -44,12 +45,12 @@ public class MailLogController {
         return new Result<>().success(page);
     }
 
-    @DeleteMapping("deleteBatch")
+    @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("msg:mailLog:delete")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        mailLogService.logicDeleteByIds(ids);
+    public Result<?> deleteBatch(@Validated(value = {CommonForm.ListGroup.class}) @RequestBody CommonForm form) {
+        mailLogService.logicDeleteByIds(form.getIds());
 
         return new Result<>();
     }

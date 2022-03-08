@@ -2,6 +2,7 @@ package com.nb6868.onex.msg.controller;
 
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.pojo.CommonForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -74,7 +75,7 @@ public class MailTplController {
         return new Result<>().success(dto);
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("msg:mailTpl:update")
@@ -84,12 +85,12 @@ public class MailTplController {
         return new Result<>().success(dto);
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("msg:mailTpl:delete")
-    public Result<?> delete(@NotBlank(message = "{id.require}") @RequestParam String id) {
-        mailTplService.logicDeleteById(id);
+    public Result<?> delete(@Validated(value = {CommonForm.OneGroup.class}) @RequestBody CommonForm form) {
+        mailTplService.logicDeleteById(form.getId());
 
         return new Result<>();
     }
