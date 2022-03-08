@@ -5,6 +5,7 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.websocket.dto.WebSocketSendForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class WebSocketController {
 
     @GetMapping("getOpenSockets")
     @ApiOperation("获得目前连接的Socket")
+    @RequiresPermissions("websocket:info")
     public Result<?> getOpenSockets() {
         List<String> sidList = webSocketServer.getSidList();
         return new Result<>().success(sidList);
@@ -29,6 +31,7 @@ public class WebSocketController {
 
     @PostMapping("sendMultiMessage")
     @ApiOperation("发送批量消息")
+    @RequiresPermissions("websocket:send")
     public Result<?> sendMultiMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendMultiGroup.class}) @RequestBody WebSocketSendForm form) {
         webSocketServer.sendMultiMessage(form.getSidList(), form.getContent());
         return new Result<>();
@@ -36,6 +39,7 @@ public class WebSocketController {
 
     @PostMapping("sendOneMessage")
     @ApiOperation("发送单点消息")
+    @RequiresPermissions("websocket:send")
     public Result<?> sendOneMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendOneGroup.class}) @RequestBody WebSocketSendForm form) {
         boolean result = webSocketServer.sendOneMessage(form.getSid(), form.getContent());
         if (result) {
@@ -47,6 +51,7 @@ public class WebSocketController {
 
     @PostMapping("sendAllMessage")
     @ApiOperation("发送广播消息")
+    @RequiresPermissions("websocket:send")
     public Result<?> sendAllMessage(@Validated(value = {DefaultGroup.class}) @RequestBody WebSocketSendForm socketSendRequest) {
         webSocketServer.sendAllMessage(socketSendRequest.getContent());
         return new Result<>();

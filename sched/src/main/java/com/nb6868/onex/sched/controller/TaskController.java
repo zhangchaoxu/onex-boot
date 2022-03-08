@@ -66,7 +66,7 @@ public class TaskController {
         return new Result<>().success(dto);
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("sched:task:update")
@@ -76,7 +76,7 @@ public class TaskController {
         return new Result<>().success(dto);
     }
 
-    @DeleteMapping("deleteBatch")
+    @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("sched:task:update")
@@ -86,7 +86,7 @@ public class TaskController {
         return new Result<>();
     }
 
-    @PutMapping("/runWithParams")
+    @PostMapping("/runWithParams")
     @ApiOperation("指定参数立即执行")
     @LogOperation("指定参数立即执行")
     @RequiresPermissions("sched:task:update")
@@ -96,7 +96,7 @@ public class TaskController {
         return new Result<>();
     }
 
-    @PutMapping("/run")
+    @PostMapping("/run")
     @ApiOperation("立即执行")
     @LogOperation("立即执行")
     @RequiresPermissions("sched:task:update")
@@ -106,7 +106,7 @@ public class TaskController {
         return new Result<>();
     }
 
-    @PutMapping("/pause")
+    @PostMapping("/pause")
     @ApiOperation("暂停")
     @LogOperation("暂停")
     @RequiresPermissions("sched:task:update")
@@ -116,7 +116,7 @@ public class TaskController {
         return new Result<>();
     }
 
-    @PutMapping("/resume")
+    @PostMapping("/resume")
     @ApiOperation("恢复")
     @LogOperation("恢复")
     @RequiresPermissions("sched:task:update")
