@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.websocket;
+package com.nb6868.onex.websocket.dto;
 
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;

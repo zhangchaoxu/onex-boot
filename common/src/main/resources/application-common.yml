@@ -111,9 +111,6 @@ onex:
   # WebMVC
   webmvc:
     enable: false
-  # WebSocket
-  websocket:
-    enable: false
   # async
   async:
     enable: false
