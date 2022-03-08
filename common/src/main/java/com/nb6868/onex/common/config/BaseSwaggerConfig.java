@@ -93,7 +93,7 @@ public abstract class BaseSwaggerConfig {
     public Docket createUcApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfoBuilder().build())
-                .groupName("cms")
+                .groupName("uc")
                 .select()
                 // 包下的类,生成接口文档
                 .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.uc.controller"))

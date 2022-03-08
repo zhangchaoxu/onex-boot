@@ -1,5 +1,6 @@
 package com.nb6868.onex.sched.service;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -96,25 +97,17 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	 * 立即执行
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public void run(List<Long> ids) {
-		for (Long id : ids) {
-			ScheduleUtils.run(scheduler, getTaskInfoFromTask(this.getById(id)));
-		}
-	}
-
-	/**
-	 * 立即执行
-	 */
-	@Transactional(rollbackFor = Exception.class)
 	public void runWithParams(TaskRunWithParamsForm requestBody) {
 		TaskInfo taskInfo = getTaskInfoFromTask(getById(requestBody.getId()));
-		JSONObject params = null;
-		try {
-			params = JSONUtil.parseObj(requestBody.getParams());
-		} catch (JSONException e) {
-			log.error("序列化参数失败", e);
-		} finally {
-			taskInfo.setParams(params);
+		if (StrUtil.isNotBlank(requestBody.getParams())) {
+			JSONObject params = null;
+			try {
+				params = JSONUtil.parseObj(requestBody.getParams());
+			} catch (JSONException e) {
+				log.error("序列化参数失败", e);
+			} finally {
+				taskInfo.setParams(params);
+			}
 		}
 		ScheduleUtils.run(scheduler, taskInfo);
 	}

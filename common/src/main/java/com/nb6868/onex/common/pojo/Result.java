@@ -76,4 +76,10 @@ public class Result<T> implements Serializable {
         return this;
     }
 
+    public Result<T> boolResult(boolean bool) {
+        this.code = bool ? ErrorCode.SUCCESS : ErrorCode.INTERNAL_SERVER_ERROR;
+        this.msg = MessageUtils.getMessage(this.code);
+        return this;
+    }
+
 }
