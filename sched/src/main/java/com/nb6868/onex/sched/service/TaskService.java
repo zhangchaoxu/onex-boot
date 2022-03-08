@@ -14,7 +14,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sched.SchedConst;
 import com.nb6868.onex.sched.dao.TaskDao;
 import com.nb6868.onex.sched.dto.TaskDTO;
-import com.nb6868.onex.sched.dto.TaskRunWithParamsBody;
+import com.nb6868.onex.sched.dto.TaskRunWithParamsForm;
 import com.nb6868.onex.sched.entity.TaskEntity;
 import com.nb6868.onex.sched.utils.ScheduleJob;
 import com.nb6868.onex.sched.utils.ScheduleUtils;
@@ -106,7 +106,7 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	 * 立即执行
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public void runWithParams(TaskRunWithParamsBody requestBody) {
+	public void runWithParams(TaskRunWithParamsForm requestBody) {
 		TaskInfo taskInfo = getTaskInfoFromTask(getById(requestBody.getId()));
 		JSONObject params = null;
 		try {

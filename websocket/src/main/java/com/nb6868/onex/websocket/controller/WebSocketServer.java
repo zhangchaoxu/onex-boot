@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.websocket;
+package com.nb6868.onex.websocket.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import lombok.extern.slf4j.Slf4j;

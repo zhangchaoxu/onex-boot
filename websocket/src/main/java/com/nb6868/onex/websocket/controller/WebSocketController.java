@@ -1,10 +1,10 @@
-package com.nb6868.onex.common.websocket;
+package com.nb6868.onex.websocket.controller;
 
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.websocket.dto.WebSocketSendForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>2.2.3</version>
+    <version>3.0.0</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -45,6 +45,7 @@
 
     <modules>
         <module>common</module>
+        <module>websocket</module>
         <module>uc</module>
         <module>coder</module>
         <module>sched</module>

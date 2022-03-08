@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.0.0] 2022.03.08
+- split WebSocket
+
 ## [2.2.3] 2022.03.01
 - upgrade: springboot to 2.6.4
 - upgrade: hutool to 5.7.22
