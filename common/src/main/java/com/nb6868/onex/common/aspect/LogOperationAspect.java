@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,16 +63,16 @@ public class LogOperationAspect {
             // 执行方法
             Object result = joinPoint.proceed();
             // 保存日志
-            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.SUCCESS.value());
+            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.SUCCESS.value(), null);
             return result;
         } catch (Exception e) {
             //保存日志
-            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.FAIL.value());
+            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.FAIL.value(), e);
             throw e;
         }
     }
 
-    private void saveLog(ProceedingJoinPoint joinPoint, String requestParam, long time, Integer state) {
+    private void saveLog(ProceedingJoinPoint joinPoint, String requestParam, long time, Integer state, Exception e) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         LogBody logEntity = new LogBody();
 
@@ -87,8 +88,8 @@ public class LogOperationAspect {
                 logType = annotation.type();
                 logStoreType = annotation.storeType();
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+        } catch (NoSuchMethodException ne) {
+            ne.printStackTrace();
         }
 
         // 登录用户信息
@@ -102,7 +103,7 @@ public class LogOperationAspect {
                     loginRequest.set("password", "");
                 }
                 logEntity.setParams(JSONUtil.toJsonStr(loginRequest));
-            } catch (Exception e) {
+            } catch (Exception e2) {
                 logEntity.setParams(requestParam);
             }
         } else {
@@ -113,6 +114,10 @@ public class LogOperationAspect {
         logEntity.setState(state);
         logEntity.setRequestTime(time);
         logEntity.setType(logType);
+        // 保存错误信息
+        if (e != null) {
+            logEntity.setContent(e.getMessage());
+        }
 
         // 请求相关信息
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
@@ -133,6 +138,11 @@ public class LogOperationAspect {
      * 从joinPoint获取参数
      */
     private String getRequestParam(ProceedingJoinPoint joinPoint) {
+        HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
+        // GET请求
+        if (request != null && HttpMethod.GET.name().equalsIgnoreCase(request.getMethod())) {
+            return request.getQueryString();
+        }
         // 请求参数,接口方法中的参数,可能会有HttpServletRequest、HttpServletResponse、ModelMap
         Object[] args = joinPoint.getArgs();
         List<Object> actualParam = new ArrayList<>();
