@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
  */
 public class OnexHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
-    private byte[] requestBody = null;
+    private byte[] requestBody;
 
     public OnexHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
@@ -52,7 +52,7 @@ public class OnexHttpServletRequestWrapper extends HttpServletRequestWrapper {
     }
 
     @Override
-    public BufferedReader getReader() throws IOException {
+    public BufferedReader getReader() {
         return new BufferedReader(new InputStreamReader(getInputStream()));
     }
 }
