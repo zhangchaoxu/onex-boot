@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.config;
 
 import com.nb6868.onex.common.filter.CrosFilter;
+import com.nb6868.onex.common.filter.HttpServletRequestReplaceFilter;
 import com.nb6868.onex.common.filter.XssFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -29,13 +30,24 @@ public class FilterConfig {
     }
 
     @Bean
+    public FilterRegistrationBean<?> httpRequestReplaceFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+        registration.setDispatcherTypes(DispatcherType.REQUEST);
+        registration.setFilter(new HttpServletRequestReplaceFilter());
+        registration.addUrlPatterns("/*");
+        registration.setName("httpRequestReplaceFilter");
+        registration.setOrder(Integer.MAX_VALUE - 100);
+        return registration;
+    }
+
+    @Bean
     public FilterRegistrationBean<?> crosFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setDispatcherTypes(DispatcherType.REQUEST);
         registration.setFilter(crosFilter());
         registration.addUrlPatterns("/*");
         registration.setName("crosFilter");
-        registration.setOrder(Integer.MAX_VALUE - 100);
+        registration.setOrder(Integer.MAX_VALUE - 90);
         return registration;
     }
 
@@ -48,7 +60,7 @@ public class FilterConfig {
         registration.setEnabled(true);
         registration.addUrlPatterns("/*");
         registration.setName("shiroFilter");
-        registration.setOrder(Integer.MAX_VALUE - 90);
+        registration.setOrder(Integer.MAX_VALUE - 80);
         return registration;
     }
 
