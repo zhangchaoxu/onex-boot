@@ -19,7 +19,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -77,7 +76,7 @@ public class LogOperationAspect {
         LogBody logEntity = new LogBody();
 
         // 日志记录类型
-        String logStoreType = "db";
+        String storeType = "db";
         String logType = "operation";
         try {
             Method method = joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
@@ -86,12 +85,15 @@ public class LogOperationAspect {
                 // 注解上的描述
                 logEntity.setOperation(annotation.value());
                 logType = annotation.type();
-                logStoreType = annotation.storeType();
+                storeType = annotation.storeType();
             }
         } catch (NoSuchMethodException ne) {
             ne.printStackTrace();
         }
+        logEntity.setStoreType(storeType);
 
+        // 请求参数
+        JSONObject requestParams = new JSONObject();
         // 登录用户信息
         if ("login".equalsIgnoreCase(logType)) {
             // 登录
@@ -102,14 +104,12 @@ public class LogOperationAspect {
                 if (loginRequest.containsKey("password")) {
                     loginRequest.set("password", "");
                 }
-                logEntity.setParams(JSONUtil.toJsonStr(loginRequest));
+                requestParams.set("params", JSONUtil.toJsonStr(loginRequest));
             } catch (Exception e2) {
-                logEntity.setParams(requestParam);
+                requestParams.set("params", requestParam);
             }
         } else {
-           /* UserDetail user = SecurityUser.getUser();
-            logEntity.setCreateName(user.getUsername());*/
-            logEntity.setParams(requestParam);
+            requestParams.set("params", requestParam);
         }
         logEntity.setState(state);
         logEntity.setRequestTime(time);
@@ -122,16 +122,15 @@ public class LogOperationAspect {
         // 请求相关信息
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         if (null != request) {
-            logEntity.setIp(HttpContextUtils.getIpAddr(request));
-            logEntity.setUserAgent(request.getHeader(HttpHeaders.USER_AGENT));
             logEntity.setUri(request.getRequestURI());
-            logEntity.setMethod(request.getMethod());
+            requestParams.set("ip", HttpContextUtils.getIpAddr(request));
+            requestParams.set("ua", request.getHeader(HttpHeaders.USER_AGENT));
+            requestParams.set("url", request.getRequestURL());
+            requestParams.set("method", request.getMethod());
+            requestParams.set("contentType", request.getContentType());
         }
-        if ("db".equalsIgnoreCase(logStoreType)) {
-            logService.saveToDb(logEntity);
-        } else {
-            log.info(JSONUtil.toJsonStr(logEntity));
-        }
+        logEntity.setRequestParams(requestParams);
+        logService.saveLog(logEntity);
     }
 
     /**

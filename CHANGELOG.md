@@ -1,7 +1,10 @@
 # CHANGELOG
 
 ## [3.0.0] 2022.03.08
-- split WebSocket
+- new: split WebSocket
+- new: add OnexHttpServletRequestWrapper
+- new: add BaseExceptionHandler
+- fix: LogOperationAspect log get params
 
 ## [2.2.3] 2022.03.01
 - upgrade: springboot to 2.6.4

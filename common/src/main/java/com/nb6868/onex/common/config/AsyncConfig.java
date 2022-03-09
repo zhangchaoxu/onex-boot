@@ -2,6 +2,7 @@ package com.nb6868.onex.common.config;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
 import lombok.extern.slf4j.Slf4j;
@@ -68,19 +69,20 @@ public class AsyncConfig implements AsyncConfigurer {
                 log.info("Async Exception param={}", param);
                 if (param instanceof Serializable) {
                     paramArray.put(param.toString());
-                } else {
-                    paramArray.put(null);
                 }
             }
             log.error("Async Exception message=", throwable);
             // 异常信息
-            LogBody error = new LogBody();
-            error.setType("error");
-            error.setOperation("async");
-            error.setUri(method.getDeclaringClass().getName() + "." + method.getName());
-            error.setContent(ExceptionUtil.stacktraceToString(throwable));
-            error.setParams(paramArray.size() > 0 ? paramArray.toString() : null);
-            logService.saveToDb(error);
+            LogBody logBody = new LogBody();
+            logBody.setStoreType("db");
+            logBody.setType("error");
+            logBody.setOperation("async");
+            logBody.setUri(method.getDeclaringClass().getName() + "." + method.getName());
+            logBody.setContent(ExceptionUtil.stacktraceToString(throwable));
+            JSONObject requestParams = new JSONObject();
+            requestParams.set("params", paramArray.size() > 0 ? paramArray.toString() : null);
+            logBody.setRequestParams(requestParams);
+            logService.saveLog(logBody);
         };
     }
 
