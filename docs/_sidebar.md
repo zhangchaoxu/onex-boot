@@ -8,7 +8,7 @@
 
   * [后端接口](boot/boot.md)
   * [数据库设计规范和实现](boot/db.md)
-  * [接口规范](boot/Restful.md)
+  * [接口规范](boot/ApiStandard.md)
   * [json解析器](boot/json.md)
   * [数据字典](boot/Dict.md)
   * [参数校验](boot/validator.md)
