@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.0.1] 2022.03.09
+- fix: add contentType to logBody
+
 ## [3.0.0] 2022.03.08
 - new: split WebSocket
 - new: add OnexHttpServletRequestWrapper
