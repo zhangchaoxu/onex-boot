@@ -1,8 +1,11 @@
 package com.nb6868.onex.common.log;
 
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * 日志
@@ -11,9 +14,12 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LogBody extends BaseEntity {
+public class LogBody implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 存储类型
+     */
+    private String storeType;
     /**
      * 类型
      */
@@ -31,25 +37,9 @@ public class LogBody extends BaseEntity {
      */
     private String uri;
     /**
-     * 请求方式
-     */
-    private String method;
-    /**
-     * 请求参数
-     */
-    private String params;
-    /**
      * 耗时(毫秒)
      */
     private Long requestTime;
-    /**
-     * 用户代理
-     */
-    private String userAgent;
-    /**
-     * 操作IP
-     */
-    private String ip;
     /**
      * 状态  0：失败   1：成功
      */
@@ -58,5 +48,9 @@ public class LogBody extends BaseEntity {
      * 用户名
      */
     private String createName;
+    /**
+     * 请求参数
+     */
+    private JSONObject requestParams;
 
 }
