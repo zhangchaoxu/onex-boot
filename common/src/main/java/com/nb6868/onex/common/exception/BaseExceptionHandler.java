@@ -246,7 +246,7 @@ public abstract class BaseExceptionHandler {
      * @param msg     错误消息
      * @return
      */
-    private Object handleExceptionResult(HttpServletRequest request, int code, String msg) {
+    protected Object handleExceptionResult(HttpServletRequest request, int code, String msg) {
         if (ObjectUtils.isEmpty(msg)) {
             msg = MessageUtils.getMessage(code);
         }
@@ -263,7 +263,7 @@ public abstract class BaseExceptionHandler {
         }
     }
 
-    private Object handleExceptionResult(HttpServletRequest request, int code) {
+    protected Object handleExceptionResult(HttpServletRequest request, int code) {
         return handleExceptionResult(request, code, MessageUtils.getMessage(code));
     }
 
