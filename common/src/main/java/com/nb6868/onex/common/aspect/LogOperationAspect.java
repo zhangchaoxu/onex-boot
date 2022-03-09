@@ -2,6 +2,7 @@ package com.nb6868.onex.common.aspect;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
@@ -116,7 +117,7 @@ public class LogOperationAspect {
         logEntity.setType(logType);
         // 保存错误信息
         if (e != null) {
-            logEntity.setContent(e.getMessage());
+            logEntity.setContent(ExceptionUtil.stacktraceToString(e));
         }
 
         // 请求相关信息
