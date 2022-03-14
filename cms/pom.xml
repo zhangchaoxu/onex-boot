@@ -5,14 +5,14 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.0.2</version>
+        <version>3.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cms</artifactId>
     <packaging>jar</packaging>
 
     <properties>
-        <onex-common.version>3.0.2</onex-common.version>
+        <onex-common.version>3.0.3</onex-common.version>
         <shiro.version>1.8.0</shiro.version>
     </properties>
 

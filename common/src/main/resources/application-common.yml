@@ -99,6 +99,14 @@ knife4j:
 
 ## onex
 onex:
+  # app
+  app:
+    # 版本号
+    version: @project.version@
+    # 应用名称
+    artifact-id: @project.artifactId@
+    # maven编译时间
+    build-time: @maven.build.timestamp@
   # 过滤器
   filter:
     enable: false

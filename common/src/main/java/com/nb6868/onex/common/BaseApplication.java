@@ -21,12 +21,16 @@ public class   BaseApplication extends SpringBootServletInitializer {
         log.info("\n################## {} Running ##################\n" +
                         ":: Link ::\thttp://127.0.0.1:{}{}\n" +
                         ":: Doc ::\thttp://127.0.0.1:{}{}/doc.html\n" +
+                        ":: Version ::\t{}-{}-{}\n" +
                         "################## {} Running ##################",
                 environment.getProperty("spring.application.name"),
                 environment.getProperty("server.port"),
                 environment.getProperty("server.servlet.context-path"),
                 environment.getProperty("server.port"),
                 environment.getProperty("server.servlet.context-path"),
+                environment.getProperty("onex.app.artifact-id"),
+                environment.getProperty("onex.app.version"),
+                environment.getProperty("onex.app.build-time"),
                 environment.getProperty("spring.application.name"));
     }
 
