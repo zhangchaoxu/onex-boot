@@ -10,34 +10,25 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.converter.json.MappingJacksonInputMessage;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Locale;
-import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
@@ -96,7 +87,8 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Object handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException e) {
-        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST);
+        saveLog(request, e);
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
 
     /**
@@ -143,8 +135,6 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(WxErrorException.class)
     public Object handleWxErrorException(HttpServletRequest request, WxErrorException e) {
-        log.error(e.getMessage(), e);
-        // 保存日志
         saveLog(request, e);
         return handleExceptionResult(request, ErrorCode.WX_API_ERROR);
     }
@@ -190,7 +180,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
-        log.error(e.getMessage(), e);
+        saveLog(request, e);
         Locale.setDefault(LocaleContextHolder.getLocale());
         String errorMsg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, errorMsg);
@@ -204,14 +194,13 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Object handleMaxUploadSizeExceededException(HttpServletRequest request, MaxUploadSizeExceededException e) {
-        log.error(e.getMessage(), e);
-        // 保存日志
         saveLog(request, e);
         return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, "dev".equalsIgnoreCase(env) ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
     }
 
     /**
      * HttpMessageNotReadableException
+     * RequestBody中的内容不符合json定义
      * RequestBody中的数据格式转换失败报错,比如定义的int传值是string
      *
      * @param e exception
@@ -219,9 +208,21 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Object handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
-        log.error(e.getMessage(), e);
         saveLog(request, e);
-        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, null);
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
+    }
+
+    /**
+     * MethodArgumentTypeMismatchException
+     * RequestParam中内容不符合定义，比如定义的int传值是string
+     *
+     * @param e exception
+     * @return result
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public Object handleMethodArgumentTypeMismatchException(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
+        saveLog(request, e);
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
 
     /**
@@ -233,7 +234,6 @@ public abstract class BaseExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Object handleException(HttpServletRequest request, Exception e) {
         log.error(e.getMessage(), e);
-        // 保存日志
         saveLog(request, e);
         return handleExceptionResult(request, ErrorCode.INTERNAL_SERVER_ERROR);
     }

@@ -8,6 +8,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.pojo.Const;
@@ -117,7 +118,11 @@ public class LogOperationAspect {
         logEntity.setType(logType);
         // 保存错误信息
         if (e != null) {
-            logEntity.setContent(ExceptionUtil.stacktraceToString(e));
+            if (e instanceof OnexException) {
+                logEntity.setContent(e.toString());
+            } else {
+                logEntity.setContent(ExceptionUtil.stacktraceToString(e));
+            }
         }
 
         // 请求相关信息
