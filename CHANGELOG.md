@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.0.3] 2022.03.14
+- new: add app info
+
 ## [3.0.2] 2022.03.09
 - fix: add contentType to logBody
 
