@@ -12,6 +12,7 @@ import javax.validation.Validation;
 import java.util.Locale;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * hibernate-validator校验工具类
@@ -53,9 +54,9 @@ public class ValidatorUtils {
             return new MsgResult();
         } else {
             // 返回所有错误;分割
-            StringJoiner errorMsg = new StringJoiner(";");
-            constraintViolations.forEach(objectConstraintViolation -> errorMsg.add(objectConstraintViolation.getMessage()));
-            return new MsgResult().error(ErrorCode.ERROR_REQUEST, errorMsg.toString());
+            // 需要在Controller中加上Validated注解,需要在接口方法参数中加上NotNull NotEmpty等校验注解
+            String errorMsg = constraintViolations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(";"));
+            return new MsgResult().error(ErrorCode.ERROR_REQUEST, errorMsg);
         }
     }
 
