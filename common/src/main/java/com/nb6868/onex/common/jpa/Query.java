@@ -18,7 +18,7 @@ public @interface Query {
     String propName() default "";
 
     // 查询方式
-    Type type() default Type.EQUAL;
+    Type type() default Type.EQ;
 
     /**
      * 多字段模糊搜索，仅支持String类型字段，多个用逗号隔开, 如@Query(blurry = "email,username")
@@ -27,31 +27,31 @@ public @interface Query {
 
     enum Type {
         // 相等
-        EQUAL
+        EQ
         // 大于等于
-        , GREATER_THAN
+        , GE
         // 大于
-        , GREATER_THAN_NQ
+        , GT
         // 小于等于
-        , LESS_THAN
+        , LE
         // 中模糊查询
-        , INNER_LIKE
+        , LIKE
         // 左模糊查询
-        , LEFT_LIKE
+        , LIKE_LEFT
         // 右模糊查询
-        , RIGHT_LIKE
+        , LIKE_RIGHT
         // 小于
-        , LESS_THAN_NQ
+        , LT
         // 包含
         , IN
         // 不等于
-        , NOT_EQUAL
-        // between
-        , BETWEEN
+        , NE
         // 不为空
         , NOT_NULL
+        // between
+        , BETWEEN
         // 查询时间
-        , UNIX_TIMESTAMP
+        , BETWEEN_TIME
     }
 
 }
