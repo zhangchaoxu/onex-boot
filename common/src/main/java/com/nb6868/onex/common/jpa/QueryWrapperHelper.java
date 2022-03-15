@@ -120,6 +120,9 @@ public class QueryWrapperHelper {
                                 }
                             }
                             break;
+                        case ORDER_BY:
+
+                            break;
                         default:
                             break;
                     }

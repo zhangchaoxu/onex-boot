@@ -56,6 +56,8 @@ public @interface Query {
         , BETWEEN
         // 查询时间
         , BETWEEN_TIME
+        // 排序
+        , ORDER_BY
     }
 
 }
