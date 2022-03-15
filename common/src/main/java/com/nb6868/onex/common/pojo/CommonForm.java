@@ -7,13 +7,12 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "基础发送请求")
-public class CommonForm implements Serializable {
+public class CommonForm extends BaseForm {
 
     /**
      * 单个校验

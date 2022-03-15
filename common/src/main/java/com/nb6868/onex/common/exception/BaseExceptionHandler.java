@@ -1,20 +1,27 @@
 package com.nb6868.onex.common.exception;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import com.nb6868.onex.common.log.BaseLogService;
+import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -28,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -45,6 +53,9 @@ public abstract class BaseExceptionHandler {
      */
     @Value("${spring.profiles.active}")
     private String env;
+
+    @Autowired
+    private BaseLogService logService;
 
     /**
      * 处理自定义异常
@@ -65,7 +76,20 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(DuplicateKeyException.class)
     public Object handleDuplicateKeyException(HttpServletRequest request, DuplicateKeyException e) {
+        saveLog(request, e);
         return handleExceptionResult(request, ErrorCode.DB_RECORD_EXISTS);
+    }
+
+    /**
+     * 数据库结构异常
+     *
+     * @param e exception
+     * @return result
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public Object handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
+        saveLog(request, e);
+        return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, StrUtil.contains(env, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
     }
 
     /**
@@ -81,6 +105,7 @@ public abstract class BaseExceptionHandler {
 
     /**
      * 处理参数错误
+     * request=true的参数未传或者传空
      *
      * @param e exception
      * @return result
@@ -140,20 +165,6 @@ public abstract class BaseExceptionHandler {
     }
 
     /**
-     * 数据库结构异常
-     *
-     * @param e exception
-     * @return result
-     */
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public Object handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
-        log.error(e.getMessage(), e);
-        // 保存日志
-        saveLog(request, e);
-        return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, StrUtil.contains(env, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
-    }
-
-    /**
      * 参数校验异常
      * 用于在方法中对于@RequestBody和@RequestParam例如@NotNull @NotEmpty的校验
      *
@@ -162,7 +173,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Object handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
-        log.error(e.getMessage(), e);
+        saveLog(request, e);
         Locale.setDefault(LocaleContextHolder.getLocale());
         // 参考ValidatorUtils
         // 需要在Controller中加上Validated注解,需要在接口方法参数中加上NotNull NotEmpty等校验注解
@@ -233,7 +244,6 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Object handleException(HttpServletRequest request, Exception e) {
-        log.error(e.getMessage(), e);
         saveLog(request, e);
         return handleExceptionResult(request, ErrorCode.INTERNAL_SERVER_ERROR);
     }
@@ -247,7 +257,7 @@ public abstract class BaseExceptionHandler {
      * @return
      */
     protected Object handleExceptionResult(HttpServletRequest request, int code, String msg) {
-        if (ObjectUtils.isEmpty(msg)) {
+        if (StrUtil.isEmpty(msg)) {
             msg = MessageUtils.getMessage(code);
         }
         if (request != null && request.getRequestURI().contains("/html/")) {
@@ -265,6 +275,47 @@ public abstract class BaseExceptionHandler {
 
     protected Object handleExceptionResult(HttpServletRequest request, int code) {
         return handleExceptionResult(request, code, MessageUtils.getMessage(code));
+    }
+
+    /**
+     * 保存异常日志
+     */
+    protected void saveLog(HttpServletRequest request, Exception ex) {
+        LogBody logEntity = new LogBody();
+        logEntity.setStoreType("db");
+        logEntity.setType("error");
+        logEntity.setState(0);
+        // 请求相关信息
+        if (request == null) {
+            request = HttpContextUtils.getHttpServletRequest();
+        }
+        if (null != request) {
+            logEntity.setUri(request.getRequestURI());
+            // 记录内容
+            Dict requestParams = Dict.create();
+            requestParams.set("ip", HttpContextUtils.getIpAddr(request));
+            requestParams.set("ua", request.getHeader(HttpHeaders.USER_AGENT));
+            requestParams.set("queryString", request.getQueryString());
+            requestParams.set("url", request.getRequestURL());
+            requestParams.set("method", request.getMethod());
+            requestParams.set("contentType", request.getContentType());
+            if (HttpMethod.POST.name().equalsIgnoreCase(request.getMethod())) {
+                try {
+                    requestParams.set("params", IoUtil.read(request.getInputStream()).toString());
+                } catch (IOException e) {
+                    log.error("读取流失败", e);
+                }
+            }
+            logEntity.setRequestParams(requestParams);
+        }
+        // 异常信息
+        logEntity.setContent(ExceptionUtil.stacktraceToString(ex));
+        // 保存
+        try {
+            logService.saveLog(logEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
    /*
@@ -289,36 +340,6 @@ public abstract class BaseExceptionHandler {
     @Override
     public Object handleEmptyBody(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
-    }*/
-
-    /**
-     * 保存异常日志
-     */
-    protected abstract void saveLog(HttpServletRequest request, Exception ex);
-    /*{
-        LogEntity logEntity = new LogEntity();
-        logEntity.setType("error");
-        logEntity.setState(0);
-        // 请求相关信息
-        HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
-        if (null != request) {
-            logEntity.setIp(HttpContextUtils.getIpAddr(request));
-            logEntity.setUserAgent(request.getHeader(HttpHeaders.USER_AGENT));
-            logEntity.setUri(request.getRequestURI());
-            logEntity.setMethod(request.getMethod());
-            Map<String, String> params = HttpContextUtils.getParameterMap(request);
-            if (!CollectionUtils.isEmpty(params)) {
-                logEntity.setParams(JacksonUtils.pojoToJson(params));
-            }
-        }
-        // 异常信息
-        logEntity.setContent(ExceptionUtil.stacktraceToString(ex));
-        // 保存
-        try {
-            logService.save(logEntity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }*/
 
 }

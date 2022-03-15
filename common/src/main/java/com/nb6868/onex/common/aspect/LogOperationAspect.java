@@ -3,12 +3,16 @@ package com.nb6868.onex.common.aspect;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.JsonObject;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.filter.OnexHttpServletRequestWrapper;
 import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.pojo.Const;
@@ -30,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -58,22 +63,25 @@ public class LogOperationAspect {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         // 记录开始执行时间
         TimeInterval timer = DateUtil.timer();
-        // 先把param拿出来,不然processed以后可能会被修改赋值
-        String requestParam = getRequestParam(joinPoint);
+        // 先把请求参数取出来,否则processed过程可能会对参数值做修改
+        String params = getMethodParam(joinPoint);
         try {
             // 执行方法
             Object result = joinPoint.proceed();
             // 保存日志
-            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.SUCCESS.value(), null);
+            saveLog(joinPoint, params, timer.interval(), Const.ResultEnum.SUCCESS.value(), null);
             return result;
         } catch (Exception e) {
             //保存日志
-            saveLog(joinPoint, requestParam, timer.interval(), Const.ResultEnum.FAIL.value(), e);
+            saveLog(joinPoint, params, timer.interval(), Const.ResultEnum.FAIL.value(), e);
             throw e;
         }
     }
 
-    private void saveLog(ProceedingJoinPoint joinPoint, String requestParam, long time, Integer state, Exception e) {
+    /**
+     * 保存日志
+     */
+    private void saveLog(ProceedingJoinPoint joinPoint, String params, long time, Integer state, Exception e) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         LogBody logEntity = new LogBody();
 
@@ -93,71 +101,48 @@ public class LogOperationAspect {
             ne.printStackTrace();
         }
         logEntity.setStoreType(storeType);
-
-        // 请求参数
-        JSONObject requestParams = new JSONObject();
-        // 登录用户信息
-        if ("login".equalsIgnoreCase(logType)) {
-            // 登录
-            try {
-                JSONObject loginRequest = JSONUtil.parseObj(requestParam);
-                logEntity.setCreateName(MapUtil.getStr(loginRequest, "username"));
-                // 移除登录密码,否则会导致密码泄露
-                if (loginRequest.containsKey("password")) {
-                    loginRequest.set("password", "");
-                }
-                requestParams.set("params", JSONUtil.toJsonStr(loginRequest));
-            } catch (Exception e2) {
-                requestParams.set("params", requestParam);
-            }
-        } else {
-            requestParams.set("params", requestParam);
-        }
         logEntity.setState(state);
         logEntity.setRequestTime(time);
         logEntity.setType(logType);
         // 保存错误信息
         if (e != null) {
-            if (e instanceof OnexException) {
-                logEntity.setContent(e.toString());
-            } else {
-                logEntity.setContent(ExceptionUtil.stacktraceToString(e));
-            }
+            logEntity.setContent(e instanceof OnexException ? e.toString() : ExceptionUtil.stacktraceToString(e));
         }
 
-        // 请求相关信息
+        // 请求参数
+        Dict requestParams = Dict.create().set("params", params);
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         if (null != request) {
             logEntity.setUri(request.getRequestURI());
+            // 记录内容
             requestParams.set("ip", HttpContextUtils.getIpAddr(request));
             requestParams.set("ua", request.getHeader(HttpHeaders.USER_AGENT));
-            requestParams.set("url", request.getRequestURL());
             requestParams.set("queryString", request.getQueryString());
+            requestParams.set("url", request.getRequestURL());
             requestParams.set("method", request.getMethod());
             requestParams.set("contentType", request.getContentType());
+            /*if (request instanceof OnexHttpServletRequestWrapper) {
+                try {
+                    requestParams.set("params", IoUtil.read(request.getInputStream()).toString());
+                } catch (IOException ie) {
+                    log.error("读取流失败", e);
+                }
+            }*/
         }
         logEntity.setRequestParams(requestParams);
         logService.saveLog(logEntity);
     }
 
     /**
-     * 从joinPoint获取参数
+     * 从joinPoint获取参数,其实是从方法的参数中获取，经过json解析后，会和实际传参有偏差
      */
-    private String getRequestParam(ProceedingJoinPoint joinPoint) {
-        HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
-        // GET请求
-        if (request != null && HttpMethod.GET.name().equalsIgnoreCase(request.getMethod())) {
-            return request.getQueryString();
-        }
+    private String getMethodParam(ProceedingJoinPoint joinPoint) {
         // 请求参数,接口方法中的参数,可能会有HttpServletRequest、HttpServletResponse、ModelMap
         Object[] args = joinPoint.getArgs();
         List<Object> actualParam = new ArrayList<>();
         for (Object arg : args) {
             // 只处理能处理的
-            if (arg == null || arg instanceof HttpServletRequest || arg instanceof HttpServletResponse || arg instanceof ModelMap) {
-                // 不处理的特例
-                break;
-            } else if (arg instanceof MultipartFile) {
+            if (arg instanceof MultipartFile) {
                 actualParam.add(Dict.create().set("type", "file").set("name", ((MultipartFile) arg).getOriginalFilename()));
             } else if (arg instanceof MultipartFile[]) {
                 MultipartFile[] files = (MultipartFile[]) arg;
@@ -168,8 +153,6 @@ public class LogOperationAspect {
                 actualParam.add(list);
             } else if (arg instanceof Serializable || arg instanceof Map) {
                 actualParam.add(arg);
-            } else {
-                actualParam.add(Dict.create().set("type", arg.getClass().getName()));
             }
         }
         if (actualParam.size() == 1) {

@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.PageData;
+import com.nb6868.onex.common.pojo.PageForm;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +30,13 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
     /**
      * 构建条件构造器
      */
+    public QueryWrapper<T> getWrapper(String method, BaseForm form) {
+        return new QueryWrapper<>();
+    }
+
+    /**
+     * 构建条件构造器
+     */
     public QueryWrapper<T> getWrapper(String method, Map<String, Object> params) {
         return new QueryWrapper<>();
     }
@@ -35,6 +44,26 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
     @SuppressWarnings("unchecked")
     protected Class<D> currentDtoClass() {
         return (Class<D>) ReflectionKit.getSuperClassGenericType(this.getClass(), DtoService.class, 2);
+    }
+
+    /**
+     * 分页
+     *
+     * @param pageForm 查询条件
+     * @return 分页数据
+     */
+    public PageData<D> pageDto(PageForm pageForm) {
+        return pageDto(getPage(pageForm), getWrapper("page", pageForm));
+    }
+
+    /**
+     * 分页
+     *
+     * @param pageForm 查询条件
+     * @return 分页数据
+     */
+    public PageData<D> pageDto(PageForm pageForm, Wrapper<T> queryWrapper) {
+        return pageDto(getPage(pageForm), queryWrapper);
     }
 
     /**
@@ -57,8 +86,8 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
         IPage<T> iPage = page(page, queryWrapper);
 
         PageData<D> pageData = getPageData(iPage, currentDtoClass());
-        pageData.setLimit((int) page.getSize());
-        pageData.setPage((int) page.getCurrent());
+        pageData.setPageSize(page.getSize());
+        pageData.setPageNo(page.getCurrent());
         pageData.setLastPage(page.getSize() * page.getCurrent() >= page.getTotal());
         return pageData;
     }

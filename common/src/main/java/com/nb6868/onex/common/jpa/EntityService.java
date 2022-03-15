@@ -1,6 +1,8 @@
 package com.nb6868.onex.common.jpa;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.text.StrSplitter;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
@@ -14,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.PageData;
+import com.nb6868.onex.common.pojo.PageForm;
 import com.nb6868.onex.common.util.ConvertUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.logging.Log;
@@ -180,6 +183,25 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * 获取分页对象
+     *
+     * @param pageForm          分页请求
+     */
+    protected IPage<T> getPage(PageForm pageForm) {
+        // 分页对象 参数,当前页和每页数
+        Page<T> page = new Page<>(pageForm.getPageNo(), pageForm.getPageSize());
+        StrUtil.split(pageForm.getSortFmt(), ";", true, true).forEach(s -> {
+            List<String> sortRule = StrUtil.split(s, ",", true, true);
+            if (sortRule.size() == 2) {
+                page.addOrder(new OrderItem(sortRule.get(0), Const.ASC.equalsIgnoreCase(sortRule.get(1))));
+            } else {
+                // 不符合要求，抛弃
+            }
+        });
+        return page;
     }
 
     /**

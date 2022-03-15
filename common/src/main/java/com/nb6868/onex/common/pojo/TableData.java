@@ -11,7 +11,7 @@ import java.util.List;
  * @author Charles zhangchoaxu@gmail.com
  */
 @Data
-public class TableData<T> {
+public class TableData<T> extends PageData<T> {
 
     @ApiModelProperty(value = "表名称")
     private String title;
@@ -24,9 +24,6 @@ public class TableData<T> {
 
     @ApiModelProperty(value = "是否分页")
     private boolean page = true;
-
-    @ApiModelProperty(value = "列表/分页数据")
-    private PageData<T> data;
 
     @ApiModelProperty(value = "表头定义")
     private List<Dict> schemas;
