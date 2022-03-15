@@ -12,6 +12,9 @@
     <packaging>jar</packaging>
 
     <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <skipTests>true</skipTests>
+        <!-- version -->
         <druid.version>1.2.8</druid.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <mybatisplus.version>3.5.1</mybatisplus.version>
@@ -24,7 +27,6 @@
         <huaweicloud.obs.version>3.21.12</huaweicloud.obs.version>
         <shiro.version>1.8.0</shiro.version>
         <easypoi.version>4.4.0</easypoi.version>
-        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>

@@ -12,6 +12,7 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.sched.dto.TaskDTO;
 import com.nb6868.onex.sched.dto.TaskLogDTO;
+import com.nb6868.onex.sched.dto.TaskQueryForm;
 import com.nb6868.onex.sched.dto.TaskRunWithParamsForm;
 import com.nb6868.onex.sched.service.TaskLogService;
 import com.nb6868.onex.sched.service.TaskService;
@@ -23,9 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,22 +38,22 @@ public class TaskController {
     @Autowired
     private TaskLogService taskLogService;
 
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation("任务分页列表")
     @RequiresPermissions("sched:task:info")
     @ApiOperationSupport(order = 100)
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<TaskDTO> page = taskService.pageDto(params);
+    public Result<?> page(@RequestBody TaskQueryForm form) {
+        PageData<TaskDTO> page = taskService.pageDto(form);
 
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @PostMapping("info")
     @ApiOperation("任务详情")
     @RequiresPermissions("sched:task:info")
     @ApiOperationSupport(order = 120)
-    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        TaskDTO data = taskService.getDtoById(id);
+    public Result<?> info(@RequestBody @Validated(value = CommonForm.OneGroup.class) CommonForm form) {
+        TaskDTO data = taskService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);

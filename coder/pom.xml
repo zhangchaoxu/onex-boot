@@ -12,6 +12,9 @@
     <packaging>jar</packaging>
 
     <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <skipTests>true</skipTests>
+        <!-- version -->
         <mybatisplus.version>3.5.1</mybatisplus.version>
         <druid.version>1.2.8</druid.version>
         <commons.configuration.version>1.10</commons.configuration.version>
