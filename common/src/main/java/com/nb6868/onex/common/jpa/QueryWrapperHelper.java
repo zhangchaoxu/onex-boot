@@ -85,15 +85,23 @@ public class QueryWrapperHelper {
                             queryWrapper.likeRight(finalAttributeName, val);
                             break;
                         case IN:
-                            if (val instanceof Collection && ObjectUtil.isEmpty(val)) {
+                            if (val instanceof Collection && ObjectUtil.isNotEmpty(val)) {
                                 queryWrapper.in(finalAttributeName, (Collection<?>) val);
+                            }
+                            break;
+                        case NOT_IN:
+                            if (val instanceof Collection && ObjectUtil.isNotEmpty(val)) {
+                                queryWrapper.notIn(finalAttributeName, (Collection<?>) val);
                             }
                             break;
                         case NE:
                             queryWrapper.ne(finalAttributeName, val);
                             break;
-                        case NOT_NULL:
+                        case IS_NOT_NULL:
                             queryWrapper.isNotNull(finalAttributeName);
+                            break;
+                        case IS_NULL:
+                            queryWrapper.isNull(finalAttributeName);
                             break;
                         case BETWEEN:
                             if (val instanceof List) {

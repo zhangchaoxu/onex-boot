@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.0.4] 2022.03.15
+- new: add QueryWrapperHelper
+- new：change page fmt
+
 ## [3.0.3] 2022.03.14
 - new: add app info
 

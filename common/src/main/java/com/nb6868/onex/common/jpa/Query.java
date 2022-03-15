@@ -44,10 +44,14 @@ public @interface Query {
         , LT
         // 包含
         , IN
+        // 不包含
+        , NOT_IN
         // 不等于
         , NE
         // 不为空
-        , NOT_NULL
+        , IS_NOT_NULL
+        // 为空
+        , IS_NULL
         // between
         , BETWEEN
         // 查询时间
