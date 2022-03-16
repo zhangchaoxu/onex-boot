@@ -8,11 +8,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +20,6 @@ import java.util.List;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-// @SuppressWarnings({"unchecked", "all"})
 public class QueryWrapperHelper {
 
     /**
