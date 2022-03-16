@@ -35,7 +35,7 @@ public class PageForm extends BaseForm {
     /**
      * 获得排序规则
      */
-    public List<OrderItem> getOrderItems() {
+    public List<OrderItem> toOrderItems() {
         List<OrderItem> orderItems = new ArrayList<>();
         if (CollUtil.isNotEmpty(sortItems)) {
             sortItems.forEach(sortItem -> orderItems.add(sortItem.toOrderItem()));

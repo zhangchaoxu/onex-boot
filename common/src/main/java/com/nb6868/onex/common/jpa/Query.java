@@ -15,15 +15,25 @@ import java.lang.annotation.Target;
 public @interface Query {
 
     // 基本对象的属性名
-    String propName() default "";
+    String column() default "";
+
+    // 将column或者参数名转换成下划线分割
+    boolean underlineCase() default true;
 
     // 查询方式
     Type type() default Type.EQ;
 
-    /**
-     * 多字段模糊搜索，仅支持String类型字段，多个用逗号隔开, 如@Query(blurry = "email,username")
-     */
-    String blurry() default "";
+    // 多字段匹配方式
+    BlurryType blurryType() default BlurryType.NULL;
+
+    enum BlurryType {
+        // null
+        NULL,
+        // and
+        AND
+        // or
+        , OR
+    }
 
     enum Type {
         // 相等
@@ -52,6 +62,10 @@ public @interface Query {
         , IS_NOT_NULL
         // 为空
         , IS_NULL
+        // 不为空
+        , IS_NOT_EMPTY
+        // 为空
+        , IS_EMPTY
         // between
         , BETWEEN
         // 查询时间
