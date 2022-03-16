@@ -193,14 +193,10 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     protected IPage<T> getPage(PageForm pageForm) {
         // 分页对象 参数,当前页和每页数
         Page<T> page = new Page<>(pageForm.getPageNo(), pageForm.getPageSize());
-        StrUtil.split(pageForm.getSortFmt(), ";", true, true).forEach(s -> {
-            List<String> sortRule = StrUtil.split(s, ",", true, true);
-            if (sortRule.size() == 2) {
-                page.addOrder(new OrderItem(sortRule.get(0), Const.ASC.equalsIgnoreCase(sortRule.get(1))));
-            } else {
-                // 不符合要求，抛弃
-            }
-        });
+        List<OrderItem> orderItems = pageForm.getOrderItems();
+        if (CollectionUtils.isNotEmpty(orderItems)) {
+            page.addOrder(pageForm.getOrderItems());
+        }
         return page;
     }
 
