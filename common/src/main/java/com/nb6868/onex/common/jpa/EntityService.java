@@ -193,9 +193,9 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     protected IPage<T> getPage(PageForm pageForm) {
         // 分页对象 参数,当前页和每页数
         Page<T> page = new Page<>(pageForm.getPageNo(), pageForm.getPageSize());
-        List<OrderItem> orderItems = pageForm.getOrderItems();
+        List<OrderItem> orderItems = pageForm.toOrderItems();
         if (CollectionUtils.isNotEmpty(orderItems)) {
-            page.addOrder(pageForm.getOrderItems());
+            page.addOrder(orderItems);
         }
         return page;
     }
