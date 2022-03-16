@@ -3,17 +3,14 @@ package com.nb6868.onex.common.jpa;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.pojo.SortItem;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
 
 /**
  * 查询条件组装工具
@@ -32,14 +29,15 @@ public class QueryWrapperHelper {
         if (query == null) {
             return queryWrapper;
         }
-        try {
-            List<Field> fields = getAllFields(query.getClass(), new ArrayList<>());
-            for (Field field : fields) {
-                boolean accessible = field.isAccessible();
-                field.setAccessible(true);
-                Query q = field.getAnnotation(Query.class);
+        Map<String, Field> fields = ReflectUtil.getFieldMap(query.getClass());
+        for (Map.Entry<String, Field> entry : fields.entrySet()) {
+            try {
+                boolean accessible = entry.getValue().isAccessible();
+                entry.getValue().setAccessible(true);
+                Query q = entry.getValue().getAnnotation(Query.class);
                 if (q != null) {
-                    Object val = field.get(query);
+
+                    Object val = entry.getValue().get(query);
                     if (ObjectUtil.isNotEmpty(val)) {
                         if (q.blurryType() != Query.BlurryType.NULL) {
                             // 多字段
@@ -94,7 +92,7 @@ public class QueryWrapperHelper {
                         } else {
                             String column = q.column();
                             if (StrUtil.isBlank(column)) {
-                                column = field.getName();
+                                column = entry.getValue().getName();
                             }
                             if (q.underlineCase()) {
                                 column = StrUtil.toUnderlineCase(column);
@@ -181,20 +179,12 @@ public class QueryWrapperHelper {
                         }
                     }
                 }
-                field.setAccessible(accessible);
+                entry.getValue().setAccessible(accessible);
+            } catch (Exception e) {
+                log.error("QueryWrapperHelper", e);
             }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
         }
         return queryWrapper;
-    }
-
-    private static List<Field> getAllFields(Class clazz, List<Field> fields) {
-        if (clazz != null) {
-            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-            getAllFields(clazz.getSuperclass(), fields);
-        }
-        return fields;
     }
 
 }
