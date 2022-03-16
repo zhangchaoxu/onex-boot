@@ -17,6 +17,9 @@ public @interface Query {
     // 基本对象的属性名
     String column() default "";
 
+    // 查询方式
+    String from() default "";
+
     // 将column或者参数名转换成下划线分割
     boolean underlineCase() default true;
 
@@ -46,6 +49,8 @@ public @interface Query {
         , LE
         // 中模糊查询
         , LIKE
+        // 中模糊查询
+        , NOT_LIKE
         // 左模糊查询
         , LIKE_LEFT
         // 右模糊查询
@@ -66,12 +71,16 @@ public @interface Query {
         , IS_NOT_EMPTY
         // 为空
         , IS_EMPTY
+        // not between
+        , NOT_BETWEEN
         // between
         , BETWEEN
         // 查询时间
         , BETWEEN_TIME
         // 排序
         , ORDER_BY
+        // limit
+        , LIMIT
     }
 
 }

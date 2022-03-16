@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.SortItem;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +26,16 @@ public class QueryWrapperHelper {
      * 封装QueryWrapper
      */
     public static <R, Q> QueryWrapper<R> getPredicate(Q query) {
+        return getPredicate(query, null);
+    }
+
+    /**
+     * 封装QueryWrapper
+     *
+     * @param query 查询条件
+     * @param from 查询来源
+     */
+    public static <R, Q> QueryWrapper<R> getPredicate(Q query, String from) {
         QueryWrapper<R> queryWrapper = new QueryWrapper<>();
         if (query == null) {
             return queryWrapper;
@@ -36,7 +47,6 @@ public class QueryWrapperHelper {
                 entry.getValue().setAccessible(true);
                 Query q = entry.getValue().getAnnotation(Query.class);
                 if (q != null) {
-
                     Object val = entry.getValue().get(query);
                     if (ObjectUtil.isNotEmpty(val)) {
                         if (q.blurryType() != Query.BlurryType.NULL) {
@@ -44,6 +54,7 @@ public class QueryWrapperHelper {
                             List<String> blurryList = StrUtil.split(q.column(), ",", true, true);
                             queryWrapper.and(wrapper -> {
                                 for (int i = 0; i < blurryList.size(); i++) {
+                                    // 只能是or和and，and默认
                                     wrapper.or(q.blurryType() == Query.BlurryType.OR && i != 0);
                                     final String column = q.underlineCase() ? StrUtil.toUnderlineCase(blurryList.get(i)) : blurryList.get(i);
                                     switch (q.type()) {
@@ -64,6 +75,9 @@ public class QueryWrapperHelper {
                                             break;
                                         case LT:
                                             wrapper.lt(column, val);
+                                            break;
+                                        case NOT_LIKE:
+                                            wrapper.notLike(column, val);
                                             break;
                                         case LIKE:
                                             wrapper.like(column, val);
@@ -117,6 +131,9 @@ public class QueryWrapperHelper {
                                 case LT:
                                     queryWrapper.lt(column, val);
                                     break;
+                                case NOT_LIKE:
+                                    queryWrapper.notLike(column, val);
+                                    break;
                                 case LIKE:
                                     queryWrapper.like(column, val);
                                     break;
@@ -148,6 +165,14 @@ public class QueryWrapperHelper {
                                 case IS_EMPTY:
                                     queryWrapper.and(qw -> qw.isNull(columnFinal).or().eq(columnFinal, ""));
                                     break;
+                                case NOT_BETWEEN:
+                                    if (val instanceof List) {
+                                        List<?> list = (List<?>) val;
+                                        if (CollUtil.isNotEmpty(list) && list.size() == 2) {
+                                            queryWrapper.notBetween(column, list.get(0), list.get(1));
+                                        }
+                                    }
+                                    break;
                                 case BETWEEN:
                                     if (val instanceof List) {
                                         List<?> list = (List<?>) val;
@@ -166,11 +191,16 @@ public class QueryWrapperHelper {
                                     }
                                     break;
                                 case ORDER_BY:
-                                    if (val instanceof List) {
+                                    if (q.from().equalsIgnoreCase(from) && val instanceof List) {
                                         List<SortItem> list = (List<SortItem>) val;
                                         if (CollUtil.isNotEmpty(list)) {
                                             list.forEach(sortItem -> queryWrapper.orderByAsc(sortItem.getAsc(), sortItem.getColumn()).orderByDesc(!sortItem.getAsc(), sortItem.getColumn()));
                                         }
+                                    }
+                                    break;
+                                case LIMIT:
+                                    if (q.from().equalsIgnoreCase(from)) {
+                                        queryWrapper.last(StrUtil.format(Const.LIMIT_FMT, val));
                                     }
                                     break;
                                 default:
