@@ -2,6 +2,7 @@ package com.nb6868.onex.common.pojo;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.nb6868.onex.common.jpa.Query;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class PageForm extends BaseForm {
     private Long pageNo;
 
     @ApiModelProperty(value = "排序规则")
+    @Query(type = Query.Type.ORDER_BY)
     private List<SortItem> sortItems;
 
     /**

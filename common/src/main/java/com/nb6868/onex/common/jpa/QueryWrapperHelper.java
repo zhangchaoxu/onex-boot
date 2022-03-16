@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.pojo.SortItem;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 查询条件组装工具
@@ -166,7 +168,12 @@ public class QueryWrapperHelper {
                                     }
                                     break;
                                 case ORDER_BY:
-
+                                    if (val instanceof List) {
+                                        List<SortItem> list = (List<SortItem>) val;
+                                        if (CollUtil.isNotEmpty(list)) {
+                                            list.forEach(sortItem -> queryWrapper.orderByAsc(sortItem.getAsc(), sortItem.getColumn()).orderByDesc(!sortItem.getAsc(), sortItem.getColumn()));
+                                        }
+                                    }
                                     break;
                                 default:
                                     break;
