@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.0.5] 2022.03.16
+- enhance: enhance QueryWrapperHelper
+
 ## [3.0.4] 2022.03.15
 - new: add QueryWrapperHelper
 - new：change page fmt

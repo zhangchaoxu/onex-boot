@@ -52,7 +52,7 @@ public abstract class BaseExceptionHandler {
      * 当前运行环境
      */
     @Value("${spring.profiles.active}")
-    private String env;
+    private String profile;
 
     @Autowired
     private BaseLogService logService;
@@ -89,7 +89,7 @@ public abstract class BaseExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Object handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
         saveLog(request, e);
-        return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, StrUtil.contains(env, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
+        return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
     }
 
     /**
@@ -206,7 +206,7 @@ public abstract class BaseExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Object handleMaxUploadSizeExceededException(HttpServletRequest request, MaxUploadSizeExceededException e) {
         saveLog(request, e);
-        return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, "dev".equalsIgnoreCase(env) ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
+        return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
     }
 
     /**
