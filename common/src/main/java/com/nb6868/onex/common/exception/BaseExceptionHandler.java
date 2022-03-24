@@ -10,7 +10,6 @@ import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,18 +149,6 @@ public abstract class BaseExceptionHandler {
     @ExceptionHandler(UnauthenticatedException.class)
     public Object handleUnauthenticatedExceptionException(HttpServletRequest request, UnauthenticatedException e) {
         return handleExceptionResult(request, ErrorCode.UNAUTHORIZED);
-    }
-
-    /**
-     * 处理微信接口异常
-     *
-     * @param e exception
-     * @return result
-     */
-    @ExceptionHandler(WxErrorException.class)
-    public Object handleWxErrorException(HttpServletRequest request, WxErrorException e) {
-        saveLog(request, e);
-        return handleExceptionResult(request, ErrorCode.WX_API_ERROR);
     }
 
     /**
