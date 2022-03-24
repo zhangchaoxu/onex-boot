@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.0.6] 2022.03.24
+- enhance: remove WxErrorException from exception handler
+
 ## [3.0.5] 2022.03.16
 - enhance: enhance QueryWrapperHelper
 
