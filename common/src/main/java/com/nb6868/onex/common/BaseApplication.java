@@ -1,9 +1,12 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.system.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.core.env.Environment;
+
+import java.net.InetAddress;
 
 /**
  * 基础Application
@@ -11,22 +14,23 @@ import org.springframework.core.env.Environment;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class   BaseApplication extends SpringBootServletInitializer {
+public class BaseApplication extends SpringBootServletInitializer {
 
     /**
      * 打印出环境信息
+     *
      * @param environment
      */
     protected static void printEnvironmentInfo(Environment environment) {
         log.info("\n################## {} Running ##################\n" +
-                        ":: Link ::\thttp://127.0.0.1:{}{}\n" +
-                        ":: Doc ::\thttp://127.0.0.1:{}{}/doc.html\n" +
+                        ":: Active Profiles ::\t{}\n" +
+                        ":: Doc ::\thttp://{}:{}{}/doc.html\n" +
                         ":: Onex ::\t{}-{}-{}-{}\n" +
                         ":: App ::\t{}-{}-{}-{}\n" +
                         "################## {} Running ##################",
                 environment.getProperty("spring.application.name"),
-                environment.getProperty("server.port"),
-                environment.getProperty("server.servlet.context-path"),
+                environment.getProperty("spring.profiles.active"),
+                SystemUtil.getHostInfo().getAddress(),
                 environment.getProperty("server.port"),
                 environment.getProperty("server.servlet.context-path"),
                 environment.getProperty("onex.parent-artifact-id"),
