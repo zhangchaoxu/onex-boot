@@ -19,7 +19,7 @@ public class BaseApplication extends SpringBootServletInitializer {
     /**
      * 打印出环境信息
      *
-     * @param environment
+     * @param environment 环境
      */
     protected static void printEnvironmentInfo(Environment environment) {
         log.info("\n################## {} Running ##################\n" +
