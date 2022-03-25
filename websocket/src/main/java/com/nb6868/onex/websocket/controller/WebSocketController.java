@@ -22,7 +22,7 @@ public class WebSocketController {
     @Autowired
     private WebSocketServer webSocketServer;
 
-    @GetMapping("getOpenSockets")
+    @PostMapping("getOpenSockets")
     @ApiOperation("获得目前连接的Socket")
     @RequiresPermissions("websocket:info")
     @ApiOperationSupport(order = 10)
