@@ -57,7 +57,7 @@ public class JwtTokenFilter implements Filter {
             } else {
                 // 用密码校验
                 AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()));
-                boolean verify = null != loginConfig && JwtUtils.verifyKeyAndExp(token, loginConfig.getTokenKey().getBytes());
+                boolean verify = null != loginConfig && JwtUtils.verifyKeyAndExp(jwt, loginConfig.getTokenKey());
                 if (verify) {
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {

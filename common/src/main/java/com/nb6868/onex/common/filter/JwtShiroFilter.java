@@ -14,10 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * JWT Shiro过滤器
+ * 使用SimpleShiroFilter,在ShiroRealm中验证
  * 代码的执行流程preHandle->isAccessAllowed->isLoginAttempt->executeLogin
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Deprecated
 public class JwtShiroFilter extends BaseShiroFilter {
 
     private final AuthProps authProps;
