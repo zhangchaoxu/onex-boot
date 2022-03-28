@@ -8,36 +8,40 @@
         <version>3.0.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>websocket</artifactId>
+    <artifactId>shiro</artifactId>
     <packaging>jar</packaging>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <onex-common.version>3.0.8</onex-common.version>
+        <mybatisplus.version>3.5.1</mybatisplus.version>
         <shiro.version>1.9.0</shiro.version>
     </properties>
 
     <dependencies>
-        <!-- common -->
+        <!-- MybatisPlus -->
         <dependency>
-            <groupId>com.nb6868.onex</groupId>
-            <artifactId>common</artifactId>
-            <version>${onex-common.version}</version>
-            <scope>provided</scope>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatisplus.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-generator</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
             <version>${shiro.version}</version>
-            <scope>provided</scope>
         </dependency>
-        <!-- websocket -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
         </dependency>
     </dependencies>
 

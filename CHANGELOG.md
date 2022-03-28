@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.0.8] 2022.03.28
+- new: add shiro module
+
 ## [3.0.7] 2022.03.25
 - enhance: remove WxErrorException from exception handler
 - upgrade: upgrade shiro to 1.9.0
