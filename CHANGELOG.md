@@ -1,7 +1,9 @@
 # CHANGELOG
 
 ## [3.0.8] 2022.03.28
-- new: add shiro module
+- new: add shiro into common
+- enhance: optimize AccessControl shiro filter, support empty value
+- upgrade: upgrade hutool to 5.8.0.M1
 
 ## [3.0.7] 2022.03.25
 - enhance: remove WxErrorException from exception handler

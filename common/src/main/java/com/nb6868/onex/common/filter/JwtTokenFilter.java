@@ -26,6 +26,7 @@ import java.io.IOException;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Deprecated
 public class JwtTokenFilter implements Filter {
 
     /**

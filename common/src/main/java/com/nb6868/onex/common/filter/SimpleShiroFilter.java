@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class ShiroFilter extends BaseShiroFilter {
+public class SimpleShiroFilter extends BaseShiroFilter {
 
     private final AuthProps authProps;
 
-    public ShiroFilter(AuthProps authProps) {
+    public SimpleShiroFilter(AuthProps authProps) {
         this.authProps = authProps;
     }
 

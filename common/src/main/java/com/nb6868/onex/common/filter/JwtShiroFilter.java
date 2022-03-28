@@ -29,12 +29,13 @@ public class JwtShiroFilter extends BaseShiroFilter {
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
         String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, authProps.getTokenKey());
-        if (StrUtil.isNotBlank(token)) {
-            // 验证token
-            JWT jwt = JwtUtils.parseToken(token);
-            if (null != jwt && StrUtil.isNotBlank(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()))) {
-                // 用密码校验
-                AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()));
+        // 验证token
+        JWT jwt = JwtUtils.parseToken(token);
+        if (null != jwt) {
+            String tokenType = jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey());
+            if (StrUtil.isNotBlank(tokenType)) {
+                // 获得改类型的配置
+                AuthProps.Config loginConfig = authProps.getConfigs().get(tokenType);
                 // 只验证了密码,没验证有效期
                 if (null != loginConfig && JwtUtils.verifyKey(token, loginConfig.getTokenKey().getBytes())) {
                     // 提交给realm进行登入
