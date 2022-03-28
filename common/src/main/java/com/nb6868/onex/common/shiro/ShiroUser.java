@@ -25,4 +25,12 @@ public class ShiroUser implements Serializable {
      */
     private AuthProps.Config loginConfig;
 
+    public boolean isFullPermissions () {
+        return type == ShiroConst.USER_TYPE_SUPERADMIN;
+    }
+
+    public boolean isFullRoles () {
+        return type == ShiroConst.USER_TYPE_SUPERADMIN;
+    }
+
 }
