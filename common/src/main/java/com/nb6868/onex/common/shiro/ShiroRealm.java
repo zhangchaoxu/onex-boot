@@ -1,4 +1,4 @@
-package com.nb6868.onex.shiro;
+package com.nb6868.onex.common.shiro;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
@@ -75,7 +75,7 @@ public class ShiroRealm extends AuthorizingRealm {
             }
 
             // 转换成UserDetail对象
-            UserDetail userDetail = BeanUtil.mapToBean(userEntity, UserDetail.class, true, CopyOptions.create().setIgnoreCase(true));
+            ShiroUser userDetail = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
 
             userDetail.setLoginConfig(loginConfig);
             if (loginConfig != null && loginConfig.isTokenRenewal()) {
@@ -98,7 +98,7 @@ public class ShiroRealm extends AuthorizingRealm {
                 throw new OnexException(ErrorCode.ACCOUNT_LOCK);
             }
             // 转换成UserDetail对象
-            UserDetail userDetail = BeanUtil.mapToBean(userEntity, UserDetail.class, true, CopyOptions.create().setIgnoreCase(true));
+            ShiroUser userDetail = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
             userDetail.setLoginConfig(loginConfig);
             if (loginConfig.isTokenRenewal()) {
                 // 更新token
@@ -112,7 +112,7 @@ public class ShiroRealm extends AuthorizingRealm {
             }
             // 只校验token
             // 转换成UserDetail对象
-            UserDetail userDetail = JSONUtil.toBean(tokenClaimsJson, UserDetail.class);
+            ShiroUser userDetail = JSONUtil.toBean(tokenClaimsJson, ShiroUser.class);
             userDetail.setLoginConfig(loginConfig);
             return new SimpleAuthenticationInfo(userDetail, token, getName());
         }
@@ -125,7 +125,7 @@ public class ShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        UserDetail user = (UserDetail) principals.getPrimaryPrincipal();
+        ShiroUser user = (ShiroUser) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         // 根据配置中的role和permission设置SimpleAuthorizationInfo
         if (null != user.getLoginConfig() && user.getLoginConfig().isPermissionBase()) {

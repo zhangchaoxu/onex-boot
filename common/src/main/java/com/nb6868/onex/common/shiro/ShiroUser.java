@@ -1,4 +1,4 @@
-package com.nb6868.onex.shiro;
+package com.nb6868.onex.common.shiro;
 
 import com.nb6868.onex.common.auth.AuthProps;
 import lombok.Data;
@@ -11,12 +11,13 @@ import java.io.Serializable;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
-public class UserDetail implements Serializable {
+public class ShiroUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private String username;
+    private String realName;
     private Integer type;
     private String tenantCode;
     /**

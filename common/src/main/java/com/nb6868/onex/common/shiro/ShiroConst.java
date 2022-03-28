@@ -1,4 +1,4 @@
-package com.nb6868.onex.shiro;
+package com.nb6868.onex.common.shiro;
 
 /**
  * 常量

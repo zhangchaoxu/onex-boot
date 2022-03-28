@@ -14,7 +14,7 @@ import javax.servlet.Filter;
 
 /**
  * Filter配置
- * 过滤器的顺序按照order来，cros->shiro->xss
+ * 过滤器的顺序按照order来
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -54,6 +54,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<?> shiroFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+        // 这里代理的shiroFilter值得是ShiroConfig中的shirFilter,而不是shirFilter类本身
         registration.setFilter(new DelegatingFilterProxy("shiroFilter"));
         // 该值缺省为false，表示生命周期由SpringApplicationContext管理，设置为true则表示由ServletContainer管理
         registration.addInitParameter("targetFilterLifecycle", "true");
@@ -63,22 +64,6 @@ public class FilterConfig {
         registration.setOrder(Integer.MAX_VALUE - 80);
         return registration;
     }
-
-   /* @Bean
-    public Filter jwtTokenFilter() {
-        return new JwtTokenFilter();
-    }
-
-    @Bean
-    public FilterRegistrationBean<?> jwtTokenFilterRegistration() {
-        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
-        registration.setDispatcherTypes(DispatcherType.REQUEST);
-        registration.setFilter(jwtTokenFilter());
-        registration.addUrlPatterns("/*");
-        registration.setName("jwtTokenFilter");
-        registration.setOrder(Integer.MAX_VALUE - 80);
-        return registration;
-    }*/
 
     @Bean
     public FilterRegistrationBean<?> xssFilterRegistration() {

@@ -108,6 +108,9 @@ onex:
   # 过滤器
   filter:
     enable: false
+  # Shiro
+  shiro:
+    enable: false
   # mybatis配置
   mybatisplus:
     enable: false

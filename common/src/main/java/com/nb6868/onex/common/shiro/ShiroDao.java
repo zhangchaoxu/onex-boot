@@ -1,4 +1,4 @@
-package com.nb6868.onex.shiro;
+package com.nb6868.onex.common.shiro;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

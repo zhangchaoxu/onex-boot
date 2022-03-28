@@ -1,4 +1,4 @@
-package com.nb6868.onex.shiro;
+package com.nb6868.onex.common.shiro;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -8,7 +8,7 @@ import org.apache.shiro.subject.Subject;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class SecurityUser {
+public class ShiroUtils {
 
     public static Subject getSubject() {
         try {
@@ -21,15 +21,15 @@ public class SecurityUser {
     /**
      * 获取用户信息
      */
-    public static UserDetail getUser() {
+    public static ShiroUser getUser() {
         Subject subject = getSubject();
         if (subject == null) {
-            return new UserDetail();
+            return new ShiroUser();
         }
 
-        UserDetail user = (UserDetail) subject.getPrincipal();
+        ShiroUser user = (ShiroUser) subject.getPrincipal();
         if (user == null) {
-            return new UserDetail();
+            return new ShiroUser();
         }
 
         return user;
