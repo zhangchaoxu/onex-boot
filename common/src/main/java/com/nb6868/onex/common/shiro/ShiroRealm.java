@@ -10,6 +10,7 @@ import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.JwtUtils;
+import com.nb6868.onex.common.validator.AssertUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -32,8 +33,6 @@ import java.util.Set;
 public class ShiroRealm extends AuthorizingRealm {
 
     @Autowired
-    private AuthProps authProps;
-    @Autowired
     private ShiroDao shiroDao;
 
     /**
@@ -52,96 +51,42 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         // AuthenticationToken包含身份信息和认证信息
         String token = authenticationToken.getCredentials().toString();
-        AuthProps.Config loginConfig;
+        AuthProps.Config loginConfig = null;
+        if (authenticationToken.getPrincipal() instanceof AuthProps.Config) {
+            loginConfig = (AuthProps.Config) authenticationToken.getPrincipal();
+        }
+        AssertUtils.isNull(loginConfig, ErrorCode.UNAUTHORIZED);
         // 尝试解析为jwt
         JWT jwt = JwtUtils.parseToken(token);
-        if (jwt == null) {
-            // 非jwt,从数据库里获得类型
+        AssertUtils.isNull(jwt, ErrorCode.UNAUTHORIZED);
+
+        // 获取用户id
+        Long userId;
+        if ("db".equalsIgnoreCase(loginConfig.getTokenStoreType())) {
+            // token存在数据库中
             Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
-            if (tokenEntity == null) {
-                throw new OnexException(ErrorCode.UNAUTHORIZED);
-            }
-            loginConfig = authProps.getConfigs().get(MapUtil.getStr(tokenEntity, "type"));
-            if (null == loginConfig) {
-                throw new OnexException(ErrorCode.UNAUTHORIZED);
-            }
-            // 查询用户信息
-            Map<String, Object> userEntity = shiroDao.getUserById(MapUtil.getLong(tokenEntity, "user_id"));
-            if (userEntity == null) {
-                // 账号不存在
-                throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-            } else if (MapUtil.getInt(userEntity, "state") != ShiroConst.USER_STATE_ENABLED) {
-                // 账号锁定
-                throw new OnexException(ErrorCode.ACCOUNT_LOCK);
-            }
-            // 转换成UserDetail对象
-            ShiroUser userDetail = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
-            userDetail.setLoginConfig(loginConfig);
-            if (loginConfig.isTokenRenewal()) {
-                // 更新token
-                shiroDao.updateTokenExpireTime(token, loginConfig.getTokenExpire());
-            }
-            return new SimpleAuthenticationInfo(userDetail, token, getName());
+            AssertUtils.isNull(tokenEntity, ErrorCode.UNAUTHORIZED);
+            userId = MapUtil.getLong(tokenEntity, "user_id");
         } else {
-            // jwt,先验证
-            loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenTypeKey()));
-            if (null == loginConfig || !JwtUtils.verifyKey(jwt, loginConfig.getTokenKey())) {
-                throw new OnexException(ErrorCode.UNAUTHORIZED);
-            }
-            // 开始验证数据
-            if ("jwt".equalsIgnoreCase(loginConfig.getVerifyType()))  {
-                // jwt校验
-                Map<String, Object> userEntity = shiroDao.getUserById(jwt.getPayload().getClaimsJson().getLong("id"));
-                if (userEntity == null) {
-                    // 账号不存在
-                    throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-                } else if (MapUtil.getInt(userEntity, "state") != ShiroConst.USER_STATE_ENABLED) {
-                    // 账号锁定
-                    throw new OnexException(ErrorCode.ACCOUNT_LOCK);
-                }
-                // 转换成UserDetail对象
-                ShiroUser userDetail = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
-                userDetail.setLoginConfig(loginConfig);
-                if (loginConfig.isTokenRenewal()) {
-                    // 更新token
-                    shiroDao.updateTokenExpireTime(token, loginConfig.getTokenExpire());
-                }
-                return new SimpleAuthenticationInfo(userDetail, token, getName());
-            } else if ("jwtSimple".equalsIgnoreCase(loginConfig.getVerifyType()))  {
-                // 只简单校验jwt密钥和有效时间,不过数据库
-                if (!JwtUtils.verifyKeyAndExp(jwt, loginConfig.getTokenKey())) {
-                    throw new OnexException(ErrorCode.UNAUTHORIZED);
-                }
-                // 转换成UserDetail对象
-                ShiroUser userDetail = JSONUtil.toBean(jwt.getPayload().getClaimsJson(), ShiroUser.class);
-                userDetail.setLoginConfig(loginConfig);
-                return new SimpleAuthenticationInfo(userDetail, token, getName());
-            } else {
-                // 默认full,完整校验,从数据库走
-                // 根据accessToken，查询用户信息
-                Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
-                if (tokenEntity == null) {
-                    throw new OnexException(ErrorCode.UNAUTHORIZED);
-                }
-                // 查询用户信息
-                Map<String, Object> userEntity = shiroDao.getUserById(MapUtil.getLong(tokenEntity, "user_id"));
-                if (userEntity == null) {
-                    // 账号不存在
-                    throw new OnexException(ErrorCode.ACCOUNT_NOT_EXIST);
-                } else if (MapUtil.getInt(userEntity, "state") != ShiroConst.USER_STATE_ENABLED) {
-                    // 账号锁定
-                    throw new OnexException(ErrorCode.ACCOUNT_LOCK);
-                }
-                // 转换成UserDetail对象
-                ShiroUser userDetail = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
-                userDetail.setLoginConfig(loginConfig);
-                if (loginConfig.isTokenRenewal()) {
-                    // 更新token
-                    shiroDao.updateTokenExpireTime(token, loginConfig.getTokenExpire());
-                }
-                return new SimpleAuthenticationInfo(userDetail, token, getName());
-            }
+            // token没有持久化，直接用jwt验证
+            AssertUtils.isFalse(jwt.setKey(loginConfig.getTokenKey().getBytes()).validate(0), ErrorCode.UNAUTHORIZED);
+            userId = jwt.getPayload().getClaimsJson().getLong("id");
         }
+        AssertUtils.isNull(userId, ErrorCode.UNAUTHORIZED);
+        // 验证用户是否还存在
+        Map<String, Object> userEntity = shiroDao.getUserById(userId);
+        // 账号不存在
+        AssertUtils.isNull(userEntity, ErrorCode.ACCOUNT_NOT_EXIST);
+        // 账号锁定
+        AssertUtils.isFalse(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ErrorCode.ACCOUNT_LOCK);
+        // 转换成UserDetail对象
+        ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
+        shiroUser.setLoginConfig(loginConfig);
+        if ("db".equalsIgnoreCase(loginConfig.getTokenStoreType()) && loginConfig.isTokenRenewal()) {
+            // 更新token
+            shiroDao.updateTokenExpireTime(token, loginConfig.getTokenExpire());
+        }
+        return new SimpleAuthenticationInfo(shiroUser, token, getName());
     }
 
     /**

@@ -129,6 +129,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * 选用jackson实现json的序列化
      */
     @Bean
+    @SuppressWarnings("deprecation")
     public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = JacksonUtils.getMapper();

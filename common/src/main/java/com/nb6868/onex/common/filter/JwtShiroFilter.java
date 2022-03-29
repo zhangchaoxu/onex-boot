@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.filter;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.util.HttpContextUtils;
@@ -14,12 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * JWT Shiro过滤器
- * 使用SimpleShiroFilter,在ShiroRealm中验证
  * 代码的执行流程preHandle->isAccessAllowed->isLoginAttempt->executeLogin
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-@Deprecated
 public class JwtShiroFilter extends BaseShiroFilter {
 
     private final AuthProps authProps;
@@ -30,6 +27,7 @@ public class JwtShiroFilter extends BaseShiroFilter {
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
+        // 请求token
         String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, authProps.getTokenKey());
         // 验证token
         JWT jwt = JwtUtils.parseToken(token);
@@ -39,13 +37,13 @@ public class JwtShiroFilter extends BaseShiroFilter {
                 // 获得改类型的配置
                 AuthProps.Config loginConfig = authProps.getConfigs().get(tokenType);
                 // 只验证了密码,没验证有效期
-                if (null != loginConfig && JwtUtils.verifyKey(token, loginConfig.getTokenKey().getBytes())) {
-                    // 提交给realm进行登入
+                if (null != loginConfig && JwtUtils.verifyKey(jwt, loginConfig.getTokenKey())) {
+                    // 提交给Realm.doGetAuthenticationInfo进行登入
                     return new AuthenticationToken() {
                         @Override
-                        public JSONObject getPrincipal() {
+                        public AuthProps.Config getPrincipal() {
                             // 身份
-                            return jwt.getPayload().getClaimsJson();
+                            return loginConfig;
                         }
 
                         @Override

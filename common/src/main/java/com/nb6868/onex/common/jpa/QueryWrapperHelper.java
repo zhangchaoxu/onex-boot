@@ -35,6 +35,7 @@ public class QueryWrapperHelper {
      * @param query 查询条件
      * @param from 查询来源
      */
+    @SuppressWarnings({"deprecation", "unchecked"})
     public static <R, Q> QueryWrapper<R> getPredicate(Q query, String from) {
         QueryWrapper<R> queryWrapper = new QueryWrapper<>();
         if (query == null) {

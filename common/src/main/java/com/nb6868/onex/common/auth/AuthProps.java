@@ -55,8 +55,8 @@ public class AuthProps {
         @ApiModelProperty(value = "登录类型")
         private String type;
 
-        @ApiModelProperty(value = "验证方式:jwtSimple,jwt,full")
-        private String verifyType = "jwt";
+        @ApiModelProperty(value = "token存储类型,db/cache/none")
+        private String tokenStoreType = "db";
 
         /**
          * 支持多端登录,表示可以在不同客户端登录,创建token的时候不判断原先的
@@ -67,15 +67,11 @@ public class AuthProps {
         private boolean multiLogin = true;
 
         @JsonIgnore
-        @ApiModelProperty(value = "token策略")
-        private String tokenPolicy = "jwt";
-
-        @JsonIgnore
         @ApiModelProperty(value = "token密钥")
         private String tokenKey = "onex@2021";
 
         @JsonIgnore
-        @ApiModelProperty(value = "token有效时间")
+        @ApiModelProperty(value = "token有效时间,默认7天,单位秒")
         private Integer tokenExpire = 604800;
 
         @JsonIgnore
@@ -104,14 +100,6 @@ public class AuthProps {
         @JsonIgnore
         @ApiModelProperty(value = "超过最大登录次数后锁定时间")
         private Long loginErrorLockTime;
-
-        @JsonIgnore
-        @ApiModelProperty(value = "自动创建用户")
-        private boolean autoCreate = false;
-
-        @JsonIgnore
-        @ApiModelProperty(value = "自动创建用户的角色ids")
-        private String autoCreateUserRoleIds;
 
         @JsonIgnore
         @ApiModelProperty(value = "首次登录强制修改密码")

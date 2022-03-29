@@ -54,6 +54,7 @@ public class BaseShiroConfig {
     protected Map<String, Filter> initFilters(AuthProps authProps) {
         Map<String, Filter> filters = new HashMap<>();
         filters.put("shiro", new SimpleShiroFilter(authProps));
+        filters.put("jwtShiro", new JwtShiroFilter(authProps));
         return filters;
     }
 
@@ -139,7 +140,7 @@ public class BaseShiroConfig {
             }
         }));
         // 除上述anon外,其它都需要过shiro
-        filterMap.put("/**", "shiro");
+        filterMap.put("/**", "jwtShiro");
         filterMap.forEach((s, s2) -> log.debug("shiro key={}, filter={}", s, s2));
         return filterMap;
     }
