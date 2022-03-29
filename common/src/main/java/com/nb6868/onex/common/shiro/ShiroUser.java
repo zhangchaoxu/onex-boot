@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.shiro;
 
-import com.nb6868.onex.common.auth.AuthProps;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,10 +19,7 @@ public class ShiroUser implements Serializable {
     private String realName;
     private Integer type;
     private String tenantCode;
-    /**
-     * 登录配置
-     */
-    private AuthProps.Config loginConfig;
+    private String loginType;
 
     public boolean isFullPermissions () {
         return type == ShiroConst.USER_TYPE_SUPERADMIN;

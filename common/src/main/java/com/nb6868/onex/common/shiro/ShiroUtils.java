@@ -36,10 +36,17 @@ public class ShiroUtils {
     }
 
     /**
-     * 获取用户ID
+     * 获取用户Id
      */
     public static Long getUserId() {
         return getUser().getId();
+    }
+
+    /**
+     * 获得用户租户编码
+     */
+    public static String getUserTenantCode() {
+        return getUser().getTenantCode();
     }
 
 }

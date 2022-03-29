@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.0.9</version>
+        <version>3.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>uc</artifactId>
@@ -15,8 +15,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <onex-common.version>3.0.9</onex-common.version>
-        <shiro.version>1.9.0</shiro.version>
+        <onex-common.version>3.1.0</onex-common.version>
     </properties>
 
     <dependencies>
@@ -26,17 +25,6 @@
             <artifactId>common</artifactId>
             <version>${onex-common.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- shiro -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-core</artifactId>
-            <version>${shiro.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-            <version>${shiro.version}</version>
         </dependency>
     </dependencies>
 
