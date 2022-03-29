@@ -21,6 +21,7 @@ public class JwtTest {
         byte[] key = "1234567890".getBytes();
         String jwtToken = JWT.create()
                 .setPayload("sub", "1234567890")
+                .setPayload("id", 1118075560757063681L)
                 .setPayload("name", "looly")
                 .setPayload("admin", true)
                 //.setSigner("XXXYYY", key)
@@ -34,7 +35,7 @@ public class JwtTest {
 
     @Test
     void decode() {
-        String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Imxvb2x5IiwiYWRtaW4iOnRydWUsImV4cCI6MTY0ODUyMjkwNSwiaWF0IjoxNjQ4NTIxMTA1LCJuYmYiOjE2NDg1MjExMDV9.6wRZqLw7cb0QpWaWqmmdhNFWB8DJVN6SPRDcBDSrgkw";
+        String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWQiOjExMTgwNzU1NjA3NTcwNjM2ODEsIm5hbWUiOiJsb29seSIsImFkbWluIjp0cnVlLCJleHAiOjE2NDg1MjQ3MzcsImlhdCI6MTY0ODUyMjkzOCwibmJmIjoxNjQ4NTIyOTM4fQ.kPJCrGFSVWpSicBpbplRH8tqlx-q_LVsLZX4xPyevuU";
         JWT jwt = JWT.of(jwtToken);
         System.out.println("Header=" + jwt.getHeader());
         System.out.println("Payload=" + jwt.getPayload());

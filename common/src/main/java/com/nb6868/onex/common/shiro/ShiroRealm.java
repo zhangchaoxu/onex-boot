@@ -4,11 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.JwtUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.apache.shiro.authc.*;
@@ -32,6 +30,8 @@ import java.util.Set;
 @Component
 public class ShiroRealm extends AuthorizingRealm {
 
+    @Autowired
+    private AuthProps authProps;
     @Autowired
     private ShiroDao shiroDao;
 
@@ -81,7 +81,7 @@ public class ShiroRealm extends AuthorizingRealm {
         AssertUtils.isFalse(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ErrorCode.ACCOUNT_LOCK);
         // 转换成UserDetail对象
         ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
-        shiroUser.setLoginConfig(loginConfig);
+        shiroUser.setLoginType(loginConfig.getType());
         if ("db".equalsIgnoreCase(loginConfig.getTokenStoreType()) && loginConfig.isTokenRenewal()) {
             // 更新token
             shiroDao.updateTokenExpireTime(token, loginConfig.getTokenExpire());
@@ -92,23 +92,25 @@ public class ShiroRealm extends AuthorizingRealm {
     /**
      * 授权(验证权限时调用)
      * 验证token不会过这个方法
-     * 只有当需要检测用户权限的时候才会调用此方法,例如RequiresPermissions/checkRole/checkPermission
+     * 只有当需要检测用户权限的时候才会调用此方法
+     * 例如RequiresPermissions/checkRole/checkPermission
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        ShiroUser user = (ShiroUser) principals.getPrimaryPrincipal();
+        ShiroUser principal = (ShiroUser) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        AuthProps.Config loginConfig = authProps.getConfigs().get(principal.getLoginType());
         // 根据配置中的role和permission设置SimpleAuthorizationInfo
-        if (null != user.getLoginConfig() && user.getLoginConfig().isPermissionBase()) {
+        if (null != loginConfig && loginConfig.isPermissionBase()) {
             // 塞入角色列表,超级管理员全部
-            List<String> permissionsList = user.isFullPermissions() ? shiroDao.getAllPermissionsList() : shiroDao.getPermissionsListByUserId(user.getId());
+            List<String> permissionsList = principal.isFullPermissions() ? shiroDao.getAllPermissionsList() : shiroDao.getPermissionsListByUserId(principal.getId());
             Set<String> set = new HashSet<>();
             permissionsList.forEach(permissions -> set.addAll(StrUtil.splitTrim(permissions, ",")));
             info.setStringPermissions(set);
         }
-        if (null != user.getLoginConfig() && user.getLoginConfig().isRoleBase()) {
+        if (null != loginConfig && loginConfig.isRoleBase()) {
             // 塞入权限列表,超级管理员全部
-            info.setRoles(new HashSet<>(user.isFullRoles() ? shiroDao.getAllRoleCodeList() : shiroDao.getRoleCodeListByUserId(user.getId())));
+            info.setRoles(new HashSet<>(principal.isFullRoles() ? shiroDao.getAllRoleCodeList() : shiroDao.getRoleCodeListByUserId(principal.getId())));
         }
         return info;
     }

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.1.0] 2022.03.29
+- new: add uc module
+
 ## [3.0.9] 2022.03.29
 - upgrade: upgrade springboot to 2.6.5
 - enhance: shiro enhance

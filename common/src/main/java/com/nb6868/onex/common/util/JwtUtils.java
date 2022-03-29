@@ -77,5 +77,4 @@ public class JwtUtils {
         return jwt != null && StrUtil.isNotBlank(key) && jwt.setKey(key.getBytes()).verify();
     }
 
-
 }
