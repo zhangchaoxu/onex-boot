@@ -46,6 +46,7 @@ public class JacksonUtils {
      *
      * @return ObjectMapper实例
      */
+    @SuppressWarnings("deprecation")
     public static ObjectMapper getMapper() {
         if (JacksonUtils.mapper != null) {
             return JacksonUtils.mapper;

@@ -3,6 +3,7 @@ package com.nb6868.onex.common.pojo;
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * @author Charles zhangchoaxu@gmail.com
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class TableData<T> extends PageData<T> {
 
     @ApiModelProperty(value = "表名称")
