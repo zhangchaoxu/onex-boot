@@ -56,7 +56,7 @@ public class MailTplEntity extends BaseEntity {
      * 配置参数
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private JSONObject param;
+    private JSONObject params;
     /**
      * 租户编码
      */

@@ -16,7 +16,7 @@ CREATE TABLE `msg_mail_tpl`
     `time_limit`  int(11)                                                       NOT NULL DEFAULT -1 COMMENT '限时秒数 -1表示不限',
     `title`       varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '标题',
     `content`     text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci         NULL COMMENT '内容',
-    `param`       json                                                          NULL COMMENT '配置参数',
+    `params`       json                                                          NULL COMMENT '配置参数',
     `create_id`   bigint(20) UNSIGNED                                           NULL     DEFAULT NULL COMMENT '创建者ID',
     `create_time` datetime(0)                                                   NULL     DEFAULT NULL COMMENT '创建时间',
     `update_id`   bigint(20) UNSIGNED                                           NULL     DEFAULT NULL COMMENT '更新者ID',
