@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -13,7 +15,9 @@ import java.util.Date;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class BaseAutoFillMetaObjectHandler implements MetaObjectHandler {
+@ConditionalOnProperty(name = "onex.auto-fill.enable", havingValue = "true")
+@Component
+public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
     /**
      * 创建时间

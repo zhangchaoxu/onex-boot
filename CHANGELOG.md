@@ -3,7 +3,8 @@
 ## [3.1.0] 2022.03.29
 - new: add uc module
 - upgrade: upgrade huaweicloud obs to 3.22.3
-- add: add BaseAutoFillMetaObjectHandler
+- add: add AutoFillMetaObjectHandler
+- add: add OnexExceptionHandler
 
 ## [3.0.9] 2022.03.29
 - upgrade: upgrade springboot to 2.6.5
