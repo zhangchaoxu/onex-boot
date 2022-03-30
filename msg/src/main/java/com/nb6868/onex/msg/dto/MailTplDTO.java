@@ -45,7 +45,7 @@ public class MailTplDTO extends BaseDTO {
 	private String content;
 
 	@ApiModelProperty(value = "配置参数")
-	private JSONObject param;
+	private JSONObject params;
 
 	@ApiModelProperty(value = "租户编码")
 	private String tenantCode;
