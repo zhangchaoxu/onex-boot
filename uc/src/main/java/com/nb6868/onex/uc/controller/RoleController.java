@@ -2,6 +2,8 @@ package com.nb6868.onex.uc.controller;
 
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.pojo.CommonForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -9,6 +11,7 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.RoleDTO;
+import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.RoleService;
 import com.nb6868.onex.uc.service.RoleUserService;
@@ -22,6 +25,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.groups.Default;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,7 @@ import java.util.Map;
 @Validated
 @Api(tags="角色管理")
 public class RoleController {
+
 	@Autowired
 	private RoleService roleService;
 	@Autowired
@@ -80,7 +85,7 @@ public class RoleController {
 		return new Result<>().success(dto);
 	}
 
-	@PutMapping("update")
+	@PostMapping("update")
 	@ApiOperation("修改")
 	@LogOperation("修改")
 	@RequiresPermissions("uc:role:update")
@@ -90,13 +95,17 @@ public class RoleController {
 		return new Result<>().success(dto);
 	}
 
-	@DeleteMapping("delete")
+	@PostMapping("delete")
 	@ApiOperation("删除")
 	@LogOperation("删除")
 	@RequiresPermissions("uc:role:delete")
-	public Result<?> delete(@NotEmpty(message = "{id.require}") @RequestParam Long id) {
+	public Result<?> delete(@RequestBody IdForm form) {
+		// 判断数据是否存在
+		RoleEntity data = roleService.getById(form.getId());
+		AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 		// 删除数据
-		roleService.logicDeleteById(id);
+		boolean ret = roleService.logicDeleteById(data.getId());
+		AssertUtils.isFalse(ret, "删除失败");
 		// 删除角色菜单关联关系
 		menuScopeService.deleteByRoleIds(Collections.singletonList(id));
 		// 删除角色用户关联关系

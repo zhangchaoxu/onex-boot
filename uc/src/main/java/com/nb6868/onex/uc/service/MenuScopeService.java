@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.EntityService;
+import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.MenuScopeDao;
 import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.entity.MenuScopeEntity;
@@ -106,17 +107,17 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByUserId(Long userId) {
-        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().eq("user_id", userId).eq("type", 2));
+        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().eq("user_id", userId).eq("type", UcConst.MenuScopeTypeEnum.USER.value()));
     }
 
     /**
      * 根据角色id，删除角色菜单关系
      *
-     * @param roleIds 角色ids
+     * @param roleCodes 角色编码
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByRoleIds(List<Long> roleIds) {
-        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().in("role_id", roleIds).eq("type", 1));
+    public boolean deleteByRoleCodes(List<String> roleCodes) {
+        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().in("role_id", roleCodes).eq("type", UcConst.MenuScopeTypeEnum.ROLE.value()));
     }
 
     /**

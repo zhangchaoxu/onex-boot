@@ -8,6 +8,11 @@ package com.nb6868.onex.uc;
 public interface UcConst {
 
     /**
+     * 默认租户
+     */
+    String TENANT_CODE_DEFAULT = "default";
+
+    /**
      * 部门最大等级限制
      */
     int DEPT_HIERARCHY_MAX = 100;
@@ -31,6 +36,38 @@ public interface UcConst {
         }
 
         UserStateEnum(int value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int value() {
+            return this.value;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    /**
+     * 权限范围类型
+     */
+    enum MenuScopeTypeEnum {
+
+        /**
+         * 详见name
+         */
+        ROLE(1, "角色"),
+        USER(2, "用户");
+
+        private int value;
+        private String name;
+
+        MenuScopeTypeEnum(int value) {
+            this.value = value;
+        }
+
+        MenuScopeTypeEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }

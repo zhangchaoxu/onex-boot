@@ -75,7 +75,7 @@ public class AxdController {
         return new Result<>().success(dto);
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("cms:axd:update")
@@ -85,7 +85,7 @@ public class AxdController {
         return new Result<>().success(dto);
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("cms:axd:delete")
@@ -95,7 +95,7 @@ public class AxdController {
         return new Result<>();
     }
 
-    @DeleteMapping("deleteBatch")
+    @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("cms:axd:deleteBatch")

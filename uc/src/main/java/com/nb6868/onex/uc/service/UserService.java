@@ -1,5 +1,7 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.map.MapUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.pojo.ChangeStateRequest;
@@ -17,6 +19,7 @@ import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
@@ -40,8 +43,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     private RoleUserService roleUserService;
     @Autowired
     private DeptService deptService;
-    @Autowired
-    private MailLogService mailLogService;
 
     @Override
     public QueryWrapper<UserEntity> getWrapper(String method, Map<String, Object> params) {

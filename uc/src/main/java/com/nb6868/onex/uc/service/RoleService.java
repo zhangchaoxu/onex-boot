@@ -2,7 +2,6 @@ package com.nb6868.onex.uc.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.DtoService;
-import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.uc.dao.RoleDao;
 import com.nb6868.onex.uc.dto.RoleDTO;
 import com.nb6868.onex.uc.entity.RoleEntity;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 角色
@@ -28,13 +26,6 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     private MenuScopeService menuScopeService;
     @Autowired
     private RoleUserService roleUserService;
-
-    @Override
-    public QueryWrapper<RoleEntity> getWrapper(String method, Map<String, Object> params) {
-        return new WrapperUtils<RoleEntity>(new QueryWrapper<>(), params)
-                .like("name", "name")
-                .getQueryWrapper();
-    }
 
     @Override
     protected void afterSaveOrUpdateDto(boolean ret, RoleDTO dto, RoleEntity existedEntity, int type) {
