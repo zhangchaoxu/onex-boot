@@ -1,10 +1,10 @@
 package com.nb6868.onex.uc.entity;
 
-import com.nb6868.onex.common.pojo.BaseEntity;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.ibatis.type.Alias;
 
 /**
  * 部门
@@ -14,25 +14,28 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("uc_dept")
+@Alias("uc_dept")
 public class DeptEntity extends BaseEntity {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
     /**
      * 上级ID
      */
-    private Long pid;
+	private Long pid;
     /**
-     * 名称
+     * 所有上级ID，用逗号分开
      */
-    private String name;
+	private String pids;
+    /**
+     * 部门名称
+     */
+	private String name;
     /**
      * 排序
      */
-    private Integer sort;
+	private Integer sort;
     /**
-     * 上级部门名称
+     * 租户编码
      */
-    @TableField(exist = false)
-    private String parentName;
-
+	private String tenantCode;
 }

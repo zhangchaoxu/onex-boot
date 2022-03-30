@@ -1,32 +1,28 @@
 package com.nb6868.onex.uc.entity;
 
-import com.nb6868.onex.common.pojo.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.ibatis.type.Alias;
 
 /**
- * 角色用户关系
+ * 角色-用户关系
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("uc_role_user")
+@Alias("uc_role_user")
 public class RoleUserEntity extends BaseEntity {
-    private static final long serialVersionUID = 1L;
 
     /**
-     * 角色ID
+     * 角色编码
      */
-    private Long roleId;
-    /**
-     * 角色名
-     */
-    private String roleName;
+	private String roleCode;
     /**
      * 用户ID
      */
-    private Long userId;
-
+	private Long userId;
 }
