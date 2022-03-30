@@ -20,16 +20,22 @@ import javax.validation.constraints.NotBlank;
 @ApiModel(value = "租户")
 public class TenantDTO extends BaseDTO {
 
-	@ApiModelProperty(value = "编码")
-	@NotBlank(message = "编码不能为空", groups = DefaultGroup.class)
-	private String code;
+    @ApiModelProperty(value = "编码,需唯一")
+    @NotBlank(message = "编码不能为空", groups = DefaultGroup.class)
+    private String code;
 
-	@ApiModelProperty(value = "名称")
-	@NotBlank(message = "名称不能为空", groups = DefaultGroup.class)
-	private String name;
+    @ApiModelProperty(value = "名称")
+    @NotBlank(message = "名称不能为空", groups = DefaultGroup.class)
+    private String name;
 
-	@ApiModelProperty(value = "状态 0 无效 1 有效")
-	@EnumValue(message = "状态指定值0和1", groups = DefaultGroup.class)
-	private Integer state;
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
+    @ApiModelProperty(value = "排序")
+    private Integer sort;
+
+    @ApiModelProperty(value = "状态")
+    @EnumValue(intValues = {0, 1}, message = "状态指定值0和1", groups = DefaultGroup.class)
+    private Integer state;
 
 }

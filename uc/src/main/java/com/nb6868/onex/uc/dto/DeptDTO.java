@@ -1,8 +1,8 @@
 package com.nb6868.onex.uc.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.pojo.BaseDTO;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,13 +13,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * 部门管理
+ * 部门
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "部门管理")
+@ApiModel(value = "部门")
 public class DeptDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "上级ID")
@@ -40,5 +40,8 @@ public class DeptDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "上级部门名称")
 	private String parentName;
+
+	@ApiModelProperty(value = "租户编码")
+	private String tenantCode;
 
 }
