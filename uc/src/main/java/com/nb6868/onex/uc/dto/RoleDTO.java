@@ -19,15 +19,23 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "角色")
 public class RoleDTO extends BaseDTO {
+    private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "名称")
-    @NotBlank(message = "{name.require}", groups = DefaultGroup.class)
-    private String name;
+	@ApiModelProperty(value = "编码,需唯一")
+	@NotBlank(message = "编码不能为空", groups = DefaultGroup.class)
+	private String code;
 
-    @ApiModelProperty(value = "备注")
-    private String remark;
+	@ApiModelProperty(value = "名称")
+	@NotBlank(message = "{name.require}", groups = DefaultGroup.class)
+	private String name;
 
-    @ApiModelProperty(value = "菜单ID列表")
-    private List<Long> menuIdList;
+	@ApiModelProperty(value = "备注")
+	private String remark;
+
+	@ApiModelProperty(value = "租户编码")
+	private String tenantCode;
+
+	@ApiModelProperty(value = "菜单ID列表")
+	private List<Long> menuIdList;
 
 }
