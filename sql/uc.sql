@@ -43,10 +43,10 @@ CREATE TABLE `uc_user`
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for uc_user_param
+-- Table structure for uc_user_params
 -- ----------------------------
-DROP TABLE IF EXISTS `uc_user_param`;
-CREATE TABLE `uc_user_param`
+DROP TABLE IF EXISTS `uc_user_params`;
+CREATE TABLE `uc_user_params`
 (
     `id`          bigint(20) UNSIGNED                                          NOT NULL COMMENT 'ID',
     `code`        varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci      NOT NULL COMMENT '编码',

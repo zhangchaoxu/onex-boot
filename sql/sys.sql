@@ -28,10 +28,10 @@ CREATE TABLE `sys_region`
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for sys_param
+-- Table structure for sys_params
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_param`;
-CREATE TABLE `sys_param`
+DROP TABLE IF EXISTS `sys_params`;
+CREATE TABLE `sys_params`
 (
     `id`          bigint(20) UNSIGNED                                           NOT NULL COMMENT 'ID',
     `code`        varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci       NULL     DEFAULT NULL COMMENT '编码',
