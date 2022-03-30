@@ -1,19 +1,3 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : onex
- Source Server Type    : MySQL
- Source Server Version : 50729
- Source Host           : hw3.nb6868.com:3306
- Source Schema         : onex
-
- Target Server Type    : MySQL
- Target Server Version : 50729
- File Encoding         : 65001
-
- Date: 03/01/2022 14:08:06
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -26,7 +10,7 @@ CREATE TABLE `sys_calendar`  (
   `type` tinyint(4) NULL DEFAULT NULL COMMENT '类型: 0工作日、1周末、2节日、3调休',
   `week` int(11) NULL DEFAULT NULL COMMENT '星期',
   `wage` tinyint(4) NOT NULL DEFAULT 1 COMMENT '薪资倍数',
-  `holiday_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '节假日名称',
+  `holiday_name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '节假日名称',
   `lunaryear` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '农历年',
   `lunarmonth` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '农历月',
   `lunarday` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '农历日',
