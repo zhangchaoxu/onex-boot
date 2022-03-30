@@ -1,10 +1,10 @@
 package com.nb6868.onex.uc.dao;
 
-import com.nb6868.onex.portal.modules.uc.entity.UserEntity;
 import com.nb6868.onex.common.jpa.BaseDao;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.nb6868.onex.uc.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

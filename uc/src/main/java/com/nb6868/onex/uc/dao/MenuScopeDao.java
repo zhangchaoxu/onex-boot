@@ -1,7 +1,7 @@
 package com.nb6868.onex.uc.dao;
 
-import com.nb6868.onex.portal.modules.uc.entity.MenuScopeEntity;
 import com.nb6868.onex.common.jpa.BaseDao;
+import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

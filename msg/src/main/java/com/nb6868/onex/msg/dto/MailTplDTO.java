@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "消息-模板")
 public class MailTplDTO extends BaseDTO {
-    private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "编码")
 	@NotBlank(message = "编码不能为空", groups = DefaultGroup.class)

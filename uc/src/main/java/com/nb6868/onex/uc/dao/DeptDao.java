@@ -1,7 +1,12 @@
 package com.nb6868.onex.uc.dao;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.nb6868.onex.common.jpa.BaseDao;
 import com.nb6868.onex.uc.entity.DeptEntity;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.nb6868.onex.uc.dao;
 
 import com.nb6868.onex.common.jpa.BaseDao;
-import com.nb6868.onex.portal.modules.uc.entity.UserParamEntity;
+import com.nb6868.onex.uc.entity.UserParamsEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,6 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
-public interface UserParamDao extends BaseDao<UserParamEntity> {
+public interface UserParamsDao extends BaseDao<UserParamsEntity> {
 
 }
