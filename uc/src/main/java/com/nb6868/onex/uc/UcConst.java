@@ -8,6 +8,10 @@ package com.nb6868.onex.uc;
 public interface UcConst {
 
     /**
+     * 部门最大等级限制
+     */
+    int DEPT_HIERARCHY_MAX = 100;
+    /**
      * 用户状态
      */
     enum UserStateEnum {

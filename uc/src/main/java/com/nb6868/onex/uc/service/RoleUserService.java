@@ -1,10 +1,10 @@
 package com.nb6868.onex.uc.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.nb6868.onex.portal.modules.uc.dao.RoleUserDao;
-import com.nb6868.onex.portal.modules.uc.entity.RoleEntity;
-import com.nb6868.onex.portal.modules.uc.entity.RoleUserEntity;
 import com.nb6868.onex.common.jpa.EntityService;
+import com.nb6868.onex.uc.dao.RoleUserDao;
+import com.nb6868.onex.uc.entity.RoleEntity;
+import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
