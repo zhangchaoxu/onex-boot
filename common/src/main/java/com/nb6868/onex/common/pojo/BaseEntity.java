@@ -26,7 +26,7 @@ public abstract class BaseEntity implements Serializable {
     @TableId
     private Long id;
     /**
-     * 创建者id
+     * 创建者ID
      */
     @TableField(fill = FieldFill.INSERT)
     private Long createId;
@@ -36,7 +36,7 @@ public abstract class BaseEntity implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     /**
-     * 更新用户id
+     * 更新用户ID
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateId;
@@ -47,8 +47,6 @@ public abstract class BaseEntity implements Serializable {
     private Date updateTime;
     /**
      * 逻辑删除
-     * 1 删除
-     * 0 未删除
      */
     @TableField(fill = FieldFill.INSERT)
     @TableLogic
