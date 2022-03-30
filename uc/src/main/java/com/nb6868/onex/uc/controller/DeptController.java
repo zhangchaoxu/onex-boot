@@ -85,7 +85,7 @@ public class DeptController {
         return new Result<>().success(dto);
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("uc:dept:update")
@@ -95,7 +95,7 @@ public class DeptController {
         return new Result<>().success(dto);
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("uc:dept:delete")

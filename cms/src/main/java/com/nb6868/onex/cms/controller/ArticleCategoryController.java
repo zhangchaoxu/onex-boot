@@ -76,7 +76,7 @@ public class ArticleCategoryController {
         return new Result<>().success(dto);
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("cms:articleCategory:update")
@@ -86,7 +86,7 @@ public class ArticleCategoryController {
         return new Result<>().success(dto);
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("cms:articleCategory:delete")

@@ -1,8 +1,5 @@
 package com.nb6868.onex.uc.controller;
 
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.text.StrSplitter;
-import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -14,7 +11,6 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.MenuDTO;
 import com.nb6868.onex.uc.dto.MenuTreeDTO;
 import com.nb6868.onex.uc.entity.MenuEntity;
@@ -101,7 +97,7 @@ public class MenuController {
         return new Result<>().success(dto);
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("uc:menu:update")
@@ -111,7 +107,7 @@ public class MenuController {
         return new Result<>().success(dto);
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("uc:menu:delete")

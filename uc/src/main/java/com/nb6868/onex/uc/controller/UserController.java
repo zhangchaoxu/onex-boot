@@ -97,10 +97,10 @@ public class UserController {
         return new Result<>().success(data);
     }
 
-    @PutMapping("password")
+    @PostMapping("changePassword")
     @ApiOperation("修改密码")
     @LogOperation("修改密码")
-    public Result<?> password(@Validated @RequestBody PasswordDTO dto) {
+    public Result<?> changePassword(@Validated @RequestBody PasswordDTO dto) {
         // 获取数据库中的用户
         UserEntity data = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -133,7 +133,7 @@ public class UserController {
         return new Result<>();
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("uc:user:update")
@@ -143,7 +143,7 @@ public class UserController {
         return new Result<>();
     }
 
-    @PutMapping("changeState")
+    @PostMapping("changeState")
     @ApiOperation("更新状态")
     @LogOperation("更新状态")
     @RequiresPermissions("uc:user:update")
@@ -163,7 +163,7 @@ public class UserController {
         return new Result<>();
     }
 
-    @PutMapping("changeMenuScope")
+    @PostMapping("changeMenuScope")
     @ApiOperation("修改用户授权")
     @LogOperation("修改用户授权")
     @RequiresPermissions("uc:user:changeMenuScope")
@@ -173,7 +173,7 @@ public class UserController {
         return new Result<>();
     }
 
-    @DeleteMapping("deleteBatch")
+    @PostMapping("deleteBatch")
     @LogOperation("批量删除")
     @RequiresPermissions("uc:user:deleteBatch")
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
