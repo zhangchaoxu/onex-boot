@@ -7,9 +7,9 @@ import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.TokenUtils;
-import com.nb6868.onex.portal.modules.uc.dao.TokenDao;
-import com.nb6868.onex.portal.modules.uc.entity.TokenEntity;
-import com.nb6868.onex.portal.modules.uc.entity.UserEntity;
+import com.nb6868.onex.uc.dao.TokenDao;
+import com.nb6868.onex.uc.entity.TokenEntity;
+import com.nb6868.onex.uc.entity.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

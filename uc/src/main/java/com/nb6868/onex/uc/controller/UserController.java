@@ -1,6 +1,5 @@
 package com.nb6868.onex.uc.controller;
 
-import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -16,15 +15,13 @@ import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.portal.modules.uc.UcConst;
-import com.nb6868.onex.portal.modules.uc.dto.ChangePasswordByMailCodeRequest;
-import com.nb6868.onex.portal.modules.uc.dto.PasswordDTO;
-import com.nb6868.onex.portal.modules.uc.dto.UserDTO;
-import com.nb6868.onex.portal.modules.uc.entity.UserEntity;
-import com.nb6868.onex.portal.modules.uc.excel.UserExcel;
-import com.nb6868.onex.portal.modules.uc.service.DeptService;
-import com.nb6868.onex.portal.modules.uc.service.RoleService;
-import com.nb6868.onex.portal.modules.uc.service.UserService;
+import com.nb6868.onex.uc.UcConst;
+import com.nb6868.onex.uc.dto.PasswordDTO;
+import com.nb6868.onex.uc.dto.UserDTO;
+import com.nb6868.onex.uc.entity.UserEntity;
+import com.nb6868.onex.uc.service.DeptService;
+import com.nb6868.onex.uc.service.RoleService;
+import com.nb6868.onex.uc.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -188,55 +185,10 @@ public class UserController {
     @PostMapping("logout")
     @ApiOperation(value = "退出")
     @LogOperation(value = "退出", type = "logout")
-    public Result<?> logout(HttpServletRequest request) {
-        String token = HttpContextUtils.getRequestParameter(request, UcConst.TOKEN_HEADER);
+    public Result<?> logout() {
+        String token = HttpContextUtils.getRequestParameter(UcConst.TOKEN_HEADER);
         userService.logout(token);
         return new Result<>();
-    }
-
-    @GetMapping("export")
-    @ApiOperation("导出")
-    @LogOperation("导出")
-    @RequiresPermissions("uc:user:export")
-    public void export(@ApiIgnore @RequestParam Map<String, Object> params, HttpServletResponse response) {
-        List<UserDTO> list = userService.listDto(params);
-
-        ExcelUtils.exportExcelToTarget(response, "用户", list, UserExcel.class);
-    }
-
-    @PostMapping("import")
-    @ApiOperation("导入")
-    @LogOperation("导入")
-    @RequiresPermissions("uc:user:import")
-    public Result<?> importExcel(@RequestParam("file") MultipartFile file, @RequestParam Long deptId, @RequestParam List<Long> roleIds) {
-        AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
-
-        ImportParams params = new ImportParams();
-        params.setStartSheetIndex(0);
-        List<UserExcel> list = ExcelUtils.importExcel(file, UserExcel.class, params);
-        AssertUtils.isTrue(list.isEmpty(), ErrorCode.ERROR_REQUEST, "Excel内容为空");
-        AssertUtils.isTrue(list.size() > Const.EXCEL_IMPORT_LIMIT, ErrorCode.ERROR_REQUEST, "单次导入不得超过" + Const.EXCEL_IMPORT_LIMIT + "条");
-
-        List<MsgResult> result = new ArrayList<>();
-        for (UserExcel item : list) {
-            UserDTO dto = ConvertUtils.sourceToTarget(item, UserDTO.class);
-            MsgResult validateResult = ValidatorUtils.getValidateResult(dto, DefaultGroup.class, AddGroup.class);
-            if (validateResult.isSuccess()) {
-                // 额外赋值
-                dto.setDeptId(deptId);
-                dto.setRoleIdList(roleIds);
-                dto.setState(1);
-                try {
-                    userService.saveDto(dto);
-                    result.add(new MsgResult().success("导入成功"));
-                } catch (Exception e) {
-                    result.add(new MsgResult().error(ErrorCode.ERROR_REQUEST, e.getMessage()));
-                }
-            } else {
-                result.add(validateResult);
-            }
-        }
-        return new Result<>().success(result);
     }
 
 }

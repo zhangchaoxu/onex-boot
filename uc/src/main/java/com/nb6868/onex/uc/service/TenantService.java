@@ -1,9 +1,9 @@
 package com.nb6868.onex.uc.service;
 
-import com.nb6868.onex.portal.modules.uc.dao.TenantDao;
-import com.nb6868.onex.portal.modules.uc.dto.TenantDTO;
-import com.nb6868.onex.portal.modules.uc.entity.TenantEntity;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.uc.dao.TenantDao;
+import com.nb6868.onex.uc.dto.TenantDTO;
+import com.nb6868.onex.uc.entity.TenantEntity;
 import org.springframework.stereotype.Service;
 
 /**

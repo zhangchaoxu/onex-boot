@@ -1,10 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.portal.modules.uc.dto.RoleDTO;
-import com.nb6868.onex.portal.modules.uc.service.MenuScopeService;
-import com.nb6868.onex.portal.modules.uc.service.RoleService;
-import com.nb6868.onex.portal.modules.uc.service.RoleUserService;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
@@ -12,6 +8,10 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
+import com.nb6868.onex.uc.dto.RoleDTO;
+import com.nb6868.onex.uc.service.MenuScopeService;
+import com.nb6868.onex.uc.service.RoleService;
+import com.nb6868.onex.uc.service.RoleUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;

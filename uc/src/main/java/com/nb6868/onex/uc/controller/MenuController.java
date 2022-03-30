@@ -6,13 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
-import com.nb6868.onex.portal.modules.uc.UcConst;
-import com.nb6868.onex.portal.modules.uc.dto.MenuDTO;
-import com.nb6868.onex.portal.modules.uc.dto.MenuTreeDTO;
-import com.nb6868.onex.portal.modules.uc.entity.MenuEntity;
-import com.nb6868.onex.portal.modules.uc.service.AuthService;
-import com.nb6868.onex.portal.modules.uc.service.MenuScopeService;
-import com.nb6868.onex.portal.modules.uc.service.MenuService;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.ConvertUtils;
@@ -21,6 +14,13 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
+import com.nb6868.onex.uc.UcConst;
+import com.nb6868.onex.uc.dto.MenuDTO;
+import com.nb6868.onex.uc.dto.MenuTreeDTO;
+import com.nb6868.onex.uc.entity.MenuEntity;
+import com.nb6868.onex.uc.service.AuthService;
+import com.nb6868.onex.uc.service.MenuScopeService;
+import com.nb6868.onex.uc.service.MenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -49,40 +49,6 @@ public class MenuController {
     MenuScopeService menuScopeService;
     @Autowired
     AuthService authService;
-
-    @GetMapping("scope")
-    @ApiOperation("权限范围")
-    public Result<?> scope() {
-        ShiroUser user = ShiroUtils.getUser();
-        // 获取该用户所有menu
-        List<MenuEntity> allList = menuService.getListByUser(user, null);
-        // 过滤出其中显示菜单
-        List<MenuTreeDTO> menuList = new ArrayList<>();
-        // 过滤出其中路由菜单
-        List<MenuDTO> urlList = new ArrayList<>();
-        // 过滤出其中的权限
-        Set<String> permissions = new HashSet<>();
-        allList.forEach(menu -> {
-            if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
-                menuList.add(ConvertUtils.sourceToTarget(menu, MenuTreeDTO.class));
-            }
-            if (StrUtil.isNotBlank(menu.getUrl())) {
-                urlList.add(ConvertUtils.sourceToTarget(menu, MenuDTO.class));
-            }
-            if (StrUtil.isNotBlank(menu.getPermissions())) {
-                permissions.addAll(StrSplitter.splitTrim(menu.getPermissions(), ',', true));
-            }
-        });
-        // 将菜单列表转成菜单树
-        List<MenuTreeDTO> menuTree = TreeUtils.build(menuList);
-        // 获取角色列表
-        Set<String> roles = authService.getUserRoles(user);
-        return new Result<>().success(Dict.create()
-                .set("menuTree", menuTree)
-                .set("urlList", urlList)
-                .set("permissions", permissions)
-                .set("roles", roles));
-    }
 
     @GetMapping("tree")
     @ApiOperation("登录用户菜单树")

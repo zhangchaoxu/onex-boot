@@ -2,10 +2,10 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.nb6868.onex.portal.modules.uc.dao.MenuScopeDao;
-import com.nb6868.onex.portal.modules.uc.entity.MenuEntity;
-import com.nb6868.onex.portal.modules.uc.entity.MenuScopeEntity;
 import com.nb6868.onex.common.jpa.EntityService;
+import com.nb6868.onex.uc.dao.MenuScopeDao;
+import com.nb6868.onex.uc.entity.MenuEntity;
+import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

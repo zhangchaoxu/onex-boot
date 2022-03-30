@@ -4,11 +4,6 @@ import cn.hutool.core.text.StrSplitter;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.shiro.ShiroUser;
-import com.nb6868.onex.portal.modules.uc.UcConst;
-import com.nb6868.onex.portal.modules.uc.entity.MenuEntity;
-import com.nb6868.onex.portal.modules.uc.entity.TokenEntity;
-import com.nb6868.onex.portal.modules.uc.entity.UserEntity;
-import com.nb6868.onex.portal.modules.uc.entity.UserOauthEntity;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -17,9 +12,10 @@ import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
-import com.nb6868.onex.msg.MsgConst;
-import com.nb6868.onex.msg.entity.MailLogEntity;
-import com.nb6868.onex.msg.service.MailLogService;
+import com.nb6868.onex.uc.UcConst;
+import com.nb6868.onex.uc.entity.MenuEntity;
+import com.nb6868.onex.uc.entity.TokenEntity;
+import com.nb6868.onex.uc.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,17 +39,11 @@ public class AuthService {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserOauthService userOauthService;
-    @Autowired
     private RoleService roleService;
     @Autowired
     private TokenService tokenService;
     @Autowired
     private MenuScopeService menuScopeService;
-    @Autowired
-    private CaptchaService captchaService;
-    @Autowired
-    private MailLogService mailLogService;
 
     /**
      * 获取用户权限列表
