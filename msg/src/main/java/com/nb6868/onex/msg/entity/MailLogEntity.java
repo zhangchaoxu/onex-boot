@@ -1,6 +1,9 @@
 package com.nb6868.onex.msg.entity;
 
+import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,67 +12,68 @@ import org.apache.ibatis.type.Alias;
 import java.util.Date;
 
 /**
- * 消息记录
+ * 消息-记录
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("msg_mail_log")
+@TableName(value = "msg_mail_log", autoResultMap = true)
 @Alias("msg_mail_log")
 public class MailLogEntity extends BaseEntity {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * 租户编码
-	 */
-	private String tenantCode;
     /**
      * 模板编码
      */
-	private String tplCode;
+    private String tplCode;
     /**
-     * 消息类型
+     * 验证码
      */
-	private Integer tplType;
+    private String code;
+    /**
+     * 有效期结束
+     */
+    private Date validEndTime;
     /**
      * 发送者
      */
-	private String mailFrom;
-	/**
-	 * 抄送
-	 */
-	private String mailCc;
+    private String mailFrom;
     /**
      * 收件人
      */
-	private String mailTo;
+    private String mailTo;
+    /**
+     * 抄送
+     */
+    private String mailCc;
     /**
      * 标题
      */
-	private String subject;
+    private String title;
     /**
      * 内容参数
      */
-	private String contentParams;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private JSONObject contentParams;
     /**
      * 内容
      */
-	private String content;
+    private String content;
     /**
-     * 消费状态 0 :  未消费 1 ：已消费
+     * 消费状态
      */
-	private Integer consumeState;
+    private Integer consumeState;
     /**
-     * 发送状态  0：失败  1：成功
+     * 发送状态
      */
-	private Integer state;
+    private Integer state;
     /**
      * 发送结果
      */
-	private String result;
-	/**
-	 * 有效期结束时间
-	 */
-	private Date validEndTime;
+    private String result;
+    /**
+     * 租户编码
+     */
+    private String tenantCode;
 }

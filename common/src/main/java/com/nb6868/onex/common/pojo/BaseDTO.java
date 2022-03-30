@@ -25,7 +25,7 @@ public abstract class BaseDTO implements Serializable {
     @NotNull(message = "{id.require}", groups = UpdateGroup.class)
     private Long id;
 
-    @ApiModelProperty(value = "创建者")
+    @ApiModelProperty(value = "创建者ID")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long createId;
 
@@ -33,7 +33,7 @@ public abstract class BaseDTO implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date createTime;
 
-    @ApiModelProperty(value = "更新者")
+    @ApiModelProperty(value = "更新者ID")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long updateId;
 
@@ -41,7 +41,7 @@ public abstract class BaseDTO implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date updateTime;
 
-    @ApiModelProperty(value = "删除标记")
+    @ApiModelProperty(value = "逻辑删除")
     @JsonIgnore
     private Integer deleted;
 

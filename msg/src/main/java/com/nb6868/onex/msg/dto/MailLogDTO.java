@@ -1,5 +1,6 @@
 package com.nb6868.onex.msg.dto;
 
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,25 +9,20 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
-/**
- * 消息记录
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "消息记录")
+@ApiModel(value = "消息-记录")
 public class MailLogDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
-
-	@ApiModelProperty(value = "租户编码")
-	private String tenantCode;
 
 	@ApiModelProperty(value = "模板编码")
 	private String tplCode;
 
-	@ApiModelProperty(value = "消息类型")
-	private Integer tplType;
+	@ApiModelProperty(value = "验证码")
+	private String code;
+
+	@ApiModelProperty(value = "有效期结束")
+	private Date validEndTime;
 
 	@ApiModelProperty(value = "发送者")
 	private String mailFrom;
@@ -38,24 +34,24 @@ public class MailLogDTO extends BaseDTO {
 	private String mailCc;
 
 	@ApiModelProperty(value = "标题")
-	private String subject;
+	private String title;
 
 	@ApiModelProperty(value = "内容参数")
-	private String contentParams;
+	private JSONObject contentParams;
 
 	@ApiModelProperty(value = "内容")
 	private String content;
 
-	@ApiModelProperty(value = "消费状态 0 :  未消费 1 ：已消费")
+	@ApiModelProperty(value = "消费状态")
 	private Integer consumeState;
 
-	@ApiModelProperty(value = "发送状态  0：失败  1：成功")
+	@ApiModelProperty(value = "发送状态")
 	private Integer state;
 
 	@ApiModelProperty(value = "发送结果")
 	private String result;
 
-	@ApiModelProperty(value = "有效期结束时间")
-	private Date validEndTime;
+	@ApiModelProperty(value = "租户编码")
+	private String tenantCode;
 
 }
