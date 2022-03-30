@@ -1,9 +1,13 @@
 package com.nb6868.onex.uc.entity;
 
+import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.ibatis.type.Alias;
 
 /**
  * 定时任务
@@ -12,36 +16,41 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("sched_task")
+@TableName(value = "sched_task", autoResultMap = true)
+@Alias("sched_task")
 public class TaskEntity extends BaseEntity {
-    private static final long serialVersionUID = 1L;
 
     /**
-     * spring bean名称
+     * 名称
      */
     private String name;
     /**
-     * 执行环境
+     * 状态
      */
-    private String env;
-    /**
-     * 日志记录类型
-     */
-    private String logType;
-    /**
-     * 参数
-     */
-    private String params;
+    private Integer state;
     /**
      * cron表达式
      */
     private String cron;
     /**
-     * 状态  0暂停/1正常
+     * 允许执行环境
      */
-    private Integer state;
+    private String env;
+    /**
+     * 日志类型
+     */
+    private String logType;
+    /**
+     * 参数
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private JSONObject params;
     /**
      * 备注
      */
     private String remark;
+    /**
+     * 租户编码
+     */
+    private String tenantCode;
 }

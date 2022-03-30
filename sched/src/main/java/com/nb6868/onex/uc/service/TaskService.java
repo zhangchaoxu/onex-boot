@@ -138,15 +138,6 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	 * 从TaskEntity获得TaskInfo
 	 */
 	private TaskInfo getTaskInfoFromTask(TaskEntity taskEntity) {
-		TaskInfo taskInfo = ConvertUtils.sourceToTarget(taskEntity, TaskInfo.class);
-		JSONObject params = null;
-		try {
-			params = JSONUtil.parseObj(taskEntity.getParams());
-		} catch (JSONException e) {
-			log.error("序列化参数失败", e);
-		} finally {
-			taskInfo.setParams(params);
-		}
-		return taskInfo;
+		return ConvertUtils.sourceToTarget(taskEntity, TaskInfo.class);
 	}
 }
