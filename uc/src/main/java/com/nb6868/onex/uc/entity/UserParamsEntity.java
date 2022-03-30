@@ -13,26 +13,24 @@ import org.apache.ibatis.type.Alias;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("uc_user_param")
-@Alias("uc_user_param")
-public class UserParamEntity extends BaseEntity {
-	private static final long serialVersionUID = 1L;
+@TableName("uc_user_params")
+@Alias("uc_user_params")
+public class UserParamsEntity extends BaseEntity {
 
     /**
      * 编码
      */
-	private String code;
+    private String code;
     /**
      * 用户ID
      */
-	private Long userId;
+    private Long userId;
     /**
-     * 参数
+     * 内容
      */
-	private String content;
+    private String content;
     /**
      * 租户编码
      */
-	private String tenantCode;
-
+    private String tenantCode;
 }

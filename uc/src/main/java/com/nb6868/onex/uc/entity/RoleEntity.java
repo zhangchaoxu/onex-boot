@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.ibatis.type.Alias;
 
 /**
  * 角色
@@ -13,15 +14,23 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("uc_role")
+@Alias("uc_role")
 public class RoleEntity extends BaseEntity {
 
     /**
+     * 编码,需唯一
+     */
+	private String code;
+    /**
      * 名称
      */
-    private String name;
+	private String name;
     /**
      * 备注
      */
-    private String remark;
-
+	private String remark;
+    /**
+     * 租户编码
+     */
+	private String tenantCode;
 }
