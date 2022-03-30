@@ -123,6 +123,12 @@ onex:
   # async
   async:
     enable: false
+  # 自动填充
+  auto-fill:
+    enable: false
+  # 异常处理
+  exception-handler:
+    enable: false
   # 登录配置
   auth:
     settings:
