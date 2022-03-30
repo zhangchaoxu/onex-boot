@@ -18,6 +18,10 @@ import org.apache.ibatis.type.Alias;
 public class MailTplEntity extends BaseEntity {
 
 	/**
+	 * 名称
+	 */
+	private String name;
+	/**
 	 * 编码
 	 */
 	private String code;
@@ -25,10 +29,6 @@ public class MailTplEntity extends BaseEntity {
 	 * 租户编码
 	 */
 	private String tenantCode;
-	/**
-     * 名称
-     */
-	private String name;
     /**
      * 渠道 短信sms 电邮email 微信模板消息wx_template 站内信notice
      */

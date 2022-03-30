@@ -44,5 +44,4 @@ public class TaskEntity extends BaseEntity {
      * 备注
      */
     private String remark;
-
 }
