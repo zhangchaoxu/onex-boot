@@ -8,7 +8,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -39,6 +39,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * 短信 华为云 消息服务
@@ -56,21 +58,20 @@ public class SmsHwcloudMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
-        SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
+        SmsProps smsProps = JSONUtil.toBean(mailTpl.getParams(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
-        Map<String, Object> paramMap = JacksonUtils.jsonToMap(request.getContentParam());
         JSONArray paramArray = new JSONArray();
-        paramMap.forEach((key, value) -> {
+        request.getContentParams().forEach((key, value) -> {
             if (null == value) {
                 // 不允许为空,为空则替换为
-                paramMap.put(key, "");
+                request.getContentParams().set(key, "");
                 paramArray.add("");
             } else if (value.toString().length() > 20) {
                 // 超过20的，截取长度
-                paramMap.put(key, value.toString().substring(0, 19) + "…");
+                request.getContentParams().set(key, value.toString().substring(0, 19) + "…");
                 paramArray.add(value.toString().substring(0, 19) + "…");
             } else {
                 paramArray.add(value.toString());
@@ -83,10 +84,9 @@ public class SmsHwcloudMailService extends AbstractMailService {
         mailLog.setMailTo(request.getMailTo());
         mailLog.setContent(mailTpl.getContent());
         mailLog.setTplCode(mailTpl.getCode());
-        mailLog.setTplType(mailTpl.getType());
-        mailLog.setContentParams(request.getContentParam());
+        mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(StrUtil.format(mailTpl.getContent(), paramMap));
+        mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
         mailLog.setState(Const.ResultEnum.FAIL.value());
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);

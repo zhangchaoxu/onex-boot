@@ -4,6 +4,7 @@ import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.util.SignUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
@@ -219,7 +220,7 @@ public class DingTalkApi {
     /**
      * 自定义机器人消息发送
      */
-    public static BaseResponse sendRobotMsg(String accessToken, Dict requestBody) {
+    public static BaseResponse sendRobotMsg(String accessToken, JSONObject requestBody) {
         try {
             return new RestTemplate().postForObject(ROBOT_SEND, requestBody, BaseResponse.class, accessToken);
         } catch (Exception e) {

@@ -3,6 +3,7 @@ package com.nb6868.onex.msg.mail;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
@@ -12,6 +13,7 @@ import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.mail.email.EmailProps;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
+import com.nb6868.onex.msg.mail.sms.SmsProps;
 import com.nb6868.onex.msg.service.MailLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -55,22 +57,21 @@ public class EmailMailService extends AbstractMailService {
     @Override
     public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
         // 序列化电子邮件配置
-        EmailProps emailProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), EmailProps.class);
+        EmailProps emailProps = JSONUtil.toBean(mailTpl.getParams(), EmailProps.class);
         AssertUtils.isNull(emailProps, "电子邮件配置参数异常");
         // 组装标题和内容
-        String title = TemplateUtils.renderRaw(mailTpl.getTitle(), JacksonUtils.jsonToMap(request.getTitleParam()), FreemarkerEngine.class);
-        String content = TemplateUtils.renderRaw(mailTpl.getContent(), JacksonUtils.jsonToMap(request.getContentParam()), FreemarkerEngine.class);
+        String title = TemplateUtils.renderRaw(mailTpl.getTitle(), request.getTitleParams(), FreemarkerEngine.class);
+        String content = TemplateUtils.renderRaw(mailTpl.getContent(), request.getContentParams(), FreemarkerEngine.class);
         // 创建发送器和邮件消息
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         // 保存邮件记录
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setTplCode(mailTpl.getCode());
-        mailLog.setTplType(mailTpl.getType());
         mailLog.setMailFrom(mailSender.getUsername());
         mailLog.setMailTo(request.getMailTo());
         mailLog.setMailCc(request.getMailCc());
-        mailLog.setSubject(title);
+        mailLog.setTitle(title);
         mailLog.setContent(content);
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         // 设置有效时间

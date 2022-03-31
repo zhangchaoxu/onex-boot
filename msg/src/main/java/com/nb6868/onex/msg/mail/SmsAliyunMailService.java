@@ -4,6 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.*;
@@ -33,31 +34,28 @@ public class SmsAliyunMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
-        SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
+        SmsProps smsProps = JSONUtil.toBean(mailTpl.getParams(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
-        Map<String, Object> paramMap = JacksonUtils.jsonToMap(request.getContentParam());
-        paramMap.forEach((key, value) -> {
+        request.getContentParams().forEach((key, value) -> {
             if (null == value) {
                 // 不允许为空,为空则替换为
-                paramMap.put(key, "");
+                request.getContentParams().set(key, "");
             } else if (value.toString().length() > 20) {
                 // 超过20的，截取长度
-                paramMap.put(key, value.toString().substring(0, 19) + "…");
+                request.getContentParams().set(key, value.toString().substring(0, 19) + "…");
             }
         });
-
         // 消息记录
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setMailTo(request.getMailTo());
         mailLog.setTplCode(mailTpl.getCode());
-        mailLog.setTplType(mailTpl.getType());
-        mailLog.setContentParams(request.getContentParam());
+        mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(StrUtil.format(mailTpl.getContent(), paramMap));
+        mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
         mailLog.setState(Const.ResultEnum.FAIL.value());
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
@@ -76,7 +74,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.put("RegionId", "cn-hangzhou");
         paras.put("PhoneNumbers", request.getMailTo());
         paras.put("SignName", smsProps.getSign());
-        paras.put("TemplateParam", JacksonUtils.mapToJson(paramMap));
+        paras.put("TemplateParam", request.getContentParams());
         paras.put("TemplateCode", smsProps.getTplId());
         // 外部流水扩展字段
         paras.put("OutId", String.valueOf(mailLog.getId()));
