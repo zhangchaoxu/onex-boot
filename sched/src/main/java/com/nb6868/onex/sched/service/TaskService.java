@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.service;
+package com.nb6868.onex.sched.service;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONException;
@@ -12,14 +12,14 @@ import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.uc.SchedConst;
-import com.nb6868.onex.uc.dao.TaskDao;
-import com.nb6868.onex.uc.dto.TaskDTO;
-import com.nb6868.onex.uc.dto.TaskRunWithParamsForm;
-import com.nb6868.onex.uc.entity.TaskEntity;
-import com.nb6868.onex.uc.utils.ScheduleJob;
-import com.nb6868.onex.uc.utils.ScheduleUtils;
-import com.nb6868.onex.uc.utils.TaskInfo;
+import com.nb6868.onex.sched.SchedConst;
+import com.nb6868.onex.sched.dao.TaskDao;
+import com.nb6868.onex.sched.dto.TaskDTO;
+import com.nb6868.onex.sched.dto.TaskRunWithParamsForm;
+import com.nb6868.onex.sched.entity.TaskEntity;
+import com.nb6868.onex.sched.utils.ScheduleJob;
+import com.nb6868.onex.sched.utils.ScheduleUtils;
+import com.nb6868.onex.sched.utils.TaskInfo;
 import org.quartz.Scheduler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

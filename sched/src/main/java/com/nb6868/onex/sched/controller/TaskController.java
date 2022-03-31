@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.controller;
+package com.nb6868.onex.sched.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -10,12 +10,12 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.uc.dto.TaskDTO;
-import com.nb6868.onex.uc.dto.TaskLogDTO;
-import com.nb6868.onex.uc.dto.TaskQueryForm;
-import com.nb6868.onex.uc.dto.TaskRunWithParamsForm;
-import com.nb6868.onex.uc.service.TaskLogService;
-import com.nb6868.onex.uc.service.TaskService;
+import com.nb6868.onex.sched.dto.TaskDTO;
+import com.nb6868.onex.sched.dto.TaskLogDTO;
+import com.nb6868.onex.sched.dto.TaskQueryForm;
+import com.nb6868.onex.sched.dto.TaskRunWithParamsForm;
+import com.nb6868.onex.sched.service.TaskLogService;
+import com.nb6868.onex.sched.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;

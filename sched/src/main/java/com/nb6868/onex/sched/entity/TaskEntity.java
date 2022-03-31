@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.entity;
+package com.nb6868.onex.sched.entity;
 
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,47 +10,47 @@ import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
 
 /**
- * 定时任务日志
+ * 定时任务
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName(value = "sched_task_log", autoResultMap = true)
-@Alias("sched_task_log")
-public class TaskLogEntity extends BaseEntity {
+@TableName(value = "sched_task", autoResultMap = true)
+@Alias("sched_task")
+public class TaskEntity extends BaseEntity {
 
     /**
-     * 任务ID
+     * 名称
      */
-	private Long taskId;
+    private String name;
     /**
-     * 任务名称
+     * 状态
      */
-	private String taskName;
+    private Integer state;
+    /**
+     * cron表达式
+     */
+    private String cron;
+    /**
+     * 允许执行环境
+     */
+    private String env;
+    /**
+     * 日志类型
+     */
+    private String logType;
     /**
      * 参数
      */
-	@TableField(typeHandler = JacksonTypeHandler.class)
-	private JSONObject params;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private JSONObject params;
     /**
-     * 日志状态
+     * 备注
      */
-	private Integer state;
-    /**
-     * 结果
-     */
-	private String result;
-    /**
-     * 错误信息
-     */
-	private String error;
-    /**
-     * 耗时(单位：毫秒)
-     */
-	private Long times;
+    private String remark;
     /**
      * 租户编码
      */
-	private String tenantCode;
+    private String tenantCode;
 }

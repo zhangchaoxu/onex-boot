@@ -1,14 +1,14 @@
-package com.nb6868.onex.uc.service;
+package com.nb6868.onex.sched.service;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.WrapperUtils;
-import com.nb6868.onex.uc.SchedConst;
-import com.nb6868.onex.uc.dao.TaskLogDao;
-import com.nb6868.onex.uc.dto.TaskLogDTO;
-import com.nb6868.onex.uc.entity.TaskLogEntity;
-import com.nb6868.onex.uc.utils.TaskInfo;
+import com.nb6868.onex.sched.SchedConst;
+import com.nb6868.onex.sched.dao.TaskLogDao;
+import com.nb6868.onex.sched.dto.TaskLogDTO;
+import com.nb6868.onex.sched.entity.TaskLogEntity;
+import com.nb6868.onex.sched.utils.TaskInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

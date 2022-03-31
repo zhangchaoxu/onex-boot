@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.utils;
+package com.nb6868.onex.sched.utils;
 
 import cn.hutool.json.JSONObject;
 import lombok.Data;
