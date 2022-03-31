@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.1.0] 2022.03.31
+## [3.1.1] 2022.03.31
 - fix: fix sched package name issue
 
 ## [3.1.0] 2022.03.29
