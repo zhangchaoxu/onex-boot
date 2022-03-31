@@ -1,7 +1,9 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import com.nb6868.onex.common.pojo.Const;
 
 /**
  * 密码工具类
@@ -28,6 +30,26 @@ public class PasswordUtils {
     public static String PATTERN_RULE_8 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,20}";
 
     /**
+     * 可逆AES加密
+     * @param raw 明文
+     * @param key aes密钥
+     * @return 密文
+     */
+    public static String aesEncode(String raw, String key) {
+        return SecureUtil.aes(key.getBytes()).encryptBase64(raw);
+    }
+
+    /**
+     * 可逆AES解密
+     * @param password 密文
+     * @param key aes密钥
+     * @return 明文
+     */
+    public static String aesDecode(String password, String key) {
+        return SecureUtil.aes(key.getBytes()).decryptStr(password);
+    }
+
+    /**
      * 加密
      *
      * @param raw 字符串
@@ -51,7 +73,7 @@ public class PasswordUtils {
     /**
      * 加密
      *
-     * @param raw 字符串
+     * @param raw    字符串
      * @param secure 算法
      * @return 返回加密字符串
      */
