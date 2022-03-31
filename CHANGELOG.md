@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.1.0] 2022.03.31
+- fix: fix sched package name issue
+
 ## [3.1.0] 2022.03.29
 - new: add uc module
 - upgrade: upgrade huaweicloud obs to 3.22.3
