@@ -1,8 +1,8 @@
-package com.nb6868.onex.uc.utils;
+package com.nb6868.onex.sched.utils;
 
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.uc.SchedConst;
+import com.nb6868.onex.sched.SchedConst;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 

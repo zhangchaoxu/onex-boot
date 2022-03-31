@@ -1,7 +1,7 @@
-package com.nb6868.onex.uc.dao;
+package com.nb6868.onex.sched.dao;
 
 import com.nb6868.onex.common.jpa.BaseDao;
-import com.nb6868.onex.uc.entity.TaskLogEntity;
+import com.nb6868.onex.sched.entity.TaskLogEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

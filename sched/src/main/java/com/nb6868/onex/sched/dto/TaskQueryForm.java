@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.dto;
+package com.nb6868.onex.sched.dto;
 
 import com.nb6868.onex.common.pojo.PageForm;
 import io.swagger.annotations.ApiModelProperty;

@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.dto;
+package com.nb6868.onex.sched.dto;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;

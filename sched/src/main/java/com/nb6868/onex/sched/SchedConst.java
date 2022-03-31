@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc;
+package com.nb6868.onex.sched;
 
 /**
  * 定时任务相关常量

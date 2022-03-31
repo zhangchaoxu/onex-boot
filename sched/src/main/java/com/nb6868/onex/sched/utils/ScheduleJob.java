@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.utils;
+package com.nb6868.onex.sched.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
@@ -7,8 +7,8 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.util.SpringContextUtils;
-import com.nb6868.onex.uc.SchedConst;
-import com.nb6868.onex.uc.service.TaskLogService;
+import com.nb6868.onex.sched.SchedConst;
+import com.nb6868.onex.sched.service.TaskLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
