@@ -13,7 +13,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.uc.dto.PasswordDTO;
+import com.nb6868.onex.uc.dto.ChangePasswordForm;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
@@ -95,13 +95,13 @@ public class UserController {
     @PostMapping("changePassword")
     @ApiOperation("修改密码")
     @LogOperation("修改密码")
-    public Result<?> changePassword(@Validated @RequestBody PasswordDTO dto) {
+    public Result<?> changePassword(@Validated @RequestBody ChangePasswordForm dto) {
         // 获取数据库中的用户
         UserEntity data = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 校验原密码
         AssertUtils.isFalse(PasswordUtils.verify(dto.getPassword(), data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
-
+        // 更新密码
         userService.updatePassword(data.getId(), dto.getNewPassword());
         return new Result<>();
     }

@@ -149,7 +149,10 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updatePassword(Long id, String newPassword) {
-        return update().eq("id", id).set("password", PasswordUtils.encode(newPassword)).update(new UserEntity());
+        return update()
+                .eq("id", id)
+                .set("password", PasswordUtils.encode(newPassword))
+                .update(new UserEntity());
     }
 
     /**
