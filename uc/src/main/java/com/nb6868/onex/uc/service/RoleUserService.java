@@ -3,7 +3,6 @@ package com.nb6868.onex.uc.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.dao.RoleUserDao;
-import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,44 +24,52 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
 
     /**
      * 保存或修改
-     * @param userId      用户ID
-     * @param roleIds  角色ID列表
+     *
+     * @param userId  用户ID
+     * @param roleCodes 角色编码列表
      */
-    public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds) {
+    public boolean saveOrUpdateByUserIdAndRoleCodes(Long userId, List<String> roleCodes) {
         // 先删除角色用户关系
         deleteByUserIds(Collections.singletonList(userId));
 
         // 用户没有一个角色权限的情况
-        if (CollectionUtils.isEmpty(roleIds)) {
+        if (CollectionUtils.isEmpty(roleCodes)) {
             return true;
         }
-        List<RoleEntity> roles = roleService.listByIds(roleIds);
-
-        // 保存角色用户关系
-        for (RoleEntity role : roles) {
+        roleCodes.forEach(roleCode -> {
+            // 保存角色用户关系
             RoleUserEntity roleUserEntity = new RoleUserEntity();
             roleUserEntity.setUserId(userId);
-            roleUserEntity.setRoleId(role.getId());
-            roleUserEntity.setRoleName(role.getName());
+            roleUserEntity.setRoleCode(roleCode);
             save(roleUserEntity);
-        }
+        });
         return true;
     }
 
     /**
      * 根据角色ids，删除角色用户关系
-     * @param roleIds 角色ids
+     *
+     * @param roleCodes 角色ids
      */
-    public boolean deleteByRoleIds(List<Long> roleIds) {
-        return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("role_id", roleIds));
+    public boolean deleteByRoleCodes(List<String> roleCodes) {
+        if (CollectionUtils.isEmpty(roleCodes)) {
+            return true;
+        } else {
+            return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("role_code", roleCodes));
+        }
     }
 
     /**
      * 根据用户id，删除角色用户关系
+     *
      * @param userIds 用户ids
      */
     public boolean deleteByUserIds(List<Long> userIds) {
-        return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("user_id", userIds));
+        if (CollectionUtils.isEmpty(userIds)) {
+            return true;
+        } else {
+            return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("user_id", userIds));
+        }
     }
 
 }

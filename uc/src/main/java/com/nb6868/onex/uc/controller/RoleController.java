@@ -104,12 +104,11 @@ public class RoleController {
 		RoleEntity data = roleService.getById(form.getId());
 		AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 		// 删除数据
-		boolean ret = roleService.logicDeleteById(data.getId());
-		AssertUtils.isFalse(ret, "删除失败");
+		roleService.logicDeleteById(data.getId());
 		// 删除角色菜单关联关系
-		menuScopeService.deleteByRoleIds(Collections.singletonList(id));
+		menuScopeService.deleteByRoleCodes(Collections.singletonList(data.getCode()));
 		// 删除角色用户关联关系
-		roleUserService.deleteByRoleIds(Collections.singletonList(id));
+		roleUserService.deleteByRoleCodes(Collections.singletonList(data.getCode()));
 		return new Result<>();
 	}
 

@@ -1,14 +1,12 @@
 package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.text.StrSplitter;
-import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
@@ -34,6 +32,8 @@ public class AuthService {
 
     @Autowired
     private AuthProps loginProps;
+    @Autowired
+    private CaptchaService captchaService;
     @Autowired
     private MenuService menuService;
     @Autowired
@@ -64,11 +64,9 @@ public class AuthService {
      * 获取用户角色列表
      */
     public Set<String> getUserRoles(ShiroUser user) {
-        List<Long> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleIdList() : roleService.getRoleIdListByUserId(user.getId());
+        List<String> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleCodeList() : roleService.getRoleCodeListByUserId(user.getId());
         // 用户角色列表
-        Set<String> set = new HashSet<>();
-        roleList.forEach(role -> set.add(String.valueOf(role)));
-        return set;
+        return new HashSet<>(roleList);
     }
 
     /**
@@ -115,80 +113,16 @@ public class AuthService {
 
         // 登录用户
         UserEntity user;
-        if (UcConst.LoginTypeEnum.ADMIN_USERNAME_PASSWORD.name().equalsIgnoreCase(loginRequest.getAuthConfigType()) || UcConst.LoginTypeEnum.APP_USER_PWD.name().equalsIgnoreCase(loginRequest.getAuthConfigType())) {
+        if (loginRequest.getAuthConfigType().endsWith("USERNAME_PASSWORD")) {
             // 帐号密码登录
             ValidatorUtils.validateEntity(loginRequest, LoginForm.UsernamePasswordGroup.class);
             user = userService.getOneByColumn("username", loginRequest.getUsername());
             AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
             AssertUtils.isFalse(PasswordUtils.verify(loginRequest.getPassword(), user.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
-        } else if (UcConst.LoginTypeEnum.ADMIN_MOBILE_SMSCODE.name().equalsIgnoreCase(loginRequest.getAuthConfigType()) || UcConst.LoginTypeEnum.APP_MOBILE_SMS.name().equalsIgnoreCase(loginRequest.getAuthConfigType())) {
-            // 手机号验证码登录
-            ValidatorUtils.validateEntity(loginRequest, LoginForm.MobileSmsCodeGroup.class);
-            user = userService.getOneByColumn("mobile", loginRequest.getMobile());
-            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
-            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
-
-            // 验证码登录的,先校验是否和用户的安全码相同
-            if (loginRequest.getSmsCode().equalsIgnoreCase(user.getVerifyCode())) {
-                // 安全码验证通过
-            } else {
-                //  校验验证码
-                MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_LOGIN, loginRequest.getMobile());
-                AssertUtils.isNull(lastSmsLog, ErrorCode.SMS_CODE_ERROR);
-                AssertUtils.isFalse(loginRequest.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString()), ErrorCode.SMS_CODE_ERROR);
-                // 验证码正确,校验过期时间
-                AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
-                // 将短信消费掉
-                mailLogService.consumeById(lastSmsLog.getId());
-            }
-        } else if (UcConst.LoginTypeEnum.APP_APPLE.name().equalsIgnoreCase(loginRequest.getAuthConfigType())) {
-            // 苹果登录
-            ValidatorUtils.validateEntity(loginRequest, LoginForm.AppleGroup.class);
-            // jwt解析identityToken, 获取userIdentifier
-            JWT jwt = JWT.of(loginRequest.getAppleIdentityToken());
-            // app包名
-            String packageName = jwt.getHeader("audience").toString();
-            // 用户id
-            String userIdentifier = jwt.getPayload("subject").toString();
-            // 有效期
-            AssertUtils.isTrue(new Date((long) jwt.getPayload("exp")).after(new Date()), ErrorCode.APPLE_LOGIN_ERROR);
-
-            // todo 使用apple keys做验证
-            // {https://developer.apple.com/cn/app-store/review/guidelines/#sign-in-with-apple}
-            // 通过packageName和userIdentifier找对应的数据记录
-            UserOauthEntity userApple = userOauthService.getByOpenid(userIdentifier);
-            if (userApple == null) {
-                // 不存在记录,则保存记录
-                userApple = new UserOauthEntity();
-                userApple.setAppid(packageName);
-                userApple.setOpenid(userIdentifier);
-                userApple.setType(UcConst.OauthTypeEnum.APPLE.name());
-                userOauthService.save(userApple);
-            }
-            AssertUtils.isNull(userApple.getUserId(), ErrorCode.APPLE_NOT_BIND);
-
-            user = userService.getById(userApple.getUserId());
-            AssertUtils.isNull(user, ErrorCode.ACCOUNT_DISABLE);
-            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_NOT_EXIST);
-        } else {
+        }  else {
             throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
         }
-
-        /*if (user == null && loginChannelCfg.isAutoCreate()) {
-            // 没有该用户，并且需要自动创建用户
-            user = new UserDTO();
-            user.setState(UcConst.UserStateEnum.ENABLED.value());
-            user.setMobile(loginRequest.getMobile());
-            user.setUsername(loginRequest.getMobile());
-            user.setType(UcConst.UserTypeEnum.USER.value());
-            user.setGender(3);
-            // 密码加密
-            user.setPassword(PasswordUtils.encode(loginRequest.getMobile()));
-            saveDto(user);
-            //保存角色用户关系
-            roleUserService.saveOrUpdate(user.getId(), user.getRoleIdList());
-        }*/
 
         // 登录成功
         return user;
