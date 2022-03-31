@@ -38,7 +38,7 @@ public class TaskLogService extends DtoService<TaskLogDao, TaskLogEntity, TaskLo
         TaskLogEntity logEntity = new TaskLogEntity();
         logEntity.setTaskId(task.getId());
         logEntity.setTaskName(task.getName());
-        logEntity.setParams(task.getParams().toString());
+        logEntity.setParams(task.getParams());
         logEntity.setTimes(timeInterval);
         logEntity.setState(state);
         logEntity.setResult(result);
@@ -85,7 +85,7 @@ public class TaskLogService extends DtoService<TaskLogDao, TaskLogEntity, TaskLo
             TaskLogEntity logEntity = new TaskLogEntity();
             logEntity.setTaskId(taskInfo.getId());
             logEntity.setTaskName(taskInfo.getName());
-            logEntity.setParams(taskInfo.getParams().toString());
+            logEntity.setParams(taskInfo.getParams());
             logEntity.setTimes(times);
             logEntity.setState(SchedConst.TaskLogState.ERROR.getValue());
             logEntity.setError(error);

@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -88,7 +89,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
         }
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {
-            request.setContentParam(JacksonUtils.pojoToJson(Dict.create().set("code", RandomUtil.randomNumbers(4))));
+            request.setContentParams(new JSONObject().set("code", RandomUtil.randomNumbers(4)));
         }
 
         AbstractMailService mailService = null;

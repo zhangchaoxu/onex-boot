@@ -1,6 +1,8 @@
 package com.nb6868.onex.msg.mail;
 
+import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -31,29 +33,21 @@ public class SmsJuheMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MailTplEntity mailTpl, MailSendForm request) {
-        SmsProps smsProps = JacksonUtils.jsonToPojo(mailTpl.getParam(), SmsProps.class);
+        SmsProps smsProps = JSONUtil.toBean(mailTpl.getParams(), SmsProps.class);
         AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
 
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
-        StringBuilder paramJuhe = new StringBuilder();
-        String content = mailTpl.getContent();
-        Map<String, Object> paramJson = JacksonUtils.jsonToMap(request.getContentParam(), new HashMap<>());
-        for (String key : paramJson.keySet()) {
+        StrJoiner paramJuhe = new StrJoiner("&");
+        request.getContentParams().forEach((key, value) -> {
             // 遍历json,拼装参数
-            if (StrUtil.isNotBlank(paramJuhe)) {
-                paramJuhe.append("&");
-            }
-            paramJuhe.append("#").append(key).append("#=").append(paramJson.get(key));
-            // 拼装短信内容
-            content = content.replace("#" + key + "#", paramJson.get(key).toString());
-        }
+            paramJuhe.append("#" + key + "#=" + value);
+        });
         // 发送记录记录
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setMailTo(request.getMailTo());
-        mailLog.setContent(content);
+        mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
         mailLog.setTplCode(mailTpl.getCode());
-        mailLog.setTplType(mailTpl.getType());
-        mailLog.setContentParams(request.getContentParam());
+        mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
 
         // 调用接口发送

@@ -1,5 +1,6 @@
 package com.nb6868.onex.msg.dto;
 
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.msg.MsgConst;
 import io.swagger.annotations.ApiModel;
@@ -29,10 +30,10 @@ public class MailSendForm implements Serializable {
     private String mailCc;
 
     @ApiModelProperty(value = "标题参数")
-    private String titleParam;
+    private JSONObject titleParams;
 
     @ApiModelProperty(value = "内容参数")
-    private String contentParam;
+    private JSONObject contentParams;
 
     @ApiModelProperty(value = "附件")
     List<File> attachments;

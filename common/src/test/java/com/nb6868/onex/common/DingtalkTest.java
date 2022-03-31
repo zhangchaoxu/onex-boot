@@ -1,6 +1,7 @@
 package com.nb6868.onex.common;
 
 import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.dingtalk.AccessTokenResponse;
 import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
@@ -30,7 +31,7 @@ public class DingtalkTest {
     @Test
     @DisplayName("获得用户信息")
     void sendRobotMsg() {
-        Dict dict = Dict.create();
+        JSONObject dict = new JSONObject();
         // 实际只有txt可以@
         /*dict.set("msgtype", "markdown")
                 .set("at", Dict.create().set("atMobiles", new String[]{""}))

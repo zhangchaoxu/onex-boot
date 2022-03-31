@@ -48,7 +48,7 @@ public class TaskLogEntity extends BaseEntity {
     /**
      * 耗时(单位：毫秒)
      */
-	private Integer times;
+	private Long times;
     /**
      * 租户编码
      */
