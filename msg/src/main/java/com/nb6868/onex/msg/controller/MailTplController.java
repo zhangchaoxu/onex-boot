@@ -1,6 +1,7 @@
 package com.nb6868.onex.msg.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.CommonForm;
@@ -33,7 +34,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/msg/mailTpl")
 @Validated
-@Api(tags = "消息模板")
+@Api(tags = "消息模板", position = 10)
+@ApiSupport(order = 10)
 public class MailTplController {
 
     @Autowired

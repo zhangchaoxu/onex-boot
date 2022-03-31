@@ -36,7 +36,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/uc/menu")
 @Validated
-@Api(tags = "菜单权限")
+@Api(tags = "菜单权限", position = 50)
 public class MenuController {
 
     @Autowired

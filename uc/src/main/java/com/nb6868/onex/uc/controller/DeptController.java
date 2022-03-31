@@ -32,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/uc/dept")
 @Validated
-@Api(tags = "部门管理")
+@Api(tags = "部门管理", position = 40)
 public class DeptController {
 
     @Autowired

@@ -41,7 +41,7 @@ public class TaskController {
     @PostMapping("page")
     @ApiOperation("任务分页列表")
     @RequiresPermissions("sched:task:info")
-    @ApiOperationSupport(order = 100)
+    @ApiOperationSupport(order = 10)
     public Result<?> page(@RequestBody TaskQueryForm form) {
         PageData<TaskDTO> page = taskService.pageDto(form);
 
@@ -51,7 +51,7 @@ public class TaskController {
     @PostMapping("info")
     @ApiOperation("任务详情")
     @RequiresPermissions("sched:task:info")
-    @ApiOperationSupport(order = 120)
+    @ApiOperationSupport(order = 20)
     public Result<?> info(@RequestBody @Validated(value = CommonForm.OneGroup.class) CommonForm form) {
         TaskDTO data = taskService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -63,7 +63,7 @@ public class TaskController {
     @ApiOperation("任务保存")
     @LogOperation("任务保存")
     @RequiresPermissions("sched:task:update")
-    @ApiOperationSupport(order = 130)
+    @ApiOperationSupport(order = 30)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody TaskDTO dto) {
         taskService.saveDto(dto);
 
@@ -73,7 +73,7 @@ public class TaskController {
     @PostMapping("update")
     @ApiOperation("任务修改")
     @LogOperation("任务修改")
-    @ApiOperationSupport(order = 140)
+    @ApiOperationSupport(order = 40)
     @RequiresPermissions("sched:task:update")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody TaskDTO dto) {
         taskService.updateDto(dto);
@@ -84,7 +84,7 @@ public class TaskController {
     @PostMapping("deleteBatch")
     @ApiOperation("任务批量删除")
     @LogOperation("任务批量删除")
-    @ApiOperationSupport(order = 150)
+    @ApiOperationSupport(order = 50)
     @RequiresPermissions("sched:task:update")
     public Result<?> deleteBatch(@Validated(value = {CommonForm.ListGroup.class}) @RequestBody CommonForm form) {
         taskService.logicDeleteByIds(form.getIds());
@@ -95,7 +95,7 @@ public class TaskController {
     @PostMapping("/runWithParams")
     @ApiOperation("任务指定参数立即执行")
     @LogOperation("任务指定参数立即执行")
-    @ApiOperationSupport(order = 160)
+    @ApiOperationSupport(order = 60)
     @RequiresPermissions("sched:task:update")
     public Result<?> runWithParams(@Validated(value = {DefaultGroup.class}) @RequestBody TaskRunWithParamsForm requestBody) {
         taskService.runWithParams(requestBody);
@@ -107,7 +107,7 @@ public class TaskController {
     @ApiOperation("任务暂停")
     @LogOperation("任务暂停")
     @RequiresPermissions("sched:task:update")
-    @ApiOperationSupport(order = 170)
+    @ApiOperationSupport(order = 70)
     public Result<?> pause(@Validated(value = {CommonForm.ListGroup.class}) @RequestBody CommonForm form) {
 		taskService.pause(form.getIds());
 
@@ -118,7 +118,7 @@ public class TaskController {
     @ApiOperation("任务恢复")
     @LogOperation("任务恢复")
     @RequiresPermissions("sched:task:update")
-    @ApiOperationSupport(order = 180)
+    @ApiOperationSupport(order = 80)
     public Result<?> resume(@Validated(value = {CommonForm.ListGroup.class}) @RequestBody CommonForm form) {
 		taskService.resume(form.getIds());
 
@@ -128,7 +128,7 @@ public class TaskController {
     @GetMapping("logPage")
     @ApiOperation("任务日志分页列表")
     @RequiresPermissions("sched:task:info")
-    @ApiOperationSupport(order = 200)
+    @ApiOperationSupport(order = 100)
     public Result<?> logPage(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<TaskLogDTO> page = taskLogService.pageDto(params);
 
@@ -138,7 +138,7 @@ public class TaskController {
     @GetMapping("logInfo")
     @ApiOperation("任务日志详情")
     @RequiresPermissions("sched:task:info")
-    @ApiOperationSupport(order = 210)
+    @ApiOperationSupport(order = 110)
     public Result<?> logInfo(@NotNull(message = "{id.require}") @RequestParam Long id) {
         TaskLogDTO data = taskLogService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

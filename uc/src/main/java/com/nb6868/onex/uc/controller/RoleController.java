@@ -33,7 +33,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/uc/role")
 @Validated
-@Api(tags="角色管理")
+@Api(tags="角色管理", position = 30)
 public class RoleController {
 
 	@Autowired
