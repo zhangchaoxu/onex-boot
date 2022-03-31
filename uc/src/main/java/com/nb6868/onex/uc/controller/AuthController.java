@@ -7,6 +7,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.*;
@@ -24,6 +25,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
+import com.nb6868.onex.uc.dto.CaptchaForm;
 import com.nb6868.onex.uc.dto.MenuDTO;
 import com.nb6868.onex.uc.dto.MenuTreeDTO;
 import com.nb6868.onex.uc.dto.UserDTO;
@@ -52,7 +54,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Api(tags = "用户认证")
+@Api(tags = "用户认证", position = 10)
 public class AuthController {
 
     @Autowired
@@ -66,8 +68,25 @@ public class AuthController {
     @Autowired
     private MenuService menuService;
 
+    /**
+     * 验证码机制是将验证码的内容和对应的uuid的对应关系存入缓存,然后验证的时候从缓存中去匹配
+     * uuid不应该由前端生成,否则容易伪造和被攻击
+     * 包含uuid和图片信息
+     */
+    @PostMapping("captcha")
+    @ApiOperation(value = "图形验证码(base64)", notes = "验证时需将uuid和验证码内容一起提交")
+    @ApiOperationSupport(order = 10)
+    public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
+        String uuid = IdUtil.fastSimpleUUID();
+        // 随机arithmetic/spec
+        Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(new String[]{"arithmetic", "spec"}));
+        // 将uuid和图片base64返回给前端
+        return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
+    }
+
     @GetMapping("getLoginSettings")
     @ApiOperation("获得登录设置")
+    @ApiOperationSupport(order = 20)
     public Result<?> getLoginSettings(@RequestParam String type) {
         AuthProps.Settings loginSettings = authService.getLoginSettings(type);
         AssertUtils.isNull(loginSettings, "未定义该类型");
@@ -77,6 +96,7 @@ public class AuthController {
 
     @GetMapping("getLoginConfig")
     @ApiOperation("获得登录配置")
+    @ApiOperationSupport(order = 30)
     public Result<?> getLoginConfig(@RequestParam String type) {
         AuthProps.Config loginConfig = authService.getLoginConfig(type);
         AssertUtils.isNull(loginConfig, "未定义该类型");
@@ -84,26 +104,11 @@ public class AuthController {
         return new Result<>().success(loginConfig);
     }
 
-    /**
-     * 验证码机制是将验证码的内容和对应的uuid的对应关系存入缓存,然后验证的时候从缓存中去匹配
-     * uuid不应该由前端生成,否则容易伪造和被攻击
-     * 包含uuid和图片信息
-     */
-    @GetMapping("captcha")
-    @ApiOperation(value = "图形验证码(base64)", notes = "验证时需将uuid和验证码内容一起提交")
-    public Result<?> captcha(@RequestParam(required = false, defaultValue = "150", name = "图片宽度") int width,
-                            @RequestParam(required = false, defaultValue = "50", name = "图片高度") int height) {
-        String uuid = IdUtil.fastSimpleUUID();
-        // 随机arithmetic/spec
-        Captcha captcha = captchaService.createCaptcha(uuid, width, height, RandomUtil.randomEle(new String[]{"arithmetic", "spec"}));
-        // 将uuid和图片base64返回给前端
-        return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
-    }
-
     @PostMapping("login")
     @AccessControl
     @ApiOperation(value = "登录")
     @LogOperation(value = "登录", type = "login")
+    @ApiOperationSupport(order = 100)
     public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm loginRequest) {
         // 获得登录配置
         AuthProps.Config loginConfig = authService.getLoginConfig(loginRequest.getAuthConfigType());
@@ -124,6 +129,7 @@ public class AuthController {
     @AccessControl
     @ApiOperation(value = "加密登录")
     @LogOperation(value = "加密登录", type = "login")
+    @ApiOperationSupport(order = 101)
     public Result<?> loginEncrypt(@RequestBody EncryptForm form) {
         // 密文->urldecode->aes解码->原明文->json转实体
         String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(URLDecoder.decode(form.getBody(), Charset.defaultCharset()));
@@ -135,6 +141,7 @@ public class AuthController {
 
     @GetMapping("menuScope")
     @ApiOperation("权限范围")
+    @ApiOperationSupport(order = 110)
     public Result<?> scope() {
         ShiroUser user = ShiroUtils.getUser();
         // 获取该用户所有menu

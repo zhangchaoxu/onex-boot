@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/uc/tenant")
 @Validated
-@Api(tags = "租户")
+@Api(tags = "租户", position = 100)
 public class TenantController {
     @Autowired
     private TenantService tenantService;

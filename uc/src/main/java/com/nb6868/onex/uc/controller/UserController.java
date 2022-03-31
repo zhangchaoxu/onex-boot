@@ -40,7 +40,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/uc/user")
 @Validated
-@Api(tags = "用户管理")
+@Api(tags = "用户管理", position = 20)
 public class UserController {
 
     @Autowired

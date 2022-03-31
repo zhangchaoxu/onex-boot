@@ -1,6 +1,7 @@
 package com.nb6868.onex.msg.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.pojo.CommonForm;
 import com.nb6868.onex.common.pojo.PageData;
@@ -29,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/msg/mailLog")
 @Validated
-@Api(tags = "消息记录")
+@Api(tags = "消息记录", position = 20)
 public class MailLogController {
 
     @Autowired
