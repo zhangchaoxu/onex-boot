@@ -1,21 +1,18 @@
 package com.nb6868.onex.uc.controller;
 
-import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.ExcelUtils;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.PasswordDTO;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
@@ -28,14 +25,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +43,8 @@ import java.util.Map;
 @Api(tags = "用户管理")
 public class UserController {
 
+    @Autowired
+    AuthProps authProps;
     @Autowired
     UserService userService;
     @Autowired
@@ -84,7 +79,7 @@ public class UserController {
         UserDTO data = userService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 用户角色列表
-        data.setRoleIdList(roleService.getRoleIdListByUserId(id));
+        data.setRoleCodes(roleService.getRoleCodeListByUserId(id));
         // 部门树
         data.setDeptChain(deptService.getParentChain(data.getDeptId()));
         return new Result<>().success(data);
@@ -109,18 +104,6 @@ public class UserController {
 
         userService.updatePassword(data.getId(), dto.getNewPassword());
         return new Result<>();
-    }
-
-    /**
-     * 通过验证码修改密码
-     * 忘记密码功能,通过验证码找回
-     */
-    @PostMapping("changePasswordByMailCode")
-    @ApiOperation(value = "通过短信验证码修改密码")
-    @AccessControl("/changePasswordByMailCode")
-    public Result<?> changePasswordBySmsCode(@Validated @RequestBody ChangePasswordByMailCodeRequest request) {
-        boolean ret = userService.changePasswordBySmsCode(request);
-        return new Result<>().success();
     }
 
     @PostMapping("save")
@@ -153,16 +136,6 @@ public class UserController {
         return new Result<>();
     }
 
-    @GetMapping("getMenuScope")
-    @ApiOperation("获得用户授权")
-    @RequiresPermissions("uc:user:changeMenuScope")
-    public Result<?> getMenuScope() {
-        // todo 返回用户角色授权和用户自身授权
-        // userService.changeMenuScope(menuIds);
-
-        return new Result<>();
-    }
-
     @PostMapping("changeMenuScope")
     @ApiOperation("修改用户授权")
     @LogOperation("修改用户授权")
@@ -186,7 +159,7 @@ public class UserController {
     @ApiOperation(value = "退出")
     @LogOperation(value = "退出", type = "logout")
     public Result<?> logout() {
-        String token = HttpContextUtils.getRequestParameter(UcConst.TOKEN_HEADER);
+        String token = HttpContextUtils.getRequestParameter(authProps.getTokenKey());
         userService.logout(token);
         return new Result<>();
     }

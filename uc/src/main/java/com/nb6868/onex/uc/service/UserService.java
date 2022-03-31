@@ -36,13 +36,9 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     @Autowired
     private MenuScopeService menuScopeService;
     @Autowired
-    private AuthService authService;
-    @Autowired
     private TokenService tokenService;
     @Autowired
     private RoleUserService roleUserService;
-    @Autowired
-    private DeptService deptService;
 
     @Override
     public QueryWrapper<UserEntity> getWrapper(String method, Map<String, Object> params) {
@@ -99,7 +95,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     protected void afterSaveOrUpdateDto(boolean ret, UserDTO dto, UserEntity existedEntity, int type) {
         if (ret) {
             // 保存角色用户关系
-            roleUserService.saveOrUpdateByUserIdAndRoleIds(dto.getId(), dto.getRoleIdList());
+            roleUserService.saveOrUpdateByUserIdAndRoleCodes(dto.getId(), dto.getRoleCodes());
         }
     }
 
@@ -121,62 +117,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     public boolean logout(String token) {
         // 删除token
         return tokenService.deleteToken(token);
-    }
-
-    /**
-     * 通过短信验证码修改密码
-     */
-    public boolean changePasswordBySmsCode(ChangePasswordByMailCodeRequest request) {
-        /*OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
-        AssertUtils.isFalse(loginAdminProps.isForgetPassword(), "未开放修改密码功能");*/
-
-        // 登录用户
-        UserEntity user = getOneByColumn("mobile", request.getMailTo());
-        // 帐号不存在
-        AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
-        // 帐号已锁定
-        AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
-        //  校验验证码
-        MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_CHANGE_PASSWORD, user.getMobile());
-        // 验证码错误,找不到验证码
-        AssertUtils.isTrue(null == lastSmsLog || !request.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString()), ErrorCode.SMS_CODE_ERROR);
-        // 校验过期时间
-        AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
-        // 将短信消费掉
-        mailLogService.consumeById(lastSmsLog.getId());
-        // 验证成功,修改密码
-        return updatePassword(user.getId(), request.getPassword());
-    }
-
-    /**
-     * 注册
-     */
-    public UserEntity register(RegisterRequest request) {
-        /*OnexProps.LoginAdminProps loginAdminProps = authService.getLoginAdminProps();
-        AssertUtils.isFalse(loginAdminProps.isRegister(), "未开放注册");*/
-
-        // 登录用户
-        AssertUtils.isTrue(hasDuplicated(null, "mobile", request.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已注册");
-        AssertUtils.isTrue(hasDuplicated(null, "username", request.getMobile()), ErrorCode.ERROR_REQUEST, "用户名已注册");
-        //  校验验证码
-        MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(MsgConst.SMS_TPL_REGISTER, request.getMobile());
-        // 验证码错误,找不到验证码
-        AssertUtils.isTrue(null == lastSmsLog || !request.getSmsCode().equalsIgnoreCase(JacksonUtils.jsonToMap(lastSmsLog.getContentParams()).get("code").toString()), ErrorCode.SMS_CODE_ERROR);
-        // 校验过期时间
-        AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
-        // 验证成功,创建用户
-        // 将短信消费掉
-        mailLogService.consumeById(lastSmsLog.getId());
-        // 验证成功,创建用户
-        UserEntity entity = new UserEntity();
-
-        entity.setPassword(PasswordUtils.encode(request.getPassword()));
-        entity.setUsername(request.getUsername());
-        entity.setMobile(request.getMobile());
-        entity.setMobileArea(request.getMobileArea());
-        save(entity);
-
-        return entity;
     }
 
     /**
