@@ -1,7 +1,11 @@
 # CHANGELOG
 
-## [3.1.1] 2022.03.31
+## [3.1.3] 2022.04.01
+- upgrade: upgrade springboot to 2.6.6
+
+## [3.1.2] 2022.03.31
 - fix: fix sched package name issue
+- enhance: add api sort
 
 ## [3.1.0] 2022.03.29
 - new: add uc module

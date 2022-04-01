@@ -46,15 +46,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * 认证授权相关接口
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Api(tags = "用户认证", position = 10)
+@Api(tags = "用户授权", position = 10)
 public class AuthController {
 
     @Autowired
@@ -68,12 +63,8 @@ public class AuthController {
     @Autowired
     private MenuService menuService;
 
-    /**
-     * 验证码机制是将验证码的内容和对应的uuid的对应关系存入缓存,然后验证的时候从缓存中去匹配
-     * uuid不应该由前端生成,否则容易伪造和被攻击
-     * 包含uuid和图片信息
-     */
     @PostMapping("captcha")
+    @AccessControl
     @ApiOperation(value = "图形验证码(base64)", notes = "验证时需将uuid和验证码内容一起提交")
     @ApiOperationSupport(order = 10)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
@@ -86,9 +77,10 @@ public class AuthController {
 
     @GetMapping("getLoginSettings")
     @ApiOperation("获得登录设置")
+    @AccessControl
     @ApiOperationSupport(order = 20)
-    public Result<?> getLoginSettings(@RequestParam String type) {
-        AuthProps.Settings loginSettings = authService.getLoginSettings(type);
+    public Result<?> getLoginSettings(@RequestParam(required = false, defaultValue = "admin", name = "登录设置") String type) {
+        AuthProps.Settings loginSettings = authProps.getSettings().get(type);
         AssertUtils.isNull(loginSettings, "未定义该类型");
 
         return new Result<>().success(loginSettings);
@@ -96,9 +88,10 @@ public class AuthController {
 
     @GetMapping("getLoginConfig")
     @ApiOperation("获得登录配置")
+    @AccessControl
     @ApiOperationSupport(order = 30)
-    public Result<?> getLoginConfig(@RequestParam String type) {
-        AuthProps.Config loginConfig = authService.getLoginConfig(type);
+    public Result<?> getLoginConfig(@RequestParam(required = false, defaultValue = "ADMIN_USERNAME_PASSWORD", name = "登录配置") String type) {
+        AuthProps.Config loginConfig = authProps.getConfigs().get(type);
         AssertUtils.isNull(loginConfig, "未定义该类型");
 
         return new Result<>().success(loginConfig);
@@ -130,7 +123,7 @@ public class AuthController {
     @ApiOperation(value = "加密登录")
     @LogOperation(value = "加密登录", type = "login")
     @ApiOperationSupport(order = 101)
-    public Result<?> loginEncrypt(@RequestBody EncryptForm form) {
+    public Result<?> loginEncrypt(@Validated @RequestBody EncryptForm form) {
         // 密文->urldecode->aes解码->原明文->json转实体
         String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(URLDecoder.decode(form.getBody(), Charset.defaultCharset()));
         LoginForm loginRequest = JacksonUtils.jsonToPojo(json, LoginForm.class);
