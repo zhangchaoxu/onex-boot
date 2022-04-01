@@ -21,6 +21,8 @@ public class CaptchaService {
 
     /**
      * 生成图片验证码
+     * 验证码机制是将验证码的内容和对应的uuid的对应关系存入缓存,然后验证的时候从缓存中去匹配
+     * uuid不应该由前端生成,否则容易伪造和被攻击
      *
      * @param uuid uuid
      * @param width 宽度

@@ -14,4 +14,7 @@
 可以用户无感知的在页面中先使用[wx.login](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/login/wx.login.html)获得code      
 然后调用UserOauthController.oauthWxMaLoginByCode做登录,返回登录成功信息,或者用户信息不全/用户未绑定错误。          
 若返回错误,则需要跳转到登录页面,在该登录页面先使用[wx.login],再由需用户手动触发getUserInfo类型的按钮，使用[wx.getUserInfo](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html)获得微信用户详情，将code和用户信息一起作为参数调用UserOauthController.oauthWxMaLoginByCodeAndUserInfo。
+
+## 钉钉扫码登录
+
  

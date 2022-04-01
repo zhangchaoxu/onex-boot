@@ -5,8 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -14,11 +13,11 @@ import javax.validation.constraints.NotBlank;
 public class CaptchaForm extends BaseForm {
 
     @ApiModelProperty(value = "宽度", example = "150")
-    @NotBlank(message = "宽度")
+    @Range(min = 10, max = 4000, message = "宽度范围10-4000")
     private Integer width = 150;
 
     @ApiModelProperty(value = "高度", example = "50")
-    @NotBlank(message = "高度")
+    @Range(min = 10, max = 4000, message = "高度范围10-4000")
     private Integer height = 50;
 
 }
