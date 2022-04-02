@@ -27,8 +27,8 @@ import java.util.List;
 @ApiModel(value = "用户")
 public class UserDTO extends BaseDTO {
 
-	@ApiModelProperty(value = "部门ID")
-	private Long deptId;
+	@ApiModelProperty(value = "部门编码")
+	private String deptCode;
 
 	@ApiModelProperty(value = "编号")
 	private String code;

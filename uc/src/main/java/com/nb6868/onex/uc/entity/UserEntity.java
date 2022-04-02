@@ -22,9 +22,9 @@ import java.util.Date;
 public class UserEntity extends BaseEntity {
 
     /**
-     * 部门ID
+     * 部门编码
      */
-	private Long deptId;
+	private String deptCode;
     /**
      * 编号
      */

@@ -1,6 +1,5 @@
 package com.nb6868.onex.uc.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.pojo.BaseDTO;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
@@ -22,13 +21,20 @@ import javax.validation.constraints.NotNull;
 @ApiModel(value = "部门")
 public class DeptDTO extends BaseDTO {
 
-	@ApiModelProperty(value = "上级ID")
-	@NotNull(message="{pid.require}", groups = DefaultGroup.class)
-	private Long pid;
+	@ApiModelProperty(value = "类型")
+	@NotNull(message="类型不能为空", groups = DefaultGroup.class)
+	private Integer type;
 
-	@ApiModelProperty(value = "上级IDs")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	private String pids;
+	@ApiModelProperty(value = "编码")
+	@NotNull(message="编码不能为空", groups = DefaultGroup.class)
+	private String code;
+
+	@ApiModelProperty(value = "上级编码")
+	@NotNull(message="上级编码不能为空", groups = DefaultGroup.class)
+	private String pcode;
+
+	@ApiModelProperty(value = "区域编码")
+	private String areaCode;
 
 	@ApiModelProperty(value = "部门名称")
 	@NotBlank(message="{name.require}", groups = DefaultGroup.class)
