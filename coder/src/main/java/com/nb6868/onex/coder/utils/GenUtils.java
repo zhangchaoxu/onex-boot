@@ -1,7 +1,6 @@
 package com.nb6868.onex.coder.utils;
 
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.db.Entity;
@@ -65,6 +64,7 @@ public class GenUtils {
         //配置信息
         Configuration config = getConfig();
         boolean hasBigDecimal = false;
+        boolean hasJson = false;
         //表信息
         TableEntity tableEntity = new TableEntity();
         tableEntity.setTableName(MapUtil.getStr(table, "table_name"));
@@ -93,6 +93,9 @@ public class GenUtils {
             columnEntity.setAttrType(attrType);
             if (!hasBigDecimal && "BigDecimal".equals(attrType)) {
                 hasBigDecimal = true;
+            }
+            if (!hasJson && "JSONObject".equals(attrType)) {
+                hasJson = true;
             }
             //是否主键
             if ("PRI".equalsIgnoreCase(MapUtil.getStr(column, "column_key")) && tableEntity.getPk() == null) {
