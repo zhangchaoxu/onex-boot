@@ -13,7 +13,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.uc.dto.ChangePasswordForm;
+import com.nb6868.onex.common.auth.ChangePasswordForm;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
@@ -130,7 +130,7 @@ public class UserController {
     @ApiOperation("更新状态")
     @LogOperation("更新状态")
     @RequiresPermissions("uc:user:update")
-    public Result<?> changeState(@Validated(value = {DefaultGroup.class, ChangeStateRequest.BoolStateGroup.class}) @RequestBody ChangeStateRequest request) {
+    public Result<?> changeState(@Validated(value = {DefaultGroup.class, ChangeStateForm.BoolStateGroup.class}) @RequestBody ChangeStateForm request) {
         userService.changeState(request);
 
         return new Result<>();

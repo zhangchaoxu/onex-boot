@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.dto;
+package com.nb6868.onex.common.auth;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "注册请求")
-public class RegisterRequest implements Serializable {
+public class RegisterForm implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "密码", required = true)

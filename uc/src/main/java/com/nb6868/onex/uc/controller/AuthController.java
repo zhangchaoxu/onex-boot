@@ -14,7 +14,7 @@ import com.nb6868.onex.common.auth.*;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
-import com.nb6868.onex.common.pojo.LoginResult;
+import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
