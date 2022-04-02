@@ -9,6 +9,10 @@ import org.apache.ibatis.type.Alias;
 #if(${hasBigDecimal})
 import java.math.BigDecimal;
 #end
+#if(${hasJson})
+import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+#end
 import java.util.Date;
 
 /**
@@ -18,7 +22,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("${tableName}")
+@TableName(value = "${tableName}", autoResultMap = ${hasJson})
 @Alias("${tableName}")
 public class ${className}Entity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
@@ -28,6 +32,9 @@ public class ${className}Entity extends BaseEntity {
     /**
      * $column.comments
      */
+	#if($column.attrType == 'JSONObject')
+	@TableField(typeHandler = JacksonTypeHandler.class)
+	#end
 	private $column.attrType $column.attrname;
 #end
 #end
