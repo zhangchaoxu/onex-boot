@@ -1,7 +1,9 @@
 package com.nb6868.onex.common.config;
 
+import com.nb6868.onex.common.config.confition.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -25,7 +27,8 @@ public abstract class BaseSwaggerConfig {
     @Value("${onex.auth.token-key:auth-token}")
     private String authTokenKey;
 
-    @Bean("sched")
+    @Bean(value = "sched")
+    @Conditional(SchedCondition.class)
     public Docket createSchedApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfoBuilder().build())
@@ -42,6 +45,7 @@ public abstract class BaseSwaggerConfig {
     }
 
     @Bean("websocket")
+    @Conditional(WebsocketCondition.class)
     public Docket createWebsocketApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfoBuilder().build())
@@ -58,6 +62,7 @@ public abstract class BaseSwaggerConfig {
     }
 
     @Bean("msg")
+    @Conditional(MsgCondition.class)
     public Docket createMsgApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfoBuilder().build())
@@ -74,6 +79,7 @@ public abstract class BaseSwaggerConfig {
     }
 
     @Bean("cms")
+    @Conditional(CmsCondition.class)
     public Docket createCmsApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfoBuilder().build())
@@ -90,6 +96,7 @@ public abstract class BaseSwaggerConfig {
     }
 
     @Bean("uc")
+    @Conditional(UcCondition.class)
     public Docket createUcApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfoBuilder().build())
