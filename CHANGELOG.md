@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.1.4] 2022.04.02
+- fix: fix shiro filter issue
+
 ## [3.1.3] 2022.04.01
 - upgrade: upgrade springboot to 2.6.6
 
