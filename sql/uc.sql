@@ -7,8 +7,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `uc_user`;
 CREATE TABLE `uc_user`
 (
-    `id`           bigint(20) UNSIGNED                                           NOT NULL COMMENT 'ID',
-    `dept_id`      bigint(20) UNSIGNED                                           NULL     DEFAULT NULL COMMENT '部门ID',
+    `id`           bigint UNSIGNED                                               NOT NULL COMMENT 'ID',
+    `dept_code`    varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci       NULL     DEFAULT NULL COMMENT '部门编码',
     `code`         varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci       NULL     DEFAULT NULL COMMENT '编号',
     `username`     varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci        NOT NULL COMMENT '用户名',
     `password`     varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci       NULL     DEFAULT NULL COMMENT '密码',
@@ -22,25 +22,25 @@ CREATE TABLE `uc_user`
     `birthday`     date                                                          NULL     DEFAULT NULL COMMENT '生日',
     `avatar`       varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci       NULL     DEFAULT NULL COMMENT '头像',
     `remark`       varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci       NULL     DEFAULT NULL COMMENT '备注',
-    `gender`       tinyint(3) UNSIGNED                                           NULL     DEFAULT NULL COMMENT '性别   0：男   1：女    2：保密',
+    `gender`       tinyint UNSIGNED                                              NULL     DEFAULT NULL COMMENT '性别   0：男   1：女    2：保密',
     `balance`      decimal(10, 2)                                                NOT NULL DEFAULT 0.00 COMMENT '账户余额',
     `points`       decimal(10, 2)                                                NOT NULL DEFAULT 0.00 COMMENT '积分',
     `income`       decimal(10, 2)                                                NOT NULL DEFAULT 0.00 COMMENT '收入余额',
-    `type`         tinyint(3) UNSIGNED                                           NOT NULL COMMENT '类型',
-    `state`        tinyint(3)                                                    NULL     DEFAULT NULL COMMENT '状态  0：停用   1：正常  2：锁定',
-    `create_id`    bigint(20) UNSIGNED                                           NULL     DEFAULT NULL COMMENT '创建者ID',
+    `type`         tinyint UNSIGNED                                              NOT NULL COMMENT '类型',
+    `state`        tinyint                                                       NULL     DEFAULT NULL COMMENT '状态  0：停用   1：正常  2：锁定',
+    `create_id`    bigint UNSIGNED                                               NULL     DEFAULT NULL COMMENT '创建者ID',
     `create_time`  datetime(0)                                                   NULL     DEFAULT NULL COMMENT '创建时间',
-    `update_id`    bigint(20) UNSIGNED                                           NULL     DEFAULT NULL COMMENT '更新者ID',
+    `update_id`    bigint UNSIGNED                                               NULL     DEFAULT NULL COMMENT '更新者ID',
     `update_time`  datetime(0)                                                   NULL     DEFAULT NULL COMMENT '更新时间',
     `tenant_code`  varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '租户编码',
-    `deleted`      tinyint(1) UNSIGNED                                           NOT NULL DEFAULT 0 COMMENT '逻辑删除',
+    `deleted`      tinyint UNSIGNED                                              NOT NULL DEFAULT 0 COMMENT '逻辑删除',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `idx_mobile` (`mobile`) USING BTREE,
     INDEX `idx_username` (`username`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_general_ci COMMENT = '用户'
-  ROW_FORMAT = Dynamic;
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for uc_user_params
@@ -218,23 +218,48 @@ CREATE TABLE `uc_menu`
 DROP TABLE IF EXISTS `uc_dept`;
 CREATE TABLE `uc_dept`
 (
-    `id`          bigint(20) UNSIGNED                                          NOT NULL COMMENT 'ID',
-    `pid`         bigint(20) UNSIGNED                                          NOT NULL COMMENT '上级ID',
-    `pids`        varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci      NULL     DEFAULT NULL COMMENT '所有上级ID，用逗号分开',
-    `name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '部门名称',
-    `sort`        int(10)                                                      NULL     DEFAULT NULL COMMENT '排序',
-    `create_id`   bigint(20) UNSIGNED                                          NULL     DEFAULT NULL COMMENT '创建者ID',
+    `id`          bigint UNSIGNED                                              NOT NULL COMMENT 'ID',
+    `type`        tinyint                                                      NULL     DEFAULT 0 COMMENT '类型',
+    `name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '名称',
+    `code`        varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci      NULL     DEFAULT NULL COMMENT '编码',
+    `pcode`       varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci      NOT NULL COMMENT '上级code',
+    `area_code`   varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci      NULL     DEFAULT NULL COMMENT '区域编码',
+    `sort`        int                                                          NULL     DEFAULT NULL COMMENT '排序',
+    `create_id`   bigint UNSIGNED                                              NULL     DEFAULT NULL COMMENT '创建者ID',
     `create_time` datetime(0)                                                  NULL     DEFAULT NULL COMMENT '创建时间',
-    `update_id`   bigint(20) UNSIGNED                                          NULL     DEFAULT NULL COMMENT '更新者ID',
+    `update_id`   bigint UNSIGNED                                              NULL     DEFAULT NULL COMMENT '更新者ID',
     `update_time` datetime(0)                                                  NULL     DEFAULT NULL COMMENT '更新时间',
     `tenant_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '租户编码',
-    `deleted`     tinyint(1) UNSIGNED                                          NOT NULL DEFAULT 0 COMMENT '逻辑删除',
+    `deleted`     tinyint UNSIGNED                                             NOT NULL DEFAULT 0 COMMENT '逻辑删除',
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `idx_pid` (`pid`) USING BTREE,
-    INDEX `idx_sort` (`sort`) USING BTREE
+    INDEX `idx_code` (`pcode`, `code`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_general_ci COMMENT = '部门'
-  ROW_FORMAT = Dynamic;
+  ROW_FORMAT = DYNAMIC;
 
-SET  FOREIGN_KEY_CHECKS = 1;
+-- ----------------------------
+-- Table structure for uc_area
+-- ----------------------------
+DROP TABLE IF EXISTS `uc_area`;
+CREATE TABLE `uc_area`
+(
+    `id`          bigint UNSIGNED                                               NOT NULL COMMENT 'ID',
+    `name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '名称',
+    `alias`       varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '别名',
+    `code`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '编码',
+    `pcode`       varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '上级code',
+    `create_id`   bigint UNSIGNED                                               NULL     DEFAULT NULL COMMENT '创建者ID',
+    `create_time` datetime(0)                                                   NULL     DEFAULT NULL COMMENT '创建时间',
+    `update_id`   bigint UNSIGNED                                               NULL     DEFAULT NULL COMMENT '更新者ID',
+    `update_time` datetime(0)                                                   NULL     DEFAULT NULL COMMENT '更新时间',
+    `tenant_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '租户编码',
+    `deleted`     tinyint UNSIGNED                                              NOT NULL DEFAULT 0 COMMENT '逻辑删除',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_code` (`pcode`, `code`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci COMMENT = '区域'
+  ROW_FORMAT = DYNAMIC;
+
+SET FOREIGN_KEY_CHECKS = 1;

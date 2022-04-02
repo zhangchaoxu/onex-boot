@@ -1,12 +1,10 @@
 package com.nb6868.onex.uc.service;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
-import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.uc.UcConst;
@@ -116,7 +114,7 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 	 *
 	 * @param pid 上级ID
 	 */
-	private String getPidList(Long pid) {
+	/*private String getPidList(Long pid) {
 		//顶级部门，无上级部门
 		if (Const.DEPT_ROOT.equals(pid)) {
 			return Const.DEPT_ROOT + "";
@@ -151,5 +149,5 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 		}
 
 		pidList.add(pid);
-	}
+	}*/
 }
