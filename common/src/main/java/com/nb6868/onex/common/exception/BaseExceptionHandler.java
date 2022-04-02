@@ -282,7 +282,9 @@ public abstract class BaseExceptionHandler {
             Dict requestParams = Dict.create();
             requestParams.set("ip", HttpContextUtils.getIpAddr(request));
             requestParams.set("ua", request.getHeader(HttpHeaders.USER_AGENT));
-            requestParams.set("queryString", request.getQueryString());
+            if (StrUtil.isNotBlank(request.getQueryString())) {
+                requestParams.set("queryString", request.getQueryString());
+            }
             requestParams.set("url", request.getRequestURL());
             requestParams.set("method", request.getMethod());
             requestParams.set("contentType", request.getContentType());

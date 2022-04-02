@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.1.4] 2022.04.02
+## [3.1.5] 2022.04.02
 - fix: fix shiro filter issue
+- fix: replace captcha to fix jdk version issue
 
 ## [3.1.3] 2022.04.01
 - upgrade: upgrade springboot to 2.6.6
