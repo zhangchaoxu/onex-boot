@@ -1,5 +1,5 @@
 # 访问控制
-使用[shiro]控制用户的访问控制
+系统使用[shiro]控制用户的访问控制
 
 ## 调用顺序
 首先需要明确一点,Spring中访问一个接口,执行的顺序
@@ -8,8 +8,13 @@
 3. 切片Aspect(如LogOperationAspect)
 
 ## Shiro过滤器
-规则见ShiroConfig,除了anon以外,其它接口都需要经过shiro拦截
-注意加入到anon的接口,即使请求带有token也获取不到用户信息
+规则见ShiroConfig中的shiroFilter bean
+在shiroFilter.initFilterMap把不需要shiro过滤的，使用anon注册。
+这个过程可以手动完成，也可以使用@AccessControl注解完成。
+
+# AccessControl使用方法
+加在Controller中,value为空则使用RequestMapping中的路径加上**,value有值则为该值
+加在public Method,value为空则为方法上的RequestMapping中的值加上方法中RequestMapping(Post/Get/Put/Delete)中的的值，非空则为该值
 
 ## Spring过滤器,拦截器,切面的区别
 
