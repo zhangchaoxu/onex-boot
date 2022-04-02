@@ -15,6 +15,7 @@ public class ShiroUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private String deptCode;
     private String username;
     private String realName;
     private Integer type;

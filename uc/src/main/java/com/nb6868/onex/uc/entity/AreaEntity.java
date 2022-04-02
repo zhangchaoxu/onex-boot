@@ -7,21 +7,17 @@ import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
 
 /**
- * 部门
+ * 区域
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("uc_dept")
-@Alias("uc_dept")
-public class DeptEntity extends BaseEntity {
+@TableName("uc_area")
+@Alias("uc_area")
+public class AreaEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 类型
-	 */
-	private Integer type;
     /**
      * 编码
      */
@@ -31,17 +27,13 @@ public class DeptEntity extends BaseEntity {
      */
 	private String pcode;
 	/**
-	 * 区域编码
+	 * 别名
 	 */
-	private String areaCode;
+	private String alias;
     /**
      * 名称
      */
 	private String name;
-    /**
-     * 排序
-     */
-	private Integer sort;
     /**
      * 租户编码
      */

@@ -91,7 +91,7 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 		int loopCount = 0;
 		while (deptDTO != null && loopCount < UcConst.DEPT_HIERARCHY_MAX) {
 			chain.add(deptDTO);
-			deptDTO = getDtoById(deptDTO.getPid());
+			deptDTO = getDtoById(deptDTO.getPcode());
 			loopCount++;
 		}
 		// 倒序
@@ -138,7 +138,7 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 		return CollUtil.join(pidList, ",");
 	}
 
-	private void getPidTree(Long pid, Map<Long, DeptEntity> map, List<Long> pidList) {
+	private void getPidTree(String pcode, Map<Long, DeptEntity> map, List<Long> pidList) {
 		// 顶级部门，无上级部门
 		if (Const.DEPT_ROOT.equals(pid)) {
 			return;
