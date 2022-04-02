@@ -4,17 +4,15 @@ import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
-import com.nb6868.onex.common.pojo.ChangeStateRequest;
+import com.nb6868.onex.common.pojo.ChangeStateForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
-import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.UserDao;
-import com.nb6868.onex.uc.dto.RegisterRequest;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +122,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 修改状态
      */
-    public boolean changeState(ChangeStateRequest request) {
+    public boolean changeState(ChangeStateForm request) {
         boolean ret = update().set("state", request.getState()).eq("id", request.getId()).update(new UserEntity());
         if (ret && request.getState() == Const.BooleanEnum.FALSE.value()) {
             // 停用将token注销

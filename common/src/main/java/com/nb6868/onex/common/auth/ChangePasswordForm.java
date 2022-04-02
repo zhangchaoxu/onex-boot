@@ -1,4 +1,4 @@
-package com.nb6868.onex.uc.dto;
+package com.nb6868.onex.common.auth;
 
 import com.nb6868.onex.common.pojo.BaseForm;
 import io.swagger.annotations.ApiModel;
