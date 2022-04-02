@@ -41,6 +41,7 @@ public interface ShiroDao {
 
     /**
      * 通过用户id，获得用户权限列表
+     * 在menu_scope中的用户权限，叠加该用户角色在menu_scope中的角色权限
      */
     @Select("SELECT " +
             ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions AS permissions FROM " + ShiroConst.TABLE_MENU_SCOPE +
@@ -60,7 +61,9 @@ public interface ShiroDao {
     /**
      * 通过用户id，获得用户角色列表
      */
-    @Select("SELECT DISTINCT(role_code) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE deleted = 0 AND user_id = #{userId}")
+    @Select("<script>" +
+            "SELECT DISTINCT(role_code) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE user_id = #{userId} AND deleted = 0" +
+            "</script>")
     List<String> getRoleCodeListByUserId(@Param("userId") Long userId);
 
 }
