@@ -2,8 +2,8 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.OnexException;
-import com.wf.captcha.*;
-import com.wf.captcha.base.Captcha;
+import com.pig4cloud.captcha.*;
+import com.pig4cloud.captcha.base.Captcha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;

@@ -32,7 +32,7 @@ import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
-import com.wf.captcha.base.Captcha;
+import com.pig4cloud.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
