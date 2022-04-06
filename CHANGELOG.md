@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.1.9] 2022.04.06
+## [3.2.0] 2022.04.06
 - fix: coder issue
 - add: tenant params
 - add: getContent in params
