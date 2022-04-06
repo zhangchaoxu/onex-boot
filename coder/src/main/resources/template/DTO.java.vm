@@ -10,7 +10,9 @@ import java.util.Date;
 
 #if(${hasBigDecimal})
 import java.math.BigDecimal;
-
+#end
+#if(${hasJson})
+import cn.hutool.json.JSONObject;
 #end
 /**
  * ${comments}
