@@ -1,8 +1,10 @@
 # CHANGELOG
 
-## [3.1.6] 2022.04.06
+## [3.1.9] 2022.04.06
 - fix: coder issue
 - add: tenant params
+- add: getContent in params
+- fix: menu scope issue
 
 ## [3.1.5] 2022.04.02
 - fix: fix shiro filter issue

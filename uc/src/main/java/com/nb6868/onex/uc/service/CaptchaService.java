@@ -24,18 +24,21 @@ public class CaptchaService {
      * 验证码机制是将验证码的内容和对应的uuid的对应关系存入缓存,然后验证的时候从缓存中去匹配
      * uuid不应该由前端生成,否则容易伪造和被攻击
      *
-     * @param uuid uuid
-     * @param width 宽度
+     * @param uuid   uuid
+     * @param width  宽度
      * @param height 高度
-     * @param type 类型
+     * @param type   类型
      * @return 生成的图片
      */
     public Captcha createCaptcha(String uuid, int width, int height, String type) {
+        return createCaptcha(uuid, width, height, type, 4, Captcha.TYPE_ONLY_NUMBER);
+    }
+
+    public Captcha createCaptcha(String uuid, int width, int height, String type, int len, int charType) {
         Captcha captcha;
-        if ("spec".equalsIgnoreCase(type)) {
+        if (type.startsWith("spec")) {
             // png
             captcha = new SpecCaptcha(width, height);
-            captcha.setLen(4);
         } else if ("gif".equalsIgnoreCase(type)) {
             // gif
             captcha = new GifCaptcha(width, height);
@@ -51,6 +54,8 @@ public class CaptchaService {
         } else {
             throw new OnexException("unknown captcha type");
         }
+        captcha.setLen(len);
+        captcha.setCharType(charType);
 
         // 保存到缓存
         captchaCache.put(uuid, captcha.text().toLowerCase());
@@ -60,9 +65,9 @@ public class CaptchaService {
     /**
      * 校验验证码
      *
-     * @param uuid  uuid
-     * @param code  验证码内容
-     * @return  验证结果
+     * @param uuid uuid
+     * @param code 验证码内容
+     * @return 验证结果
      */
     public boolean validate(String uuid, String code) {
         // 从缓存获取验证码

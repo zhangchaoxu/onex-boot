@@ -28,9 +28,9 @@ public class LoginForm implements Serializable {
     public interface MobileSmsCodeGroup { }
 
     /**
-     * 苹果登录校验
+     * 租户校验
      */
-    public interface AppleGroup { }
+    public interface TenantGroup { }
 
     @ApiModelProperty(value = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
     private String authConfigType;
@@ -54,16 +54,16 @@ public class LoginForm implements Serializable {
     @NotEmpty(message = "短信验证码不能为空", groups = {MobileSmsCodeGroup.class})
     private String smsCode;
 
+    @ApiModelProperty(value = "租户编码", required = true)
+    @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
+    private String tenantCode;
+
     @ApiModelProperty(value = "验证码")
     @NotEmpty(message = "验证码不能为空", groups = {CaptchaGroup.class})
-    private String captcha;
+    private String captchaValue;
 
-    @ApiModelProperty(value = "唯一标识")
-    @NotEmpty(message = "唯一标识不能为空", groups = {CaptchaGroup.class})
-    private String uuid;
-
-    @ApiModelProperty(value = "苹果登录token(jwt)")
-    @NotEmpty(message = "苹果登录token不能为空", groups = {AppleGroup.class})
-    private String appleIdentityToken;
+    @ApiModelProperty(value = "验证码标识")
+    @NotEmpty(message = "验证码标识不能为空", groups = {CaptchaGroup.class})
+    private String captchaUuid;
 
 }
