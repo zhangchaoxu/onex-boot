@@ -27,7 +27,8 @@ public interface ShiroDao {
 
     /**
      * 更新用户token失效时间
-     * @param token token
+     *
+     * @param token      token
      * @param expireTime 失效时间(秒)
      */
     @Update("UPDATE " + ShiroConst.TABLE_TOKEN + " SET expire_time = DATE_ADD(NOW(), interval #{expireTime} second) WHERE deleted = 0 AND token = #{token}")
@@ -36,8 +37,13 @@ public interface ShiroDao {
     /**
      * 获得所有的权限列表
      */
-    @Select("SELECT DISTINCT(permissions) FROM " + ShiroConst.TABLE_MENU + " WHERE deleted = 0 AND permissions is not null AND permissions != ''")
-    List<String> getAllPermissionsList();
+    @Select("<script>" +
+            "SELECT DISTINCT(permissions) FROM " + ShiroConst.TABLE_MENU + " WHERE deleted = 0 AND permissions is not null AND permissions != ''" +
+            "<if test=\"tenantCode != null and tenantCode != ''\">" +
+            " AND tenant_code = #{tenantCode}" +
+            "</if>" +
+            "</script>")
+    List<String> getAllPermissionsList(@Param("tenantCode") String tenantCode);
 
     /**
      * 通过用户id，获得用户权限列表
@@ -46,7 +52,7 @@ public interface ShiroDao {
     @Select("SELECT " +
             ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions AS permissions FROM " + ShiroConst.TABLE_MENU_SCOPE +
             " WHERE " + ShiroConst.TABLE_MENU_SCOPE + ".deleted = 0 AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions != '' AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions is not null" +
-            " AND (("+ ShiroConst.TABLE_MENU_SCOPE +".type = 1  AND " + ShiroConst.TABLE_MENU_SCOPE + ".role_code IN " +
+            " AND ((" + ShiroConst.TABLE_MENU_SCOPE + ".type = 1  AND " + ShiroConst.TABLE_MENU_SCOPE + ".role_code IN " +
             "( SELECT role_code FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE " + ShiroConst.TABLE_USER_ROLE + ".deleted = 0 AND " + ShiroConst.TABLE_USER_ROLE + ".user_id = #{userId})) OR " +
             "(" + ShiroConst.TABLE_MENU_SCOPE + ".type = 2 AND " + ShiroConst.TABLE_MENU_SCOPE + ".user_id = #{userId}))" +
             " GROUP BY " + ShiroConst.TABLE_MENU_SCOPE + ".menu_id")
@@ -55,8 +61,13 @@ public interface ShiroDao {
     /**
      * 获得所有角色列表
      */
-    @Select("SELECT DISTINCT(code) FROM " + ShiroConst.TABLE_ROLE + " WHERE deleted = 0")
-    List<String> getAllRoleCodeList();
+    @Select("<script>" +
+            "SELECT DISTINCT(code) FROM " + ShiroConst.TABLE_ROLE + " WHERE deleted = 0" +
+            "<if test=\"tenantCode != null and tenantCode != ''\">" +
+            " AND tenant_code = #{tenantCode}" +
+            "</if>" +
+            "</script>")
+    List<String> getAllRoleCodeList(@Param("tenantCode") String tenantCode);
 
     /**
      * 通过用户id，获得用户角色列表

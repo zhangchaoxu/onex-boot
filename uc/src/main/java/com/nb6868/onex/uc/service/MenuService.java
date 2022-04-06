@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -85,16 +86,25 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
      * @param user 用户
      */
     public List<MenuEntity> getListByUser(ShiroUser user, Integer type) {
-        if (user.getType() == UcConst.UserTypeEnum.ADMIN.value()) {
-            // 系统管理员,返回所有内容
-            return query().eq(type != null, "type", type).orderByAsc("sort").list();
+        if (user.getType() == UcConst.UserTypeEnum.SUPER_ADMIN.value() || user.getType() == UcConst.UserTypeEnum.TENANT_ADMIN.value()) {
+            // 管理员,返回所有内容
+            return query()
+                    .eq(type != null, "type", type)
+                    .eq(StrUtil.isNotBlank(user.getTenantCode()), "tenant_code", user.getTenantCode())
+                    .orderByAsc("sort")
+                    .list();
         } else {
             // 普通用户,返回范围角色对应
             List<Long> menuIds = menuScopeService.getMenuIdListByUserId(user.getId());
             if (ObjectUtils.isEmpty(menuIds)) {
                 return new ArrayList<>();
             } else {
-                return query().eq(type != null, "type", type).in("id", menuIds).orderByAsc("sort").list();
+                return query()
+                        .eq(type != null, "type", type)
+                        .eq(StrUtil.isNotBlank(user.getTenantCode()), "tenant_code", user.getTenantCode())
+                        .in("id", menuIds)
+                        .orderByAsc("sort")
+                        .list();
             }
         }
     }

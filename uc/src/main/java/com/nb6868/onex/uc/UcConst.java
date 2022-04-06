@@ -89,9 +89,9 @@ public interface UcConst {
         /**
          * 详见name
          */
-        ADMIN(0, "超级管理员"),
-        SYSADMIN(10, "系统管理员"),
-        DEPTADMIN(20, "单位管理员"),
+        SUPER_ADMIN(0, "超级管理员"),
+        TENANT_ADMIN(10, "管理员"),
+        DEPT_ADMIN(20, "单位管理员"),
         USER(100, "用户");
 
         private int value;

@@ -37,8 +37,7 @@ public interface MenuScopeDao extends BaseDao<MenuScopeEntity> {
      * @param userId 用户ID
      * @return result
      */
-    @Select("SELECT" +
-            " uc_menu_scope.menu_permissions AS permissions FROM uc_menu_scope" +
+    @Select("SELECT uc_menu_scope.menu_permissions AS permissions FROM uc_menu_scope" +
             " WHERE uc_menu_scope.deleted = 0 AND uc_menu_scope.menu_permissions != ''" +
             " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_code IN ( SELECT role_code FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
             "(uc_menu_scope.type = 2 AND uc_menu_scope.user_id = #{userId}))" +
@@ -50,8 +49,7 @@ public interface MenuScopeDao extends BaseDao<MenuScopeEntity> {
      * @param userId 用户id
      * @return result
      */
-    @Select("SELECT" +
-            " uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope" +
+    @Select("SELECT uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope" +
             " WHERE uc_menu_scope.deleted = 0" +
             " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_code IN ( SELECT role_code FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
             "(uc_menu_scope.type = 2 AND uc_menu_scope.user_id = #{userId}))" +
