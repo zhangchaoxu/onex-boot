@@ -81,7 +81,7 @@ public class UserController {
         // 用户角色列表
         data.setRoleCodes(roleService.getRoleCodeListByUserId(id));
         // 部门树
-        data.setDeptChain(deptService.getParentChain(data.getDeptId()));
+        data.setDeptChain(deptService.getParentChain(data.getDeptCode()));
         return new Result<>().success(data);
     }
 

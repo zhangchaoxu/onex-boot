@@ -1,6 +1,7 @@
 package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.shiro.ShiroUser;
@@ -41,14 +42,12 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 				.like(!ObjectUtils.isEmpty(MapUtil.getStr(params, "code")), "uc_dept.code", params.get("code"));
 	}
 
-	@Override
-	public DeptDTO getDtoById(Serializable id) {
+	public DeptDTO getDtoByCode(String code) {
 		//超级管理员，部门ID为null
-		if (id == null || 0 == (Long) id) {
+		if (StrUtil.isBlank(code)) {
 			return null;
 		}
-
-		return super.getDtoById(id);
+		return ConvertUtils.sourceToTarget(getOneByColumn("code", code), DeptDTO.class);
 	}
 
 	@Override
@@ -80,20 +79,22 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 
 	/**
 	 * 通过id获取父链
-	 * @param id id
+	 * @param code 组织代码
 	 * @return 父链(包括自己)
 	 */
-	public List<DeptDTO> getParentChain(@NotNull Long id) {
+	public List<DeptDTO> getParentChain(String code) {
 		List<DeptDTO> chain = new ArrayList<>();
-		DeptDTO deptDTO = getDtoById(id);
-		int loopCount = 0;
-		while (deptDTO != null && loopCount < UcConst.DEPT_HIERARCHY_MAX) {
-			chain.add(deptDTO);
-			deptDTO = getDtoById(deptDTO.getPcode());
-			loopCount++;
+		if (StrUtil.isNotBlank(code)) {
+			DeptDTO deptDTO = getDtoByCode(code);
+			int loopCount = 0;
+			while (deptDTO != null && loopCount < UcConst.DEPT_HIERARCHY_MAX) {
+				chain.add(deptDTO);
+				deptDTO = getDtoByCode(deptDTO.getPcode());
+				loopCount++;
+			}
+			// 倒序
+			Collections.reverse(chain);
 		}
-		// 倒序
-		Collections.reverse(chain);
 		return chain;
 	}
 
