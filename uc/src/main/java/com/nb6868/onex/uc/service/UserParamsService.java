@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -22,7 +23,7 @@ public class UserParamsService extends EntityService<UserParamsDao, UserParamsEn
      * @param userId 用户id
      * @param code 参数编码
      */
-    public String getContent(Long userId, String code) {
+    public JSONObject getContent(Long userId, String code) {
         return query()
                 .select("content")
                 .eq("user_id", userId)
@@ -31,16 +32,6 @@ public class UserParamsService extends EntityService<UserParamsDao, UserParamsEn
                 .oneOpt()
                 .map(UserParamsEntity::getContent)
                 .orElse(null);
-    }
-
-    /**
-     * 根据参数编码，获取value的Object对象
-     *
-     * @param code  参数编码
-     * @param clazz Object对象
-     */
-    public <T> T getContentObject(Long userId, String code, Class<T> clazz) {
-        return JacksonUtils.jsonToPojo(getContent(userId, code), clazz);
     }
 
 }
