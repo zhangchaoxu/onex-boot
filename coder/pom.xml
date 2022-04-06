@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>coder</artifactId>
@@ -20,7 +20,7 @@
         <commons.configuration.version>1.10</commons.configuration.version>
         <hutool.version>5.8.0.M2</hutool.version>
         <velocity.version>1.7</velocity.version>
-        <commons.collections.version>3.2.2</commons.collections.version>
+        <commons.collections.version>3.2.3</commons.collections.version>
         <screw.version>1.0.5</screw.version>
     </properties>
 

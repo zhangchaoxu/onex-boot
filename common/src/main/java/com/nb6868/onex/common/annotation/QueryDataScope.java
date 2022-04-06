@@ -27,7 +27,7 @@ public @interface QueryDataScope {
     /**
      * 部门ID
      */
-    String deptCode() default "dept_code";
+    String deptCode() default "deptCode";
     /**
      * 是否按租户过滤
      */
@@ -35,7 +35,7 @@ public @interface QueryDataScope {
     /**
      * 租户编码
      */
-    String tenantCode() default "tenant_code";
+    String tenantCode() default "tenantCode";
     /**
      * 是否按区域过滤
      */
@@ -43,6 +43,6 @@ public @interface QueryDataScope {
     /**
      * 区域编码
      */
-    String areaCode() default "area_code";
+    String areaCode() default "areaCode";
 
 }

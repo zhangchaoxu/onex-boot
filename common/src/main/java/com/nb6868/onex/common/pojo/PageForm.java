@@ -3,6 +3,7 @@ package com.nb6868.onex.common.pojo;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.nb6868.onex.common.jpa.Query;
+import com.nb6868.onex.common.validator.group.PageGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,11 +17,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "基础分页请求")
 public class PageForm extends BaseForm {
-
-    /**
-     * 分页校验
-     */
-    public interface PageGroup {}
 
     @ApiModelProperty(value = "页数")
     @Min(value = 1, message = "页数不能小于1", groups = {PageGroup.class})
