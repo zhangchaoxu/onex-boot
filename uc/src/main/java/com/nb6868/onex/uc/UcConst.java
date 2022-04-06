@@ -13,6 +13,11 @@ public interface UcConst {
     String TENANT_CODE_DEFAULT = "default";
 
     /**
+     * 登录配置
+     */
+    String TENANT_PARAMS_LOGIN = "LOGIN";
+
+    /**
      * 部门最大等级限制
      */
     int DEPT_HIERARCHY_MAX = 100;
@@ -90,7 +95,7 @@ public interface UcConst {
          * 详见name
          */
         SUPER_ADMIN(0, "超级管理员"),
-        TENANT_ADMIN(10, "管理员"),
+        TENANT_ADMIN(1, "管理员"),
         DEPT_ADMIN(20, "单位管理员"),
         USER(100, "用户");
 

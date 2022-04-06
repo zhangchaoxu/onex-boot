@@ -76,7 +76,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         // 检查用户权限
         ShiroUser user = ShiroUtils.getUser();
         AssertUtils.isTrue(user.getType() > dto.getType(), "无权创建高等级用户");
-        AssertUtils.isTrue(dto.getType() == UcConst.UserTypeEnum.DEPTADMIN.value() && StrUtil.isEmpty(dto.getDeptCode()), "单位管理员需指定所在单位");
+        AssertUtils.isTrue(dto.getType() == UcConst.UserTypeEnum.DEPT_ADMIN.value() && StrUtil.isEmpty(dto.getDeptCode()), "单位管理员需指定所在单位");
         // AssertUtils.isTrue(user.getDeptId() != null && dto.getDeptId() == null, "需指定所在单位");
         AssertUtils.isTrue(hasDuplicated(dto.getId(), "username", dto.getUsername()), ErrorCode.ERROR_REQUEST, "用户名已存在");
         AssertUtils.isTrue(hasDuplicated(dto.getId(), "mobile", dto.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已存在");
