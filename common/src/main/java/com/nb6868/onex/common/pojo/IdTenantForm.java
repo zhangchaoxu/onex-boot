@@ -1,5 +1,7 @@
 package com.nb6868.onex.common.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nb6868.onex.common.jpa.Query;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,11 +11,11 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "ID请求")
-public class IdForm extends BaseForm {
+@ApiModel(value = "ID租户请求")
+public class IdTenantForm extends IdForm {
 
-    @ApiModelProperty(value = "id", required = true)
-    @NotNull(message = "{id.require}")
-    private Long id;
+    @Query
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String tenantCode;
 
 }
