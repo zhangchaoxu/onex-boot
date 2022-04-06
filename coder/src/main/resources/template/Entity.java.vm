@@ -25,7 +25,6 @@ import java.util.Date;
 @TableName(value = "${tableName}", autoResultMap = ${hasJson})
 @Alias("${tableName}")
 public class ${className}Entity extends BaseEntity {
-	private static final long serialVersionUID = 1L;
 
 #foreach ($column in $columns)
 #if($column.columnName != 'id' && $column.columnName != 'creator' && $column.columnName != 'create_id' && $column.columnName != 'create_date' && $column.columnName != 'create_time' && $column.columnName != 'updater' && $column.columnName != 'update_id' && $column.columnName != 'update_date' && $column.columnName != 'update_time' && $column.columnName != 'del_flag' && $column.columnName != 'deleted')

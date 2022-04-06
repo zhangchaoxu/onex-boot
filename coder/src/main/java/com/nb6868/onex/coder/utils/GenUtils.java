@@ -131,6 +131,7 @@ public class GenUtils {
         }
         map.put("columns", tableEntity.getColumns());
         map.put("hasBigDecimal", hasBigDecimal);
+        map.put("hasJson", hasJson);
         map.put("version", codeGenerateConfig.getVersion());
         map.put("package", codeGenerateConfig.getPackageName());
         map.put("moduleName", codeGenerateConfig.getModuleName());
