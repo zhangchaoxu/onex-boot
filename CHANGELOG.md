@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.1.6] 2022.04.06
+- fix: coder issue
+- add: tenant params
+
 ## [3.1.5] 2022.04.02
 - fix: fix shiro filter issue
 - fix: replace captcha to fix jdk version issue
