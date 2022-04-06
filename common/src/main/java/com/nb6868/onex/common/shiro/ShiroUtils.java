@@ -49,4 +49,18 @@ public class ShiroUtils {
         return getUser().getTenantCode();
     }
 
+    /**
+     * 获得用户区域编码
+     */
+    public static String getUserAreaCode() {
+        return getUser().getAreaCode();
+    }
+
+    /**
+     * 获得用户组织编码
+     */
+    public static String getUserDeptCode() {
+        return getUser().getDeptCode();
+    }
+
 }

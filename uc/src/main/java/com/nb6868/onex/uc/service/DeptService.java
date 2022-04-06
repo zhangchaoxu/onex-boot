@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -54,7 +52,7 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 	public List<DeptDTO> listDto(Map<String, Object> params) {
 		// 普通管理员，只能查询所属部门及子部门的数据
 		ShiroUser user = ShiroUtils.getUser();
-		if (user.getType() > UcConst.UserTypeEnum.SYSADMIN.value()) {
+		if (user.getType() > UcConst.UserTypeEnum.DEPT_ADMIN.value()) {
 			// params.put("deptIdList", getSubDeptIdList(user.getDeptId()));
 		}
 
