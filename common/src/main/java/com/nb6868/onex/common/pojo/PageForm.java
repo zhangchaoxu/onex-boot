@@ -27,7 +27,7 @@ public class PageForm extends BaseForm {
     @Query(type = Query.Type.LIMIT, from = "page")
     private Long pageSize;
 
-    @ApiModelProperty(value = "页码，从1开始")
+    @ApiModelProperty(value = "页码")
     @Min(value = 1, message = "页码不能小于1", groups = {PageGroup.class})
     private Long pageNo;
 

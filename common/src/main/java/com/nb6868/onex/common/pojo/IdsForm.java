@@ -7,16 +7,18 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "ID请求")
-public class IdForm extends BaseForm {
+@ApiModel(value = "ID数组请求")
+public class IdsForm extends BaseForm {
 
-    @ApiModelProperty(value = "id", required = true)
-    @NotNull(message = "{id.require}")
-    private Long id;
+    @ApiModelProperty(value = "ids", required = true)
+    @NotEmpty(message = "{ids.require}")
+    private List<Long> ids;
 
     @Query
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
