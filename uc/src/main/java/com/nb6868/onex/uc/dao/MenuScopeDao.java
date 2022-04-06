@@ -28,7 +28,7 @@ public interface MenuScopeDao extends BaseDao<MenuScopeEntity> {
      * 	AND (
      * 		(
      * 			uc_menu_scope.type = 1
-     * 			AND uc_menu_scope.role_id IN ( SELECT role_id FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = 1374288734091931650 )
+     * 			AND uc_menu_scope.role_code IN ( SELECT role_code FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = 1374288734091931650 )
      * 		)
      * 		OR ( uc_menu_scope.type = 2 AND uc_menu_scope.user_id = 1374288734091931650 )
      * 	)
@@ -40,7 +40,7 @@ public interface MenuScopeDao extends BaseDao<MenuScopeEntity> {
     @Select("SELECT" +
             " uc_menu_scope.menu_permissions AS permissions FROM uc_menu_scope" +
             " WHERE uc_menu_scope.deleted = 0 AND uc_menu_scope.menu_permissions != ''" +
-            " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_id IN ( SELECT role_id FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
+            " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_code IN ( SELECT role_code FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
             "(uc_menu_scope.type = 2 AND uc_menu_scope.user_id = #{userId}))" +
             " GROUP BY uc_menu_scope.menu_id")
     List<String> getPermissionsListByUserId(@Param("userId") Long userId);
@@ -53,7 +53,7 @@ public interface MenuScopeDao extends BaseDao<MenuScopeEntity> {
     @Select("SELECT" +
             " uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope" +
             " WHERE uc_menu_scope.deleted = 0" +
-            " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_id IN ( SELECT role_id FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
+            " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_code IN ( SELECT role_code FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
             "(uc_menu_scope.type = 2 AND uc_menu_scope.user_id = #{userId}))" +
             " GROUP BY uc_menu_scope.menu_id")
     List<Long> getMenuIdListByUserId(@Param("userId") Long userId);

@@ -107,7 +107,7 @@ public class AuthService {
         // 校验验证码
         if (loginProps.isCaptcha()) {
             ValidatorUtils.validateEntity(loginRequest, LoginForm.CaptchaGroup.class);
-            boolean validateCaptcha = loginRequest.getCaptcha().equalsIgnoreCase(loginProps.getMagicCaptcha()) || captchaService.validate(loginRequest.getUuid(), loginRequest.getCaptcha());
+            boolean validateCaptcha = loginRequest.getCaptchaValue().equalsIgnoreCase(loginProps.getMagicCaptcha()) || captchaService.validate(loginRequest.getCaptchaUuid(), loginRequest.getCaptchaValue());
             AssertUtils.isFalse(validateCaptcha, ErrorCode.CAPTCHA_ERROR);
         }
 
