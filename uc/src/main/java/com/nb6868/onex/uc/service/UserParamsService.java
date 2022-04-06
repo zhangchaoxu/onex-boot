@@ -11,6 +11,6 @@ import org.springframework.stereotype.Service;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Service
-public class UserParamService extends EntityService<UserParamsDao, UserParamsEntity> {
+public class UserParamsService extends EntityService<UserParamsDao, UserParamsEntity> {
 
 }

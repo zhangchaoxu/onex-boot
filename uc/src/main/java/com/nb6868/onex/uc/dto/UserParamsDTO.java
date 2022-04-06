@@ -20,6 +20,9 @@ import javax.validation.constraints.NotNull;
 @ApiModel(value = "用户参数")
 public class UserParamsDTO extends BaseDTO {
 
+	@ApiModelProperty(value = "类型")
+	private String type;
+
 	@ApiModelProperty(value = "编码")
 	@NotEmpty(message = "编码不能为空", groups = DefaultGroup.class)
 	private String code;
