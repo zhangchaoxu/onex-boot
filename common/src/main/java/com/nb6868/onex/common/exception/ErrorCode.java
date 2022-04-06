@@ -26,6 +26,7 @@ public interface ErrorCode {
     int ACCOUNT_PASSWORD_ERROR = 10004;
     int ACCOUNT_DISABLE = 10005;
     int IDENTIFIER_NOT_NULL = 10006;
+    int TENANT_EMPTY = 10057;
     int CAPTCHA_ERROR = 10007;
     int SUB_MENU_EXIST = 10008;
     int PASSWORD_ERROR = 10009;
