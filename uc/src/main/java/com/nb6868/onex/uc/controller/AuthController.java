@@ -72,13 +72,7 @@ public class AuthController {
     @ApiOperationSupport(order = 5)
     public Result<?> loginParams(@Validated @RequestBody TenantParamsInfoByUrlForm form) {
         // 通过url地址获得租户配置
-        JSONObject paramsContent = tenantParamsService.query()
-                .eq("code", "LOGIN")
-                .eq("content->'$.url'", form.getUrl())
-                .last(Const.LIMIT_ONE)
-                .oneOpt()
-                .map(TenantParamsEntity::getContent)
-                .orElse(null);
+        JSONObject paramsContent = tenantParamsService.getContent(null, UcConst.TENANT_PARAMS_LOGIN, "url", form.getUrl());
         return new Result<>().success(paramsContent);
     }
 
