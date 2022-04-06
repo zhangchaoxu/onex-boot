@@ -13,10 +13,13 @@ import org.apache.ibatis.type.Alias;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("uc_user_params")
+@TableName(value = "uc_user_params")
 @Alias("uc_user_params")
 public class UserParamsEntity extends BaseEntity {
-
+    /**
+     * 类型
+     */
+    private String type;
     /**
      * 编码
      */
