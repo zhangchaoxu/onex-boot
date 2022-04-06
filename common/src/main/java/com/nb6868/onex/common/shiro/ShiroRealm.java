@@ -97,20 +97,21 @@ public class ShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        ShiroUser principal = (ShiroUser) principals.getPrimaryPrincipal();
+        ShiroUser user = (ShiroUser) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        AuthProps.Config loginConfig = authProps.getConfigs().get(principal.getLoginType());
+        AuthProps.Config loginConfig = authProps.getConfigs().get(user.getLoginType());
         // 根据配置中的role和permission设置SimpleAuthorizationInfo
         if (null != loginConfig && loginConfig.isPermissionBase()) {
             // 塞入角色列表,超级管理员全部
-            List<String> permissionsList = principal.isFullPermissions() ? shiroDao.getAllPermissionsList() : shiroDao.getPermissionsListByUserId(principal.getId());
+            List<String> permissionsList = user.isFullPermissions() ? shiroDao.getAllPermissionsList(user.getTenantCode()) : shiroDao.getPermissionsListByUserId(user.getId());
             Set<String> set = new HashSet<>();
             permissionsList.forEach(permissions -> set.addAll(StrUtil.splitTrim(permissions, ",")));
             info.setStringPermissions(set);
         }
         if (null != loginConfig && loginConfig.isRoleBase()) {
             // 塞入权限列表,超级管理员全部
-            info.setRoles(new HashSet<>(principal.isFullRoles() ? shiroDao.getAllRoleCodeList() : shiroDao.getRoleCodeListByUserId(principal.getId())));
+            List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
+            info.setRoles(new HashSet<>(roleList));
         }
         return info;
     }

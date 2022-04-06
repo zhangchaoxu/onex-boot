@@ -2,6 +2,7 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.text.StrSplitter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.shiro.ShiroDao;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.auth.LoginForm;
@@ -35,26 +36,17 @@ public class AuthService {
     @Autowired
     private CaptchaService captchaService;
     @Autowired
-    private MenuService menuService;
-    @Autowired
     private UserService userService;
-    @Autowired
-    private RoleService roleService;
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private MenuScopeService menuScopeService;
+    private ShiroDao shiroDao;
 
     /**
      * 获取用户权限列表
      */
     public Set<String> getUserPermissions(ShiroUser user) {
-        // 系统管理员，拥有最高权限
-        List<String> permissionsList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? menuService.listObjs(new QueryWrapper<MenuEntity>().select("permissions")
-                .ne("permissions", "").isNotNull("permissions"), Object::toString) :
-                menuScopeService.getPermissionsListByUserId(user.getId());
-
-        // 用户权限列表
+        List<String> permissionsList = user.isFullPermissions() ? shiroDao.getAllPermissionsList(user.getTenantCode()) : shiroDao.getPermissionsListByUserId(user.getId());
         Set<String> set = new HashSet<>();
         permissionsList.forEach(permissions -> set.addAll(StrSplitter.splitTrim(permissions, ',', true)));
         return set;
@@ -64,7 +56,7 @@ public class AuthService {
      * 获取用户角色列表
      */
     public Set<String> getUserRoles(ShiroUser user) {
-        List<String> roleList = user.getType() == UcConst.UserTypeEnum.ADMIN.value() ? roleService.getRoleCodeList() : roleService.getRoleCodeListByUserId(user.getId());
+        List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
         // 用户角色列表
         return new HashSet<>(roleList);
     }

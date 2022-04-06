@@ -23,12 +23,12 @@ public class ShiroUser implements Serializable {
     private String tenantCode;
     private String loginType;
 
-    public boolean isFullPermissions () {
-        return type == ShiroConst.USER_TYPE_SUPERADMIN;
+    public boolean isFullPermissions() {
+        return type == ShiroConst.USER_TYPE_SUPER_ADMIN || type == ShiroConst.USER_TYPE_TENANT_ADMIN;
     }
 
-    public boolean isFullRoles () {
-        return type == ShiroConst.USER_TYPE_SUPERADMIN;
+    public boolean isFullRoles() {
+        return type == ShiroConst.USER_TYPE_SUPER_ADMIN || type == ShiroConst.USER_TYPE_TENANT_ADMIN;
     }
 
 }

@@ -6,7 +6,9 @@ import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -25,17 +27,16 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
-import com.nb6868.onex.uc.dto.CaptchaForm;
-import com.nb6868.onex.uc.dto.MenuDTO;
-import com.nb6868.onex.uc.dto.MenuTreeDTO;
-import com.nb6868.onex.uc.dto.UserDTO;
+import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.MenuEntity;
+import com.nb6868.onex.uc.entity.TenantParamsEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
 import com.pig4cloud.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -62,15 +63,33 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private TenantParamsService tenantParamsService;
+
+    @PostMapping("loginParams")
+    @AccessControl
+    @ApiOperation(value = "登录参数", notes = "Anon")
+    @ApiOperationSupport(order = 5)
+    public Result<?> loginParams(@Validated @RequestBody TenantParamsInfoByUrlForm form) {
+        // 通过url地址获得租户配置
+        JSONObject paramsContent = tenantParamsService.query()
+                .eq("code", "LOGIN")
+                .eq("content->'$.url'", form.getUrl())
+                .last(Const.LIMIT_ONE)
+                .oneOpt()
+                .map(TenantParamsEntity::getContent)
+                .orElse(null);
+        return new Result<>().success(paramsContent);
+    }
 
     @PostMapping("captcha")
     @AccessControl
-    @ApiOperation(value = "图形验证码(base64)", notes = "验证时需将uuid和验证码内容一起提交")
+    @ApiOperation(value = "图形验证码(base64)", notes = "Anon@验证时需将uuid和验证码内容一起提交")
     @ApiOperationSupport(order = 10)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
         String uuid = IdUtil.fastSimpleUUID();
         // 随机arithmetic/spec
-        Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(new String[]{"arithmetic", "spec"}));
+        Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(new String[]{"spec"}));
         // 将uuid和图片base64返回给前端
         return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
     }
@@ -125,17 +144,15 @@ public class AuthController {
     @ApiOperationSupport(order = 101)
     public Result<?> loginEncrypt(@Validated @RequestBody EncryptForm form) {
         // 密文->urldecode->aes解码->原明文->json转实体
-        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(URLDecoder.decode(form.getBody(), Charset.defaultCharset()));
+        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(URLUtil.decode(form.getBody()));
         LoginForm loginRequest = JacksonUtils.jsonToPojo(json, LoginForm.class);
-        // 效验数据
-        ValidatorUtils.validateEntity(loginRequest, DefaultGroup.class);
-        return login(loginRequest);
+        return ((AuthController) AopContext.currentProxy()).login(loginRequest);
     }
 
-    @GetMapping("menuScope")
+    @PostMapping("menuScope")
     @ApiOperation("权限范围")
-    @ApiOperationSupport(order = 110)
-    public Result<?> scope() {
+    @ApiOperationSupport(order = 200)
+    public Result<MenuScopeResult> scope(@Validated @RequestBody MenuScopeForm form) {
         ShiroUser user = ShiroUtils.getUser();
         // 获取该用户所有menu
         List<MenuEntity> allList = menuService.getListByUser(user, null);
@@ -152,19 +169,23 @@ public class AuthController {
             if (StrUtil.isNotBlank(menu.getUrl())) {
                 urlList.add(ConvertUtils.sourceToTarget(menu, MenuDTO.class));
             }
-            if (StrUtil.isNotBlank(menu.getPermissions())) {
+            if (form.isPermissions() && StrUtil.isNotBlank(menu.getPermissions())) {
                 permissions.addAll(StrSplitter.splitTrim(menu.getPermissions(), ',', true));
             }
         });
         // 将菜单列表转成菜单树
-        List<MenuTreeDTO> menuTree = TreeUtils.build(menuList);
-        // 获取角色列表
-        Set<String> roles = authService.getUserRoles(user);
-        return new Result<>().success(Dict.create()
-                .set("menuTree", menuTree)
-                .set("urlList", urlList)
-                .set("permissions", permissions)
-                .set("roles", roles));
+        MenuScopeResult result = new MenuScopeResult();
+        result.setMenuTree(TreeUtils.build(menuList));
+        result.setUrlList(urlList);
+        if (form.isPermissions()) {
+            result.setPermissions(permissions);
+        }
+        if (form.isRoles()) {
+            // 获取角色列表
+            Set<String> roles = authService.getUserRoles(user);
+            result.setRoles(roles);
+        }
+        return new Result<MenuScopeResult>().success(result);
     }
 
 }

@@ -24,7 +24,10 @@ public interface ShiroConst {
     String TABLE_USER_ROLE = "uc_role_user";
 
     // 超级管理员用户类型
-    int USER_TYPE_SUPERADMIN = 0;
+    int USER_TYPE_SUPER_ADMIN = 0;
+
+    // 租户管理员-用户类型
+    int USER_TYPE_TENANT_ADMIN = 1;
 
     // 用户状态 有效
     int USER_STATE_ENABLED = 1;
