@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,13 @@ import java.util.List;
 public class PageForm extends BaseForm {
 
     @ApiModelProperty(value = "页数")
-    @Min(value = 1, message = "页数不能小于1", groups = {PageGroup.class})
+    @Min(value = 1, message = "页数不能小于1")
+    @Max(value = 10000, message = "页数不能大于1000")
     @Query(type = Query.Type.LIMIT, from = "page")
     private Long pageSize;
 
     @ApiModelProperty(value = "页码")
-    @Min(value = 1, message = "页码不能小于1", groups = {PageGroup.class})
+    @Min(value = 1, message = "页码不能小于1")
     private Long pageNo;
 
     @ApiModelProperty(value = "排序规则")
