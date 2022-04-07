@@ -1,11 +1,18 @@
 package com.nb6868.onex.common.config;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.nb6868.onex.common.jpa.injector.MySqlInjector;
+import com.nb6868.onex.common.shiro.ShiroUtils;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.StringValue;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,12 +55,45 @@ public abstract class BaseMybatisPlusConfig {
         dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
             switch (tableName) {
                 /*case xx:
-                    return tableName + "_" + tableNameLocal.get();*/
+                    String batch_code = DynamicTableParamHelper.getParamData("batch_code", String.class);
+                    return tableName + "_" + batch_code;*/
                 default:
                     return tableName;
             }
         });
         return dynamicTableNameInnerInterceptor;
+    }
+
+    /**
+     * 多租户插件
+     * 谨慎使用
+     */
+    protected InnerInterceptor iniTenantInterceptor() {
+        return new TenantLineInnerInterceptor(new TenantLineHandler() {
+
+            @Override
+            public Expression getTenantId() {
+                String tenantCode = DynamicTableParamHelper.getParamData("tenantCode", String.class);
+                if (StrUtil.isBlank(tenantCode)) {
+                    return null;
+                }
+                return new StringValue(tenantCode);
+            }
+
+            @Override
+            public String getTenantIdColumn() {
+                return "tenant_code";
+            }
+
+            @Override
+            public boolean ignoreTable(String tableName) {
+                String tenantCode = DynamicTableParamHelper.getParamData("tenantCode", String.class);
+                if (StrUtil.isBlank(tenantCode)) {
+                    return true;
+                }
+                return "uc_tenant".equalsIgnoreCase(tableName);
+            }
+        });
     }
 
 }

@@ -16,22 +16,28 @@ import org.springframework.context.annotation.Configuration;
 public class MybatisPlusConfig extends BaseMybatisPlusConfig {
 
     /**
-     * 配置分页
-     * 新的分页插件,一缓和二缓遵循mybatis的规则
-     * 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题
-     * see {https://mybatis.plus/guide/page.html}
+     * 配置插件
+     *
+     * see {https://baomidou.com/pages/2976a3/}
+     *
+     * 顺序:
+     * 多租户,动态表名
+     * 分页,乐观锁
+     * sql 性能规范,防止全表更新与删除
      *
      * @return PaginationInterceptor
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        // 乐观锁插件
-        // interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        // 多租户插件
+        // interceptor.addInnerInterceptor(iniTenantInterceptor());
         // 动态表名拦截器
         // interceptor.addInnerInterceptor(initDynamicTableNameInnerInterceptor());
         // 分页拦截器
         interceptor.addInnerInterceptor(initPaginationInterceptor());
+        // 乐观锁插件
+        // interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         return interceptor;
     }
 

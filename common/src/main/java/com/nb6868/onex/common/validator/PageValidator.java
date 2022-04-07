@@ -13,14 +13,17 @@ import javax.validation.Validation;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class PageValidator implements ConstraintValidator<Page, PageForm> {
+public class PageValidator implements ConstraintValidator<Page, Object> {
 
     @Override
     public void initialize(Page constraintAnnotation) {
     }
 
     @Override
-    public boolean isValid(PageForm value, ConstraintValidatorContext context) {
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
+        if (!(value instanceof PageForm)) {
+            return false;
+        }
         return getValidateResult(value);
     }
 

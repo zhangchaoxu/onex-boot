@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.2.5] 2022.04.06
+- add: add page validator
+- add: Query type in IdForm and IdsForm
+
 ## [3.2.0] 2022.04.06
 - fix: coder issue
 - add: tenant params
