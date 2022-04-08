@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.config;
 
-import com.nb6868.onex.common.shiro.ShiroRealm;
+import com.nb6868.onex.common.shiro.ShiroJwtRealm;
+import com.nb6868.onex.common.shiro.ShiroUuidRealm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -20,9 +21,20 @@ import org.springframework.context.annotation.Configuration;
 public class ShiroConfig extends BaseShiroConfig {
 
     @Bean("securityManager")
-    public SecurityManager securityManager(ShiroRealm shiroRealm, SessionManager sessionManager) {
+    @ConditionalOnProperty(name = "onex.shiro.type", havingValue = "jwt")
+    public SecurityManager securityManager(ShiroJwtRealm shiroJwtRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(shiroRealm);
+        securityManager.setRealm(shiroJwtRealm);
+        securityManager.setSessionManager(sessionManager);
+        securityManager.setRememberMeManager(null);
+        return securityManager;
+    }
+
+    @Bean("securityManager")
+    @ConditionalOnProperty(name = "onex.shiro.type", havingValue = "uuid")
+    public SecurityManager securityUuidManager(ShiroUuidRealm shiroUuidRealm, SessionManager sessionManager) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setRealm(shiroUuidRealm);
         securityManager.setSessionManager(sessionManager);
         securityManager.setRememberMeManager(null);
         return securityManager;

@@ -3,8 +3,6 @@ package com.nb6868.onex.common.config;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
-import com.nb6868.onex.common.auth.AuthProps;
-import com.nb6868.onex.common.filter.JwtShiroFilter;
 import com.nb6868.onex.common.filter.SimpleShiroFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
@@ -12,6 +10,7 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +26,9 @@ import java.util.*;
 @Slf4j
 public class BaseShiroConfig {
 
+    @Value("${onex.access-control.scan-package}")
+    String accessScanPackage;
+
     @Bean
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
@@ -39,30 +41,29 @@ public class BaseShiroConfig {
     }
 
     @Bean("shiroFilter")
-    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager, AuthProps authProps) {
+    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
         // shiro过滤
-        shiroFilter.setFilters(initFilters(authProps));
+        shiroFilter.setFilters(initFilters());
         // 加入注解中含有anon的
-        shiroFilter.setFilterChainDefinitionMap(initFilterMap(authProps));
+        shiroFilter.setFilterChainDefinitionMap(initFilterMap());
         return shiroFilter;
     }
 
     /**
      * 初始化filters
      */
-    protected Map<String, Filter> initFilters(AuthProps authProps) {
+    protected Map<String, Filter> initFilters() {
         Map<String, Filter> filters = new HashMap<>();
-        filters.put("shiro", new SimpleShiroFilter(authProps));
-        filters.put("jwtShiro", new JwtShiroFilter(authProps));
+        filters.put("shiro", new SimpleShiroFilter());
         return filters;
     }
 
     /**
      * 初始化过滤map
      */
-    protected Map<String, String> initFilterMap(AuthProps authProps) {
+    protected Map<String, String> initFilterMap() {
         /*
          * 自定义url规则 {http://shiro.apache.org/web.html#urls-}
          * *注意*
@@ -94,7 +95,7 @@ public class BaseShiroConfig {
         // filterMap.put("/easypoijs/**", "anon");
         // filterMap.put("/easypoi/wps/**", "anon");
         // 扫描RequestMapping类
-        StrUtil.splitTrim(authProps.getAccessScanPackage(), ',')
+        StrUtil.splitTrim(accessScanPackage, ',')
                 .forEach(scanPackage -> ClassUtil.scanPackageByAnnotation(scanPackage, RequestMapping.class)
                         .forEach(cls -> {
                             // 方法中获取注解
@@ -171,7 +172,7 @@ public class BaseShiroConfig {
                             }
                         }));
         // 除上述anon外,其它都需要过shiro
-        filterMap.put("/**", "jwtShiro");
+        filterMap.put("/**", "shiro");
         filterMap.forEach((s, s2) -> log.debug("shiro key={}, filter={}", s, s2));
         return filterMap;
     }

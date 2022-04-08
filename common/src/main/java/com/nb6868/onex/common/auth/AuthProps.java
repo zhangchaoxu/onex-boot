@@ -7,7 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,30 +20,10 @@ import java.util.Map;
 public class AuthProps {
 
     @ApiModelProperty(value = "token key")
-    private String tokenKey = "auth-token";
+    private String tokenHeaderKey = "auth-token";
 
     @ApiModelProperty(value = "token类型在jwt中的key")
-    private String tokenTypeKey = "sub";
-
-    @ApiModelProperty
-    private String accessScanPackage;
-
-    @ApiModelProperty(value = "登录设置")
-    private Map<String, Settings> settings = new HashMap<>();
-
-    @Data
-    public static class Settings {
-
-        @ApiModelProperty(value = "注册")
-        private boolean register;
-
-        @ApiModelProperty(value = "修改密码")
-        private boolean forgetPassword;
-
-        @ApiModelProperty(value = "登录方式")
-        private List<String> types;
-
-    }
+    private String tokenJwtKey = "sub";
 
     @ApiModelProperty(value = "登录配置项")
     private Map<String, Config> configs = new HashMap<>();
@@ -86,24 +65,6 @@ public class AuthProps {
         @ApiModelProperty(value = "基于权限控制")
         private boolean permissionBase = true;
 
-        @ApiModelProperty(value = "是否需要验证码")
-        private boolean captcha = false;
-
-        @JsonIgnore
-        @ApiModelProperty(value = "魔术验证码")
-        private String magicCaptcha;
-
-        @JsonIgnore
-        @ApiModelProperty(value = "最多登录次数")
-        private Integer tryTimesMax;
-
-        @JsonIgnore
-        @ApiModelProperty(value = "超过最大登录次数后锁定时间")
-        private Long loginErrorLockTime;
-
-        @JsonIgnore
-        @ApiModelProperty(value = "首次登录强制修改密码")
-        private Boolean forceUpdatePassword;
     }
 
 }

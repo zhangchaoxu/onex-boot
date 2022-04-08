@@ -1,7 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -12,11 +11,12 @@ import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.common.auth.*;
+import com.nb6868.onex.common.auth.AuthProps;
+import com.nb6868.onex.common.auth.LoginForm;
+import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
-import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -24,12 +24,10 @@ import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.MenuEntity;
-import com.nb6868.onex.uc.entity.TenantParamsEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
 import com.pig4cloud.captcha.base.Captcha;
@@ -41,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -88,17 +85,6 @@ public class AuthController {
         return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
     }
 
-    @GetMapping("getLoginSettings")
-    @ApiOperation("获得登录设置")
-    @AccessControl
-    @ApiOperationSupport(order = 20)
-    public Result<?> getLoginSettings(@RequestParam(required = false, defaultValue = "admin", name = "登录设置") String type) {
-        AuthProps.Settings loginSettings = authProps.getSettings().get(type);
-        AssertUtils.isNull(loginSettings, "未定义该类型");
-
-        return new Result<>().success(loginSettings);
-    }
-
     @GetMapping("getLoginConfig")
     @ApiOperation("获得登录配置")
     @AccessControl
@@ -126,7 +112,7 @@ public class AuthController {
         LoginResult loginResult = new LoginResult()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
                 .setToken(tokenService.createToken(user, loginConfig))
-                .setTokenKey(authProps.getTokenKey());
+                .setTokenKey(authProps.getTokenHeaderKey());
         return new Result<>().success(loginResult);
     }
 

@@ -21,6 +21,7 @@ public class ShiroUser implements Serializable {
     private String realName;
     private Integer type;
     private String tenantCode;
+    // 登录方式
     private String loginType;
 
     public boolean isFullPermissions() {

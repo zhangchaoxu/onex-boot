@@ -2,7 +2,8 @@
 
 ## [3.2.6] 2022.04.08
 - add: user add area_code
-- 
+- enhance: simplify shiro code
+
 ## [3.2.5] 2022.04.06
 - add: add page validator
 - add: Query type in IdForm and IdsForm
