@@ -4,10 +4,12 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.log.BaseLogService;
+import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -90,6 +92,19 @@ public class LogOperationAspect {
             }
         } catch (NoSuchMethodException ne) {
             ne.printStackTrace();
+        }
+        if ("login".equalsIgnoreCase(logType)) {
+            // 登录日志
+            try {
+                LoginForm loginForm = JSONUtil.toBean(params, LoginForm.class);
+                logEntity.setTenantCode(loginForm.getTenantCode());
+                if (loginForm.getType().endsWith("USERNAME_PASSWORD")) {
+                    logEntity.setCreateName(loginForm.getUsername());
+                } else if (loginForm.getType().endsWith("MOBILE_SMS")) {
+                    logEntity.setCreateName(loginForm.getMobile());
+                }
+            } catch (Exception jsonException) {
+            }
         }
         logEntity.setStoreType(storeType);
         logEntity.setState(state);

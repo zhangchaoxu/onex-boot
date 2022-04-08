@@ -139,11 +139,11 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 修改状态
      */
-    public boolean changeState(ChangeStateForm request) {
-        boolean ret = update().set("state", request.getState()).eq("id", request.getId()).update(new UserEntity());
-        if (ret && request.getState() == Const.BooleanEnum.FALSE.value()) {
+    public boolean changeState(ChangeStateForm form) {
+        boolean ret = update().set("state", form.getState()).eq("id", form.getId()).update(new UserEntity());
+        if (ret && form.getState() == Const.BooleanEnum.FALSE.value()) {
             // 停用将token注销
-            tokenService.deleteByUserIds(Collections.singletonList(request.getId()));
+            tokenService.deleteByUserIds(Collections.singletonList(form.getId()));
         }
         return ret;
     }
