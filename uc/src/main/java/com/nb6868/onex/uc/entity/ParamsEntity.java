@@ -16,13 +16,17 @@ import org.apache.ibatis.type.Alias;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName(value = "uc_user_params", autoResultMap = true)
-@Alias("uc_user_params")
-public class UserParamsEntity extends BaseEntity {
+@TableName(value = "uc_params", autoResultMap = true)
+@Alias("uc_params")
+public class ParamsEntity extends BaseEntity {
     /**
      * 类型
      */
-    private String type;
+    private Integer type;
+    /**
+     * 数据开放范围
+     */
+    private String scope;
     /**
      * 编码
      */
@@ -40,4 +44,8 @@ public class UserParamsEntity extends BaseEntity {
      * 租户编码
      */
     private String tenantCode;
+    /**
+     * 备注
+     */
+    private String remark;
 }

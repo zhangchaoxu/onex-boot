@@ -15,7 +15,7 @@ public interface UcConst {
     /**
      * 登录配置
      */
-    String TENANT_PARAMS_LOGIN = "LOGIN";
+    String PARAMS_CODE_LOGIN = "LOGIN";
 
     /**
      * 部门最大等级限制
@@ -41,6 +41,39 @@ public interface UcConst {
         }
 
         UserStateEnum(int value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int value() {
+            return this.value;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    /**
+     * 参数类型
+     */
+    enum ParamsTypeEnum {
+
+        /**
+         * 详见name
+         */
+        SYSTEM(0, "系统参数"),
+        TENANT(1, "租户参数"),
+        USER(2, "用户参数");
+
+        private int value;
+        private String name;
+
+        ParamsTypeEnum(int value) {
+            this.value = value;
+        }
+
+        ParamsTypeEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }

@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.auth;
 
+import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,25 +16,30 @@ public class LoginForm implements Serializable {
     /**
      * 验证码校验
      */
-    public interface CaptchaGroup { }
+    public interface CaptchaGroup {
+    }
 
     /**
      * 帐号密码登录校验
      */
-    public interface UsernamePasswordGroup { }
+    public interface UsernamePasswordGroup {
+    }
 
     /**
      * 短信验证码登录校验
      */
-    public interface MobileSmsCodeGroup { }
+    public interface MobileSmsCodeGroup {
+    }
 
     /**
      * 租户校验
      */
-    public interface TenantGroup { }
+    public interface TenantGroup {
+    }
 
     @ApiModelProperty(value = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
-    private String authConfigType;
+    @NotEmpty(message = "登录类型不能为空", groups = {DefaultGroup.class})
+    private String type;
 
     @ApiModelProperty(value = "用户名")
     @NotEmpty(message = "用户名不能为空", groups = {UsernamePasswordGroup.class})

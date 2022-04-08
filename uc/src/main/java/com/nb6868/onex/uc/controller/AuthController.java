@@ -15,6 +15,7 @@ import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.Result;
@@ -22,12 +23,15 @@ import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
+import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.MenuEntity;
+import com.nb6868.onex.uc.entity.ParamsEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
 import com.pig4cloud.captcha.base.Captcha;
@@ -53,30 +57,30 @@ public class AuthController {
     @Autowired
     private AuthProps authProps;
     @Autowired
+    private UserService userService;
+    @Autowired
     private CaptchaService captchaService;
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private AuthService authService;
-    @Autowired
     private MenuService menuService;
     @Autowired
-    private TenantParamsService tenantParamsService;
+    private ParamsService paramsService;
 
     @PostMapping("loginParams")
     @AccessControl
     @ApiOperation(value = "登录参数", notes = "Anon")
-    @ApiOperationSupport(order = 5)
+    @ApiOperationSupport(order = 10)
     public Result<?> loginParams(@Validated @RequestBody TenantParamsInfoByUrlForm form) {
         // 通过url地址获得租户配置
-        JSONObject paramsContent = tenantParamsService.getContent(null, UcConst.TENANT_PARAMS_LOGIN, "url", form.getUrl());
+        JSONObject paramsContent = paramsService.getContent(null, UcConst.PARAMS_CODE_LOGIN, "url", form.getUrl());
         return new Result<>().success(paramsContent);
     }
 
     @PostMapping("captcha")
     @AccessControl
     @ApiOperation(value = "图形验证码(base64)", notes = "Anon@验证时需将uuid和验证码内容一起提交")
-    @ApiOperationSupport(order = 10)
+    @ApiOperationSupport(order = 20)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
         String uuid = IdUtil.fastSimpleUUID();
         // 随机arithmetic/spec
@@ -85,28 +89,46 @@ public class AuthController {
         return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
     }
 
-    @GetMapping("getLoginConfig")
-    @ApiOperation("获得登录配置")
-    @AccessControl
-    @ApiOperationSupport(order = 30)
-    public Result<?> getLoginConfig(@RequestParam(required = false, defaultValue = "ADMIN_USERNAME_PASSWORD", name = "登录配置") String type) {
-        AuthProps.Config loginConfig = authProps.getConfigs().get(type);
-        AssertUtils.isNull(loginConfig, "未定义该类型");
-
-        return new Result<>().success(loginConfig);
-    }
-
     @PostMapping("login")
     @AccessControl
     @ApiOperation(value = "登录")
     @LogOperation(value = "登录", type = "login")
     @ApiOperationSupport(order = 100)
-    public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm loginRequest) {
+    public Result<?> login(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
         // 获得登录配置
-        AuthProps.Config loginConfig = authService.getLoginConfig(loginRequest.getAuthConfigType());
+        AuthProps.Config loginConfig = authProps.getConfigs().get(form.getType());
         AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
+        // 获得登录参数
+        JSONObject loginParams = paramsService.query().select("content")
+                .eq("tenant_code", form.getTenantCode())
+                .eq("code", UcConst.PARAMS_CODE_LOGIN)
+                .eq( "content->'$.type'", form.getType())
+                .last(Const.LIMIT_ONE)
+                .oneOpt()
+                .map(ParamsEntity::getContent)
+                .orElse(new JSONObject());
 
-        UserEntity user = authService.login(loginRequest, loginConfig);
+        // 验证验证码
+        if (loginParams.getBool("captcha", false)) {
+            ValidatorUtils.validateEntity(form, LoginForm.CaptchaGroup.class);
+            AssertUtils.isFalse(captchaService.validate(form.getCaptchaUuid(), form.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
+        }
+        UserEntity user;
+        if (form.getType().endsWith("USERNAME_PASSWORD")) {
+            // 帐号密码登录
+            ValidatorUtils.validateEntity(form, LoginForm.UsernamePasswordGroup.class);
+            user = userService.query()
+                    .eq("username", form.getUsername())
+                    .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
+                    .last(Const.LIMIT_ONE)
+                    .one();
+            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+            AssertUtils.isFalse(PasswordUtils.verify(form.getPassword(), user.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
+        } else {
+            // todo 其它登录方式
+            throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
+        }
 
         // 登录成功
         LoginResult loginResult = new LoginResult()
@@ -162,7 +184,7 @@ public class AuthController {
         }
         if (form.isRoles()) {
             // 获取角色列表
-            Set<String> roles = authService.getUserRoles(user);
+            Set<String> roles = userService.getUserRoles(user);
             result.setRoles(roles);
         }
         return new Result<MenuScopeResult>().success(result);
