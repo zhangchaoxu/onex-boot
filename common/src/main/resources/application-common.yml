@@ -98,8 +98,9 @@ knife4j:
 
 ## onex
 onex:
-  # 应用ID
+  # 应用父ID
   parent-artifact-id: @project.parent.artifactId@
+  # 应用ID
   artifact-id: @project.artifactId@
   # 版本号
   version: @project.version@
@@ -111,6 +112,8 @@ onex:
   # Shiro
   shiro:
     enable: false
+    # 类型jwt/uuid
+    type: jwt
   # mybatis配置
   mybatisplus:
     enable: false
@@ -129,19 +132,22 @@ onex:
   # 异常处理
   exception-handler:
     enable: false
-  # 切片
-  aspect:
-    # 日志
-    log: false
-    # 数据查询过滤
-    data-query-filter: false
-    # 访问控制
-    access-control: false
+  # 日志
+  log:
+    enable: false
+    # 存储方式
+    type: db
+  # 数据查询过滤
+  data-query-filter:
+    enable: false
+  # 访问控制
+  access-control:
+    enable: false
+    # 扫描包
+    scan-package: com.nb6868.onex.uc.controller,com.nb6868.onex.sched.controller,com.nb6868.onex.msg.controller
   # 登录配置
   auth:
-    settings:
-      admin:
-        register: false
-        forget-password: false
-        types:
-          - ADMIN_USERNAME_PASSWORD
+    # token在header中的key
+    token-header-key: auth-token
+    # token在jwt中的key
+    token-jwt-key: sub
