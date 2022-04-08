@@ -26,6 +26,10 @@ public class UserEntity extends BaseEntity {
      */
 	private String deptCode;
     /**
+     * 区域编码
+     */
+    private String areaCode;
+    /**
      * 编号
      */
 	private String code;
