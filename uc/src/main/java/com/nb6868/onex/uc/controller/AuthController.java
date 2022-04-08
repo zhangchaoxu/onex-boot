@@ -124,10 +124,13 @@ public class AuthController {
                     int continuousLoginErrorTimes = logService.getContinuousLoginErrorTimes(form.getUsername(), form.getTenantCode(), passwordErrorMinuteOffset, passwordErrorMaxTimes - 1);
                     if (continuousLoginErrorTimes >= passwordErrorMaxTimes - 1) {
                         // 锁定用户
-                        userService.changeState(new ChangeStateForm().setState(UcConst.UserStateEnum.DISABLE.value()));
-                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误已超过{}次,您的账户已锁定,请联系管理员", passwordErrorMinuteOffset, passwordErrorMaxTimes));
+                        ChangeStateForm changeStateForm = new ChangeStateForm();
+                        changeStateForm.setState(UcConst.UserStateEnum.DISABLE.value());
+                        changeStateForm.setId(user.getId());
+                        userService.changeState(changeStateForm);
+                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码连续错误超过{}次,您的账户已被锁定,请联系管理员", passwordErrorMinuteOffset, passwordErrorMaxTimes));
                     } else {
-                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误{}次,连续错误{}次将被锁定账户。若忘记密码,请联系管理员", passwordErrorMinuteOffset, continuousLoginErrorTimes + 1, passwordErrorMaxTimes));
+                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码连续错误{}次,超过{}次将被锁定账户,若忘记密码,请联系管理员", passwordErrorMinuteOffset, continuousLoginErrorTimes + 1, passwordErrorMaxTimes));
                     }
                 } else {
                     throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
