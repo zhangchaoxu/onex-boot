@@ -47,5 +47,12 @@ public class LogBody implements Serializable {
      * 请求参数
      */
     private Dict requestParams;
-
+    /**
+     * 用户名
+     */
+    private String createName;
+    /**
+     * 租户编码
+     */
+    private String tenantCode;
 }

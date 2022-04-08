@@ -14,6 +14,9 @@ import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.log.BaseLogService;
+import com.nb6868.onex.common.log.LogBody;
+import com.nb6868.onex.common.pojo.ChangeStateForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.Result;
@@ -60,6 +63,8 @@ public class AuthController {
     private MenuService menuService;
     @Autowired
     private ParamsService paramsService;
+    @Autowired
+    private BaseLogService logService;
 
     @PostMapping("loginParams")
     @AccessControl
@@ -110,7 +115,33 @@ public class AuthController {
                     .one();
             AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
-            AssertUtils.isFalse(PasswordUtils.verify(form.getPassword(), user.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
+            boolean passwordVerify = PasswordUtils.verify(form.getPassword(), user.getPassword());
+            if (!passwordVerify) {
+                // 密码错误
+                if (loginParams.getBool("passwordErrorLock", false)) {
+                    // 若passwordErrorMinuteOffset分钟内,连续错误passwordErrorMaxTimes次,锁定账户
+                    int passwordErrorMinuteOffset = loginParams.getInt("passwordErrorMinuteOffset", 10);
+                    int passwordErrorMaxTimes = loginParams.getInt("passwordErrorMaxTimes", 5);
+                    List<LogBody> logList = logService.getListByUser(form.getUsername(), form.getTenantCode(), passwordErrorMinuteOffset, passwordErrorMaxTimes);
+                    int passwordErrorCount = 0;
+                    for (LogBody log : logList) {
+                        if (log.getState() != Const.ResultEnum.SUCCESS.value()) {
+                            passwordErrorCount++;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (passwordErrorCount >= passwordErrorMaxTimes - 1) {
+                        // 锁定用户
+                        userService.changeState(new ChangeStateForm().setState(UcConst.UserStateEnum.DISABLE.value()));
+                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误已超过{}次,您的账户已锁定,请联系管理员", passwordErrorMinuteOffset, passwordErrorCount + 1));
+                    } else {
+                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误{}次,连续错误{}次将被锁定账户。若忘记密码,请联系管理员。", passwordErrorCount + 1, passwordErrorMaxTimes));
+                    }
+                } else {
+                    throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
+                }
+            }
         } else {
             // todo 其它登录方式
             throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
