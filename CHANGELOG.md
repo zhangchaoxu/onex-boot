@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.2.7] 2022.04.08
+## [3.3.0] 2022.04.08
 - add: user add area_code
 - enhance: simplify shiro code
 

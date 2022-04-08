@@ -25,6 +25,20 @@ public class AuthProps {
     @ApiModelProperty(value = "token类型在jwt中的key")
     private String tokenJwtKey = "sub";
 
+    @ApiModelProperty(value = "访问控制")
+    private AccessControl accessControl;
+
+    @Data
+    public static class AccessControl {
+
+        @ApiModelProperty(value = "是否启用")
+        private boolean enable = true;
+
+        @ApiModelProperty(value = "扫描路径")
+        private String scanPackage;
+
+    }
+
     @ApiModelProperty(value = "登录配置项")
     private Map<String, Config> configs = new HashMap<>();
 

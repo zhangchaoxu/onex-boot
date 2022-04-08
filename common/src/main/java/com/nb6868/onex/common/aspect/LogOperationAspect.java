@@ -7,10 +7,10 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.LoginForm;
+import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
-import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @Aspect
 @Component
-@ConditionalOnProperty(name = "onex.aspect.log", havingValue = "true")
+@ConditionalOnProperty(name = "onex.log.enable", havingValue = "true")
 @Order(200)
 @Slf4j
 public class LogOperationAspect {
@@ -62,11 +62,12 @@ public class LogOperationAspect {
             // 执行方法
             Object result = joinPoint.proceed();
             // 保存日志
-            saveLog(joinPoint, params, timer.interval(), Const.ResultEnum.SUCCESS.value(), null);
+            saveLog(joinPoint, params, timer.interval(), ErrorCode.SUCCESS, null);
             return result;
         } catch (Exception e) {
             //保存日志
-            saveLog(joinPoint, params, timer.interval(), Const.ResultEnum.FAIL.value(), e);
+            int state = e instanceof OnexException ? ((OnexException) e).getCode() : ErrorCode.INTERNAL_SERVER_ERROR;
+            saveLog(joinPoint, params, timer.interval(), state, e);
             throw e;
         }
     }

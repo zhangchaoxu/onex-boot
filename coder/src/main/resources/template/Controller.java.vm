@@ -40,7 +40,7 @@ import java.util.Map;
  * @author ${author} ${email}
  */
 @RestController("${moduleName}${className}")
-@RequestMapping("/${moduleName}/${pathName}")
+@RequestMapping("/${moduleName}/${pathName}/")
 @Validated
 @Api(tags = "${comments}")
 public class ${className}Controller {

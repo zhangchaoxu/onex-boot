@@ -3,6 +3,7 @@ package com.nb6868.onex.common.config;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.json.JSONArray;
+import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +76,8 @@ public class AsyncConfig implements AsyncConfigurer {
             // 异常信息
             LogBody logBody = new LogBody();
             logBody.setStoreType("db");
+            logBody.setRequestTime(0L);
+            logBody.setState(ErrorCode.INTERNAL_SERVER_ERROR);
             logBody.setType("error");
             logBody.setOperation("async");
             logBody.setUri(method.getDeclaringClass().getName() + "." + method.getName());
