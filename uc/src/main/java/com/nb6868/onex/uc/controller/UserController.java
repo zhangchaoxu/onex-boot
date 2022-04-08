@@ -4,18 +4,14 @@ import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.pojo.*;
-import com.nb6868.onex.common.shiro.ShiroUtils;
-import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.HttpContextUtils;
-import com.nb6868.onex.common.util.PasswordUtils;
+import com.nb6868.onex.common.pojo.ChangeStateForm;
+import com.nb6868.onex.common.pojo.PageData;
+import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.common.auth.ChangePasswordForm;
 import com.nb6868.onex.uc.dto.UserDTO;
-import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.RoleService;
 import com.nb6868.onex.uc.service.UserService;
@@ -85,27 +81,6 @@ public class UserController {
         return new Result<>().success(data);
     }
 
-    @GetMapping("userInfo")
-    @ApiOperation("登录用户信息")
-    public Result<?> userInfo() {
-        UserDTO data = ConvertUtils.sourceToTarget(ShiroUtils.getUser(), UserDTO.class);
-        return new Result<>().success(data);
-    }
-
-    @PostMapping("changePassword")
-    @ApiOperation("修改密码")
-    @LogOperation("修改密码")
-    public Result<?> changePassword(@Validated @RequestBody ChangePasswordForm dto) {
-        // 获取数据库中的用户
-        UserEntity data = userService.getById(ShiroUtils.getUserId());
-        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
-        // 校验原密码
-        AssertUtils.isFalse(PasswordUtils.verify(dto.getPassword(), data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
-        // 更新密码
-        userService.updatePassword(data.getId(), dto.getNewPassword());
-        return new Result<>();
-    }
-
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
@@ -152,15 +127,6 @@ public class UserController {
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         userService.logicDeleteByIds(ids);
 
-        return new Result<>();
-    }
-
-    @PostMapping("logout")
-    @ApiOperation(value = "退出")
-    @LogOperation(value = "退出", type = "logout")
-    public Result<?> logout() {
-        String token = HttpContextUtils.getRequestParameter(authProps.getTokenKey());
-        userService.logout(token);
         return new Result<>();
     }
 

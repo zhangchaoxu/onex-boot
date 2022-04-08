@@ -137,14 +137,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     }
 
     /**
-     * 退出
-     */
-    public boolean logout(String token) {
-        // 删除token
-        return tokenService.deleteToken(token);
-    }
-
-    /**
      * 修改状态
      */
     public boolean changeState(ChangeStateForm request) {
