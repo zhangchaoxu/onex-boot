@@ -3,7 +3,6 @@ package com.nb6868.onex.common.filter;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -17,16 +16,16 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SimpleShiroFilter extends BaseShiroFilter {
 
-    @Value("${onex.auth.token-key:auth-token}")
-    private String tokenKey;
+    private final String tokenHeaderKey;
 
-    public SimpleShiroFilter() {
+    public SimpleShiroFilter(String tokenHeaderKey) {
+        this.tokenHeaderKey = tokenHeaderKey;
     }
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
         // 请求token
-        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, tokenKey);
+        String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, tokenHeaderKey);
         if (StrUtil.isNotBlank(token)) {
             return new AuthenticationToken() {
                 @Override

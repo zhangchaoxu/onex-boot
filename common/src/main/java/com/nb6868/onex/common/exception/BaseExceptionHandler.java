@@ -271,7 +271,9 @@ public abstract class BaseExceptionHandler {
         LogBody logEntity = new LogBody();
         logEntity.setStoreType("db");
         logEntity.setType("error");
-        logEntity.setState(0);
+        logEntity.setRequestTime(0L);
+        logEntity.setOperation("exception");
+        logEntity.setState(ErrorCode.INTERNAL_SERVER_ERROR);
         // 请求相关信息
         if (request == null) {
             request = HttpContextUtils.getHttpServletRequest();

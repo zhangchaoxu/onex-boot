@@ -15,7 +15,6 @@ import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.log.BaseLogService;
-import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.pojo.ChangeStateForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
@@ -90,7 +89,7 @@ public class AuthController {
 
     @PostMapping("userLogin")
     @AccessControl
-    @ApiOperation(value = "登录")
+    @ApiOperation(value = "登录", notes = "Anon")
     @LogOperation(value = "登录", type = "login")
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
@@ -122,21 +121,13 @@ public class AuthController {
                     // 若passwordErrorMinuteOffset分钟内,连续错误passwordErrorMaxTimes次,锁定账户
                     int passwordErrorMinuteOffset = loginParams.getInt("passwordErrorMinuteOffset", 10);
                     int passwordErrorMaxTimes = loginParams.getInt("passwordErrorMaxTimes", 5);
-                    List<LogBody> logList = logService.getListByUser(form.getUsername(), form.getTenantCode(), passwordErrorMinuteOffset, passwordErrorMaxTimes);
-                    int passwordErrorCount = 0;
-                    for (LogBody log : logList) {
-                        if (log.getState() != Const.ResultEnum.SUCCESS.value()) {
-                            passwordErrorCount++;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (passwordErrorCount >= passwordErrorMaxTimes - 1) {
+                    int continuousLoginErrorTimes = logService.getContinuousLoginErrorTimes(form.getUsername(), form.getTenantCode(), passwordErrorMinuteOffset, passwordErrorMaxTimes - 1);
+                    if (continuousLoginErrorTimes >= passwordErrorMaxTimes - 1) {
                         // 锁定用户
                         userService.changeState(new ChangeStateForm().setState(UcConst.UserStateEnum.DISABLE.value()));
-                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误已超过{}次,您的账户已锁定,请联系管理员", passwordErrorMinuteOffset, passwordErrorCount + 1));
+                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误已超过{}次,您的账户已锁定,请联系管理员", passwordErrorMinuteOffset, passwordErrorMaxTimes));
                     } else {
-                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误{}次,连续错误{}次将被锁定账户。若忘记密码,请联系管理员。", passwordErrorCount + 1, passwordErrorMaxTimes));
+                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码错误{}次,连续错误{}次将被锁定账户。若忘记密码,请联系管理员", passwordErrorMinuteOffset, continuousLoginErrorTimes + 1, passwordErrorMaxTimes));
                     }
                 } else {
                     throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
@@ -158,7 +149,7 @@ public class AuthController {
     @SneakyThrows
     @PostMapping("userLoginEncrypt")
     @AccessControl
-    @ApiOperation(value = "用户登录(加密)")
+    @ApiOperation(value = "用户登录(加密)", notes = "Anon@将userLogin接口数据,做AES加密作为body的值")
     @LogOperation(value = "用户登录(加密)", type = "login")
     @ApiOperationSupport(order = 110)
     public Result<?> userLoginEncrypt(@Validated @RequestBody EncryptForm form) {

@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
-@ConditionalOnProperty(name = "onex.aspect.data-query-filter", havingValue = "true")
+@ConditionalOnProperty(name = "onex.data-query-filter.enable", havingValue = "true")
 @Order(150)
 public class DataQueryFilterAspect {
 

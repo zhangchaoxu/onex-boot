@@ -140,13 +140,13 @@ onex:
   # 数据查询过滤
   data-query-filter:
     enable: false
-  # 访问控制
-  access-control:
-    enable: false
-    # 扫描包
-    scan-package: com.nb6868.onex.uc.controller,com.nb6868.onex.sched.controller,com.nb6868.onex.msg.controller
-  # 登录配置
+  # 授权配置
   auth:
+    # 访问控制
+    access-control:
+      enable: false
+      # 扫描包
+      scan-package: com.nb6868.onex.uc.controller,com.nb6868.onex.sched.controller,com.nb6868.onex.msg.controller
     # token在header中的key
     token-header-key: auth-token
     # token在jwt中的key

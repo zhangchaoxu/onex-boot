@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
-@ConditionalOnProperty(name = "onex.aspect.access-control", havingValue = "true")
+@ConditionalOnProperty(name = "onex.auth.access-control.enable", havingValue = "true")
 @Order(100)
 @Slf4j
 public class AccessControlAspect {

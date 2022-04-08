@@ -3,6 +3,7 @@ package com.nb6868.onex.common.config;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.filter.SimpleShiroFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
@@ -10,13 +11,14 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.Filter;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Shiro配置
@@ -25,9 +27,6 @@ import java.util.*;
  */
 @Slf4j
 public class BaseShiroConfig {
-
-    @Value("${onex.access-control.scan-package}")
-    String accessScanPackage;
 
     @Bean
     public DefaultWebSessionManager sessionManager() {
@@ -41,29 +40,29 @@ public class BaseShiroConfig {
     }
 
     @Bean("shiroFilter")
-    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
+    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager, AuthProps authProps) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
         // shiro过滤
-        shiroFilter.setFilters(initFilters());
+        shiroFilter.setFilters(initFilters(authProps));
         // 加入注解中含有anon的
-        shiroFilter.setFilterChainDefinitionMap(initFilterMap());
+        shiroFilter.setFilterChainDefinitionMap(initFilterMap(authProps));
         return shiroFilter;
     }
 
     /**
      * 初始化filters
      */
-    protected Map<String, Filter> initFilters() {
+    protected Map<String, Filter> initFilters(AuthProps authProps) {
         Map<String, Filter> filters = new HashMap<>();
-        filters.put("shiro", new SimpleShiroFilter());
+        filters.put("shiro", new SimpleShiroFilter(authProps.getTokenHeaderKey()));
         return filters;
     }
 
     /**
      * 初始化过滤map
      */
-    protected Map<String, String> initFilterMap() {
+    protected Map<String, String> initFilterMap(AuthProps authProps) {
         /*
          * 自定义url规则 {http://shiro.apache.org/web.html#urls-}
          * *注意*
@@ -95,82 +94,84 @@ public class BaseShiroConfig {
         // filterMap.put("/easypoijs/**", "anon");
         // filterMap.put("/easypoi/wps/**", "anon");
         // 扫描RequestMapping类
-        StrUtil.splitTrim(accessScanPackage, ',')
-                .forEach(scanPackage -> ClassUtil.scanPackageByAnnotation(scanPackage, RequestMapping.class)
-                        .forEach(cls -> {
-                            // 方法中获取注解
-                            RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);
-                            if (null != requestMappingAnnotation) {
-                                // 先判断是否有类注解
-                                AccessControl accessControlClassAnnotation = cls.getAnnotation(AccessControl.class);
-                                if (null != accessControlClassAnnotation) {
-                                    // 有类注解
-                                    if (accessControlClassAnnotation.value().length == 0) {
-                                        // 类注解AccessControl未声明value,用RequestMapping中的值
-                                        for (String value : requestMappingAnnotation.value()) {
-                                            filterMap.put(value + (value.endsWith("/") ? "**" : "/**"), accessControlClassAnnotation.filter());
-                                        }
-                                    } else {
-                                        // 类注解AccessControl声明value
-                                        for (String value : accessControlClassAnnotation.value()) {
-                                            filterMap.put(value, accessControlClassAnnotation.filter());
+        if (authProps.getAccessControl() != null && authProps.getAccessControl().isEnable() && StrUtil.isNotBlank(authProps.getAccessControl().getScanPackage())) {
+            StrUtil.splitTrim(authProps.getAccessControl().getScanPackage(), ',')
+                    .forEach(scanPackage -> ClassUtil.scanPackageByAnnotation(scanPackage, RequestMapping.class)
+                            .forEach(cls -> {
+                                // 方法中获取注解
+                                RequestMapping requestMappingAnnotation = cls.getAnnotation(RequestMapping.class);
+                                if (null != requestMappingAnnotation) {
+                                    // 先判断是否有类注解
+                                    AccessControl accessControlClassAnnotation = cls.getAnnotation(AccessControl.class);
+                                    if (null != accessControlClassAnnotation) {
+                                        // 有类注解
+                                        if (accessControlClassAnnotation.value().length == 0) {
+                                            // 类注解AccessControl未声明value,用RequestMapping中的值
+                                            for (String value : requestMappingAnnotation.value()) {
+                                                filterMap.put(value + (value.endsWith("/") ? "**" : "/**"), accessControlClassAnnotation.filter());
+                                            }
+                                        } else {
+                                            // 类注解AccessControl声明value
+                                            for (String value : accessControlClassAnnotation.value()) {
+                                                filterMap.put(value, accessControlClassAnnotation.filter());
+                                            }
                                         }
                                     }
-                                }
-                                // 再处理public方法注解
-                                for (Method method : ClassUtil.getPublicMethods(cls)) {
-                                    AccessControl accessControlMethodAnnotation = method.getAnnotation(AccessControl.class);
-                                    if (accessControlMethodAnnotation != null) {
-                                        if (accessControlMethodAnnotation.value().length == 0) {
-                                            // 方法注解AccessControl未声明value,用方法中RequestMapping中的值
-                                            String[] mappingValue = null;
-                                            PostMapping postMappingMethodAnnotation = method.getAnnotation(PostMapping.class);
-                                            if (null != postMappingMethodAnnotation) {
-                                                mappingValue = postMappingMethodAnnotation.value();
-                                            } else {
-                                                GetMapping getMappingMethodAnnotation = method.getAnnotation(GetMapping.class);
-                                                if (null != getMappingMethodAnnotation ) {
-                                                    mappingValue = getMappingMethodAnnotation.value();
+                                    // 再处理public方法注解
+                                    for (Method method : ClassUtil.getPublicMethods(cls)) {
+                                        AccessControl accessControlMethodAnnotation = method.getAnnotation(AccessControl.class);
+                                        if (accessControlMethodAnnotation != null) {
+                                            if (accessControlMethodAnnotation.value().length == 0) {
+                                                // 方法注解AccessControl未声明value,用方法中RequestMapping中的值
+                                                String[] mappingValue = null;
+                                                PostMapping postMappingMethodAnnotation = method.getAnnotation(PostMapping.class);
+                                                if (null != postMappingMethodAnnotation) {
+                                                    mappingValue = postMappingMethodAnnotation.value();
                                                 } else {
-                                                    PutMapping putMappingMethodAnnotation = method.getAnnotation(PutMapping.class);
-                                                    if (null != putMappingMethodAnnotation ) {
-                                                        mappingValue = putMappingMethodAnnotation.value();
+                                                    GetMapping getMappingMethodAnnotation = method.getAnnotation(GetMapping.class);
+                                                    if (null != getMappingMethodAnnotation) {
+                                                        mappingValue = getMappingMethodAnnotation.value();
                                                     } else {
-                                                        DeleteMapping deleteMappingMethodAnnotation = method.getAnnotation(DeleteMapping.class);
-                                                        if (null != deleteMappingMethodAnnotation ) {
-                                                            mappingValue = deleteMappingMethodAnnotation.value();
+                                                        PutMapping putMappingMethodAnnotation = method.getAnnotation(PutMapping.class);
+                                                        if (null != putMappingMethodAnnotation) {
+                                                            mappingValue = putMappingMethodAnnotation.value();
                                                         } else {
-                                                            RequestMapping requestMappingMethodAnnotation = method.getAnnotation(RequestMapping.class);
-                                                            if (null != requestMappingMethodAnnotation ) {
-                                                                mappingValue = requestMappingMethodAnnotation.value();
+                                                            DeleteMapping deleteMappingMethodAnnotation = method.getAnnotation(DeleteMapping.class);
+                                                            if (null != deleteMappingMethodAnnotation) {
+                                                                mappingValue = deleteMappingMethodAnnotation.value();
                                                             } else {
-                                                                // 找不到哦
+                                                                RequestMapping requestMappingMethodAnnotation = method.getAnnotation(RequestMapping.class);
+                                                                if (null != requestMappingMethodAnnotation) {
+                                                                    mappingValue = requestMappingMethodAnnotation.value();
+                                                                } else {
+                                                                    // 找不到哦
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 }
-                                            }
-                                            if (mappingValue != null && mappingValue.length > 0) {
-                                                for (String value : mappingValue) {
+                                                if (mappingValue != null && mappingValue.length > 0) {
+                                                    for (String value : mappingValue) {
+                                                        for (String requestMappingValue : requestMappingAnnotation.value()) {
+                                                            filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                // 方法注解AccessControl声明value
+                                                for (String value : accessControlMethodAnnotation.value()) {
                                                     for (String requestMappingValue : requestMappingAnnotation.value()) {
                                                         filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
                                                     }
                                                 }
                                             }
-                                        } else {
-                                            // 方法注解AccessControl声明value
-                                            for (String value : accessControlMethodAnnotation.value()) {
-                                                for (String requestMappingValue : requestMappingAnnotation.value()) {
-                                                    filterMap.put(requestMappingValue + value, accessControlMethodAnnotation.filter());
-                                                }
-                                            }
                                         }
                                     }
+                                } else {
+                                    // 不可能
                                 }
-                            } else {
-                                // 不可能
-                            }
-                        }));
+                            }));
+        }
         // 除上述anon外,其它都需要过shiro
         filterMap.put("/**", "shiro");
         filterMap.forEach((s, s2) -> log.debug("shiro key={}, filter={}", s, s2));
