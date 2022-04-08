@@ -105,7 +105,7 @@ public class TenantController {
         String tenantCode = ShiroUtils.getUserTenantCode();
         AssertUtils.isEmpty(tenantCode, ErrorCode.TENANT_EMPTY);
 
-        JSONObject content = tenantParamsService.getContent(tenantCode, form.getCode());
+        JSONObject content = tenantParamsService.getTenantContent(tenantCode, form.getCode());
         return new Result<>().success(content);
     }
 

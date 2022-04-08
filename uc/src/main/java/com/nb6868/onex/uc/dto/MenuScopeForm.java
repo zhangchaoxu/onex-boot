@@ -11,10 +11,10 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "权限范围请求")
 public class MenuScopeForm extends BaseForm {
 
-    @ApiModelProperty(value = "是否包含角色信息")
+    @ApiModelProperty(value = "是否包含角色信息", example = "false")
     private boolean roles = false;
 
-    @ApiModelProperty(value = "是否包含权限信息")
+    @ApiModelProperty(value = "是否包含权限信息", example = "true")
     private boolean permissions = true;
 
 }
