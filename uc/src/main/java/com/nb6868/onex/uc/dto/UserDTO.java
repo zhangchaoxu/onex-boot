@@ -30,6 +30,9 @@ public class UserDTO extends BaseDTO {
 	@ApiModelProperty(value = "部门编码")
 	private String deptCode;
 
+	@ApiModelProperty(value = "区域编码")
+	private String areaCode;
+
 	@ApiModelProperty(value = "编号")
 	private String code;
 

@@ -129,6 +129,14 @@ onex:
   # 异常处理
   exception-handler:
     enable: false
+  # 切片
+  aspect:
+    # 日志
+    log: false
+    # 数据查询过滤
+    data-query-filter: false
+    # 访问控制
+    access-control: false
   # 登录配置
   auth:
     settings:

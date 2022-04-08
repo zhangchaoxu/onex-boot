@@ -3,16 +3,9 @@ package com.nb6868.onex.common.aspect;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.JsonObject;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.common.filter.OnexHttpServletRequestWrapper;
 import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.pojo.Const;
@@ -25,16 +18,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -48,8 +38,9 @@ import java.util.Map;
  */
 @Aspect
 @Component
-@Slf4j
+@ConditionalOnProperty(name = "onex.aspect.log", havingValue = "true")
 @Order(200)
+@Slf4j
 public class LogOperationAspect {
 
     @Autowired

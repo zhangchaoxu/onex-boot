@@ -12,6 +12,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -23,6 +25,8 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
+@ConditionalOnProperty(name = "onex.aspect.data-query-filter", havingValue = "true")
+@Order(150)
 public class DataQueryFilterAspect {
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.QueryDataScope)")
