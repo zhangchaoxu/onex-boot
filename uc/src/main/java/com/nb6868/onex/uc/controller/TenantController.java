@@ -1,7 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
 import cn.hutool.json.JSONObject;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.PageData;
@@ -13,7 +12,7 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.TenantDTO;
 import com.nb6868.onex.uc.dto.TenantParamsInfoByCodeForm;
-import com.nb6868.onex.uc.service.TenantParamsService;
+import com.nb6868.onex.uc.service.ParamsService;
 import com.nb6868.onex.uc.service.TenantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,7 +39,7 @@ public class TenantController {
     @Autowired
     private TenantService tenantService;
     @Autowired
-    private TenantParamsService tenantParamsService;
+    private ParamsService tenantParamsService;
 
     @GetMapping("list")
     @ApiOperation("列表")

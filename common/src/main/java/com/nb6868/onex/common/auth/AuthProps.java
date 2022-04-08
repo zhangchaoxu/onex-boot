@@ -34,6 +34,7 @@ public class AuthProps {
         @ApiModelProperty(value = "登录类型")
         private String type;
 
+        @JsonIgnore
         @ApiModelProperty(value = "token存储类型,db/cache/none")
         private String tokenStoreType = "db";
 

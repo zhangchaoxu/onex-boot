@@ -1,10 +1,10 @@
 package com.nb6868.onex.uc.controller;
 
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.common.shiro.ShiroUser;
-import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.shiro.ShiroUser;
+import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -14,9 +14,9 @@ import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.MenuDTO;
 import com.nb6868.onex.uc.dto.MenuTreeDTO;
 import com.nb6868.onex.uc.entity.MenuEntity;
-import com.nb6868.onex.uc.service.AuthService;
 import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.MenuService;
+import com.nb6868.onex.uc.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -25,7 +25,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 菜单权限
@@ -40,11 +42,11 @@ import java.util.*;
 public class MenuController {
 
     @Autowired
-    MenuService menuService;
+    private MenuService menuService;
     @Autowired
-    MenuScopeService menuScopeService;
+    private MenuScopeService menuScopeService;
     @Autowired
-    AuthService authService;
+    private UserService userService;
 
     @GetMapping("tree")
     @ApiOperation("登录用户菜单树")
@@ -61,7 +63,7 @@ public class MenuController {
     @ApiOperation("登录用户权限范围")
     public Result<?> permissions() {
         ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = authService.getUserPermissions(user);
+        Set<String> set = userService.getUserPermissions(user);
 
         return new Result<>().success(set);
     }
@@ -70,7 +72,7 @@ public class MenuController {
     @ApiOperation("登录用户角色范围")
     public Result<?> roles() {
         ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = authService.getUserRoles(user);
+        Set<String> set = userService.getUserRoles(user);
 
         return new Result<>().success(set);
     }
