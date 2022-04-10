@@ -16,6 +16,7 @@
         <skipTests>true</skipTests>
         <!-- version -->
         <onex-common.version>3.3.1</onex-common.version>
+        <onex-msg.version>3.3.1</onex-msg.version>
         <easy-captcha.version>2.2.2</easy-captcha.version>
     </properties>
 
@@ -25,6 +26,13 @@
             <groupId>com.nb6868.onex</groupId>
             <artifactId>common</artifactId>
             <version>${onex-common.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- msg -->
+        <dependency>
+            <groupId>com.nb6868.onex</groupId>
+            <artifactId>msg</artifactId>
+            <version>${onex-msg.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- captcha -->

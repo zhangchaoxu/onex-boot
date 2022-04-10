@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.auth;
 
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.TenantGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,13 +29,7 @@ public class LoginForm implements Serializable {
     /**
      * 短信验证码登录校验
      */
-    public interface MobileSmsCodeGroup {
-    }
-
-    /**
-     * 租户校验
-     */
-    public interface TenantGroup {
+    public interface MobileSmsGroup {
     }
 
     @ApiModelProperty(value = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
@@ -53,12 +48,12 @@ public class LoginForm implements Serializable {
     private String mobileArea = "86";
 
     @ApiModelProperty(value = "手机号")
-    @NotEmpty(message = "手机号不能为空", groups = {MobileSmsCodeGroup.class})
+    @NotEmpty(message = "手机号不能为空", groups = {MobileSmsGroup.class})
     private String mobile;
 
     @ApiModelProperty(value = "短信验证码")
-    @NotEmpty(message = "短信验证码不能为空", groups = {MobileSmsCodeGroup.class})
-    private String smsCode;
+    @NotEmpty(message = "短信验证码不能为空", groups = {MobileSmsGroup.class})
+    private String sms;
 
     @ApiModelProperty(value = "租户编码", required = true)
     @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
