@@ -17,8 +17,6 @@ import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.common.log.BaseLogService;
-import com.nb6868.onex.common.pojo.ChangeStateForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.Result;
@@ -28,6 +26,9 @@ import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.TenantGroup;
+import com.nb6868.onex.msg.dto.MailSendForm;
+import com.nb6868.onex.msg.service.MailLogService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.MenuEntity;
@@ -65,7 +66,9 @@ public class AuthController {
     @Autowired
     private ParamsService paramsService;
     @Autowired
-    private BaseLogService logService;
+    private AuthService authService;
+    @Autowired
+    private MailLogService mailLogService;
 
     @PostMapping("loginParams")
     @AccessControl
@@ -89,6 +92,16 @@ public class AuthController {
         return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
     }
 
+    @PostMapping("sendMailCode")
+    @AccessControl
+    @ApiOperation("发送验证码消息")
+    @LogOperation("发送验证码消息")
+    @ApiOperationSupport(order = 30)
+    public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class, TenantGroup.class}) @RequestBody MailSendForm form) {
+        boolean flag = mailLogService.send(form);
+        return new Result<>().boolResult(flag);
+    }
+
     @PostMapping("userLogin")
     @AccessControl
     @ApiOperation(value = "登录", notes = "Anon")
@@ -108,38 +121,12 @@ public class AuthController {
         UserEntity user;
         if (form.getType().endsWith("USERNAME_PASSWORD")) {
             // 帐号密码登录
-            ValidatorUtils.validateEntity(form, LoginForm.UsernamePasswordGroup.class);
-            user = userService.query()
-                    .eq("username", form.getUsername())
-                    .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
-                    .last(Const.LIMIT_ONE)
-                    .one();
-            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
-            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
-            boolean passwordVerify = PasswordUtils.verify(form.getPassword(), user.getPassword());
-            if (!passwordVerify) {
-                // 密码错误
-                if (loginParams.getBool("passwordErrorLock", false)) {
-                    // 若passwordErrorMinuteOffset分钟内,连续错误passwordErrorMaxTimes次,锁定账户
-                    int passwordErrorMinuteOffset = loginParams.getInt("passwordErrorMinuteOffset", 10);
-                    int passwordErrorMaxTimes = loginParams.getInt("passwordErrorMaxTimes", 5);
-                    int continuousLoginErrorTimes = logService.getContinuousLoginErrorTimes(form.getUsername(), form.getTenantCode(), passwordErrorMinuteOffset, passwordErrorMaxTimes - 1);
-                    if (continuousLoginErrorTimes >= passwordErrorMaxTimes - 1) {
-                        // 锁定用户
-                        ChangeStateForm changeStateForm = new ChangeStateForm();
-                        changeStateForm.setState(UcConst.UserStateEnum.DISABLE.value());
-                        changeStateForm.setId(user.getId());
-                        userService.changeState(changeStateForm);
-                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码连续错误超过{}次,您的账户已被锁定,请联系管理员", passwordErrorMinuteOffset, passwordErrorMaxTimes));
-                    } else {
-                        throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR, StrUtil.format("{}分钟内密码连续错误{}次,超过{}次将被锁定账户,若忘记密码,请联系管理员", passwordErrorMinuteOffset, continuousLoginErrorTimes + 1, passwordErrorMaxTimes));
-                    }
-                } else {
-                    throw new OnexException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
-                }
-            }
+            user = authService.loginByUsernameAndPassword(form, loginParams);
+        } else if (form.getType().endsWith("MOBILE_SMS")) {
+            // 手机号验证码登录
+            user = authService.loginByMobileAndSms(form, loginParams);
         } else {
-            // todo 其它登录方式
+            // 其它登录方式
             throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
         }
 
@@ -231,11 +218,7 @@ public class AuthController {
         // 先校验密码复杂度
         JSONObject paramsContent = paramsService.getContent(null, tenantCode, null, UcConst.PARAMS_CODE_LOGIN);
         // 密码复杂度正则
-        String passwordRegExp = paramsContent.getStr("passwordRegExp");
-        if (StrUtil.isNotBlank(passwordRegExp) && !ReUtil.isMatch(passwordRegExp, dto.getNewPassword())) {
-            // 密码复杂度需要校验,并且失败
-            return new Result<>().error(ErrorCode.ERROR_REQUEST, paramsContent.getStr("passwordRegError", "密码不符合规则"));
-        }
+        AssertUtils.isTrue(StrUtil.isNotBlank(paramsContent.getStr("passwordRegExp")) && !ReUtil.isMatch(paramsContent.getStr("passwordRegExp"), dto.getNewPassword()), ErrorCode.ERROR_REQUEST, paramsContent.getStr("passwordRegError", "密码不符合规则"));
         // 获取数据库中的用户
         UserEntity data = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
