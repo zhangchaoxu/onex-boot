@@ -41,10 +41,6 @@ public class MailTplEntity extends BaseEntity {
      */
     private String platform;
     /**
-     * 限时秒数 -1表示不限
-     */
-    private Integer timeLimit;
-    /**
      * 标题
      */
     private String title;

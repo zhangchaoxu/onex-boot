@@ -76,20 +76,14 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
     /**
      * 发送消息
      */
-    public boolean send(MailSendForm form) {
-        MailTplEntity mailTpl = mailTplService
-                .query().eq("code", form.getTplCode())
-                .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
-                .last(Const.LIMIT_ONE)
-                .one();
-        AssertUtils.isNull(mailTpl, "未定义的消息模板:" + form.getTplCode());
-
+    public boolean send(MailTplEntity mailTpl, MailSendForm form) {
         // 检查消息模板是否有时间限制
-        if (mailTpl.getTimeLimit() > 0) {
+        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
+        if (timeLimit > 0) {
             // 先校验该收件人是否timeLimit秒内发送过
             MailLogEntity lastMailLog = findLastLogByTplCode(form.getTenantCode(), form.getTplCode(), form.getMailTo());
             // 检查限定时间内是否已经发送
-            AssertUtils.isTrue(null != lastMailLog && DateUtil.between(DateUtil.date(), lastMailLog.getCreateTime(), DateUnit.SECOND) < mailTpl.getTimeLimit(), ErrorCode.ERROR_REQUEST, "发送请求过于频繁");
+            AssertUtils.isTrue(null != lastMailLog && DateUtil.between(DateUtil.date(), lastMailLog.getCreateTime(), DateUnit.SECOND) < timeLimit, ErrorCode.ERROR_REQUEST, "发送请求过于频繁");
         }
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {

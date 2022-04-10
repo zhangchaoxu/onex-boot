@@ -34,9 +34,6 @@ public class MailTplDTO extends BaseDTO {
 	@ApiModelProperty(value = "平台 如aliyun/juhe")
 	private String platform;
 
-	@ApiModelProperty(value = "限时秒数 -1表示不限")
-	private Integer timeLimit;
-
 	@ApiModelProperty(value = "标题")
 	private String title;
 
