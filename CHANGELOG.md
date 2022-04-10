@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.3.1] 2022.04.10
+- fix: fix user lock issue
+- enhance: log exception state
+
 ## [3.3.0] 2022.04.08
 - add: user add area_code
 - enhance: simplify shiro code

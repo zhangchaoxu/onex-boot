@@ -2,7 +2,10 @@ package com.nb6868.onex.uc.controller;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.text.StrSplitter;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -33,7 +36,6 @@ import com.nb6868.onex.uc.service.*;
 import com.pig4cloud.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.SneakyThrows;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -149,17 +151,16 @@ public class AuthController {
         return new Result<>().success(loginResult);
     }
 
-    @SneakyThrows
     @PostMapping("userLoginEncrypt")
     @AccessControl
     @ApiOperation(value = "用户登录(加密)", notes = "Anon@将userLogin接口数据,做AES加密作为body的值")
     @LogOperation(value = "用户登录(加密)", type = "login")
     @ApiOperationSupport(order = 110)
-    public Result<?> userLoginEncrypt(@Validated @RequestBody EncryptForm form) {
-        // 密文->urldecode->aes解码->原明文->json转实体
-        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(URLUtil.decode(form.getBody()));
-        LoginForm loginRequest = JacksonUtils.jsonToPojo(json, LoginForm.class);
-        return ((AuthController) AopContext.currentProxy()).userLogin(loginRequest);
+    public Result<?> userLoginEncrypt(@Validated @RequestBody EncryptForm encryptForm) {
+        // 密文->aes解码->原明文->json转实体
+        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(encryptForm.getBody());
+        LoginForm form = JacksonUtils.jsonToPojo(json, LoginForm.class);
+        return ((AuthController) AopContext.currentProxy()).userLogin(form);
     }
 
     @PostMapping("userLogout")
@@ -233,7 +234,7 @@ public class AuthController {
         String passwordRegExp = paramsContent.getStr("passwordRegExp");
         if (StrUtil.isNotBlank(passwordRegExp) && !ReUtil.isMatch(passwordRegExp, dto.getNewPassword())) {
             // 密码复杂度需要校验,并且失败
-            return new Result<>().error(paramsContent.getStr("passwordRegError"));
+            return new Result<>().error(ErrorCode.ERROR_REQUEST, paramsContent.getStr("passwordRegError", "密码不符合规则"));
         }
         // 获取数据库中的用户
         UserEntity data = userService.getById(ShiroUtils.getUserId());
@@ -245,6 +246,16 @@ public class AuthController {
         // 注销该用户所有token,提示用户重新登录
         tokenService.deleteByUserIds(Collections.singletonList(data.getId()));
         return new Result<>();
+    }
+
+    @PostMapping("userChangePasswordEncrypt")
+    @ApiOperation("用户修改密码(加密)")
+    @LogOperation("用户修改密码(加密)")
+    public Result<?> userChangePasswordEncrypt(@Validated @RequestBody EncryptForm encryptForm) {
+        // 密文->aes解码->原明文->json转实体
+        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(encryptForm.getBody());
+        ChangePasswordForm form = JacksonUtils.jsonToPojo(json, ChangePasswordForm.class);
+        return ((AuthController) AopContext.currentProxy()).userChangePassword(form);
     }
 
 }

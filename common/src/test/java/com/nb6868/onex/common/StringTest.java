@@ -1,6 +1,10 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.common.pojo.EncryptForm;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +34,47 @@ public class StringTest {
         });
     }
 
+    @Test
+    @DisplayName("aesEncode")
+    void aesEncodeTest() {
+        String raw = "{\n" +
+                "  \"password\": \"admin2\",\n" +
+                "  \"tenantCode\": \"hubei_ggjg\",\n" +
+                "  \"type\": \"ADMIN_USERNAME_PASSWORD\",\n" +
+                "  \"username\": \"admin\"\n" +
+                "}";
+        String content = SecureUtil.aes(Const.AES_KEY.getBytes()).encryptBase64(raw);
+        EncryptForm form = new EncryptForm();
+        form.setBody(content);
+        log.error("form=" + form);
+    }
 
+    @Test
+    @DisplayName("aesDecode")
+    void aesDecodeTest() {
+        String raw = "Z8e5mcAIIJS4OvjOqfg/pfoS52uepNJiTLpHji5VM3UhaSWHrFjnzol/aAjuzRzN1x8deWgXRuL2TMEQDLZ9zyIQlQt1gUZ19ZQMMef0bcBeQnJB/Cxr5+1/F+BNgz3YFpuA222ejNHjxDc4s8oNNlQE+GdRzqNdy0rxpieHmVQ=";
+        EncryptForm form = new EncryptForm();
+        form.setBody(raw);
+        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(form.getBody());
+        log.error("json=" + json);
+    }
+
+    @Test
+    @DisplayName("passwordTest")
+    void passwordTest() {
+        String reg = "^(?![A-Za-z]+$)(?!\\d+$)(?![\\W_]+$)\\S{8,20}$";
+        String p1 = "admin@2022";
+        String p2 = "admin2022";
+        String p3 = "admin@@";
+        String p4 = "123456##";
+        String p5 = "admiadmin";
+        String p6 = "1234567999";
+        log.error("p1=" + ReUtil.isMatch(reg, p1));
+        log.error("p2=" + ReUtil.isMatch(reg, p2));
+        log.error("p3=" + ReUtil.isMatch(reg, p3));
+        log.error("p4=" + ReUtil.isMatch(reg, p4));
+        log.error("p5=" + ReUtil.isMatch(reg, p5));
+        log.error("p6=" + ReUtil.isMatch(reg, p6));
+    }
 
 }
