@@ -1,5 +1,6 @@
 package com.nb6868.onex.msg.mail;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -11,14 +12,13 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
-import com.nb6868.onex.msg.service.MailLogService;
 import com.nb6868.onex.msg.mail.sms.SmsProps;
+import com.nb6868.onex.msg.service.MailLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,6 +49,9 @@ public class SmsJuheMailService extends AbstractMailService {
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
+        // 设置有效时间
+        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
+        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
 
         // 调用接口发送
         Const.ResultEnum state = Const.ResultEnum.FAIL;

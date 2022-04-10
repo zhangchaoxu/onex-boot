@@ -2,7 +2,6 @@ package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
@@ -28,19 +27,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.*;
-import java.io.*;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * 短信 华为云 消息服务
@@ -88,6 +76,9 @@ public class SmsHwcloudMailService extends AbstractMailService {
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
         mailLog.setState(Const.ResultEnum.FAIL.value());
+        // 设置有效时间
+        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
+        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
 

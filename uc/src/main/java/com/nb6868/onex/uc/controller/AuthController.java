@@ -28,7 +28,9 @@ import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.TenantGroup;
 import com.nb6868.onex.msg.dto.MailSendForm;
+import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
+import com.nb6868.onex.msg.service.MailTplService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.MenuEntity;
@@ -68,6 +70,8 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
+    private MailTplService mailTplService;
+    @Autowired
     private MailLogService mailLogService;
 
     @PostMapping("loginParams")
@@ -98,7 +102,13 @@ public class AuthController {
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 30)
     public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class, TenantGroup.class}) @RequestBody MailSendForm form) {
-        boolean flag = mailLogService.send(form);
+        MailTplEntity mailTpl = mailTplService
+                .query().eq("code", form.getTplCode())
+                .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
+                .last(Const.LIMIT_ONE)
+                .one();
+
+        boolean flag = mailLogService.send(mailTpl, form);
         return new Result<>().boolResult(flag);
     }
 

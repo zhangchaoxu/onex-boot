@@ -5,15 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.dto.MailSendForm;
-import com.nb6868.onex.msg.mail.email.EmailProps;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
-import com.nb6868.onex.msg.mail.sms.SmsProps;
+import com.nb6868.onex.msg.mail.email.EmailProps;
 import com.nb6868.onex.msg.service.MailLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -75,9 +73,8 @@ public class EmailMailService extends AbstractMailService {
         mailLog.setContent(content);
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         // 设置有效时间
-        if (mailTpl.getTimeLimit() > 0) {
-            mailLog.setValidEndTime(DateUtil.offsetSecond(DateUtil.date(), mailTpl.getTimeLimit()));
-        }
+        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
+        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
             messageHelper.setFrom(emailProps.getUsername());
