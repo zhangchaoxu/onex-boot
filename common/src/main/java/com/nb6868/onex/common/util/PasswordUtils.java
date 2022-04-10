@@ -3,7 +3,6 @@ package com.nb6868.onex.common.util;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.digest.DigestUtil;
-import com.nb6868.onex.common.pojo.Const;
 
 /**
  * 密码工具类
@@ -12,7 +11,9 @@ import com.nb6868.onex.common.pojo.Const;
  */
 public class PasswordUtils {
 
-    // 至少八个字符，至少一个字母和一个数字
+    // 8-20个字符，至少包含数字、字母和特殊字符中的两种
+    public static String PATTERN_RULE_0 = "^(?![A-Za-z]+$)(?!\\d+$)(?![\\W_]+$)\\S{8,20}$";
+    //
     public static String PATTERN_RULE_1 = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
     // 至少八个字符，至少一个字母，一个数字和一个特殊字符
     public static String PATTERN_RULE_2 = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$";
