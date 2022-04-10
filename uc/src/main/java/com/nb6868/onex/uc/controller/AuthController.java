@@ -107,7 +107,16 @@ public class AuthController {
                 .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
                 .last(Const.LIMIT_ONE)
                 .one();
-
+        if (mailTpl.getParams().getBool("verifyUserExist", false)) {
+            // 是否先验证用户是否存在
+            UserEntity user = userService.query()
+                    .eq("mobile", form.getMailTo())
+                    .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
+                    .last(Const.LIMIT_ONE)
+                    .one();
+            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+        }
         boolean flag = mailLogService.send(mailTpl, form);
         return new Result<>().boolResult(flag);
     }
