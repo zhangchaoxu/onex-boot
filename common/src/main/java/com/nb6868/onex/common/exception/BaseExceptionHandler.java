@@ -51,10 +51,10 @@ public abstract class BaseExceptionHandler {
      * 当前运行环境
      */
     @Value("${spring.profiles.active}")
-    private String profile;
+    protected String profile;
 
     @Autowired
-    private BaseLogService logService;
+    protected BaseLogService logService;
 
     /**
      * 处理自定义异常
@@ -75,7 +75,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(DuplicateKeyException.class)
     public Object handleDuplicateKeyException(HttpServletRequest request, DuplicateKeyException e) {
-        saveLog(request, e);
+        saveLog(request, new OnexException(ErrorCode.DB_RECORD_EXISTS, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.DB_RECORD_EXISTS);
     }
 
@@ -87,7 +87,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Object handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
-        saveLog(request, e);
+        saveLog(request, new OnexException(ErrorCode.DB_VIOLATION_ERROR, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
     }
 
@@ -111,7 +111,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Object handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException e) {
-        saveLog(request, e);
+        saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
 
@@ -160,11 +160,11 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Object handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
-        saveLog(request, e);
         Locale.setDefault(LocaleContextHolder.getLocale());
         // 参考ValidatorUtils
         // 需要在Controller中加上Validated注解,需要在接口方法参数中加上NotNull NotEmpty等校验注解
         String errorMsg = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(";"));
+
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, errorMsg);
     }
 
@@ -178,9 +178,10 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
-        saveLog(request, e);
         Locale.setDefault(LocaleContextHolder.getLocale());
         String errorMsg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
+        // 保存日志
+        saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, errorMsg));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, errorMsg);
     }
 
@@ -192,7 +193,8 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Object handleMaxUploadSizeExceededException(HttpServletRequest request, MaxUploadSizeExceededException e) {
-        saveLog(request, e);
+        // 保存日志
+        saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
     }
 
@@ -206,7 +208,8 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Object handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
-        saveLog(request, e);
+        // 保存日志
+        saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
 
@@ -219,7 +222,8 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Object handleMethodArgumentTypeMismatchException(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
-        saveLog(request, e);
+        // 保存日志
+        saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
 
@@ -231,7 +235,8 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Object handleException(HttpServletRequest request, Exception e) {
-        saveLog(request, e);
+        // 保存日志
+        saveLog(request, new OnexException(ErrorCode.INTERNAL_SERVER_ERROR, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
@@ -273,7 +278,16 @@ public abstract class BaseExceptionHandler {
         logEntity.setType("error");
         logEntity.setRequestTime(0L);
         logEntity.setOperation("exception");
-        logEntity.setState(ErrorCode.INTERNAL_SERVER_ERROR);
+        // 保存异常信息
+        if (ex instanceof OnexException) {
+            OnexException onexE = (OnexException) ex;
+            logEntity.setState(onexE.getCode());
+            logEntity.setContent(onexE.getMsg());
+        } else {
+            // 异常信息
+            logEntity.setState(ErrorCode.INTERNAL_SERVER_ERROR);
+            logEntity.setContent(ExceptionUtil.stacktraceToString(ex));
+        }
         // 请求相关信息
         if (request == null) {
             request = HttpContextUtils.getHttpServletRequest();
@@ -299,8 +313,6 @@ public abstract class BaseExceptionHandler {
             }
             logEntity.setRequestParams(requestParams);
         }
-        // 异常信息
-        logEntity.setContent(ExceptionUtil.stacktraceToString(ex));
         // 保存
         try {
             logService.saveLog(logEntity);
