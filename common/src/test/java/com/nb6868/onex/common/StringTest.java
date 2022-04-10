@@ -37,12 +37,7 @@ public class StringTest {
     @Test
     @DisplayName("aesEncode")
     void aesEncodeTest() {
-        String raw = "{\n" +
-                "  \"password\": \"admin2\",\n" +
-                "  \"tenantCode\": \"hubei_ggjg\",\n" +
-                "  \"type\": \"ADMIN_USERNAME_PASSWORD\",\n" +
-                "  \"username\": \"admin\"\n" +
-                "}";
+        String raw = "{\"password\":\"admin\",\"tenantCode\": \"xxx\",\"type\":\"ADMIN_USERNAME_PASSWORD\",\"username\":\"admin\"}";
         String content = SecureUtil.aes(Const.AES_KEY.getBytes()).encryptBase64(raw);
         EncryptForm form = new EncryptForm();
         form.setBody(content);
@@ -52,7 +47,7 @@ public class StringTest {
     @Test
     @DisplayName("aesDecode")
     void aesDecodeTest() {
-        String raw = "Z8e5mcAIIJS4OvjOqfg/pfoS52uepNJiTLpHji5VM3UhaSWHrFjnzol/aAjuzRzN1x8deWgXRuL2TMEQDLZ9zyIQlQt1gUZ19ZQMMef0bcBeQnJB/Cxr5+1/F+BNgz3YFpuA222ejNHjxDc4s8oNNlQE+GdRzqNdy0rxpieHmVQ=";
+        String raw = "bqJOFdO/IlOCMHJ6V+BDpyVlY1N5opy5uOrww4u/6huTIK7XB5WVAGiYflVn5AmzeLCpaiXQxUorBW3P05kexppCz3Y8uSi7W7NpWWWc7wY3OOT4aLKLZwylNiorEz5S";
         EncryptForm form = new EncryptForm();
         form.setBody(raw);
         String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(form.getBody());
