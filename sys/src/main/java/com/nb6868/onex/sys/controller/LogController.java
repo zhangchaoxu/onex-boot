@@ -1,6 +1,13 @@
 package com.nb6868.onex.sys.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.annotation.QueryDataScope;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.pojo.IdsForm;
+import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.dto.LogDTO;
+import com.nb6868.onex.sys.dto.LogQueryForm;
+import com.nb6868.onex.sys.entity.LogEntity;
 import com.nb6868.onex.sys.excel.LogExcel;
 import com.nb6868.onex.sys.service.LogService;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -25,14 +32,17 @@ import java.util.Map;
 @Validated
 @Api(tags = "日志")
 public class LogController {
-    @Autowired
-    LogService logService;
 
-    @GetMapping("page")
+    @Autowired
+    private LogService logService;
+
+    @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("sys:log:info")
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<LogDTO> page = logService.pageDto(params);
+    @QueryDataScope(tenantFilter = true)
+    @RequiresPermissions("sys:log:query")
+    public Result<?> page(@Validated({PageGroup.class}) @RequestBody LogQueryForm form) {
+        QueryWrapper<LogEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
+        PageData<LogDTO> page = logService.pageDto(form.getPage(), queryWrapper);
 
         return new Result<>().success(page);
     }
@@ -47,12 +57,12 @@ public class LogController {
         ExcelUtils.exportExcelToTarget(response, "日志", list, LogExcel.class);
     }
 
-    @DeleteMapping("deleteBatch")
+    @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("sys:log:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        logService.logicDeleteByIds(ids);
+    public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
+        logService.logicDeleteByIds(form.getIds());
 
         return new Result<>();
     }
