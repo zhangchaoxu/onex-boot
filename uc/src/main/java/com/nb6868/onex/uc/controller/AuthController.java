@@ -155,9 +155,7 @@ public class AuthController {
     @LogOperation(value = "用户登录(加密)", type = "login")
     @ApiOperationSupport(order = 110)
     public Result<?> userLoginEncrypt(@Validated @RequestBody EncryptForm encryptForm) {
-        // 密文->aes解码->原明文->json转实体
-        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(encryptForm.getBody());
-        LoginForm form = JacksonUtils.jsonToPojo(json, LoginForm.class);
+        LoginForm form = SignUtils.decodeAES(encryptForm.getBody(), Const.AES_KEY, LoginForm.class);
         return ((AuthController) AopContext.currentProxy()).userLogin(form);
     }
 
@@ -246,9 +244,7 @@ public class AuthController {
     @ApiOperation("用户修改密码(加密)")
     @LogOperation("用户修改密码(加密)")
     public Result<?> userChangePasswordEncrypt(@Validated @RequestBody EncryptForm encryptForm) {
-        // 密文->aes解码->原明文->json转实体
-        String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(encryptForm.getBody());
-        ChangePasswordForm form = JacksonUtils.jsonToPojo(json, ChangePasswordForm.class);
+        ChangePasswordForm form = SignUtils.decodeAES(encryptForm.getBody(), Const.AES_KEY, ChangePasswordForm.class);
         return ((AuthController) AopContext.currentProxy()).userChangePassword(form);
     }
 
