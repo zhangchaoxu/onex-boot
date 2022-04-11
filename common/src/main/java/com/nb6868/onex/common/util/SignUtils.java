@@ -2,6 +2,7 @@ package com.nb6868.onex.common.util;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrJoiner;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -96,5 +97,23 @@ public class SignUtils {
                 .replace("~", "%7E")
                 .replace("/", "%2F");
     }
+
+
+    public static <T> T decodeAES(String body, String aesKey, Class<T> pojoClass) {
+        return decodeAES(body, aesKey, pojoClass, null);
+    }
+
+    /**
+     * AES解密
+     */
+    public static <T> T decodeAES(String body, String aesKey, Class<T> pojoClass, T defaultVal) {
+        if (StrUtil.isBlank(body) || StrUtil.isBlank(aesKey)) {
+            return defaultVal;
+        }
+        // 密文->aes解码->原明文->json转实体
+        String json = SecureUtil.aes(aesKey.getBytes()).decryptStr(body);
+        return JacksonUtils.jsonToPojo(json, pojoClass, defaultVal);
+    }
+
 
 }
