@@ -145,7 +145,6 @@
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-spring-boot-starter</artifactId>
             <version>${easypoi.version}</version>
-            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>cn.afterturn</groupId>

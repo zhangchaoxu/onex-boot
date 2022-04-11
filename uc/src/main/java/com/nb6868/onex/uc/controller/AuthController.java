@@ -115,8 +115,8 @@ public class AuthController {
 
     @PostMapping("userLogin")
     @AccessControl
-    @ApiOperation(value = "登录", notes = "Anon")
-    @LogOperation(value = "登录", type = "login")
+    @ApiOperation(value = "用户登录", notes = "Anon")
+    @LogOperation(value = "用户登录", type = "login")
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
         // 获得登录配置
@@ -224,19 +224,19 @@ public class AuthController {
     @PostMapping("userChangePassword")
     @ApiOperation("用户修改密码")
     @LogOperation("用户修改密码")
-    public Result<?> userChangePassword(@Validated @RequestBody ChangePasswordForm dto) {
+    public Result<?> userChangePassword(@Validated @RequestBody ChangePasswordForm form) {
         String tenantCode = ShiroUtils.getUserTenantCode();
         // 先校验密码复杂度
         JSONObject paramsContent = paramsService.getContent(null, tenantCode, null, UcConst.PARAMS_CODE_LOGIN);
         // 密码复杂度正则
-        AssertUtils.isTrue(StrUtil.isNotBlank(paramsContent.getStr("passwordRegExp")) && !ReUtil.isMatch(paramsContent.getStr("passwordRegExp"), dto.getNewPassword()), ErrorCode.ERROR_REQUEST, paramsContent.getStr("passwordRegError", "密码不符合规则"));
+        AssertUtils.isTrue(StrUtil.isNotBlank(paramsContent.getStr("passwordRegExp")) && !ReUtil.isMatch(paramsContent.getStr("passwordRegExp"), form.getNewPassword()), ErrorCode.ERROR_REQUEST, paramsContent.getStr("passwordRegError", "密码不符合规则"));
         // 获取数据库中的用户
         UserEntity data = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 校验原密码
-        AssertUtils.isFalse(PasswordUtils.verify(dto.getPassword(), data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
+        AssertUtils.isFalse(PasswordUtils.verify(form.getPassword(), data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
         // 更新密码
-        userService.updatePassword(data.getId(), dto.getNewPassword());
+        userService.updatePassword(data.getId(), form.getNewPassword());
         // 注销该用户所有token,提示用户重新登录
         tokenService.deleteByUserIds(Collections.singletonList(data.getId()));
         return new Result<>();
