@@ -21,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +42,7 @@ public class MailTplController {
 
     @GetMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("msg:mailTpl:info")
+    @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 10)
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<?> list = mailTplService.listDto(params);
@@ -52,7 +51,7 @@ public class MailTplController {
 
     @GetMapping("page")
     @ApiOperation("分页列表")
-    @RequiresPermissions("msg:mailTpl:info")
+    @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 20)
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<?> page = mailTplService.pageDto(params);
@@ -62,7 +61,7 @@ public class MailTplController {
 
     @GetMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("msg:mailTpl:info")
+    @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 30)
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         MailTplDTO data = mailTplService.getDtoById(id);
@@ -74,7 +73,7 @@ public class MailTplController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("msg:mailTpl:update")
+    @RequiresPermissions("msg:mailTpl:edit")
     @ApiOperationSupport(order = 40)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MailTplDTO dto) {
         mailTplService.saveDto(dto);
@@ -85,7 +84,7 @@ public class MailTplController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("msg:mailTpl:update")
+    @RequiresPermissions("msg:mailTpl:edit")
     @ApiOperationSupport(order = 50)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody MailTplDTO dto) {
         mailTplService.updateDto(dto);

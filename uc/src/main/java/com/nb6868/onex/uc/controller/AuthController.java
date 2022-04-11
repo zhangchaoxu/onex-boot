@@ -102,18 +102,11 @@ public class AuthController {
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 30)
     public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class, TenantGroup.class}) @RequestBody MailSendForm form) {
-        MailTplEntity mailTpl = mailTplService
-                .query().eq("code", form.getTplCode())
-                .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
-                .last(Const.LIMIT_ONE)
-                .one();
+        MailTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
+        AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
-            UserEntity user = userService.query()
-                    .eq("mobile", form.getMailTo())
-                    .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
-                    .last(Const.LIMIT_ONE)
-                    .one();
+            UserEntity user = userService.getByMobile(form.getTenantCode(), form.getMailTo());
             AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
         }

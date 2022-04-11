@@ -7,7 +7,6 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.pojo.ChangeStateForm;
-import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
@@ -44,11 +43,7 @@ public class AuthService {
      */
     public UserEntity loginByUsernameAndPassword(LoginForm form, JSONObject loginParams) {
         ValidatorUtils.validateEntity(form, LoginForm.UsernamePasswordGroup.class);
-        UserEntity user = userService.query()
-                .eq("username", form.getUsername())
-                .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
-                .last(Const.LIMIT_ONE)
-                .one();
+        UserEntity user = userService.getByUsername(form.getTenantCode(), form.getUsername());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
         AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
         boolean passwordVerify = PasswordUtils.verify(form.getPassword(), user.getPassword());
@@ -85,16 +80,12 @@ public class AuthService {
     public UserEntity loginByMobileAndSms(LoginForm form, JSONObject loginParams) {
         // 校验参数
         ValidatorUtils.validateEntity(form, LoginForm.MobileSmsGroup.class);
-        UserEntity user = userService.query()
-                .eq("mobile", form.getMobile())
-                .eq(StrUtil.isNotBlank(form.getTenantCode()), "tenant_code", form.getTenantCode())
-                .last(Const.LIMIT_ONE)
-                .one();
+        UserEntity user = userService.getByMobile(form.getTenantCode(), form.getMobile());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
         AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
 
         // 获取最后一次短信记录
-        MailLogEntity lastSmsLog = mailLogService.findLastLogByTplCode(form.getTenantCode(), loginParams.getStr("mailTplCode", MsgConst.SMS_TPL_LOGIN), form.getMobile());
+        MailLogEntity lastSmsLog = mailLogService.getLatestByTplCode(form.getTenantCode(), loginParams.getStr("mailTplCode", MsgConst.SMS_TPL_LOGIN), form.getMobile());
         AssertUtils.isTrue(lastSmsLog == null || !form.getSms().equalsIgnoreCase(lastSmsLog.getContentParams().getStr("code")), ErrorCode.SMS_CODE_ERROR);
         // 验证码正确,校验过期时间
         AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);

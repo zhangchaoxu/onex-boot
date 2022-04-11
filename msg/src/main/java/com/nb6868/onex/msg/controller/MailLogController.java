@@ -1,17 +1,16 @@
 package com.nb6868.onex.msg.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.CommonForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.dto.MailLogDTO;
 import com.nb6868.onex.msg.dto.MailSendForm;
+import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
 import com.nb6868.onex.msg.service.MailTplService;
 import io.swagger.annotations.Api;
@@ -22,9 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.groups.Default;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -64,19 +60,11 @@ public class MailLogController {
     @LogOperation("发送消息")
     @RequiresPermissions("msg:mailLog:send")
     @ApiOperationSupport(order = 60)
-    public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm dto) {
-        boolean flag = mailLogService.send(dto);
-        return new Result<>().boolResult(flag);
-    }
-
-    @PostMapping("sendCode")
-    @ApiOperation("发送验证码消息")
-    @LogOperation("发送验证码消息")
-    @ApiOperationSupport(order = 70)
-    public Result<?> sendCode(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm dto) {
-        // 只允许发送CODE_开头的模板
-        AssertUtils.isFalse(dto.getTplCode().startsWith(MsgConst.SMS_CODE_TPL_PREFIX), "只支持" + MsgConst.SMS_CODE_TPL_PREFIX + "类型模板发送");
-        boolean flag = mailLogService.send(dto);
+    public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm form) {
+        MailTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
+        AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "模板不存在");
+        // 发送
+        boolean flag = mailLogService.send(mailTpl, form);
         return new Result<>().boolResult(flag);
     }
 
