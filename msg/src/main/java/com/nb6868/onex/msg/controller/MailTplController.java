@@ -1,17 +1,23 @@
 package com.nb6868.onex.msg.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.CommonForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.msg.dto.MailTplDTO;
+import com.nb6868.onex.msg.dto.MailTplQueryForm;
+import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailTplService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,11 +25,9 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 消息模板
@@ -40,26 +44,30 @@ public class MailTplController {
     @Autowired
     MailTplService mailTplService;
 
-    @GetMapping("list")
+    @PostMapping("list")
     @ApiOperation("列表")
+    @QueryDataScope(tenantFilter = true)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 10)
-    public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
-        List<?> list = mailTplService.listDto(params);
+    public Result<?> list(@Validated @RequestBody MailTplQueryForm form) {
+        QueryWrapper<MailTplEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
+        List<?> list = mailTplService.listDto(QueryWrapperHelper.getPredicate(form));
         return new Result<>().success(list);
     }
 
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation("分页列表")
+    @QueryDataScope(tenantFilter = true)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 20)
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<?> page = mailTplService.pageDto(params);
+    public Result<?> page(@Validated({PageGroup.class}) @RequestBody MailTplQueryForm form) {
+        QueryWrapper<MailTplEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
+        PageData<MailTplDTO> page = mailTplService.pageDto(form.getPage(), queryWrapper);
 
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @PostMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 30)

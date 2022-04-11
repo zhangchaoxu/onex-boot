@@ -36,7 +36,7 @@ public class MailLogController {
 
     @GetMapping("page")
     @ApiOperation("分页列表")
-    @RequiresPermissions("msg:mailLog:info")
+    @RequiresPermissions("msg:mailLog:query")
     @ApiOperationSupport(order = 20)
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<MailLogDTO> page = mailLogService.pageDto(params);
