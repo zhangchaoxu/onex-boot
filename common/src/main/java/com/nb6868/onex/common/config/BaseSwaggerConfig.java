@@ -112,6 +112,23 @@ public abstract class BaseSwaggerConfig {
                 .securityContexts(securityContexts());
     }
 
+    @Bean("sys")
+    @Conditional(SysCondition.class)
+    public Docket createSysApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfoBuilder().build())
+                .groupName("sys")
+                .select()
+                // 包下的类,生成接口文档
+                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.sys.controller"))
+                .paths(PathSelectors.any())
+                .build()
+                .extensions(getExtensions())
+                .directModelSubstitute(java.util.Date.class, String.class)
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+    }
+
     protected List<VendorExtension> getExtensions() {
         return new ArrayList<>();
     }
