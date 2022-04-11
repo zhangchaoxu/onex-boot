@@ -5,13 +5,14 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
+import com.nb6868.onex.common.util.PasswordUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
 
-@DisplayName("IP测试")
+@DisplayName("字符串测试")
 @Slf4j
 public class StringTest {
 
@@ -71,5 +72,21 @@ public class StringTest {
         log.error("p5=" + ReUtil.isMatch(reg, p5));
         log.error("p6=" + ReUtil.isMatch(reg, p6));
     }
+
+    @Test
+    @DisplayName("passwordEncode")
+    void passwordEncode() {
+        String raw = "admin_ggjg";
+        log.error("password={}", PasswordUtils.encode(raw));
+        log.error("password={}", PasswordUtils.aesEncode(raw, Const.AES_KEY));
+    }
+
+    @Test
+    @DisplayName("passwordDecode")
+    void passwordDecode() {
+        String password = "uvZKfb2qJevQrEJLKnKLLg==";
+        log.error("password={}", PasswordUtils.aesDecode(password, Const.AES_KEY));
+    }
+
 
 }
