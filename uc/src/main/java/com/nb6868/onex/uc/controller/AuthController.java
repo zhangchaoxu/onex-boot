@@ -26,7 +26,6 @@ import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.nb6868.onex.common.validator.group.TenantGroup;
 import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
@@ -101,7 +100,7 @@ public class AuthController {
     @ApiOperation("发送验证码消息")
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 30)
-    public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class, TenantGroup.class}) @RequestBody MailSendForm form) {
+    public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm form) {
         MailTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
