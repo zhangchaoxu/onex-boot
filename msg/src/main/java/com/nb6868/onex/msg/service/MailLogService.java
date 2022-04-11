@@ -19,7 +19,6 @@ import com.nb6868.onex.msg.dto.MailSendForm;
 import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.mail.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
@@ -32,9 +31,6 @@ import java.util.Map;
  */
 @Service
 public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLogDTO> {
-
-    @Autowired
-    private MailTplService mailTplService;
 
     @Override
     public QueryWrapper<MailLogEntity> getWrapper(String method, Map<String, Object> params) {
@@ -62,12 +58,12 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
      * @param mailTo  收件人
      * @return 记录
      */
-    public MailLogEntity findLastLogByTplCode(String tenantCode, String tplCode, String mailTo) {
+    public MailLogEntity getLatestByTplCode(String tenantCode, String tplCode, String mailTo) {
         return query().eq("tpl_code", tplCode)
                 .eq("mail_to", mailTo)
                 .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
                 .eq("state", Const.BooleanEnum.TRUE.value())
-                .eq("consume_state", Const.BooleanEnum.FALSE.value())
+                // .eq("consume_state", Const.BooleanEnum.FALSE.value())
                 .orderByDesc("create_time")
                 .last(Const.LIMIT_ONE)
                 .one();
@@ -81,7 +77,7 @@ public class MailLogService extends DtoService<MailLogDao, MailLogEntity, MailLo
         int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
         if (timeLimit > 0) {
             // 先校验该收件人是否timeLimit秒内发送过
-            MailLogEntity lastMailLog = findLastLogByTplCode(form.getTenantCode(), form.getTplCode(), form.getMailTo());
+            MailLogEntity lastMailLog = getLatestByTplCode(form.getTenantCode(), form.getTplCode(), form.getMailTo());
             // 检查限定时间内是否已经发送
             AssertUtils.isTrue(null != lastMailLog && DateUtil.between(DateUtil.date(), lastMailLog.getCreateTime(), DateUnit.SECOND) < timeLimit, ErrorCode.ERROR_REQUEST, "发送请求过于频繁");
         }

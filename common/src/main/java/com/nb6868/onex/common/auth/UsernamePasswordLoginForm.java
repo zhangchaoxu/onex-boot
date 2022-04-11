@@ -1,14 +1,13 @@
 package com.nb6868.onex.common.auth;
 
 import com.nb6868.onex.common.pojo.BaseForm;
-import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.TenantGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotEmpty;
-import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -16,10 +15,10 @@ import java.io.Serializable;
 public class UsernamePasswordLoginForm extends BaseForm {
 
     @ApiModelProperty(value = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
-    private String authConfigType = "ADMIN_USERNAME_PASSWORD";
+    private String type = "ADMIN_USERNAME_PASSWORD";
 
     @ApiModelProperty(value = "租户编码", required = true)
-    @NotEmpty(message = "租户编码不能为空", groups = {LoginForm.TenantGroup.class})
+    @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
     private String tenantCode;
 
     @ApiModelProperty(value = "用户名", required = true)

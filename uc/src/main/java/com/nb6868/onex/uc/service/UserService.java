@@ -124,6 +124,32 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         }
     }
 
+    /**
+     * 通过用户名获取用户
+     * @param tenantCode 租户编码
+     * @param username 用户名
+     * @return
+     */
+    public UserEntity getByUsername(String tenantCode, String username) {
+        return query().eq("username", username)
+                .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
+                .last(Const.LIMIT_ONE)
+                .one();
+    }
+
+    /**
+     * 通过用户名获取用户
+     * @param tenantCode 租户编码
+     * @param mobile 手机号
+     * @return
+     */
+    public UserEntity getByMobile(String tenantCode, String mobile) {
+        return query().eq("mobile", mobile)
+                .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
+                .last(Const.LIMIT_ONE)
+                .one();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     @Transactional(rollbackFor = Exception.class)
