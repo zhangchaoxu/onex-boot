@@ -39,7 +39,7 @@ public class CalendarController {
 
     @GetMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("sys:calendar:list")
+    @RequiresPermissions("sys:calendar:query")
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<CalendarEntity> list = calendarService.listByMap(params);
 
