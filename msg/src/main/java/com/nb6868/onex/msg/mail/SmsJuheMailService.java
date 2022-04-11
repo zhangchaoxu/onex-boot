@@ -44,9 +44,10 @@ public class SmsJuheMailService extends AbstractMailService {
         });
         // 发送记录记录
         MailLogEntity mailLog = new MailLogEntity();
+        mailLog.setTenantCode(mailTpl.getTenantCode());
+        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setMailTo(request.getMailTo());
         mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
-        mailLog.setTplCode(mailTpl.getCode());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         // 设置有效时间

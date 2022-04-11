@@ -1,0 +1,39 @@
+package com.nb6868.onex.msg.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nb6868.onex.common.jpa.Query;
+import com.nb6868.onex.common.pojo.BaseForm;
+import com.nb6868.onex.common.pojo.PageForm;
+import com.nb6868.onex.common.validator.Page;
+import com.nb6868.onex.common.validator.group.PageGroup;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+@ApiModel(value = "消息模板查询")
+public class MailLogQueryForm extends BaseForm {
+
+    @Query
+    @ApiModelProperty("编码")
+    private String code;
+
+    @Query
+    @ApiModelProperty("类型")
+    private Integer type;
+
+    @Query(blurryType = Query.BlurryType.OR, column="name,title,content")
+    @ApiModelProperty("关键词搜索")
+    private String search;
+
+    @Query
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String tenantCode;
+
+    @ApiModelProperty("分页信息")
+    @Page(groups = PageGroup.class)
+    PageForm page;
+
+}

@@ -65,6 +65,7 @@ public class EmailMailService extends AbstractMailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         // 保存邮件记录
         MailLogEntity mailLog = new MailLogEntity();
+        mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setMailFrom(mailSender.getUsername());
         mailLog.setMailTo(request.getMailTo());
