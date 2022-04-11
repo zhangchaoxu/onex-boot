@@ -24,7 +24,7 @@ public class WebSocketController {
 
     @PostMapping("getOpenSockets")
     @ApiOperation("获得目前连接的Socket")
-    @RequiresPermissions("websocket:info")
+    @RequiresPermissions("websocket:query")
     @ApiOperationSupport(order = 10)
     public Result<?> getOpenSockets() {
         List<String> sidList = webSocketServer.getSidList();
