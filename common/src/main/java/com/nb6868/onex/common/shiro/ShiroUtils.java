@@ -43,6 +43,13 @@ public class ShiroUtils {
     }
 
     /**
+     * 获得用户用户名
+     */
+    public static String getUserUsername() {
+        return getUser().getUsername();
+    }
+
+    /**
      * 获得用户租户编码
      */
     public static String getUserTenantCode() {

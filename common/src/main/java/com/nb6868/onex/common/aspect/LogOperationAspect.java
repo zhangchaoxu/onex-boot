@@ -11,6 +11,7 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
+import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +107,10 @@ public class LogOperationAspect {
                 }
             } catch (Exception jsonException) {
             }
+        } else {
+            // 操作日志
+            logEntity.setCreateName(ShiroUtils.getUserUsername());
+            logEntity.setTenantCode(ShiroUtils.getUserTenantCode());
         }
         logEntity.setStoreType(storeType);
         logEntity.setState(state);
