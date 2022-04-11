@@ -1,10 +1,15 @@
 package com.nb6868.onex.msg.mail;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
+import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.msg.dto.MailSendForm;
+import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
+import com.nb6868.onex.msg.service.MailLogService;
 
 /**
  * 钉钉机器人消息
@@ -26,6 +31,21 @@ public class RobotDingtalkMailService extends AbstractMailService {
         }
         // https://oapi.dingtalk.com/robot/send?access_token=xxxx
         BaseResponse sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("access_token"), request.getContentParams());
+        // 保存记录
+        MailLogEntity mailLog = new MailLogEntity();
+        mailLog.setTenantCode(mailTpl.getTenantCode());
+        mailLog.setTplCode(mailTpl.getCode());
+        mailLog.setMailFrom("dingtalk_robot");
+        mailLog.setMailTo(request.getMailTo());
+        mailLog.setContentParams(request.getContentParams());
+        mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
+        // 设置有效时间
+        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
+        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
+        mailLog.setState(sendResponse.isSuccess() ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
+        MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
+        mailLogService.save(mailLog);
+
         return sendResponse.isSuccess();
     }
 
