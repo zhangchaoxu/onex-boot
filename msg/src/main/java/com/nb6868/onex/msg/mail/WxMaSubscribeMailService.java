@@ -53,6 +53,7 @@ public class WxMaSubscribeMailService extends AbstractMailService {
             }
             // 保存记录
             MailLogEntity mailLog = new MailLogEntity();
+            mailLog.setTenantCode(mailTpl.getTenantCode());
             mailLog.setMailTo(openId);
             mailLog.setState(state.value());
             mailLog.setResult(result);

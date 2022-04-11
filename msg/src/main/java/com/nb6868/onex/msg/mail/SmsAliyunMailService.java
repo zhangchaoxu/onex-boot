@@ -51,8 +51,9 @@ public class SmsAliyunMailService extends AbstractMailService {
         // 消息记录
         MailLogService mailLogService = SpringContextUtils.getBean(MailLogService.class);
         MailLogEntity mailLog = new MailLogEntity();
-        mailLog.setMailTo(request.getMailTo());
+        mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
+        mailLog.setMailTo(request.getMailTo());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));

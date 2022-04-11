@@ -7,7 +7,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.CommonForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -24,9 +24,11 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -51,7 +53,7 @@ public class MailTplController {
     @ApiOperationSupport(order = 10)
     public Result<?> list(@Validated @RequestBody MailTplQueryForm form) {
         QueryWrapper<MailTplEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
-        List<?> list = mailTplService.listDto(QueryWrapperHelper.getPredicate(form));
+        List<?> list = mailTplService.listDto(queryWrapper);
         return new Result<>().success(list);
     }
 
@@ -71,9 +73,10 @@ public class MailTplController {
     @ApiOperation("信息")
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 30)
-    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        MailTplDTO data = mailTplService.getDtoById(id);
+    public Result<?> info(@Validated @RequestBody IdForm form) {
+        MailTplDTO data = mailTplService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+
 
         return new Result<>().success(data);
     }
@@ -105,7 +108,7 @@ public class MailTplController {
     @LogOperation("删除")
     @RequiresPermissions("msg:mailTpl:delete")
     @ApiOperationSupport(order = 60)
-    public Result<?> delete(@Validated(value = {CommonForm.OneGroup.class}) @RequestBody CommonForm form) {
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
         mailTplService.logicDeleteById(form.getId());
 
         return new Result<>();
