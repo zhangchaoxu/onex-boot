@@ -1,15 +1,20 @@
 package com.nb6868.onex.msg.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.CommonForm;
+import com.nb6868.onex.common.pojo.IdsForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.nb6868.onex.msg.dto.MailLogDTO;
-import com.nb6868.onex.msg.dto.MailSendForm;
+import com.nb6868.onex.common.validator.group.PageGroup;
+import com.nb6868.onex.msg.dto.*;
+import com.nb6868.onex.msg.entity.MailLogEntity;
 import com.nb6868.onex.msg.entity.MailTplEntity;
 import com.nb6868.onex.msg.service.MailLogService;
 import com.nb6868.onex.msg.service.MailTplService;
@@ -34,12 +39,14 @@ public class MailLogController {
     @Autowired
     MailTplService mailTplService;
 
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation("分页列表")
+    @QueryDataScope(tenantFilter = true)
     @RequiresPermissions("msg:mailLog:query")
     @ApiOperationSupport(order = 20)
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<MailLogDTO> page = mailLogService.pageDto(params);
+    public Result<?> page(@Validated({PageGroup.class}) @RequestBody MailLogQueryForm form) {
+        QueryWrapper<MailLogEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
+        PageData<MailLogDTO> page = mailLogService.pageDto(form.getPage(), queryWrapper);
 
         return new Result<>().success(page);
     }
@@ -49,7 +56,7 @@ public class MailLogController {
     @LogOperation("批量删除")
     @RequiresPermissions("msg:mailLog:delete")
     @ApiOperationSupport(order = 50)
-    public Result<?> deleteBatch(@Validated(value = {CommonForm.ListGroup.class}) @RequestBody CommonForm form) {
+    public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
         mailLogService.logicDeleteByIds(form.getIds());
 
         return new Result<>();

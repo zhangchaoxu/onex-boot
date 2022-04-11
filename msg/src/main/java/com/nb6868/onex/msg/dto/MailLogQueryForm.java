@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "消息模板查询")
+@ApiModel(value = "消息记录查询")
 public class MailLogQueryForm extends BaseForm {
 
     @Query

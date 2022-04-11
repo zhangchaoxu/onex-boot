@@ -63,7 +63,7 @@ public class EmailMailService extends AbstractMailService {
         // 创建发送器和邮件消息
         JavaMailSenderImpl mailSender = createMailSender(emailProps);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
-        // 保存邮件记录
+        // 保存记录
         MailLogEntity mailLog = new MailLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
