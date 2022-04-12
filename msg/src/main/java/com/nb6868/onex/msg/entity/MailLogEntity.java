@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseEntity;
+import com.nb6868.onex.common.pojo.BaseTenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
@@ -20,8 +21,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @TableName(value = "msg_mail_log", autoResultMap = true)
 @Alias("msg_mail_log")
-public class MailLogEntity extends BaseEntity {
-    private static final long serialVersionUID = 1L;
+public class MailLogEntity extends BaseTenantEntity {
 
     /**
      * 模板编码
@@ -72,8 +72,4 @@ public class MailLogEntity extends BaseEntity {
      * 发送结果
      */
     private String result;
-    /**
-     * 租户编码
-     */
-    private String tenantCode;
 }

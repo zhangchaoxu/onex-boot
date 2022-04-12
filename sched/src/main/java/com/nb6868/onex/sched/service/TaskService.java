@@ -41,14 +41,6 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	private Scheduler scheduler;
 
 	@Override
-	public QueryWrapper<TaskEntity> getWrapper(String method, Map<String, Object> params) {
-		return new WrapperUtils<TaskEntity>(new QueryWrapper<>(), params)
-				.like("name", "name")
-				.eq("state", "state")
-				.getQueryWrapper();
-	}
-
-	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean saveDto(TaskDTO dto) {
 		// 检查name是否已存在

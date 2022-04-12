@@ -12,16 +12,20 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "定时任务查询")
-public class TaskQueryForm extends BaseForm {
+@ApiModel(value = "定时任务记录查询")
+public class TaskLogQueryForm extends BaseForm {
 
-    @ApiModelProperty(value = "关键词搜索")
-    @Query(blurryType = Query.BlurryType.OR, column = "name,remark")
-    private String search;
+    @ApiModelProperty(value = "任务ID")
+    @Query
+    private Long taskId;
 
     @ApiModelProperty(value = "状态")
     @Query
     private Integer state;
+
+    @ApiModelProperty(value = "关键词搜索")
+    @Query(blurryType = Query.BlurryType.OR, column = "task_name,result,error")
+    private String search;
 
     @ApiModelProperty("分页信息")
     @Page(groups = PageGroup.class)

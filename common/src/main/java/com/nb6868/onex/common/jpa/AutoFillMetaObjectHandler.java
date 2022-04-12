@@ -1,5 +1,7 @@
 package com.nb6868.onex.common.jpa;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -70,7 +72,9 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         /*if (metaObject.hasGetter(DEPT_ID) && metaObject.getValue(DEPT_ID) == null && user.getDeptId() != null) {
             strictInsertFill(metaObject, DEPT_ID, Long.class, user.getDeptId());
         }*/
-        if (metaObject.hasGetter(TENANT_CODE) && metaObject.getValue(TENANT_CODE) == null && user.getTenantCode() != null) {
+        if (metaObject.hasGetter(TENANT_CODE) && StrUtil.isNotBlank(user.getTenantCode()) &&  !ObjectUtil.isEmpty(metaObject.getValue(TENANT_CODE))) {
+            // 存在租户编码字段,并且用户存在租户信息,并且未指定租户信息
+            // Entity中需要定义tenantCode为@TableField(fill = FieldFill.INSERT)
             strictInsertFill(metaObject, TENANT_CODE, String.class, user.getTenantCode());
         }
         strictInsertFill(metaObject, CREATE_ID, Long.class, user.getId());
