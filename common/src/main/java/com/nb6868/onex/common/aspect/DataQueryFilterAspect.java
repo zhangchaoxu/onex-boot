@@ -5,6 +5,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.aspectj.lang.JoinPoint;
@@ -49,41 +50,41 @@ public class DataQueryFilterAspect {
         QueryDataScope queryDataScope = method.getAnnotation(QueryDataScope.class);
         if (queryDataScope != null) {
             Object params = point.getArgs()[0];
-            if (queryDataScope.tenantFilter()) {
-                // 租户过滤
-                String tenantCode = ShiroUtils.getUserTenantCode();
-                AssertUtils.isEmpty(tenantCode, ErrorCode.TENANT_EMPTY);
-                try {
-                    ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.tenantCode()), tenantCode);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (params instanceof BaseForm) {
+                if (queryDataScope.tenantFilter()) {
+                    // 租户过滤
+                    String tenantCode = ShiroUtils.getUserTenantCode();
+                    AssertUtils.isTrue(queryDataScope.tenantValidate() && StrUtil.isBlank(tenantCode), ErrorCode.TENANT_EMPTY);
+                    try {
+                        ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.tenantCode()), tenantCode);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            if (queryDataScope.userFilter()) {
-                // 用户过滤
-                Long userId = ShiroUtils.getUserId();
-                AssertUtils.isNull(userId, ErrorCode.ACCOUNT_NOT_EXIST);
-                try {
-                    ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.userId()), userId);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (queryDataScope.userFilter()) {
+                    // 用户过滤
+                    Long userId = ShiroUtils.getUserId();
+                    AssertUtils.isNull(queryDataScope.userValidate() && null == userId, ErrorCode.ACCOUNT_NOT_EXIST);
+                    try {
+                        ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.userId()), userId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            if (queryDataScope.areaFilter()) {
-                // 区域过滤
-                String areaCode = ShiroUtils.getUserAreaCode();
-                if (StrUtil.isNotBlank(areaCode)) {
+                if (queryDataScope.areaFilter()) {
+                    // 区域过滤
+                    String areaCode = ShiroUtils.getUserAreaCode();
+                    AssertUtils.isNull(queryDataScope.areaValidate() && StrUtil.isBlank(areaCode), ErrorCode.DEPT_EMPTY);
                     try {
                         ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.areaCode()), areaCode);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-            }
-            if (queryDataScope.deptFilter()) {
-                // 组织过滤
-                String deptCode = ShiroUtils.getUserDeptCode();
-                if (StrUtil.isNotBlank(deptCode)) {
+                if (queryDataScope.deptFilter()) {
+                    // 组织过滤
+                    String deptCode = ShiroUtils.getUserDeptCode();
+                    AssertUtils.isNull(queryDataScope.deptValidate() && StrUtil.isBlank(deptCode), ErrorCode.AREA_EMPTY);
                     try {
                         ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.deptCode()), deptCode);
                     } catch (Exception e) {

@@ -7,7 +7,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdForm;
+import com.nb6868.onex.common.pojo.IdTenantForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -48,7 +48,7 @@ public class MailTplController {
 
     @PostMapping("list")
     @ApiOperation("列表")
-    @QueryDataScope(tenantFilter = true)
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 10)
     public Result<?> list(@Validated @RequestBody MailTplQueryForm form) {
@@ -59,7 +59,7 @@ public class MailTplController {
 
     @PostMapping("page")
     @ApiOperation("分页列表")
-    @QueryDataScope(tenantFilter = true)
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 20)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody MailTplQueryForm form) {
@@ -71,14 +71,26 @@ public class MailTplController {
 
     @PostMapping("info")
     @ApiOperation("信息")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 30)
-    public Result<?> info(@Validated @RequestBody IdForm form) {
+    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
         MailTplDTO data = mailTplService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-
         return new Result<>().success(data);
+    }
+
+    @PostMapping("delete")
+    @ApiOperation("删除")
+    @LogOperation("删除")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @RequiresPermissions("msg:mailTpl:delete")
+    @ApiOperationSupport(order = 60)
+    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+        mailTplService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+
+        return new Result<>();
     }
 
     @PostMapping("save")
@@ -101,17 +113,6 @@ public class MailTplController {
         mailTplService.updateDto(dto);
 
         return new Result<>().success(dto);
-    }
-
-    @PostMapping("delete")
-    @ApiOperation("删除")
-    @LogOperation("删除")
-    @RequiresPermissions("msg:mailTpl:delete")
-    @ApiOperationSupport(order = 60)
-    public Result<?> delete(@Validated @RequestBody IdForm form) {
-        mailTplService.logicDeleteById(form.getId());
-
-        return new Result<>();
     }
 
 }
