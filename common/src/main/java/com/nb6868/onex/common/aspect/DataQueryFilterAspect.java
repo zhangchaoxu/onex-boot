@@ -56,14 +56,14 @@ public class DataQueryFilterAspect {
                     String tenantCode = ShiroUtils.getUserTenantCode();
                     AssertUtils.isTrue(queryDataScope.tenantValidate() && StrUtil.isBlank(tenantCode), ErrorCode.TENANT_EMPTY);
                     // 检查租户信息
-                    if (!StrUtil.isNotBlank(tenantCode)) {
+                    if (StrUtil.isNotBlank(tenantCode)) {
                         // 租户信息不为空
                         try {
                             Object tenantCodeInParam = ReflectUtil.getFieldValue(params, queryDataScope.tenantCode());
                             if (null == tenantCodeInParam) {
                                 ReflectUtil.setFieldValue(params, queryDataScope.tenantCode(), tenantCode);
                             } else {
-                                AssertUtils.isTrue(tenantCode.equalsIgnoreCase(tenantCodeInParam.toString()), ErrorCode.TENANT_NOT_MATCH);
+                                AssertUtils.isFalse(tenantCode.equalsIgnoreCase(tenantCodeInParam.toString()), ErrorCode.TENANT_NOT_MATCH);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

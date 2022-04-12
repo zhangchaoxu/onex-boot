@@ -23,6 +23,6 @@ public class IdForm extends BaseForm {
 
     @Query(type = Query.Type.LIMIT)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Integer limit = 1;
+    private Integer pageSize = 1;
 
 }

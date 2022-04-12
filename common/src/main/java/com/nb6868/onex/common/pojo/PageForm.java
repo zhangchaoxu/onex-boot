@@ -21,16 +21,13 @@ public class PageForm extends BaseForm {
 
     @ApiModelProperty(value = "页数")
     @Min(value = 1, message = "页数不能小于1")
-    @Max(value = 10000, message = "页数不能大于1000")
-    @Query(type = Query.Type.LIMIT, from = "page")
-    private Long pageSize;
+    private Long pageSize = 10L;
 
     @ApiModelProperty(value = "页码")
     @Min(value = 1, message = "页码不能小于1")
-    private Long pageNo;
+    private Long pageNo = 1L;
 
     @ApiModelProperty(value = "排序规则")
-    @Query(type = Query.Type.ORDER_BY, from = "page")
     private List<SortItem> sortItems;
 
     /**
