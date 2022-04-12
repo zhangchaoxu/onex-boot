@@ -17,8 +17,8 @@ public @interface Query {
     // 基本对象的属性名
     String column() default "";
 
-    // 查询方式
-    String from() default "";
+    // 排查查询方法
+    String[] exclude() default {};
 
     // 将column或者参数名转换成下划线分割
     boolean underlineCase() default true;

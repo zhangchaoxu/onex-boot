@@ -1,5 +1,6 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -88,5 +89,12 @@ public class StringTest {
         log.error("password={}", PasswordUtils.aesDecode(password, Const.AES_KEY));
     }
 
+    @Test
+    @DisplayName("array utils")
+    void arrayTest() {
+        String[] arrays = null;
+        String from = "page";
+        log.error("res={}", ArrayUtil.contains(arrays, from));
+    }
 
 }

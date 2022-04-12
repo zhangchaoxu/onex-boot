@@ -2,6 +2,7 @@ package com.nb6868.onex.common.jpa;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -33,7 +34,7 @@ public class QueryWrapperHelper {
      * 封装QueryWrapper
      *
      * @param query 查询条件
-     * @param from 查询来源
+     * @param from  查询来源
      */
     @SuppressWarnings({"deprecation", "unchecked"})
     public static <R, Q> QueryWrapper<R> getPredicate(Q query, String from) {
@@ -115,59 +116,85 @@ public class QueryWrapperHelper {
                             final String columnFinal = column;
                             switch (q.type()) {
                                 case EQ:
-                                    queryWrapper.eq(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.eq(column, val);
+                                    }
                                     break;
                                 case NE:
-                                    queryWrapper.ne(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.ne(column, val);
+                                    }
                                     break;
                                 case GE:
-                                    queryWrapper.ge(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.ge(column, val);
+                                    }
                                     break;
                                 case GT:
-                                    queryWrapper.gt(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.gt(column, val);
+                                    }
                                     break;
                                 case LE:
-                                    queryWrapper.le(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.le(column, val);
+                                    }
                                     break;
                                 case LT:
-                                    queryWrapper.lt(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.lt(column, val);
+                                    }
                                     break;
                                 case NOT_LIKE:
-                                    queryWrapper.notLike(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.notLike(column, val);
+                                    }
                                     break;
                                 case LIKE:
-                                    queryWrapper.like(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.like(column, val);
+                                    }
                                     break;
                                 case LIKE_LEFT:
-                                    queryWrapper.likeLeft(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.likeLeft(column, val);
+                                    }
                                     break;
                                 case LIKE_RIGHT:
-                                    queryWrapper.likeRight(column, val);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.likeRight(column, val);
+                                    }
                                     break;
                                 case IN:
-                                    if (val instanceof Collection && ObjectUtil.isNotEmpty(val)) {
+                                    if (!ArrayUtil.contains(q.exclude(), from) && val instanceof Collection) {
                                         queryWrapper.in(column, (Collection<?>) val);
                                     }
                                     break;
                                 case NOT_IN:
-                                    if (val instanceof Collection && ObjectUtil.isNotEmpty(val)) {
+                                    if (!ArrayUtil.contains(q.exclude(), from) && val instanceof Collection) {
                                         queryWrapper.notIn(column, (Collection<?>) val);
                                     }
                                     break;
                                 case IS_NOT_NULL:
-                                    queryWrapper.isNotNull(column);
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.isNotNull(column);
+                                    }
                                     break;
                                 case IS_NULL:
                                     queryWrapper.isNull(column);
                                     break;
                                 case IS_NOT_EMPTY:
-                                    queryWrapper.and(qw -> qw.isNotNull(columnFinal).ne(columnFinal, ""));
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.and(qw -> qw.isNotNull(columnFinal).ne(columnFinal, ""));
+                                    }
                                     break;
                                 case IS_EMPTY:
-                                    queryWrapper.and(qw -> qw.isNull(columnFinal).or().eq(columnFinal, ""));
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
+                                        queryWrapper.and(qw -> qw.isNull(columnFinal).or().eq(columnFinal, ""));
+                                    }
                                     break;
                                 case NOT_BETWEEN:
-                                    if (val instanceof List) {
+                                    if (!ArrayUtil.contains(q.exclude(), from) && val instanceof List) {
                                         List<?> list = (List<?>) val;
                                         if (CollUtil.isNotEmpty(list) && list.size() == 2) {
                                             queryWrapper.notBetween(column, list.get(0), list.get(1));
@@ -175,7 +202,7 @@ public class QueryWrapperHelper {
                                     }
                                     break;
                                 case BETWEEN:
-                                    if (val instanceof List) {
+                                    if (!ArrayUtil.contains(q.exclude(), from) && val instanceof List) {
                                         List<?> list = (List<?>) val;
                                         if (CollUtil.isNotEmpty(list) && list.size() == 2) {
                                             queryWrapper.between(column, list.get(0), list.get(1));
@@ -183,7 +210,7 @@ public class QueryWrapperHelper {
                                     }
                                     break;
                                 case BETWEEN_TIME:
-                                    if (val instanceof List) {
+                                    if (!ArrayUtil.contains(q.exclude(), from) && val instanceof List) {
                                         List<?> list = (List<?>) val;
                                         if (CollUtil.isNotEmpty(list) && list.size() == 2) {
                                             DateUtil.parse(list.get(0).toString());
@@ -191,8 +218,9 @@ public class QueryWrapperHelper {
                                         }
                                     }
                                     break;
+                                // 分页接口中,需要过滤掉order和limit
                                 case ORDER_BY:
-                                    if (q.from().equalsIgnoreCase(from) && val instanceof List) {
+                                    if (!ArrayUtil.contains(q.exclude(), from) && val instanceof List) {
                                         List<SortItem> list = (List<SortItem>) val;
                                         if (CollUtil.isNotEmpty(list)) {
                                             list.forEach(sortItem -> queryWrapper.orderByAsc(sortItem.getAsc(), sortItem.getColumn()).orderByDesc(!sortItem.getAsc(), sortItem.getColumn()));
@@ -200,7 +228,7 @@ public class QueryWrapperHelper {
                                     }
                                     break;
                                 case LIMIT:
-                                    if (q.from().equalsIgnoreCase(from)) {
+                                    if (!ArrayUtil.contains(q.exclude(), from)) {
                                         queryWrapper.last(StrUtil.format(Const.LIMIT_FMT, val));
                                     }
                                     break;

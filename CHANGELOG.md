@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.3.4] 2022.04.12
+## [3.3.6] 2022.04.12
 - new: add sys module
 - fix: fix schedule log without tenant code issue
 
