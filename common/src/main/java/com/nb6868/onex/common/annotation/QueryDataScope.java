@@ -13,6 +13,10 @@ import java.lang.annotation.*;
 public @interface QueryDataScope {
 
     /**
+     * 是否检查包含用户信息
+     */
+    boolean userValidate() default true;
+    /**
      * 是否按用户过滤
      */
     boolean userFilter() default false;
@@ -20,6 +24,10 @@ public @interface QueryDataScope {
      * 用户ID
      */
     String userId() default "creator";
+    /**
+     * 是否检查包含组织信息
+     */
+    boolean deptValidate() default true;
     /**
      * 是否按部门过滤
      */
@@ -29,6 +37,10 @@ public @interface QueryDataScope {
      */
     String deptCode() default "deptCode";
     /**
+     * 是否检查包含租户信息
+     */
+    boolean tenantValidate() default true;
+    /**
      * 是否按租户过滤
      */
     boolean tenantFilter() default false;
@@ -36,6 +48,10 @@ public @interface QueryDataScope {
      * 租户编码
      */
     String tenantCode() default "tenantCode";
+    /**
+     * 是否检查包含区域信息
+     */
+    boolean areaValidate() default true;
     /**
      * 是否按区域过滤
      */

@@ -6,10 +6,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.CommonForm;
-import com.nb6868.onex.common.pojo.IdsForm;
-import com.nb6868.onex.common.pojo.PageData;
-import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
@@ -41,7 +38,7 @@ public class MailLogController {
 
     @PostMapping("page")
     @ApiOperation("分页列表")
-    @QueryDataScope(tenantFilter = true)
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailLog:query")
     @ApiOperationSupport(order = 20)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody MailLogQueryForm form) {
@@ -54,10 +51,11 @@ public class MailLogController {
     @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailLog:delete")
     @ApiOperationSupport(order = 50)
-    public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
-        mailLogService.logicDeleteByIds(form.getIds());
+    public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
+        mailLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>();
     }
