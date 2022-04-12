@@ -20,6 +20,10 @@ public class TaskInfo implements Serializable {
      */
     private Long id;
     /**
+     * 租户编码
+     */
+    private String tenantCode;
+    /**
      * spring bean名称
      */
     private String name;

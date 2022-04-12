@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseEntity;
+import com.nb6868.onex.common.pojo.BaseTenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
@@ -18,7 +19,7 @@ import org.apache.ibatis.type.Alias;
 @EqualsAndHashCode(callSuper = false)
 @TableName(value = "sched_task", autoResultMap = true)
 @Alias("sched_task")
-public class TaskEntity extends BaseEntity {
+public class TaskEntity extends BaseTenantEntity {
 
     /**
      * 名称
@@ -49,8 +50,4 @@ public class TaskEntity extends BaseEntity {
      * 备注
      */
     private String remark;
-    /**
-     * 租户编码
-     */
-    private String tenantCode;
 }

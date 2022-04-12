@@ -1,6 +1,5 @@
 package com.nb6868.onex.sched.dto;
 
-import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.io.Serializable;
 public class TaskRunWithParamsForm implements Serializable {
 
     @ApiModelProperty(value = "id")
-    @NotNull(message = "{id.require}", groups = DefaultGroup.class)
+    @NotNull(message = "{id.require}")
     private Long id;
 
     @ApiModelProperty(value = "参数")

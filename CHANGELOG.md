@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.3.3] 2022.04.11
+## [3.3.4] 2022.04.12
 - new: add sys module
+- fix: fix schedule log without tenant code issue
 
 ## [3.3.1] 2022.04.10
 - fix: fix user lock issue

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseEntity;
+import com.nb6868.onex.common.pojo.BaseTenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
@@ -18,7 +19,7 @@ import org.apache.ibatis.type.Alias;
 @EqualsAndHashCode(callSuper = false)
 @TableName(value = "msg_mail_tpl", autoResultMap = true)
 @Alias("msg_mail_tpl")
-public class MailTplEntity extends BaseEntity {
+public class MailTplEntity extends BaseTenantEntity {
 
     /**
      * 编码
@@ -53,8 +54,5 @@ public class MailTplEntity extends BaseEntity {
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private JSONObject params;
-    /**
-     * 租户编码
-     */
-    private String tenantCode;
+
 }

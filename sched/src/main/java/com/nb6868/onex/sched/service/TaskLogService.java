@@ -34,15 +34,16 @@ public class TaskLogService extends DtoService<TaskLogDao, TaskLogEntity, TaskLo
     /**
      * 保存记录
      */
-    public long saveLog(TaskInfo task, long timeInterval, int state, String result) {
+    public long saveLog(TaskInfo taskInfo, long timeInterval, int state, String result) {
         TaskLogEntity logEntity = new TaskLogEntity();
-        logEntity.setTaskId(task.getId());
-        logEntity.setTaskName(task.getName());
-        logEntity.setParams(task.getParams());
+        logEntity.setTaskId(taskInfo.getId());
+        logEntity.setTaskName(taskInfo.getName());
+        logEntity.setTenantCode(taskInfo.getTenantCode());
+        logEntity.setParams(taskInfo.getParams());
         logEntity.setTimes(timeInterval);
         logEntity.setState(state);
         logEntity.setResult(result);
-        if ("db".equalsIgnoreCase(task.getLogType())) {
+        if ("db".equalsIgnoreCase(taskInfo.getLogType())) {
             // 存入数据库
             save(logEntity);
             return logEntity.getId();
@@ -56,7 +57,7 @@ public class TaskLogService extends DtoService<TaskLogDao, TaskLogEntity, TaskLo
     /**
      * 更新记录
      */
-    public void updateLog(Long taskLogId, TaskInfo task, long times, int state, String result) {
+    public void updateLog(Long taskLogId, TaskInfo taskInfo, long times, int state, String result) {
         if (taskLogId > 0) {
             // 更新
             update().set("result", result)
@@ -65,7 +66,7 @@ public class TaskLogService extends DtoService<TaskLogDao, TaskLogEntity, TaskLo
                     .eq("id", taskLogId)
                     .update(new TaskLogEntity());
         } else {
-            log.info("task log update, taskName={},times={},state={},result={}", task.getName(), times, state, result);
+            log.info("task log update, taskName={},times={},state={},result={}", taskInfo.getName(), times, state, result);
         }
     }
 
@@ -85,6 +86,7 @@ public class TaskLogService extends DtoService<TaskLogDao, TaskLogEntity, TaskLo
             TaskLogEntity logEntity = new TaskLogEntity();
             logEntity.setTaskId(taskInfo.getId());
             logEntity.setTaskName(taskInfo.getName());
+            logEntity.setTenantCode(taskInfo.getTenantCode());
             logEntity.setParams(taskInfo.getParams());
             logEntity.setTimes(times);
             logEntity.setState(SchedConst.TaskLogState.ERROR.getValue());

@@ -72,20 +72,10 @@ public class AuthController {
     @Autowired
     private MailLogService mailLogService;
 
-    @PostMapping("loginParams")
-    @AccessControl
-    @ApiOperation(value = "登录参数", notes = "Anon")
-    @ApiOperationSupport(order = 10)
-    public Result<?> loginParams(@Validated @RequestBody TenantParamsInfoByUrlForm form) {
-        // 通过url地址获得租户配置
-        JSONObject paramsContent = paramsService.getContent(UcConst.ParamsTypeEnum.TENANT.value(), null, null, UcConst.PARAMS_CODE_LOGIN, "url", form.getUrl());
-        return new Result<>().success(paramsContent);
-    }
-
     @PostMapping("captcha")
     @AccessControl
     @ApiOperation(value = "图形验证码(base64)", notes = "Anon@验证时需将uuid和验证码内容一起提交")
-    @ApiOperationSupport(order = 20)
+    @ApiOperationSupport(order = 10)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
         String uuid = IdUtil.fastSimpleUUID();
         // 随机arithmetic/spec
@@ -98,7 +88,7 @@ public class AuthController {
     @AccessControl
     @ApiOperation("发送验证码消息")
     @LogOperation("发送验证码消息")
-    @ApiOperationSupport(order = 30)
+    @ApiOperationSupport(order = 20)
     public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm form) {
         MailTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "模板不存在");
@@ -110,6 +100,16 @@ public class AuthController {
         }
         boolean flag = mailLogService.send(mailTpl, form);
         return new Result<>().boolResult(flag);
+    }
+
+    @PostMapping("loginParams")
+    @AccessControl
+    @ApiOperation(value = "登录参数", notes = "Anon")
+    @ApiOperationSupport(order = 30)
+    public Result<?> loginParams(@Validated @RequestBody TenantParamsInfoByUrlForm form) {
+        // 通过url地址获得租户配置
+        JSONObject paramsContent = paramsService.getContent(UcConst.ParamsTypeEnum.TENANT.value(), null, null, UcConst.PARAMS_CODE_LOGIN, "url", form.getUrl());
+        return new Result<>().success(paramsContent);
     }
 
     @PostMapping("userLogin")
