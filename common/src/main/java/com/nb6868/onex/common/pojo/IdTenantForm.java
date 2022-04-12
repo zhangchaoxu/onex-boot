@@ -7,14 +7,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotNull;
-
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "ID租户请求")
 public class IdTenantForm extends IdForm {
 
     @Query
+    @ApiModelProperty("租户编码")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String tenantCode;
 

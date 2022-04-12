@@ -55,10 +55,19 @@ public class DataQueryFilterAspect {
                     // 租户过滤
                     String tenantCode = ShiroUtils.getUserTenantCode();
                     AssertUtils.isTrue(queryDataScope.tenantValidate() && StrUtil.isBlank(tenantCode), ErrorCode.TENANT_EMPTY);
-                    try {
-                        ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.tenantCode()), tenantCode);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    // 检查租户信息
+                    if (!StrUtil.isNotBlank(tenantCode)) {
+                        // 租户信息不为空
+                        try {
+                            Object tenantCodeInParam = ReflectUtil.getFieldValue(params, queryDataScope.tenantCode());
+                            if (null == tenantCodeInParam) {
+                                ReflectUtil.setFieldValue(params, queryDataScope.tenantCode(), tenantCode);
+                            } else {
+                                AssertUtils.isTrue(tenantCode.equalsIgnoreCase(tenantCodeInParam.toString()), ErrorCode.TENANT_NOT_MATCH);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 if (queryDataScope.userFilter()) {

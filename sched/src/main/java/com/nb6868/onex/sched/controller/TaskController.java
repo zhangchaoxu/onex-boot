@@ -3,6 +3,7 @@ package com.nb6868.onex.sched.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.*;
@@ -43,6 +44,7 @@ public class TaskController {
 
     @PostMapping("page")
     @ApiOperation("任务分页列表")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sched:task:query")
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody TaskQueryForm form) {
@@ -54,9 +56,10 @@ public class TaskController {
 
     @PostMapping("info")
     @ApiOperation("任务详情")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sched:task:query")
     @ApiOperationSupport(order = 20)
-    public Result<?> info(@Validated @RequestBody IdForm form) {
+    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
         TaskDTO data = taskService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -131,6 +134,7 @@ public class TaskController {
 
     @PostMapping("logPage")
     @ApiOperation("任务日志分页列表")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sched:task:query")
     @ApiOperationSupport(order = 100)
     public Result<?> logPage(@Validated({PageGroup.class}) @RequestBody TaskQueryForm form) {
@@ -142,9 +146,10 @@ public class TaskController {
 
     @GetMapping("logInfo")
     @ApiOperation("任务日志详情")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sched:task:query")
     @ApiOperationSupport(order = 110)
-    public Result<?> logInfo(@Validated @RequestBody IdForm form) {
+    public Result<?> logInfo(@Validated @RequestBody IdTenantForm form) {
         TaskLogDTO data = taskLogService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 

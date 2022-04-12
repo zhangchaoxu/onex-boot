@@ -1,6 +1,5 @@
 package com.nb6868.onex.msg.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.jpa.Query;
 import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.pojo.PageForm;
@@ -29,10 +28,10 @@ public class MailTplQueryForm extends BaseForm {
     private String search;
 
     @Query
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ApiModelProperty("租户编码")
     private String tenantCode;
 
-    @ApiModelProperty("分页信息")
+    @ApiModelProperty("分页参数")
     @Page(groups = PageGroup.class)
     PageForm page;
 
