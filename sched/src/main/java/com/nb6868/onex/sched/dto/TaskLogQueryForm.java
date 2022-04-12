@@ -27,6 +27,10 @@ public class TaskLogQueryForm extends BaseForm {
     @Query(blurryType = Query.BlurryType.OR, column = "task_name,result,error")
     private String search;
 
+    @Query
+    @ApiModelProperty("租户编码")
+    private String tenantCode;
+
     @ApiModelProperty("分页信息")
     @Page(groups = PageGroup.class)
     PageForm page;

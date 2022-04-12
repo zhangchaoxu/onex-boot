@@ -23,6 +23,10 @@ public class TaskQueryForm extends BaseForm {
     @Query
     private Integer state;
 
+    @Query
+    @ApiModelProperty("租户编码")
+    private String tenantCode;
+
     @ApiModelProperty("分页信息")
     @Page(groups = PageGroup.class)
     PageForm page;

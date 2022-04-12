@@ -29,7 +29,7 @@ public class MailLogQueryForm extends BaseForm {
     private String search;
 
     @Query
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ApiModelProperty("租户编码")
     private String tenantCode;
 
     @ApiModelProperty("分页信息")
