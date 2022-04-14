@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.3.7] 2022.04.14
+- upgrade: upgrade hutool to 5.8.0_M3
+- upgrade: upgrade druid to 1.2.9
+- upgrade: upgrade weixin to 4.3.0
+
 ## [3.3.6] 2022.04.12
 - new: add sys module
 - fix: fix schedule log without tenant code issue
