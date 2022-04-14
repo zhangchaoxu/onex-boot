@@ -75,6 +75,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(DuplicateKeyException.class)
     public Object handleDuplicateKeyException(HttpServletRequest request, DuplicateKeyException e) {
+        e.printStackTrace();
         saveLog(request, new OnexException(ErrorCode.DB_RECORD_EXISTS, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.DB_RECORD_EXISTS);
     }
@@ -87,6 +88,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Object handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
+        e.printStackTrace();
         saveLog(request, new OnexException(ErrorCode.DB_VIOLATION_ERROR, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
     }
@@ -111,6 +113,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Object handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException e) {
+        e.printStackTrace();
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
@@ -160,11 +163,11 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Object handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
+        e.printStackTrace();
         Locale.setDefault(LocaleContextHolder.getLocale());
         // 参考ValidatorUtils
         // 需要在Controller中加上Validated注解,需要在接口方法参数中加上NotNull NotEmpty等校验注解
         String errorMsg = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(";"));
-
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, errorMsg);
     }
 
@@ -178,6 +181,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
+        e.printStackTrace();
         Locale.setDefault(LocaleContextHolder.getLocale());
         String errorMsg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
         // 保存日志
@@ -193,6 +197,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Object handleMaxUploadSizeExceededException(HttpServletRequest request, MaxUploadSizeExceededException e) {
+        e.printStackTrace();
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
@@ -208,6 +213,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Object handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
+        e.printStackTrace();
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
@@ -222,6 +228,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Object handleMethodArgumentTypeMismatchException(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
+        e.printStackTrace();
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
@@ -235,8 +242,9 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Object handleException(HttpServletRequest request, Exception e) {
+        e.printStackTrace();
         // 保存日志
-        saveLog(request, new OnexException(ErrorCode.INTERNAL_SERVER_ERROR, e.getMessage()));
+        saveLog(request, e);
         return handleExceptionResult(request, ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
