@@ -1,15 +1,22 @@
 package com.nb6868.onex.uc.controller;
 
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.util.TreeNodeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.DeptDTO;
-import com.nb6868.onex.uc.dto.DeptTreeDTO;
+import com.nb6868.onex.uc.entity.DeptEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +28,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,13 +46,17 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    @GetMapping("tree")
+    @PostMapping("tree")
     @ApiOperation("树表")
+    @QueryDataScope(tenantFilter = true)
     @RequiresPermissions("uc:dept:list")
-    public Result<?> tree(@ApiIgnore @RequestParam Map<String, Object> params) {
-        List<DeptTreeDTO> list = deptService.treeList(params);
-
-        return new Result<>().success(list);
+    public Result<?> tree(@ApiIgnore @RequestParam Map<String, Object> form) {
+        QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
+        List<TreeNode<String>> nodeList = new ArrayList<>();
+        deptService.list(queryWrapper).forEach(entity -> nodeList.add(new TreeNode<>(entity.getCode(), entity.getPcode(), entity.getName(), entity.getSort())
+                .setExtra(Dict.create().set("type", entity.getType()))));
+        List<Tree<String>> treeList = TreeNodeUtils.buildCodeTree(nodeList);
+        return new Result<>().success(treeList);
     }
 
     @GetMapping("list")
