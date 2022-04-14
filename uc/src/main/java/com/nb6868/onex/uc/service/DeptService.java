@@ -1,20 +1,16 @@
 package com.nb6868.onex.uc.service;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.DeptDao;
 import com.nb6868.onex.uc.dto.DeptDTO;
 import com.nb6868.onex.uc.entity.DeptEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -28,16 +24,6 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 
 	@Autowired
 	UserService userService;
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public QueryWrapper<DeptEntity> getWrapper(String method, Map<String, Object> params) {
-		return new QueryWrapper<DeptEntity>()
-				.eq("uc_dept.deleted", 0)
-				.in(!ObjectUtils.isEmpty(MapUtil.get(params, "deptIdList", List.class)), "uc_dept.id", (List<Long>) params.get("deptIdList"))
-				.like(!ObjectUtils.isEmpty(MapUtil.getStr(params, "name")), "uc_dept.name", params.get("name"))
-				.like(!ObjectUtils.isEmpty(MapUtil.getStr(params, "code")), "uc_dept.code", params.get("code"));
-	}
 
 	public DeptDTO getDtoByCode(String code) {
 		//超级管理员，部门ID为null
