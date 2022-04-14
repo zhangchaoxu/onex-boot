@@ -16,6 +16,7 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.DeptDTO;
+import com.nb6868.onex.uc.dto.DeptQueryForm;
 import com.nb6868.onex.uc.entity.DeptEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import io.swagger.annotations.Api;
@@ -49,8 +50,8 @@ public class DeptController {
     @PostMapping("tree")
     @ApiOperation("树表")
     @QueryDataScope(tenantFilter = true)
-    @RequiresPermissions("uc:dept:list")
-    public Result<?> tree(@ApiIgnore @RequestParam Map<String, Object> form) {
+    @RequiresPermissions("uc:dept:query")
+    public Result<?> tree(@Validated @RequestBody DeptQueryForm form) {
         QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<TreeNode<String>> nodeList = new ArrayList<>();
         deptService.list(queryWrapper).forEach(entity -> nodeList.add(new TreeNode<>(entity.getCode(), entity.getPcode(), entity.getName(), entity.getSort())
@@ -61,7 +62,7 @@ public class DeptController {
 
     @GetMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("uc:dept:list")
+    @RequiresPermissions("uc:dept:query")
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<DeptDTO> list = deptService.listDto(params);
 
@@ -70,7 +71,7 @@ public class DeptController {
 
     @GetMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:dept:page")
+    @RequiresPermissions("uc:dept:query")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<DeptDTO> page = deptService.pageDto(params);
 
@@ -79,7 +80,7 @@ public class DeptController {
 
     @GetMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:dept:info")
+    @RequiresPermissions("uc:dept:query")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         DeptDTO data = deptService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -90,7 +91,7 @@ public class DeptController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:dept:save")
+    @RequiresPermissions("uc:dept:edit")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody DeptDTO dto) {
         deptService.saveDto(dto);
 
@@ -100,7 +101,7 @@ public class DeptController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:dept:update")
+    @RequiresPermissions("uc:dept:edit")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody DeptDTO dto) {
         deptService.updateDto(dto);
 
@@ -120,7 +121,7 @@ public class DeptController {
     @DeleteMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
-    @RequiresPermissions("uc:dept:deleteBatch")
+    @RequiresPermissions("uc:dept:delete")
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
         deptService.logicDeleteByIds(ids);
 

@@ -1,19 +1,19 @@
 package com.nb6868.onex.uc.controller;
 
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
-import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.TreeUtils;
+import com.nb6868.onex.common.util.TreeNodeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.MenuDTO;
-import com.nb6868.onex.uc.entity.MenuEntity;
-import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.MenuService;
 import com.nb6868.onex.uc.service.UserService;
 import io.swagger.annotations.Api;
@@ -24,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -43,19 +44,16 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
     @Autowired
-    private MenuScopeService menuScopeService;
-    @Autowired
     private UserService userService;
 
     @GetMapping("tree")
     @ApiOperation("登录用户菜单树")
     public Result<?> tree(@RequestParam(required = false, name = "菜单类型 0：菜单 1：按钮  null：全部") Integer type) {
         ShiroUser user = ShiroUtils.getUser();
-        List<MenuEntity> entityList = menuService.getListByUser(user, type);
-        List<MenuTreeDTO> dtoList = ConvertUtils.sourceToTarget(entityList, MenuTreeDTO.class);
-        List<MenuTreeDTO> dtoTree = TreeUtils.build(dtoList);
-
-        return new Result<>().success(dtoTree);
+        List<TreeNode<Long>> menuList = new ArrayList<>();
+        menuService.getListByUser(user, type).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
+        List<Tree<Long>> treeList = TreeNodeUtils.buildIdTree(menuList);
+        return new Result<>().success(treeList);
     }
 
     @GetMapping("permissions")
