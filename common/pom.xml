@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.3.6</version>
+        <version>3.3.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -15,15 +15,15 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <druid.version>1.2.8</druid.version>
+        <druid.version>1.2.9</druid.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <mybatisplus.version>3.5.1</mybatisplus.version>
         <shiro.version>1.9.0</shiro.version>
-        <hutool.version>5.8.0.M2</hutool.version>
+        <hutool.version>5.8.0.M3</hutool.version>
         <bcprov.version>1.70</bcprov.version>
         <jsoup.version>1.14.3</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
-        <weixin.version>4.2.0</weixin.version>
+        <weixin.version>4.3.0</weixin.version>
         <aliyun.oss.version>3.14.0</aliyun.oss.version>
         <huaweicloud.obs.version>3.22.3</huaweicloud.obs.version>
         <easypoi.version>4.4.0</easypoi.version>
