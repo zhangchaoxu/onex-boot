@@ -4,6 +4,7 @@
 - upgrade: upgrade hutool to 5.8.0_M3
 - upgrade: upgrade druid to 1.2.9
 - upgrade: upgrade weixin to 4.3.0
+- fix: fix exception print issue
 
 ## [3.3.6] 2022.04.12
 - new: add sys module

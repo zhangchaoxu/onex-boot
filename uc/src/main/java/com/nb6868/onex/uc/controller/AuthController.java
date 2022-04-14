@@ -1,6 +1,10 @@
 package com.nb6868.onex.uc.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -187,26 +191,35 @@ public class AuthController {
         // 获取该用户所有menu
         List<MenuEntity> allList = menuService.getListByUser(user, null);
         // 过滤出其中显示菜单
-        List<MenuTreeDTO> menuList = new ArrayList<>();
+        List<TreeNode<Long>> menuList = new ArrayList<>();
         // 过滤出其中路由菜单
-        List<MenuDTO> urlList = new ArrayList<>();
+        List<MenuResult> urlList = new ArrayList<>();
         // 过滤出其中的权限
         Set<String> permissions = new HashSet<>();
         allList.forEach(menu -> {
             if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
-                menuList.add(ConvertUtils.sourceToTarget(menu, MenuTreeDTO.class));
+                // 菜单需要显示 && 菜单类型为菜单
+                menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(BeanUtil.beanToMap(menu)));
             }
             if (StrUtil.isNotBlank(menu.getUrl())) {
-                urlList.add(ConvertUtils.sourceToTarget(menu, MenuDTO.class));
+                urlList.add(ConvertUtils.sourceToTarget(menu, MenuResult.class));
             }
             if (form.isPermissions() && StrUtil.isNotBlank(menu.getPermissions())) {
                 permissions.addAll(StrSplitter.splitTrim(menu.getPermissions(), ',', true));
             }
         });
-        // 将菜单列表转成菜单树
-        MenuScopeResult result = new MenuScopeResult();
-        result.setMenuTree(TreeUtils.build(menuList));
-        result.setUrlList(urlList);
+        MenuScopeResult result = new MenuScopeResult()
+                // 将菜单列表转成菜单树
+                .setMenuTree(TreeUtil.build(menuList, 0L, new TreeNodeConfig().setWeightKey("sort").setIdKey("id").setParentIdKey("pid").setChildrenKey("children"), (treeNode, tree) -> {
+                    tree.setId(treeNode.getId());
+                    tree.setParentId(treeNode.getParentId());
+                    tree.setWeight(treeNode.getWeight());
+                    tree.setName(treeNode.getName());
+                    tree.putExtra("icon", treeNode.getExtra().get("icon"));
+                    tree.putExtra("url", treeNode.getExtra().get("url"));
+                    tree.putExtra("urlNewBlank", treeNode.getExtra().get("urlNewBlank"));
+                }))
+                .setUrlList(urlList);
         if (form.isPermissions()) {
             result.setPermissions(permissions);
         }
