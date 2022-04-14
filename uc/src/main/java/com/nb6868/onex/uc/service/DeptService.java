@@ -11,7 +11,6 @@ import com.nb6868.onex.common.util.TreeUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.DeptDao;
 import com.nb6868.onex.uc.dto.DeptDTO;
-import com.nb6868.onex.uc.dto.DeptTreeDTO;
 import com.nb6868.onex.uc.entity.DeptEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,19 +62,6 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 	}
 
 	/**
-	 * 通过参数获取部门树
-	 * @param params 参数
-	 * @return 部门树
-	 */
-	public List<DeptTreeDTO> treeList(Map<String, Object> params) {
-		List<DeptEntity> entityList = getBaseMapper().selectList(getWrapper("treeList", params));
-
-		List<DeptTreeDTO> dtoList = ConvertUtils.sourceToTarget(entityList, DeptTreeDTO.class);
-
-		return TreeUtils.build(dtoList);
-	}
-
-	/**
 	 * 通过id获取父链
 	 * @param code 组织代码
 	 * @return 父链(包括自己)
@@ -101,12 +87,12 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 	 * @param id   部门ID
 	 * @return 子部门列表
 	 */
-	public List<Long> getSubDeptIdList(Long id) {
+	/*public List<Long> getSubDeptIdList(Long id) {
 		List<Long> deptIdList = getBaseMapper().getSubDeptIdList("%" + id + "%");
 		deptIdList.add(id);
 
 		return deptIdList;
-	}
+	}*/
 
 	/**
 	 * 获取所有上级部门ID

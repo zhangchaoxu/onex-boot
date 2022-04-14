@@ -1,10 +1,7 @@
 package com.nb6868.onex.uc.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeNodeConfig;
-import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -199,7 +196,7 @@ public class AuthController {
         allList.forEach(menu -> {
             if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
                 // 菜单需要显示 && 菜单类型为菜单
-                menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(BeanUtil.beanToMap(menu)));
+                menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank())));
             }
             if (StrUtil.isNotBlank(menu.getUrl())) {
                 urlList.add(ConvertUtils.sourceToTarget(menu, MenuResult.class));
@@ -210,15 +207,7 @@ public class AuthController {
         });
         MenuScopeResult result = new MenuScopeResult()
                 // 将菜单列表转成菜单树
-                .setMenuTree(TreeUtil.build(menuList, 0L, new TreeNodeConfig().setWeightKey("sort").setIdKey("id").setParentIdKey("pid").setChildrenKey("children"), (treeNode, tree) -> {
-                    tree.setId(treeNode.getId());
-                    tree.setParentId(treeNode.getParentId());
-                    tree.setWeight(treeNode.getWeight());
-                    tree.setName(treeNode.getName());
-                    tree.putExtra("icon", treeNode.getExtra().get("icon"));
-                    tree.putExtra("url", treeNode.getExtra().get("url"));
-                    tree.putExtra("urlNewBlank", treeNode.getExtra().get("urlNewBlank"));
-                }))
+                .setMenuTree(TreeNodeUtils.buildIdTree(menuList))
                 .setUrlList(urlList);
         if (form.isPermissions()) {
             result.setPermissions(permissions);
