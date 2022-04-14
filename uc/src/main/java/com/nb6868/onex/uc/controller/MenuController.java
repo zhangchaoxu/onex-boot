@@ -12,7 +12,6 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.MenuDTO;
-import com.nb6868.onex.uc.dto.MenuTreeDTO;
 import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.MenuService;
