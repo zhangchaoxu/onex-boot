@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
@@ -29,7 +30,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,10 +53,9 @@ public class DeptController {
     @RequiresPermissions("uc:dept:query")
     public Result<?> tree(@Validated @RequestBody DeptQueryForm form) {
         QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
-        List<TreeNode<String>> nodeList = new ArrayList<>();
-        deptService.list(queryWrapper).forEach(entity -> nodeList.add(new TreeNode<>(entity.getCode(), entity.getPcode(), entity.getName(), entity.getSort())
-                .setExtra(Dict.create().set("type", entity.getType()))));
-        List<Tree<String>> treeList = TreeNodeUtils.buildCodeTree(nodeList);
+        List<Tree<String>> treeList = TreeNodeUtils.buildCodeTree(
+                CollStreamUtil.toList(deptService.list(queryWrapper),
+                        (entity) -> new TreeNode<>(entity.getCode(), entity.getPcode(), entity.getName(), entity.getSort()).setExtra(Dict.create().set("type", entity.getType()))));
         return new Result<>().success(treeList);
     }
 

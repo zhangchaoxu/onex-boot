@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.wechat;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -44,12 +45,12 @@ public class WechatMpPropsConfig {
     @PostConstruct
     public void init() {
         mpServices = new WxMpServiceImpl();
-        if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
+        if (props == null) {
             log.error("未配置微信公众号,如有需要可配置到onex.yml或持久化");
             return;
         }
         Map<String, WxMpConfigStorage> configStorages = new HashMap<>();
-        props.getConfigs().forEach((s, prop) -> {
+        MapUtil.emptyIfNull(props.getConfigs()).forEach((s, prop) -> {
             WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();
             config.setAppId(prop.getAppid());
             config.setSecret(prop.getSecret());

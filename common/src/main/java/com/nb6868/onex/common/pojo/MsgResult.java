@@ -4,7 +4,9 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.MessageUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -16,6 +18,8 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "消息结果")
 public class MsgResult implements Serializable {
 

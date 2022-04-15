@@ -1,16 +1,22 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
+import com.nb6868.onex.common.pojo.PageForm;
+import com.nb6868.onex.common.pojo.SortItem;
 import com.nb6868.onex.common.util.PasswordUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.plaf.ListUI;
+import java.util.List;
 import java.util.function.Consumer;
 
 @DisplayName("字符串测试")
@@ -95,6 +101,16 @@ public class StringTest {
         String[] arrays = null;
         String from = "page";
         log.error("res={}", ArrayUtil.contains(arrays, from));
+    }
+
+    @Test
+    @DisplayName("streamTest")
+    void streamTest() {
+        PageForm pageForm = new PageForm();
+        pageForm.setSortItems(null);
+        //pageForm.setSortItems(CollUtil.newArrayList(new SortItem(null), new SortItem("sss")));
+        List<OrderItem> list = pageForm.toOrderItems();
+        log.error("list={}", list);
     }
 
 }

@@ -185,15 +185,14 @@ public class AuthController {
     @ApiOperationSupport(order = 200)
     public Result<MenuScopeResult> userMenuScope(@Validated @RequestBody MenuScopeForm form) {
         ShiroUser user = ShiroUtils.getUser();
-        // 获取该用户所有menu
-        List<MenuEntity> allList = menuService.getListByUser(user, null);
         // 过滤出其中显示菜单
         List<TreeNode<Long>> menuList = new ArrayList<>();
         // 过滤出其中路由菜单
         List<MenuResult> urlList = new ArrayList<>();
         // 过滤出其中的权限
         Set<String> permissions = new HashSet<>();
-        allList.forEach(menu -> {
+        // 获取该用户所有menu
+        menuService.getListByUser(user, null).forEach(menu -> {
             if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
                 // 菜单需要显示 && 菜单类型为菜单
                 menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank())));

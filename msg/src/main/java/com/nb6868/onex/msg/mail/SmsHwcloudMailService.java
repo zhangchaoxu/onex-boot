@@ -4,6 +4,7 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONArray;
@@ -53,17 +54,9 @@ public class SmsHwcloudMailService extends AbstractMailService {
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
         JSONArray paramArray = new JSONArray();
         request.getContentParams().forEach((key, value) -> {
-            if (null == value) {
-                // 不允许为空,为空则替换为
-                request.getContentParams().set(key, "");
-                paramArray.add("");
-            } else if (value.toString().length() > 20) {
-                // 超过20的，截取长度
-                request.getContentParams().set(key, value.toString().substring(0, 19) + "…");
-                paramArray.add(value.toString().substring(0, 19) + "…");
-            } else {
-                paramArray.add(value.toString());
-            }
+            String v = StrUtil.sub(ObjectUtil.defaultIfNull(value, " ").toString(), 0, 20);
+            request.getContentParams().set(key, v);
+            paramArray.add(v);
         });
 
         // 消息记录

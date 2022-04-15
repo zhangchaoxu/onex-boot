@@ -17,11 +17,7 @@ public class HttpServletRequestReplaceFilter implements Filter {
         if (request instanceof HttpServletRequest) {
             requestWrapper = new OnexHttpServletRequestWrapper((HttpServletRequest) request);
         }
-        if (requestWrapper == null) {
-            chain.doFilter(request, response);
-        } else {
-            chain.doFilter(requestWrapper, response);
-        }
+        chain.doFilter(requestWrapper == null ? request : requestWrapper, response);
     }
 
     @Override

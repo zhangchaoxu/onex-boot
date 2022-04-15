@@ -3,7 +3,9 @@ package com.nb6868.onex.common.pojo;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.MessageUtils;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -17,6 +19,8 @@ import java.time.Instant;
  */
 @Data
 @Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
