@@ -13,11 +13,13 @@ public class HttpServletRequestReplaceFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        ServletRequest requestWrapper = null;
         if (request instanceof HttpServletRequest) {
-            requestWrapper = new OnexHttpServletRequestWrapper((HttpServletRequest) request);
+            if ("application/json".equalsIgnoreCase(request.getContentType())) {
+                chain.doFilter(new OnexHttpServletRequestWrapper((HttpServletRequest) request), response);
+                return;
+            }
         }
-        chain.doFilter(requestWrapper == null ? request : requestWrapper, response);
+        chain.doFilter(request, response);
     }
 
     @Override
