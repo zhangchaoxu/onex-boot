@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
@@ -53,14 +54,14 @@ public class TreeNodeUtils {
      * 构建CODE格式的树结构
      */
     public static List<Tree<String>> buildCodeTree(List<TreeNode<String>> list) {
-        return TreeUtil.build(list, ROOT_CODE, getCodeTreeNodeConfig(), defaultNodeParser());
+        return TreeUtil.build(CollUtil.emptyIfNull(list), ROOT_CODE, getCodeTreeNodeConfig(), defaultNodeParser());
     }
 
     /**
      * 构建编码格式的树结构
      */
     public static List<Tree<Long>> buildIdTree(List<TreeNode<Long>> list) {
-        return TreeUtil.build(list, ROOT_ID, getIdTreeNodeConfig(), defaultNodeParser());
+        return TreeUtil.build(CollUtil.emptyIfNull(list), ROOT_ID, getIdTreeNodeConfig(), defaultNodeParser());
     }
 
 }

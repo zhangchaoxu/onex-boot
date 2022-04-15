@@ -7,6 +7,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.binarywang.wx.miniapp.message.WxMaMessageHandler;
 import cn.binarywang.wx.miniapp.message.WxMaMessageRouter;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
@@ -60,11 +61,11 @@ public class WechatMaPropsConfig {
 
     @PostConstruct
     public void init() {
-        if (props == null || ObjectUtil.isEmpty(props.getConfigs())) {
+        if (props == null) {
             log.error("未配置微信小程序,如有需要可配置到onex.yml或持久化");
             return;
         }
-        props.getConfigs().forEach((s, prop) -> {
+        MapUtil.emptyIfNull(props.getConfigs()).forEach((s, prop) -> {
             WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
             config.setAppid(prop.getAppid());
             config.setSecret(prop.getSecret());

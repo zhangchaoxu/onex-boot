@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.3.9] 2022.04.15
+- fix: fix sort item issue
+
 ## [3.3.7] 2022.04.14
 - upgrade: upgrade hutool to 5.8.0_M3
 - upgrade: upgrade druid to 1.2.9

@@ -1,17 +1,13 @@
 package com.nb6868.onex.common.pojo;
 
-import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollStreamUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.nb6868.onex.common.jpa.Query;
-import com.nb6868.onex.common.validator.group.PageGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -34,10 +30,6 @@ public class PageForm extends BaseForm {
      * 获得排序规则
      */
     public List<OrderItem> toOrderItems() {
-        List<OrderItem> orderItems = new ArrayList<>();
-        if (CollUtil.isNotEmpty(sortItems)) {
-            sortItems.forEach(sortItem -> orderItems.add(sortItem.toOrderItem()));
-        }
-        return orderItems;
+        return CollStreamUtil.toList(sortItems, SortItem::toOrderItem);
     }
 }

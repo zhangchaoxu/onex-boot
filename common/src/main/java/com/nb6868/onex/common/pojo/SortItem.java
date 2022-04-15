@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "基础排序请求")
 public class SortItem implements Serializable {
 
@@ -32,6 +34,9 @@ public class SortItem implements Serializable {
      * 转换成OrderItem
      */
     public OrderItem toOrderItem() {
+        if (StrUtil.isBlank(column)) {
+            return null;
+        }
         return new OrderItem(StrUtil.toUnderlineCase(column), asc);
     }
 
