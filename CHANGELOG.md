@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## [3.4.0] 2022.04.16
+## [3.4.1] 2022.04.18
 - fix: fix sort item issue
 - new: add log operation scope
+- fix: fix search param bug
 
 ## [3.3.7] 2022.04.14
 - upgrade: upgrade hutool to 5.8.0_M3
