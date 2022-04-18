@@ -81,7 +81,7 @@ public class LogOperationAspect {
         LogBody logEntity = new LogBody();
 
         // 日志记录类型
-        String storeType = "db";
+        String logStoreType = "db";
         String logType = "operation";
         try {
             Method method = joinPoint.getTarget().getClass().getDeclaredMethod(signature.getName(), signature.getParameterTypes());
@@ -90,7 +90,16 @@ public class LogOperationAspect {
                 // 注解上的描述
                 logEntity.setOperation(annotation.value());
                 logType = annotation.type();
-                storeType = annotation.storeType();
+                logStoreType = annotation.storeType();
+                if ("error".equalsIgnoreCase(annotation.scope()) && state == ErrorCode.SUCCESS) {
+                    log.debug("LogOperationAspect only record error [{}]", annotation.value());
+                    return;
+                }
+                if ("success".equalsIgnoreCase(annotation.scope()) && state != ErrorCode.SUCCESS) {
+                    log.debug("LogOperationAspect only record success [{}]", annotation.value());
+                    return;
+                }
+
             }
         } catch (NoSuchMethodException ne) {
             ne.printStackTrace();
@@ -106,13 +115,14 @@ public class LogOperationAspect {
                     logEntity.setCreateName(loginForm.getMobile());
                 }
             } catch (Exception jsonException) {
+                jsonException.printStackTrace();
             }
         } else {
             // 操作日志
             logEntity.setCreateName(ShiroUtils.getUserUsername());
             logEntity.setTenantCode(ShiroUtils.getUserTenantCode());
         }
-        logEntity.setStoreType(storeType);
+        logEntity.setStoreType(logStoreType);
         logEntity.setState(state);
         logEntity.setRequestTime(time);
         logEntity.setType(logType);
@@ -120,7 +130,6 @@ public class LogOperationAspect {
         if (e != null) {
             logEntity.setContent(e instanceof OnexException ? e.toString() : ExceptionUtil.stacktraceToString(e));
         }
-
         // 请求参数
         Dict requestParams = Dict.create().set("params", params);
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();

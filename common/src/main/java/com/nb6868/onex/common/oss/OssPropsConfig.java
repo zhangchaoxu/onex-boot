@@ -24,11 +24,7 @@ public class OssPropsConfig {
      * 获得服务
      */
     public static AbstractOssService getService(String code) {
-        AbstractOssService service = ossServices.get(code);
-        if (service == null) {
-            throw new IllegalArgumentException(String.format("未找到对应code=[%s]的配置", code));
-        }
-        return service;
+        return ossServices.get(code);
     }
 
     @PostConstruct

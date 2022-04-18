@@ -17,7 +17,7 @@ public class DeptQueryForm extends BaseForm {
     @ApiModelProperty("类型")
     private Integer type;
 
-    @Query(blurryType = Query.BlurryType.OR, column = "name,code,pcode")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,code,pcode")
     @ApiModelProperty("搜索关键词")
     private String search;
 

@@ -24,7 +24,7 @@ public class TaskLogQueryForm extends BaseForm {
     private Integer state;
 
     @ApiModelProperty(value = "关键词搜索")
-    @Query(blurryType = Query.BlurryType.OR, column = "task_name,result,error")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "task_name,result,error")
     private String search;
 
     @Query

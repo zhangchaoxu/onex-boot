@@ -23,7 +23,7 @@ public class MailTplQueryForm extends BaseForm {
     @ApiModelProperty("类型")
     private Integer type;
 
-    @Query(blurryType = Query.BlurryType.OR, column="name,title,content")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column="name,title,content")
     @ApiModelProperty("关键词搜索")
     private String search;
 

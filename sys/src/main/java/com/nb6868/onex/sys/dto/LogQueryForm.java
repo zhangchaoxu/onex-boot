@@ -24,7 +24,7 @@ public class LogQueryForm extends BaseForm {
     @ApiModelProperty("类型")
     private String type;
 
-    @Query(blurryType = Query.BlurryType.OR, column = "uri,operation,content")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "uri,operation,content")
     @ApiModelProperty("关键词搜索")
     private String search;
 
