@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public class TaskQueryForm extends BaseForm {
 
     @ApiModelProperty(value = "关键词搜索")
-    @Query(blurryType = Query.BlurryType.OR, column = "name,remark")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,remark")
     private String search;
 
     @ApiModelProperty(value = "状态")

@@ -28,24 +28,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-/**
- * 租户
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
 @RequestMapping("/uc/tenant")
 @Validated
-@Api(tags = "租户", position = 100)
+@Api(tags = "租户管理", position = 10)
 public class TenantController {
     @Autowired
     private TenantService tenantService;
     @Autowired
     private ParamsService tenantParamsService;
 
-    @GetMapping("list")
+    @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("uc:tenant:info")
+    @RequiresPermissions("uc:tenant:query")
     public Result<?> list(@Validated @RequestBody TenantQueryForm form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<TenantDTO> list = tenantService.listDto(queryWrapper);
@@ -53,9 +48,9 @@ public class TenantController {
         return new Result<>().success(list);
     }
 
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:tenant:info")
+    @RequiresPermissions("uc:tenant:query")
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody TenantQueryForm form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         PageData<TenantDTO> page = tenantService.pageDto(form.getPage(), queryWrapper);
@@ -63,9 +58,9 @@ public class TenantController {
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:tenant:info")
+    @RequiresPermissions("uc:tenant:query")
     public Result<?> info(@Validated @RequestBody IdForm form) {
         TenantDTO data = tenantService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -76,7 +71,7 @@ public class TenantController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:tenant:save")
+    @RequiresPermissions("uc:tenant:edit")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody TenantDTO dto) {
         tenantService.saveDto(dto);
 
@@ -86,7 +81,7 @@ public class TenantController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:tenant:update")
+    @RequiresPermissions("uc:tenant:edit")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody TenantDTO dto) {
         tenantService.updateDto(dto);
 

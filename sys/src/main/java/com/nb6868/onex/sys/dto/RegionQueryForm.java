@@ -1,6 +1,5 @@
 package com.nb6868.onex.sys.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.jpa.Query;
 import com.nb6868.onex.common.pojo.BaseForm;
 import io.swagger.annotations.ApiModel;
@@ -17,7 +16,7 @@ public class RegionQueryForm extends BaseForm {
     @ApiModelProperty("深度")
     private Integer deep;
 
-    @Query(blurryType = Query.BlurryType.OR, column = "name,code,pcode")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,code,pcode")
     @ApiModelProperty("搜索关键词")
     private String search;
 

@@ -1,10 +1,6 @@
 package com.nb6868.onex.common.oss;
 
-import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
@@ -22,7 +18,6 @@ import com.aliyuncs.profile.IClientProfile;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
@@ -30,7 +25,7 @@ import java.util.Date;
 
 /**
  * 阿里云存储
- * see {https://help.aliyun.com/document_detail/32008.html}
+ * see https://help.aliyun.com/document_detail/32008.html
  *
  * @author Charles zhangchaoxu@gmail.com
  */

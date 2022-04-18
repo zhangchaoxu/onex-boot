@@ -51,7 +51,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Api(tags = "用户授权", position = 10)
+@Api(tags = "用户授权", position = 1)
 public class AuthController {
 
     @Autowired
@@ -87,18 +87,19 @@ public class AuthController {
 
     @PostMapping("sendMailCode")
     @AccessControl
-    @ApiOperation("发送验证码消息")
+    @ApiOperation(value = "发送验证码消息", notes = "Anon")
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 20)
     public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm form) {
         MailTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
-        AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "模板不存在");
+        AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
             UserEntity user = userService.getByMobile(form.getTenantCode(), form.getMailTo());
             AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
         }
+        // 结果标记
         boolean flag = mailLogService.send(mailTpl, form);
         return new Result<>().boolResult(flag);
     }

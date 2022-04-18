@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.4.0] 2022.04.15
+## [3.4.0] 2022.04.16
 - fix: fix sort item issue
 - new: add log operation scope
 

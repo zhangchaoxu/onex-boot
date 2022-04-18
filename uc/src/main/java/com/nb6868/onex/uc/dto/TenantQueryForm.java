@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "租户查询")
 public class TenantQueryForm extends BaseForm {
 
-    @Query(blurryType = Query.BlurryType.OR, column = "code,name,remark")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,name,remark")
     @ApiModelProperty("标题搜索")
     private String search;
 
