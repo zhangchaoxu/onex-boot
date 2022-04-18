@@ -36,7 +36,7 @@ location / {
 
 接口的运行环境有多种方式可以指定    
 1. 打包的时候用`-P`指定环境,环境由代码中的application_profile.yml文件配置         
-2. 运行的时候通过参数`-Dspring.profiles.active`指定环境,合作和用`--server.port`,`-server.servlet.context-path`指定具体的参数        
+2. 运行的时候通过参数`-Dspring.config.activate.on-profile`指定环境,合作和用`--server.port`,`-server.servlet.context-path`指定具体的参数        
 3. 将配置文件放在jar同目录下,也可以指定该配置文件作为运行环境,这样做的好处是修改配置(如数据库)不需要重新打包
 
 ### 编译
@@ -165,13 +165,13 @@ Spring Boot内置了Tomcat，可配置Tomcat的端口号、初始化线程数、
 
 #### windows部署
 
-`java -jar api.jar --spring.profiles.active=prod`
+`java -jar api.jar --spring.config.activate.on-profile=prod`
 
 #### linux部署
 
 建议使用shell执行,可以指定运行环境、端口、context等 
 ```
-nohup java -Dspring.profiles.active=prod -jar api.jar --server.port=8080 --server.servlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
+nohup java -Dspring.config.activate.on-profile=prod -jar api.jar --server.port=8080 --server.servlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 ```
 
 如果使用cronolog做日志分割，可能需要先安装cronolog`yum install -y cronolog httpd`
@@ -187,7 +187,7 @@ kill -9 $process
 sleep 1
 fi
 echo "start erp process....."
-nohup java -Dspring.profiles.active=prod -jar api.jar --server.port=8080 --server.se
+nohup java -Dspring.config.activate.on-profile=prod -jar api.jar --server.port=8080 --server.se
 rvlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 echo "start erp success!"
 ```

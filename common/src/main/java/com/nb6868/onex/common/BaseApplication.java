@@ -23,13 +23,13 @@ public class BaseApplication extends SpringBootServletInitializer {
      */
     protected static void printEnvironmentInfo(Environment environment) {
         log.info("\n################## {} Running ##################\n" +
-                        ":: Active Profiles ::\t{}\n" +
+                        ":: Profiles ::\t{}\n" +
                         ":: Doc ::\thttp://{}:{}{}/doc.html\n" +
                         ":: Onex ::\t{}-{}-{}-{}\n" +
                         ":: App ::\t{}-{}-{}-{}\n" +
                         "################## {} Running ##################",
                 environment.getProperty("spring.application.name"),
-                environment.getProperty("spring.profiles.active"),
+                environment.getProperty("spring.config.activate.on-profile"),
                 SystemUtil.getHostInfo().getAddress(),
                 environment.getProperty("server.port"),
                 environment.getProperty("server.servlet.context-path"),
