@@ -34,17 +34,17 @@ location / {
 
 ### 环境配置
 
-接口的运行环境有多种方式可以指定    
-1. 打包的时候用`-P`指定环境,环境由代码中的application_profile.yml文件配置         
-2. 运行的时候通过参数`-Dspring.config.activate.on-profile`指定环境,合作和用`--server.port`,`-server.servlet.context-path`指定具体的参数        
+接口的运行环境有多种方式可以指定
+1. 打包的时候用`-P`指定环境,环境由代码中的application_profile.yml文件配置
+2. 运行的时候通过参数`-Dspring.profiles.active`指定环境,合作和用`--server.port`,`-server.servlet.context-path`指定具体的参数
 3. 将配置文件放在jar同目录下,也可以指定该配置文件作为运行环境,这样做的好处是修改配置(如数据库)不需要重新打包
 
 ### 编译
 
-直接使用`mvn clean package -Dmaven.test.skip=true -P prod`即可得到所需的jar或者war包      
+直接使用`mvn clean package -Dmaven.test.skip=true -P prod`即可得到所需的jar或者war包
 
 #### 单jar包(spring-boot-maven-plugin)
-编译结果只有一个jar包,方便管理,但是jar包比较大,而且修改配置或者静态资源需要重新打包部署       
+编译结果只有一个jar包,方便管理,但是jar包比较大,而且修改配置或者静态资源需要重新打包部署
 
 ```xml
 <build>
@@ -165,13 +165,13 @@ Spring Boot内置了Tomcat，可配置Tomcat的端口号、初始化线程数、
 
 #### windows部署
 
-`java -jar api.jar --spring.config.activate.on-profile=prod`
+`java -jar api.jar --spring.profiles.active=prod`
 
 #### linux部署
 
-建议使用shell执行,可以指定运行环境、端口、context等 
+建议使用shell执行,可以指定运行环境、端口、context等
 ```
-nohup java -Dspring.config.activate.on-profile=prod -jar api.jar --server.port=8080 --server.servlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
+nohup java -Dspring.profiles.active=prod -jar api.jar --server.port=8080 --server.servlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 ```
 
 如果使用cronolog做日志分割，可能需要先安装cronolog`yum install -y cronolog httpd`
@@ -187,7 +187,7 @@ kill -9 $process
 sleep 1
 fi
 echo "start erp process....."
-nohup java -Dspring.config.activate.on-profile=prod -jar api.jar --server.port=8080 --server.se
+nohup java -Dspring.profiles.active=prod -jar api.jar --server.port=8080 --server.se
 rvlet.context-path=/api 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 echo "start erp success!"
 ```
@@ -200,13 +200,13 @@ echo "start erp success!"
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-tomcat</artifactId>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-jasper</artifactId>
+    <artifactId>spring-boot-starter-tomcat</artifactId>
     <scope>provided</scope>
+</dependency>
+<dependency>
+<groupId>org.apache.tomcat.embed</groupId>
+<artifactId>tomcat-embed-jasper</artifactId>
+<scope>provided</scope>
 </dependency>
 ```
 
@@ -228,7 +228,7 @@ echo "start erp success!"
 
 ```yaml
 #https port
-port: 8089 
+port: 8089
 #http port
 http:
 port: 8088
@@ -238,23 +238,23 @@ port: 8088
 
 ```java
 @Value("${server.port}") private Integer httpsPort;   @Value("${server.http.port}") private Integer httpPort;   @Bean public TomcatServletWebServerFactory servletContainer() {
-TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {    @Override
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {    @Override
 protected void postProcessContext(Context context) {
-SecurityConstraint securityConstraint = new SecurityConstraint();
-securityConstraint.setUserConstraint("CONFIDENTIAL");
-SecurityCollection collection = new SecurityCollection();
-collection.addPattern("/*");
-securityConstraint.addCollection(collection);
-context.addConstraint(securityConstraint);
-}
-};
-tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
-return tomcat; }   private Connector initiateHttpConnector() {
-Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-connector.setPort(httpPort);
-connector.setScheme("http");
+        SecurityConstraint securityConstraint = new SecurityConstraint();
+        securityConstraint.setUserConstraint("CONFIDENTIAL");
+        SecurityCollection collection = new SecurityCollection();
+        collection.addPattern("/*");
+        securityConstraint.addCollection(collection);
+        context.addConstraint(securityConstraint);
+        }
+        };
+        tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
+        return tomcat; }   private Connector initiateHttpConnector() {
+        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        connector.setPort(httpPort);
+        connector.setScheme("http");
 // 不强制跳转为https
-connector.setSecure(true);
+        connector.setSecure(true);
 // 访问http跳转到https
 // connector.setRedirectPort(httpsPort);  return connector; }
 ```

@@ -6,8 +6,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.core.env.Environment;
 
-import java.net.InetAddress;
-
 /**
  * 基础Application
  *
@@ -29,7 +27,7 @@ public class BaseApplication extends SpringBootServletInitializer {
                         ":: App ::\t{}-{}-{}-{}\n" +
                         "################## {} Running ##################",
                 environment.getProperty("spring.application.name"),
-                environment.getProperty("spring.config.activate.on-profile"),
+                environment.getProperty("spring.profiles.active"),
                 SystemUtil.getHostInfo().getAddress(),
                 environment.getProperty("server.port"),
                 environment.getProperty("server.servlet.context-path"),

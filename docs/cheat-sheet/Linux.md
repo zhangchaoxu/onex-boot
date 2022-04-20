@@ -43,7 +43,7 @@ yum install -y cronolog httpd
 ### 启动java springboot程序
 使用cronolog按小时分割日志
 ```shell
-nohup java -Dspring.config.activate.on-profile=prod -jar api.jar --server.port=8080 --server.servlet.context-path=/api 2>&1 | cronolog ./log/%Y-%m-%d_%H.out >> /dev/null &
+nohup java -Dspring.profiles.active=prod -jar api.jar --server.port=8080 --server.servlet.context-path=/api 2>&1 | cronolog ./log/%Y-%m-%d_%H.out >> /dev/null &
 ```
 
 ### 防火墙设置

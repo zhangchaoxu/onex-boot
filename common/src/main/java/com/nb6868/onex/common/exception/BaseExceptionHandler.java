@@ -51,7 +51,7 @@ public abstract class BaseExceptionHandler {
     /**
      * 当前运行环境
      */
-    @Value("${spring.config.activate.on-profile}")
+    @Value("${spring.profiles.active}")
     protected String profile;
 
     @Autowired
