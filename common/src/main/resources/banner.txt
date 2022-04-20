@@ -1,7 +1,7 @@
 
 ${AnsiColor.BRIGHT_RED}################## Start ${spring.application.name} ##################
 ${AnsiColor.BRIGHT_YELLOW}:: Spring Boot ::  ${spring-boot.formatted-version}
-${AnsiColor.BRIGHT_YELLOW}:: Active Profiles ::  ${spring.config.activate.on-profile}
+${AnsiColor.BRIGHT_YELLOW}:: Active Profiles ::  ${spring.profiles.active}
 ${AnsiColor.BRIGHT_YELLOW}:: Context Path ::  http://127.0.0.1:${server.port}${server.servlet.context-path}
 ${AnsiColor.BRIGHT_GREEN}:: Powered By ::  https://onex.nb6868.com
 ${AnsiColor.BRIGHT_RED}################## Start ${spring.application.name} ##################

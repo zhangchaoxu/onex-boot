@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.4.1] 2022.04.18
+## [3.4.2] 2022.04.18
 - fix: fix sort item issue
 - new: add log operation scope
 - fix: fix search param bug

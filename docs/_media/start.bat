@@ -7,5 +7,5 @@ then
 fi
 
 echo "start rest process....."
-nohup java -Dspring.config.activate.on-profile=prod -jar api.jar 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
+nohup java -Dspring.profiles.active=prod -jar api.jar 2>&1 | cronolog log.%Y-%m-%d.out >> /dev/null &
 echo "start rest success!"
