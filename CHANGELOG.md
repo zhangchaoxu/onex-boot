@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.4.3] 2022.04.21
+- new: TreeNodeUtils add method
+
 ## [3.4.2] 2022.04.18
 - fix: fix sort item issue
 - new: add log operation scope

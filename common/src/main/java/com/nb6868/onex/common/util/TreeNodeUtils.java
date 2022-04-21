@@ -54,14 +54,25 @@ public class TreeNodeUtils {
      * 构建CODE格式的树结构
      */
     public static List<Tree<String>> buildCodeTree(List<TreeNode<String>> list) {
-        return TreeUtil.build(CollUtil.emptyIfNull(list), ROOT_CODE, getCodeTreeNodeConfig(), defaultNodeParser());
+        return buildCodeTree(list, ROOT_CODE);
+    }
+
+    /**
+     * 构建CODE格式的树结构
+     */
+    public static List<Tree<String>> buildCodeTree(List<TreeNode<String>> list, String rootNode) {
+        return TreeUtil.build(CollUtil.emptyIfNull(list), rootNode, getCodeTreeNodeConfig(), defaultNodeParser());
     }
 
     /**
      * 构建编码格式的树结构
      */
     public static List<Tree<Long>> buildIdTree(List<TreeNode<Long>> list) {
-        return TreeUtil.build(CollUtil.emptyIfNull(list), ROOT_ID, getIdTreeNodeConfig(), defaultNodeParser());
+        return buildIdTree(list, ROOT_ID);
+    }
+
+    public static List<Tree<Long>> buildIdTree(List<TreeNode<Long>> list, Long rootNode) {
+        return TreeUtil.build(CollUtil.emptyIfNull(list), rootNode, getIdTreeNodeConfig(), defaultNodeParser());
     }
 
 }
