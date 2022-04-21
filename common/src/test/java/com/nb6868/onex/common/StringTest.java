@@ -1,6 +1,5 @@
 package com.nb6868.onex.common;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -9,13 +8,11 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.PageForm;
-import com.nb6868.onex.common.pojo.SortItem;
 import com.nb6868.onex.common.util.PasswordUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.plaf.ListUI;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -83,7 +80,7 @@ public class StringTest {
     @Test
     @DisplayName("passwordEncode")
     void passwordEncode() {
-        String raw = "admin_ggjg";
+        String raw = "123456";
         log.error("password={}", PasswordUtils.encode(raw));
         log.error("password={}", PasswordUtils.aesEncode(raw, Const.AES_KEY));
     }
