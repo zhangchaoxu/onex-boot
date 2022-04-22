@@ -12,10 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * WebSocketServer
- * see {https://mp.weixin.qq.com/s/UE_iyHZ4CWmDzx9dr6m-pQ}
+ * see https://mp.weixin.qq.com/s/UE_iyHZ4CWmDzx9dr6m-pQ
  *
  * @author Charles zhangchaoxu@gmail.com
  */
