@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## [3.4.3] 2022.04.21
+## [3.4.3] 2022.04.22
+- upgrade: upgrade springboot to 2.6.7
+- upgrade: upgrade aliyun oss to 3.14.1
+- 
+ 
+[3.4.3] 2022.04.21
 - new: TreeNodeUtils add method
 
 ## [3.4.2] 2022.04.18
