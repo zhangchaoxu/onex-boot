@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.config;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,7 +80,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
          */
         // favicon/webjars/static
         registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/static/");
+        // 貌似只能访问api所在jar的static
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        // 可以访问依赖jar中的webjars
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
         // knife4j(swagger) doc
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
