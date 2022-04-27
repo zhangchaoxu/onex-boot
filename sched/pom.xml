@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.5.1</version>
+        <version>3.5.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sched</artifactId>
@@ -14,8 +14,9 @@
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
+        <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
-        <onex-common.version>3.5.1</onex-common.version>
+        <onex-common.version>3.5.2</onex-common.version>
         <shiro.version>1.9.0</shiro.version>
     </properties>
 
@@ -33,5 +34,14 @@
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources/webjars</directory>
+                <targetPath>${destDir}/webjars</targetPath>
+            </resource>
+        </resources>
+    </build>
 
 </project>
