@@ -1,11 +1,14 @@
 package com.nb6868.onex.common.config;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -58,6 +61,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
     }
 
+    @Value("${onex.oss.file-request-path}")
+    private String ossFileRequestPath;
+    @Value("${onex.oss.file-storage-path}")
+    private String ossFileStoragePath;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         /**
@@ -80,6 +88,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // easy poi wps
         // registry.addResourceHandler("/easypoi-preview.html").addResourceLocations("classpath:/META-INF/resources/");
         // registry.addResourceHandler("/easypoijs/**").addResourceLocations("classpath:/META-INF/resources/easypoijs/");
+        // 文件读取映射
+        if (StrUtil.isNotBlank(ossFileRequestPath) && StrUtil.isNotBlank(ossFileStoragePath)) {
+            // 先创建目录
+            // FileUtil.mkdir(ossFileStoragePath);
+            registry.addResourceHandler(ossFileRequestPath).addResourceLocations("file:/" + ossFileStoragePath);
+        }
     }
 
     /**
