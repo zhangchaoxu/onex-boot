@@ -118,4 +118,4 @@
 ## [2.1.34] 2022.01.10
 - fix: AccessControl和LogOperation注解冲突,导致LogOperation切片过了两次的bug
 - upgrade: hutool to 5.7.19
-- upgrade: MybatisPlus to 3.5.0
+- upgrade: MybatisPlus to 3.5.1

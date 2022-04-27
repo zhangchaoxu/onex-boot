@@ -39,5 +39,19 @@ public List<ModelEntity> list(Date time, String code) {
 }
 ```
 
+## mongo error: Too many open files
+原因分析：mongodb因为linux系统限制最大文件数1024，导致出现该错误
+解决思路：1. 修改系统最大文件打开数(需要重启操作系统,会产生不稳定) 2. 修改mongo所在pid的最大文件打开数
+```shell
+# 查看系统最大文件打开数
+ulimit -a
+
+# 查看执行pid最大文件打开数
+cat /proc/{pid}/limits
+
+# 修改执行pid最大文件打开数
+prlimit --pid {pid} --nofile=65535:65535
+```
+
 ## Ref.
 1. [spring-data-mongodb](https://spring.io/projects/spring-data-mongodb)
