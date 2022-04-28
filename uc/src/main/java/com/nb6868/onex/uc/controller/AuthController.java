@@ -104,39 +104,28 @@ public class AuthController {
         return new Result<>().boolResult(flag);
     }
 
-    @PostMapping("loginParams")
-    @AccessControl
-    @ApiOperation(value = "登录参数", notes = "Anon")
-    @ApiOperationSupport(order = 30)
-    public Result<?> loginParams(@Validated @RequestBody TenantParamsInfoByUrlForm form) {
-        // 通过url地址获得租户配置
-        JSONObject paramsContent = paramsService.getContent(UcConst.ParamsTypeEnum.TENANT.value(), null, null, UcConst.PARAMS_CODE_LOGIN, "url", form.getUrl());
-        return new Result<>().success(paramsContent);
-    }
-
     @PostMapping("userLogin")
     @AccessControl
     @ApiOperation(value = "用户登录", notes = "Anon")
     @LogOperation(value = "用户登录", type = "login")
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
-        // 获得登录配置
-        AuthProps.Config loginConfig = authProps.getConfigs().get(form.getType());
-        AssertUtils.isNull(loginConfig, ErrorCode.UNKNOWN_LOGIN_TYPE);
-        // 获得登录参数
-        JSONObject loginParams = paramsService.getContent(UcConst.ParamsTypeEnum.TENANT.value(), form.getTenantCode(), null, UcConst.PARAMS_CODE_LOGIN, "type", form.getType());
+        // 获得对应登录类型的登录参数
+        JSONObject loginParams = paramsService.getContent(UcConst.ParamsTypeEnum.TENANT.value(), form.getTenantCode(), null, form.getType());
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
+            // 先检验验证码表单
             ValidatorUtils.validateEntity(form, LoginForm.CaptchaGroup.class);
-            AssertUtils.isFalse(captchaService.validate(form.getCaptchaUuid(), form.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
+            // 再校验验证码与魔术验证码不同，并且 校验失败
+            AssertUtils.isTrue(!form.getCaptchaValue().equalsIgnoreCase(loginParams.getStr("magicCaptcha")) && !captchaService.validate(form.getCaptchaUuid(), form.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
         }
         UserEntity user;
         if (form.getType().endsWith("USERNAME_PASSWORD")) {
             // 帐号密码登录
-            user = authService.loginByUsernameAndPassword(form, loginParams);
+            user = authService.loginByUsernamePassword(form, loginParams);
         } else if (form.getType().endsWith("MOBILE_SMS")) {
             // 手机号验证码登录
-            user = authService.loginByMobileAndSms(form, loginParams);
+            user = authService.loginByMobileSms(form, loginParams);
         } else {
             // 其它登录方式
             throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
@@ -145,8 +134,8 @@ public class AuthController {
         // 登录成功
         LoginResult loginResult = new LoginResult()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
-                .setToken(tokenService.createToken(user, loginConfig))
-                .setTokenKey(authProps.getTokenHeaderKey());
+                .setToken(tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), loginParams.getStr("type"), loginParams.getStr("tokenKey", "onex@2021"), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true)))
+                .setTokenKey(loginParams.getStr("tokenHeaderKey", "auth-token"));
         return new Result<>().success(loginResult);
     }
 

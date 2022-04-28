@@ -88,6 +88,38 @@ public interface UcConst {
     }
 
     /**
+     * 参数范围
+     */
+    enum ParamsScopeEnum {
+
+        /**
+         * 详见name
+         */
+        PUBLIC("public", "公开"),
+        TENANT("private", "私有");
+
+        private String value;
+        private String name;
+
+        ParamsScopeEnum(String value) {
+            this.value = value;
+        }
+
+        ParamsScopeEnum(String value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public String value() {
+            return this.value;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    /**
      * 权限范围类型
      */
     enum MenuScopeTypeEnum {
