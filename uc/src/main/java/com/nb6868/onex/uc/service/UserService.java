@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 
@@ -130,7 +131,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * @param username 用户名
      * @return
      */
-    public UserEntity getByUsername(String tenantCode, String username) {
+    public UserEntity getByUsername(String tenantCode, @NotNull String username) {
         return query().eq("username", username)
                 .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
                 .last(Const.LIMIT_ONE)
@@ -143,7 +144,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * @param mobile 手机号
      * @return
      */
-    public UserEntity getByMobile(String tenantCode, String mobile) {
+    public UserEntity getByMobile(String tenantCode, @NotNull String mobile) {
         return query().eq("mobile", mobile)
                 .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
                 .last(Const.LIMIT_ONE)

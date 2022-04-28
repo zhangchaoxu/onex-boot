@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.jpa.EntityService;
@@ -22,6 +23,54 @@ import java.util.List;
  */
 @Service
 public class TokenService extends EntityService<TokenDao, TokenEntity> {
+
+    /**
+     * 生成token
+     *
+     * @param user        用户
+     * @param tokenStoreType token存储类型
+     * @param loginType 登录类型
+     * @param tokenKey token密钥
+     * @param tokenExpire 有效期(秒) <=0 表示不限
+     * @param multiLogin 是否支持多端登录
+     * @return result
+     */
+    public String createToken(UserEntity user, String tokenStoreType, String loginType, String tokenKey, int tokenExpire, boolean multiLogin) {
+        // 生成token
+        Date now = new Date();
+        // jwt99年过期=永不过期
+        Date expireDate = tokenExpire <= 0 ? DateUtil.offsetMonth(now, 12 * 99) : DateUtil.offsetSecond(now, tokenExpire);
+        String jwtToken = JWT.create()
+                .setSubject(loginType)
+                .setKey(tokenKey.getBytes())
+                .setIssuedAt(now)
+                .setNotBefore(now)
+                .setExpiresAt(expireDate)
+                .setPayload("id", user.getId())
+                .setPayload("deptCode", user.getDeptCode())
+                .setPayload("areaCode", user.getAreaCode())
+                .setPayload("tenantCode", user.getTenantCode())
+                .setPayload("username", user.getUsername())
+                .setPayload("realName", user.getRealName())
+                .sign();
+        if ("db".equalsIgnoreCase(tokenStoreType)) {
+            // 在数据库中
+            if (!multiLogin) {
+                // 不支持多端登录,注销该用户所有token
+                deleteTokenByUserId(user.getId(), loginType);
+            }
+            // 不管逻辑，永远都是重新生成一个token
+            TokenEntity tokenEntity = new TokenEntity();
+            tokenEntity.setUserId(user.getId());
+            tokenEntity.setTenantCode(user.getTenantCode());
+            tokenEntity.setToken(jwtToken);
+            tokenEntity.setType(loginType);
+            tokenEntity.setExpireTime(expireDate);
+            // 保存token
+            this.save(tokenEntity);
+        }
+        return jwtToken;
+    }
 
     /**
      * 生成token

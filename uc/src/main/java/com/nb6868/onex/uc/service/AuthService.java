@@ -41,11 +41,15 @@ public class AuthService {
      * @param loginParams 登录参数
      * @return 登录用户
      */
-    public UserEntity loginByUsernameAndPassword(LoginForm form, JSONObject loginParams) {
+    public UserEntity loginByUsernamePassword(LoginForm form, JSONObject loginParams) {
+        // 校验表单
         ValidatorUtils.validateEntity(form, LoginForm.UsernamePasswordGroup.class);
+        // 获得用户
         UserEntity user = userService.getByUsername(form.getTenantCode(), form.getUsername());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+        // 判断用户状态
         AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+        // 验证密码
         boolean passwordVerify = PasswordUtils.verify(form.getPassword(), user.getPassword());
         if (!passwordVerify) {
             // 密码错误
@@ -77,11 +81,13 @@ public class AuthService {
      * @param loginParams 登录参数
      * @return 登录用户
      */
-    public UserEntity loginByMobileAndSms(LoginForm form, JSONObject loginParams) {
+    public UserEntity loginByMobileSms(LoginForm form, JSONObject loginParams) {
         // 校验参数
         ValidatorUtils.validateEntity(form, LoginForm.MobileSmsGroup.class);
+        // 获得用不
         UserEntity user = userService.getByMobile(form.getTenantCode(), form.getMobile());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+        // 判断用户状态
         AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
 
         // 获取最后一次短信记录
