@@ -19,5 +19,6 @@ public class CrosProps {
     String allowHeaders = HttpHeaders.CONTENT_TYPE + ",device,Authorization,token,auth-token,jwt-token";
     String allowMethods = "GET,POST,PUT,DELETE,OPTIONS";
     String maxAge = "3600";
+    String exposeHeaders = "Content-Disposition";
 
 }
