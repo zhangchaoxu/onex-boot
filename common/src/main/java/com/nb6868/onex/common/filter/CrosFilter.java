@@ -38,6 +38,7 @@ public class CrosFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, crosProps.getAllowCredentials());
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,crosProps.getExposeHeaders());
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, crosProps.getAllowHeaders());
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, crosProps.getAllowMethods());
         // Access-Control-Allow-Origin和Access-Control-Allow-Credentials有约束;
