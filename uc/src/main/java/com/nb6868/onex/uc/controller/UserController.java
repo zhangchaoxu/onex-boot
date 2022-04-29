@@ -2,7 +2,6 @@ package com.nb6868.onex.uc.controller;
 
 import com.nb6868.onex.common.annotation.DataSqlScope;
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.ChangeStateForm;
 import com.nb6868.onex.common.pojo.PageData;
@@ -39,8 +38,6 @@ import java.util.Map;
 @Api(tags = "用户管理", position = 20)
 public class UserController {
 
-    @Autowired
-    AuthProps authProps;
     @Autowired
     UserService userService;
     @Autowired
