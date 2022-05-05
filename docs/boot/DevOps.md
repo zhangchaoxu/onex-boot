@@ -1,5 +1,5 @@
 # 编译部署
-后台管理功能前后端分离,前端为vue工程,后端为springboot工程,需要分开编译部署。
+后台管理功能前后端分离,前端为vue工程,后端为SpringBoot工程,需要分开编译部署。
 
 ## 前端
 
@@ -301,7 +301,7 @@ server {
 ```
 
 ## 运维实践
-以下为一种比较推荐的[实践方式](DevOps_foo.md)
+以下为一种比较推荐的[实践方式](DevOpsCase.md)
 
 ## ref
 1. [SpringBoot 项目打包分开lib,配置和资源文件](https://blog.csdn.net/qq_30220585/article/details/90201643)

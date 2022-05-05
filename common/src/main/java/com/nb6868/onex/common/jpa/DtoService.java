@@ -116,6 +116,12 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
         return ConvertUtils.sourceToTarget(entityList, currentDtoClass());
     }
 
+    public D oneDto(Wrapper<T> queryWrapper) {
+        T entity = getOne(queryWrapper);
+
+        return ConvertUtils.sourceToTarget(entity, currentDtoClass());
+    }
+
     /**
      * 条数
      *

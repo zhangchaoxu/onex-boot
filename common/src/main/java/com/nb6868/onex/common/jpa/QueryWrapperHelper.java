@@ -54,57 +54,59 @@ public class QueryWrapperHelper {
                         if (q.blurryType() != Query.BlurryType.NULL) {
                             // 多字段
                             List<String> blurryList = StrUtil.split(q.column(), ",", true, true);
-                            queryWrapper.and(wrapper -> {
-                                for (int i = 0; i < blurryList.size(); i++) {
-                                    // 只能是or和and，and默认
-                                    wrapper.or(q.blurryType() == Query.BlurryType.OR && i != 0);
-                                    final String column = q.underlineCase() ? StrUtil.toUnderlineCase(blurryList.get(i)) : blurryList.get(i);
-                                    switch (q.type()) {
-                                        case EQ:
-                                            wrapper.eq(column, val);
-                                            break;
-                                        case NE:
-                                            wrapper.ne(column, val);
-                                            break;
-                                        case GE:
-                                            wrapper.ge(column, val);
-                                            break;
-                                        case GT:
-                                            wrapper.gt(column, val);
-                                            break;
-                                        case LE:
-                                            wrapper.le(column, val);
-                                            break;
-                                        case LT:
-                                            wrapper.lt(column, val);
-                                            break;
-                                        case NOT_LIKE:
-                                            wrapper.notLike(column, val);
-                                            break;
-                                        case LIKE:
-                                            wrapper.like(column, val);
-                                            break;
-                                        case LIKE_LEFT:
-                                            wrapper.likeLeft(column, val);
-                                            break;
-                                        case LIKE_RIGHT:
-                                            wrapper.likeRight(column, val);
-                                            break;
-                                        case IS_NOT_NULL:
-                                            wrapper.isNotNull(column);
-                                            break;
-                                        case IS_NULL:
-                                            wrapper.isNull(column);
-                                            break;
-                                        case IS_NOT_EMPTY:
-                                            wrapper.and(qw -> qw.isNotNull(column).ne(column, ""));
-                                            break;
-                                        case IS_EMPTY:
-                                            wrapper.and(qw -> qw.isNull(column).or().eq(column, ""));
-                                            break;
+                            if (CollUtil.isNotEmpty(blurryList)) {
+                                queryWrapper.and(wrapper -> {
+                                    for (int i = 0; i < blurryList.size(); i++) {
+                                        // 只能是or和and，and默认
+                                        wrapper.or(q.blurryType() == Query.BlurryType.OR && i != 0);
+                                        final String column = q.underlineCase() ? StrUtil.toUnderlineCase(blurryList.get(i)) : blurryList.get(i);
+                                        switch (q.type()) {
+                                            case EQ:
+                                                wrapper.eq(column, val);
+                                                break;
+                                            case NE:
+                                                wrapper.ne(column, val);
+                                                break;
+                                            case GE:
+                                                wrapper.ge(column, val);
+                                                break;
+                                            case GT:
+                                                wrapper.gt(column, val);
+                                                break;
+                                            case LE:
+                                                wrapper.le(column, val);
+                                                break;
+                                            case LT:
+                                                wrapper.lt(column, val);
+                                                break;
+                                            case NOT_LIKE:
+                                                wrapper.notLike(column, val);
+                                                break;
+                                            case LIKE:
+                                                wrapper.like(column, val);
+                                                break;
+                                            case LIKE_LEFT:
+                                                wrapper.likeLeft(column, val);
+                                                break;
+                                            case LIKE_RIGHT:
+                                                wrapper.likeRight(column, val);
+                                                break;
+                                            case IS_NOT_NULL:
+                                                wrapper.isNotNull(column);
+                                                break;
+                                            case IS_NULL:
+                                                wrapper.isNull(column);
+                                                break;
+                                            case IS_NOT_EMPTY:
+                                                wrapper.and(qw -> qw.isNotNull(column).ne(column, ""));
+                                                break;
+                                            case IS_EMPTY:
+                                                wrapper.and(qw -> qw.isNull(column).or().eq(column, ""));
+                                                break;
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         } else {
                             String column = q.column();
                             if (StrUtil.isBlank(column)) {
@@ -204,7 +206,7 @@ public class QueryWrapperHelper {
                                 case BETWEEN:
                                     if (!ArrayUtil.contains(q.exclude(), from) && val instanceof List) {
                                         List<?> list = (List<?>) val;
-                                        if (CollUtil.isNotEmpty(list) && list.size() == 2) {
+                                        if (CollUtil.emptyIfNull(list).size() == 2) {
                                             queryWrapper.between(column, list.get(0), list.get(1));
                                         }
                                     }
@@ -212,8 +214,7 @@ public class QueryWrapperHelper {
                                 case BETWEEN_TIME:
                                     if (!ArrayUtil.contains(q.exclude(), from) && val instanceof List) {
                                         List<?> list = (List<?>) val;
-                                        if (CollUtil.isNotEmpty(list) && list.size() == 2) {
-                                            DateUtil.parse(list.get(0).toString());
+                                        if (CollUtil.emptyIfNull(list).size() == 2) {
                                             queryWrapper.between(column, DateUtil.parse(list.get(0).toString()), DateUtil.parse(list.get(1).toString()));
                                         }
                                     }

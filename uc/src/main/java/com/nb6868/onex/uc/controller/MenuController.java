@@ -14,6 +14,7 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.MenuDTO;
+import com.nb6868.onex.uc.dto.MenuQueryForm;
 import com.nb6868.onex.uc.service.MenuService;
 import com.nb6868.onex.uc.service.UserService;
 import io.swagger.annotations.Api;
@@ -46,32 +47,14 @@ public class MenuController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("tree")
+    @PostMapping("tree")
     @ApiOperation("登录用户菜单树")
-    public Result<?> tree(@RequestParam(required = false, name = "菜单类型 0：菜单 1：按钮  null：全部") Integer type) {
+    public Result<?> tree(@Validated @RequestBody MenuQueryForm form) {
         ShiroUser user = ShiroUtils.getUser();
         List<TreeNode<Long>> menuList = new ArrayList<>();
-        menuService.getListByUser(user, type).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
+        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), form.getType()).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
         List<Tree<Long>> treeList = TreeNodeUtils.buildIdTree(menuList);
         return new Result<>().success(treeList);
-    }
-
-    @GetMapping("permissions")
-    @ApiOperation("登录用户权限范围")
-    public Result<?> permissions() {
-        ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = userService.getUserPermissions(user);
-
-        return new Result<>().success(set);
-    }
-
-    @GetMapping("roles")
-    @ApiOperation("登录用户角色范围")
-    public Result<?> roles() {
-        ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = userService.getUserRoles(user);
-
-        return new Result<>().success(set);
     }
 
     @GetMapping("info")
@@ -118,5 +101,25 @@ public class MenuController {
 
         return new Result<>();
     }
+
+    @GetMapping("permissions")
+    @ApiOperation("登录用户权限范围")
+    public Result<?> permissions() {
+        ShiroUser user = ShiroUtils.getUser();
+        Set<String> set = userService.getUserPermissions(user);
+
+        return new Result<>().success(set);
+    }
+
+    @GetMapping("roles")
+    @ApiOperation("登录用户角色范围")
+    public Result<?> roles() {
+        ShiroUser user = ShiroUtils.getUser();
+        Set<String> set = userService.getUserRoles(user);
+
+        return new Result<>().success(set);
+    }
+
+
 
 }
