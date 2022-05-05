@@ -83,25 +83,27 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
     /**
      * 用户Url列表
      *
-     * @param user 用户
+     * @param userType 用户类型
+     * @param tenantCode 租户编码
+     * @param userId 用户id
      */
-    public List<MenuEntity> getListByUser(ShiroUser user, Integer type) {
-        if (user.getType() == UcConst.UserTypeEnum.SUPER_ADMIN.value() || user.getType() == UcConst.UserTypeEnum.TENANT_ADMIN.value()) {
+    public List<MenuEntity> getListByUser(Integer userType, String tenantCode, Long userId, Integer menuType) {
+        if (userType == UcConst.UserTypeEnum.SUPER_ADMIN.value() || userType == UcConst.UserTypeEnum.TENANT_ADMIN.value()) {
             // 管理员,返回所有内容
             return query()
-                    .eq(type != null, "type", type)
-                    .eq(StrUtil.isNotBlank(user.getTenantCode()), "tenant_code", user.getTenantCode())
+                    .eq(menuType != null, "type", menuType)
+                    .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
                     .orderByAsc("sort")
                     .list();
         } else {
             // 普通用户,返回范围角色对应
-            List<Long> menuIds = menuScopeService.getMenuIdListByUserId(user.getId());
+            List<Long> menuIds = menuScopeService.getMenuIdListByUserId(userId);
             if (ObjectUtils.isEmpty(menuIds)) {
                 return new ArrayList<>();
             } else {
                 return query()
-                        .eq(type != null, "type", type)
-                        .eq(StrUtil.isNotBlank(user.getTenantCode()), "tenant_code", user.getTenantCode())
+                        .eq(menuType != null, "type", menuType)
+                        .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
                         .in("id", menuIds)
                         .orderByAsc("sort")
                         .list();

@@ -182,7 +182,7 @@ public class AuthController {
         // 过滤出其中的权限
         Set<String> permissions = new HashSet<>();
         // 获取该用户所有menu
-        menuService.getListByUser(user, null).forEach(menu -> {
+        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), null).forEach(menu -> {
             if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
                 // 菜单需要显示 && 菜单类型为菜单
                 menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank())));
