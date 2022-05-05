@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.IdForm;
@@ -45,6 +46,7 @@ public class RoleController {
     @PostMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("uc:role:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody RoleQueryForm form) {
         QueryWrapper<RoleEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
@@ -55,6 +57,7 @@ public class RoleController {
     @PostMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("uc:role:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody RoleQueryForm form) {
         QueryWrapper<RoleEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
         List<RoleDTO> list = roleService.listDto(queryWrapper);
