@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -28,6 +29,10 @@ public class RoleDTO extends BaseDTO {
 	@ApiModelProperty(value = "名称")
 	@NotBlank(message = "{name.require}", groups = DefaultGroup.class)
 	private String name;
+
+	@ApiModelProperty(value = "排序")
+	@NotNull(message = "排序不能为空")
+	private Integer sort;
 
 	@ApiModelProperty(value = "备注")
 	private String remark;

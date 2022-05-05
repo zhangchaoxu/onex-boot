@@ -30,6 +30,10 @@ public class RoleEntity extends BaseEntity {
      */
 	private String remark;
     /**
+     * 排序
+     */
+    private Integer sort;
+    /**
      * 租户编码
      */
 	private String tenantCode;
