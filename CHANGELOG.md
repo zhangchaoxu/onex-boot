@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## [3.5.3] 2022.05.05
+## [3.5.4] 2022.05.05
 - upgrade: add login params
-- 
+- upgrade: upgrade hutool to 5.8.0
+
 ## [3.5.2] 2022.04.29
 - upgrade: cros add Access-Control-Expose-Headers
 
