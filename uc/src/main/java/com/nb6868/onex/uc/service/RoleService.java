@@ -29,7 +29,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
         if (ret) {
             // 保存角色菜单关系
             menuScopeService.saveOrUpdateByRoleAndMenuIds(dto.getCode(), dto.getMenuIdList());
-            if (1 == type ) {
+            if (1 == type) {
                 // 如果是更新,则更新角色用户表中的角色编码字段
                 roleUserService.update().set("role_code", dto.getCode()).eq("role_code", existedEntity.getCode()).update(new RoleUserEntity());
             }

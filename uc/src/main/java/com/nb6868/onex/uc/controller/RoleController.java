@@ -105,10 +105,11 @@ public class RoleController {
     @RequiresPermissions("uc:role:delete")
     public Result<?> delete(@RequestBody IdForm form) {
         // 判断数据是否存在
-        RoleEntity data = roleService.getById(form.getId());
+        RoleDTO data = roleService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 删除数据
-        roleService.logicDeleteById(data.getId());
+        boolean ret = roleService.logicDeleteById(data.getId());
+        AssertUtils.isFalse(ret, "数据删除失败");
         // 删除角色菜单关联关系
         menuScopeService.deleteByRoleCodes(Collections.singletonList(data.getCode()));
         // 删除角色用户关联关系
