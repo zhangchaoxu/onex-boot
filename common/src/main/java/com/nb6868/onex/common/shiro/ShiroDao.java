@@ -48,6 +48,8 @@ public interface ShiroDao {
     /**
      * 通过用户id，获得用户权限列表
      * 在menu_scope中的用户权限，叠加该用户角色在menu_scope中的角色权限
+     *
+     * SELECT uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope WHERE uc_menu_scope.deleted = 0 AND ((uc_menu_scope.type = 1 AND uc_menu_scope.role_code IN ( SELECT role_code FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = ?)) OR (uc_menu_scope.type = 2 AND uc_menu_scope.user_id = ?)) GROUP BY uc_menu_scope.menu_id
      */
     @Select("SELECT " +
             ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions AS permissions FROM " + ShiroConst.TABLE_MENU_SCOPE +

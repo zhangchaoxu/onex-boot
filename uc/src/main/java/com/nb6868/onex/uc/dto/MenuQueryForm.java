@@ -16,4 +16,8 @@ public class MenuQueryForm extends BaseForm {
     @ApiModelProperty("类型")
     private Integer type;
 
+    @Query
+    @ApiModelProperty("租户编码,对租户无效")
+    private String tenantCode;
+
 }

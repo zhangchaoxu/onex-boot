@@ -160,7 +160,7 @@ public interface UcConst {
          * 详见name
          */
         SUPER_ADMIN(0, "超级管理员"),
-        TENANT_ADMIN(1, "管理员"),
+        TENANT_ADMIN(10, "租户管理员"),
         DEPT_ADMIN(20, "单位管理员"),
         USER(100, "用户");
 

@@ -45,9 +45,6 @@ public class UserDTO extends BaseDTO {
 	@NotBlank(message = "{password.require}", groups = AddGroup.class)
 	private String password;
 
-	@ApiModelProperty(value = "密码RAW")
-	private String passwordRaw;
-
 	@ApiModelProperty(value = "真实姓名")
 	private String realName;
 
