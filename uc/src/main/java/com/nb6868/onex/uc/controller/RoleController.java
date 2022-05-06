@@ -73,7 +73,7 @@ public class RoleController {
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         // 查询角色对应的菜单
-        List<Long> menuIdList = menuScopeService.getMenuIdListByRoleId(form.getId());
+        List<Long> menuIdList = menuScopeService.getMenuIdListByRoleCode(data.getTenantCode(), data.getCode());
         data.setMenuIdList(menuIdList);
 
         return new Result<>().success(data);
@@ -82,7 +82,7 @@ public class RoleController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:role:save")
+    @RequiresPermissions("uc:role:edit")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RoleDTO dto) {
         roleService.saveDto(dto);
 
@@ -92,7 +92,7 @@ public class RoleController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:role:update")
+    @RequiresPermissions("uc:role:edit")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody RoleDTO dto) {
         roleService.updateDto(dto);
 

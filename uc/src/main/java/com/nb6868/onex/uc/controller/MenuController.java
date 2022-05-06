@@ -3,8 +3,11 @@ package com.nb6868.onex.uc.controller;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -15,6 +18,9 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.MenuDTO;
 import com.nb6868.onex.uc.dto.MenuQueryForm;
+import com.nb6868.onex.uc.dto.RoleDTO;
+import com.nb6868.onex.uc.entity.MenuEntity;
+import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.service.MenuService;
 import com.nb6868.onex.uc.service.UserService;
 import io.swagger.annotations.Api;
@@ -48,11 +54,12 @@ public class MenuController {
     private UserService userService;
 
     @PostMapping("tree")
-    @ApiOperation("登录用户菜单树")
+    @ApiOperation("树列表")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> tree(@Validated @RequestBody MenuQueryForm form) {
-        ShiroUser user = ShiroUtils.getUser();
+        QueryWrapper<MenuEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<TreeNode<Long>> menuList = new ArrayList<>();
-        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), form.getType()).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
+        menuService.list(queryWrapper).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
         List<Tree<Long>> treeList = TreeNodeUtils.buildIdTree(menuList);
         return new Result<>().success(treeList);
     }
@@ -119,7 +126,5 @@ public class MenuController {
 
         return new Result<>().success(set);
     }
-
-
 
 }

@@ -1,6 +1,7 @@
 package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.UcConst;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      * 保存角色和菜单的关系
      *
      * @param roleCode 角色编码
-     * @param menuIds   菜单ID列表
+     * @param menuIds  菜单ID列表
      */
     @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdateByRoleAndMenuIds(String roleCode, List<Long> menuIds) {
@@ -95,6 +97,20 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      */
     public List<Long> getMenuIdListByRoleId(Long roleId) {
         return listObjs(new QueryWrapper<MenuScopeEntity>().select("menu_id").eq("role_id", roleId), o -> Long.valueOf(String.valueOf(o)));
+    }
+
+    /**
+     * 根据角色编码，获取菜单ID列表
+     *
+     * @param tenantCode 租户编码
+     * @param roleCode 角色编码
+     */
+    public List<Long> getMenuIdListByRoleCode(String tenantCode, @NotNull String roleCode) {
+        return listObjs(new QueryWrapper<MenuScopeEntity>()
+                .select("menu_id")
+                .eq(StrUtil.isNotBlank(tenantCode),"tenant_code", tenantCode)
+                .isNull(StrUtil.isBlank(tenantCode), "tenant_code")
+                .eq("role_code", roleCode), o -> Long.valueOf(String.valueOf(o)));
     }
 
     /**
