@@ -74,7 +74,7 @@ public class RoleController {
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         // 查询角色对应的菜单
-        List<Long> menuIdList = menuScopeService.getMenuIdListByRoleId(data.getTenantCode(), data.getId());
+        List<Long> menuIdList = menuScopeService.getMenuIdListByRoleId(data.getId());
         data.setMenuIdList(menuIdList);
 
         return new Result<>().success(data);

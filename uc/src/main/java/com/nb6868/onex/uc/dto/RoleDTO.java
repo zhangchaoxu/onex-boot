@@ -22,10 +22,6 @@ import java.util.List;
 public class RoleDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "编码,需唯一")
-	@NotBlank(message = "编码不能为空", groups = DefaultGroup.class)
-	private String code;
-
 	@ApiModelProperty(value = "名称")
 	@NotBlank(message = "{name.require}", groups = DefaultGroup.class)
 	private String name;

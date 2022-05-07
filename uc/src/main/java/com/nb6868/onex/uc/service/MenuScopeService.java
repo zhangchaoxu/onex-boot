@@ -78,14 +78,11 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
     /**
      * 根据角色编码，获取菜单ID列表
      *
-     * @param tenantCode 租户编码
      * @param roleId 角色ID
      */
-    public List<Long> getMenuIdListByRoleId(String tenantCode, @NotNull Long roleId) {
+    public List<Long> getMenuIdListByRoleId(@NotNull Long roleId) {
         return listObjs(new QueryWrapper<MenuScopeEntity>()
                 .select("menu_id")
-                .eq(StrUtil.isNotBlank(tenantCode),"tenant_code", tenantCode)
-                .isNull(StrUtil.isBlank(tenantCode), "tenant_code")
                 .eq("role_id", roleId), o -> Long.valueOf(String.valueOf(o)));
     }
 

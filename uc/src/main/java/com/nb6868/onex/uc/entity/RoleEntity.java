@@ -18,10 +18,6 @@ import org.apache.ibatis.type.Alias;
 public class RoleEntity extends BaseEntity {
 
     /**
-     * 编码,需唯一
-     */
-	private String code;
-    /**
      * 名称
      */
 	private String name;
