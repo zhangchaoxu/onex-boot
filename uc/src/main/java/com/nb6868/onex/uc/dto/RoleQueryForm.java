@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "角色查询")
 public class RoleQueryForm extends BasePageForm {
 
-    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,name,remark")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,remark")
     @ApiModelProperty("搜索关键词")
     private String search;
 

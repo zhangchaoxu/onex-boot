@@ -50,8 +50,6 @@ public class MenuController {
 
     @Autowired
     private MenuService menuService;
-    @Autowired
-    private UserService userService;
 
     @PostMapping("tree")
     @ApiOperation(value = "树列表", notes = "按租户来,不做用户的权限区分")
