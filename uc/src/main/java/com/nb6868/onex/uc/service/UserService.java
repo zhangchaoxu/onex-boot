@@ -26,6 +26,7 @@ import org.springframework.util.ObjectUtils;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * 用户
@@ -52,9 +53,11 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 获取用户角色列表
      */
     public Set<String> getUserRoles(ShiroUser user) {
-        List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
+        List<Long> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
+        Set<String> set = new HashSet<>();
+        roleList.forEach(aLong -> set.add(String.valueOf(aLong)));
         // 用户角色列表
-        return new HashSet<>(roleList);
+        return set;
     }
 
     @Autowired
@@ -64,7 +67,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     @Autowired
     private RoleUserService roleUserService;
 
-    @Override
+    /*@Override
     public QueryWrapper<UserEntity> getWrapper(String method, Map<String, Object> params) {
         QueryWrapper<UserEntity> qw = new WrapperUtils<UserEntity>(new QueryWrapper<>(), params)
                 .eq("state", "uc_user.state")
@@ -94,7 +97,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
             }
         });
         return qw;
-    }
+    }*/
 
     @Override
     protected void beforeSaveOrUpdateDto(UserDTO dto, UserEntity toSaveEntity, int type) {
@@ -121,7 +124,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     protected void afterSaveOrUpdateDto(boolean ret, UserDTO dto, UserEntity existedEntity, int type) {
         if (ret) {
             // 保存角色用户关系
-            roleUserService.saveOrUpdateByUserIdAndRoleCodes(dto.getId(), dto.getRoleCodes());
+            roleUserService.saveOrUpdateByUserIdAndRoleIds(dto.getId(), dto.getRoleIds());
         }
     }
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 角色
@@ -28,19 +29,8 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     protected void afterSaveOrUpdateDto(boolean ret, RoleDTO dto, RoleEntity existedEntity, int type) {
         if (ret) {
             // 保存角色菜单关系
-            menuScopeService.saveOrUpdateByRoleAndMenuIds(dto.getCode(), dto.getMenuIdList());
-            if (1 == type) {
-                // 如果是更新,则更新角色用户表中的角色编码字段
-                roleUserService.update().set("role_code", dto.getCode()).eq("role_code", existedEntity.getCode()).update(new RoleUserEntity());
-            }
+            menuScopeService.saveOrUpdateByRoleIdAndMenuIds(dto.getId(), dto.getMenuIdList());
         }
-    }
-
-    /**
-     * 查询所有角色列表
-     */
-    public List<String> getRoleCodeList() {
-        return listObjs(new QueryWrapper<RoleEntity>().select("id"), String::valueOf);
     }
 
     /**
@@ -48,8 +38,8 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
      *
      * @param userId 用户id
      */
-    public List<String> getRoleCodeListByUserId(Long userId) {
-        return roleUserService.listObjs(new QueryWrapper<RoleUserEntity>().select("role_code").eq("user_id", userId), String::valueOf);
+    public List<Long> getRoleIdListByUserId(Long userId) {
+        return roleUserService.listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId), o -> Long.valueOf(String.valueOf(o)));
     }
 
 }

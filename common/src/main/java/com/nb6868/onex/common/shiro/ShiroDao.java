@@ -19,10 +19,10 @@ public interface ShiroDao {
     /**
      * 通过id获得用户
      */
-    @Select("SELECT * FROM " + ShiroConst.TABLE_USER + " WHERE deleted = 0 AND id = #{id} limit 1")
+    @Select("SELECT * FROM " + ShiroConst.TABLE_USER + " WHERE deleted = 0 AND id = #{id} LIMIT 1")
     Map<String, Object> getUserById(@Param("id") Long id);
 
-    @Select("SELECT type, user_id FROM " + ShiroConst.TABLE_TOKEN + " WHERE deleted = 0 AND token = #{token} AND expire_time > now() limit 1")
+    @Select("SELECT type, user_id FROM " + ShiroConst.TABLE_TOKEN + " WHERE deleted = 0 AND token = #{token} AND expire_time > now() LIMIT 1")
     Map<String, Object> getUserTokenByToken(@Param("token") String token);
 
     /**
@@ -39,9 +39,14 @@ public interface ShiroDao {
      */
     @Select("<script>" +
             "SELECT DISTINCT(permissions) FROM " + ShiroConst.TABLE_MENU + " WHERE deleted = 0 AND permissions is not null AND permissions != ''" +
-            "<if test=\"tenantCode != null and tenantCode != ''\">" +
+            "<choose>" +
+            "<when test=\"tenantCode != null and tenantCode != ''\">" +
             " AND tenant_code = #{tenantCode}" +
-            "</if>" +
+            "</when>" +
+            "<otherwise>" +
+            " AND tenant_code IS NULL" +
+            "</otherwise>" +
+            "</choose>" +
             "</script>")
     List<String> getAllPermissionsList(@Param("tenantCode") String tenantCode);
 
@@ -49,34 +54,45 @@ public interface ShiroDao {
      * 通过用户id，获得用户权限列表
      * 在menu_scope中的用户权限，叠加该用户角色在menu_scope中的角色权限
      *
-     * SELECT uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope WHERE uc_menu_scope.deleted = 0 AND ((uc_menu_scope.type = 1 AND uc_menu_scope.role_code IN ( SELECT role_code FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = ?)) OR (uc_menu_scope.type = 2 AND uc_menu_scope.user_id = ?)) GROUP BY uc_menu_scope.menu_id
+     * SELECT uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope WHERE uc_menu_scope.deleted = 0 AND ((uc_menu_scope.type = 1 AND uc_menu_scope.role_id IN ( SELECT role_id FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = ?)) OR (uc_menu_scope.type = 2 AND uc_menu_scope.user_id = ?)) GROUP BY uc_menu_scope.menu_id
      */
-    @Select("SELECT " +
-            ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions AS permissions FROM " + ShiroConst.TABLE_MENU_SCOPE +
+    @Select("SELECT DISTINCT(" + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions) AS permissions FROM " + ShiroConst.TABLE_MENU_SCOPE +
             " WHERE " + ShiroConst.TABLE_MENU_SCOPE + ".deleted = 0 AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions != '' AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions is not null" +
-            " AND ((" + ShiroConst.TABLE_MENU_SCOPE + ".type = 1  AND " + ShiroConst.TABLE_MENU_SCOPE + ".role_code IN " +
-            "( SELECT role_code FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE " + ShiroConst.TABLE_USER_ROLE + ".deleted = 0 AND " + ShiroConst.TABLE_USER_ROLE + ".user_id = #{userId})) OR " +
-            "(" + ShiroConst.TABLE_MENU_SCOPE + ".type = 2 AND " + ShiroConst.TABLE_MENU_SCOPE + ".user_id = #{userId}))" +
-            " GROUP BY " + ShiroConst.TABLE_MENU_SCOPE + ".menu_id")
+            " AND ((" + ShiroConst.TABLE_MENU_SCOPE + ".type = 1  AND " + ShiroConst.TABLE_MENU_SCOPE + ".role_id IN " +
+            "( SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE " + ShiroConst.TABLE_USER_ROLE + ".deleted = 0 AND " + ShiroConst.TABLE_USER_ROLE + ".user_id = #{userId})) OR " +
+            "(" + ShiroConst.TABLE_MENU_SCOPE + ".type = 2 AND " + ShiroConst.TABLE_MENU_SCOPE + ".user_id = #{userId}))")
     List<String> getPermissionsListByUserId(@Param("userId") Long userId);
+
+    /**
+     * 通过用户id，获得用户菜单Id列表
+     */
+    @Select("SELECT DISTINCT(" + ShiroConst.TABLE_MENU_SCOPE + ".menu_id) AS menu_id FROM " + ShiroConst.TABLE_MENU_SCOPE +
+            " WHERE " + ShiroConst.TABLE_MENU_SCOPE + ".deleted = 0 AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions != '' AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions is not null" +
+            " AND ((" + ShiroConst.TABLE_MENU_SCOPE + ".type = 1  AND " + ShiroConst.TABLE_MENU_SCOPE + ".role_id IN " +
+            "( SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE " + ShiroConst.TABLE_USER_ROLE + ".deleted = 0 AND " + ShiroConst.TABLE_USER_ROLE + ".user_id = #{userId})) OR " +
+            "(" + ShiroConst.TABLE_MENU_SCOPE + ".type = 2 AND " + ShiroConst.TABLE_MENU_SCOPE + ".user_id = #{userId}))")
+    List<Long> getMenuIdListByUserId(@Param("userId") Long userId);
 
     /**
      * 获得所有角色列表
      */
     @Select("<script>" +
-            "SELECT DISTINCT(code) FROM " + ShiroConst.TABLE_ROLE + " WHERE deleted = 0" +
-            "<if test=\"tenantCode != null and tenantCode != ''\">" +
+            "SELECT id FROM " + ShiroConst.TABLE_ROLE + " WHERE deleted = 0" +
+            "<choose>" +
+            "<when test=\"tenantCode != null and tenantCode != ''\">" +
             " AND tenant_code = #{tenantCode}" +
-            "</if>" +
+            "</when>" +
+            "<otherwise>" +
+            " AND tenant_code IS NULL" +
+            "</otherwise>" +
+            "</choose>" +
             "</script>")
-    List<String> getAllRoleCodeList(@Param("tenantCode") String tenantCode);
+    List<Long> getAllRoleIdList(@Param("tenantCode") String tenantCode);
 
     /**
      * 通过用户id，获得用户角色列表
      */
-    @Select("<script>" +
-            "SELECT DISTINCT(role_code) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE user_id = #{userId} AND deleted = 0" +
-            "</script>")
-    List<String> getRoleCodeListByUserId(@Param("userId") Long userId);
+    @Select("SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE user_id = #{userId} AND deleted = 0")
+    List<Long> getRoleIdListByUserId(@Param("userId") Long userId);
 
 }

@@ -100,7 +100,7 @@ public class UserDTO extends BaseDTO {
 	@ApiModelProperty(value = "角色名称")
 	private String roleNames;
 
-	@ApiModelProperty(value = "角色名称")
-	private List<String> roleCodes;
+	@ApiModelProperty(value = "角色ID列表")
+	private List<Long> roleIds;
 
 }

@@ -18,9 +18,9 @@ import org.apache.ibatis.type.Alias;
 public class RoleUserEntity extends BaseEntity {
 
     /**
-     * 角色编码
+     * 角色ID
      */
-	private String roleCode;
+	private Long roleId;
     /**
      * 用户ID
      */

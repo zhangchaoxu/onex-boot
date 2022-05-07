@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * ShiroJwtRealm
@@ -112,8 +113,10 @@ public class ShiroJwtRealm extends AuthorizingRealm {
         }
         if (null != loginConfig && loginConfig.isRoleBase()) {
             // 塞入权限列表,超级管理员全部
-            List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
-            info.setRoles(new HashSet<>(roleList));
+            List<Long> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
+            Set<String> set = new HashSet<>();
+            roleList.forEach(aLong -> set.add(String.valueOf(aLong)));
+            info.setRoles(set);
         }
         return info;
     }

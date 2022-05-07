@@ -2,6 +2,7 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.shiro.ShiroDao;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -32,6 +33,8 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
 
     @Autowired
     private MenuScopeService menuScopeService;
+    @Autowired
+    private ShiroDao shiroDao;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -81,7 +84,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
     }
 
     /**
-     * 用户Url列表
+     * 获得用户菜单列表
      *
      * @param userType 用户类型
      * @param tenantCode 租户编码
@@ -89,7 +92,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
      */
     public List<MenuEntity> getListByUser(Integer userType, String tenantCode, Long userId, Integer menuType, Integer showMenu) {
         if (userType == UcConst.UserTypeEnum.SUPER_ADMIN.value() || userType == UcConst.UserTypeEnum.TENANT_ADMIN.value()) {
-            // 系统管理员/租户管理员
+            // 系统/租户管理员
             // 获得对应租户下所有菜单内容
             return query()
                     .eq(menuType != null, "type", menuType)
@@ -99,9 +102,9 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
                     .orderByAsc("sort")
                     .list();
         } else {
-            // 普通用户
+            // 其它用户
             // 获得scope内菜单id,再获取范围角色对应
-            List<Long> menuIds = menuScopeService.getMenuIdListByUserId(userId);
+            List<Long> menuIds = shiroDao.getMenuIdListByUserId(userId);
             if (ObjectUtils.isEmpty(menuIds)) {
                 return new ArrayList<>();
             } else {

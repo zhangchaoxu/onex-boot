@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.MenuScopeDao;
-import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,22 +30,22 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
     /**
      * 保存角色和菜单的关系
      *
-     * @param roleCode 角色编码
+     * @param roleId 角色ID
      * @param menuIds  菜单ID列表
      */
     @Transactional(rollbackFor = Exception.class)
-    public void saveOrUpdateByRoleAndMenuIds(String roleCode, List<Long> menuIds) {
+    public void saveOrUpdateByRoleIdAndMenuIds(Long roleId, List<Long> menuIds) {
         // 先删除角色菜单关系
-        deleteByRoleCodes(Collections.singletonList(roleCode));
+        deleteByRoleIdList(Collections.singletonList(roleId));
 
-        if (!CollectionUtils.isEmpty(menuIds)) {
+        if (ObjectUtil.isNotEmpty(menuIds)) {
             menuService.listByIds(menuIds).forEach(menu -> {
                 //保存角色菜单关系
                 MenuScopeEntity menuScope = new MenuScopeEntity();
                 menuScope.setType(UcConst.MenuScopeTypeEnum.ROLE.value());
                 menuScope.setMenuId(menu.getId());
                 menuScope.setMenuPermissions(menu.getPermissions());
-                menuScope.setRoleCode(roleCode);
+                menuScope.setRoleId(roleId);
                 save(menuScope);
             });
         }
@@ -60,80 +59,61 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      */
     @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdateByUserIdAndMenuIds(Long userId, List<Long> menuIds) {
-        // 先删除角色菜单关系
-        deleteByUserId(userId);
+        // 先删除用户菜单关系
+        deleteByUserIdList(Collections.singletonList(userId));
 
         if (ObjectUtil.isNotEmpty(menuIds)) {
-            List<MenuEntity> menus = menuService.listByIds(menuIds);
-            //保存角色菜单关系
-            for (MenuEntity menu : menus) {
+            //保存用户菜单关系
+            menuService.listByIds(menuIds).forEach(menu -> {
                 MenuScopeEntity menuScope = new MenuScopeEntity();
-                menuScope.setType(2);
-                menuScope.setUserId(userId);
+                menuScope.setType(UcConst.MenuScopeTypeEnum.USER.value());
                 menuScope.setMenuId(menu.getId());
                 menuScope.setMenuPermissions(menu.getPermissions());
-                //保存
+                menuScope.setUserId(userId);
                 save(menuScope);
-            }
+            });
         }
-    }
-
-    /**
-     * 通过用户ID获得所有权限
-     */
-    public List<String> getPermissionsListByUserId(Long userId) {
-        return getBaseMapper().getPermissionsListByUserId(userId);
-    }
-
-    /**
-     * 通过用户ID获得所有菜单ID
-     */
-    public List<Long> getMenuIdListByUserId(Long userId) {
-        return getBaseMapper().getMenuIdListByUserId(userId);
-    }
-
-    /**
-     * 根据角色ID，获取菜单ID列表
-     */
-    public List<Long> getMenuIdListByRoleId(Long roleId) {
-        return listObjs(new QueryWrapper<MenuScopeEntity>().select("menu_id").eq("role_id", roleId), o -> Long.valueOf(String.valueOf(o)));
     }
 
     /**
      * 根据角色编码，获取菜单ID列表
      *
      * @param tenantCode 租户编码
-     * @param roleCode 角色编码
+     * @param roleId 角色ID
      */
-    public List<Long> getMenuIdListByRoleCode(String tenantCode, @NotNull String roleCode) {
+    public List<Long> getMenuIdListByRoleId(String tenantCode, @NotNull Long roleId) {
         return listObjs(new QueryWrapper<MenuScopeEntity>()
                 .select("menu_id")
                 .eq(StrUtil.isNotBlank(tenantCode),"tenant_code", tenantCode)
                 .isNull(StrUtil.isBlank(tenantCode), "tenant_code")
-                .eq("role_code", roleCode), o -> Long.valueOf(String.valueOf(o)));
+                .eq("role_id", roleId), o -> Long.valueOf(String.valueOf(o)));
     }
 
     /**
      * 根据用户id，删除用户菜单关系
      *
-     * @param userId 用户ID
+     * @param userIds 用户ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByUserId(Long userId) {
-        return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().eq("user_id", userId).eq("type", UcConst.MenuScopeTypeEnum.USER.value()));
+    public boolean deleteByUserIdList(List<Long> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return true;
+        } else {
+            return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().in("user_id", userIds).eq("type", UcConst.MenuScopeTypeEnum.USER.value()));
+        }
     }
 
     /**
      * 根据角色id，删除角色菜单关系
      *
-     * @param roleCodes 角色编码
+     * @param roleIds 角色ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByRoleCodes(List<String> roleCodes) {
-        if (CollectionUtils.isEmpty(roleCodes)) {
+    public boolean deleteByRoleIdList(List<Long> roleIds) {
+        if (CollectionUtils.isEmpty(roleIds)) {
             return true;
         } else {
-            return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().in("role_code", roleCodes).eq("type", UcConst.MenuScopeTypeEnum.ROLE.value()));
+            return logicDeleteByWrapper(new QueryWrapper<MenuScopeEntity>().in("role_id", roleIds).eq("type", UcConst.MenuScopeTypeEnum.ROLE.value()));
         }
     }
 
