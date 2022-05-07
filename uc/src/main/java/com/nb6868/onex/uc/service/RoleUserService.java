@@ -1,15 +1,19 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.dao.RoleUserDao;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 角色用户关系
@@ -26,21 +30,18 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      * 保存或修改
      *
      * @param userId  用户ID
-     * @param roleCodes 角色编码列表
+     * @param roleIds 角色ID数组
      */
-    public boolean saveOrUpdateByUserIdAndRoleCodes(Long userId, List<String> roleCodes) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds) {
         // 先删除角色用户关系
         deleteByUserIds(Collections.singletonList(userId));
 
-        // 用户没有一个角色权限的情况
-        if (CollectionUtils.isEmpty(roleCodes)) {
-            return true;
-        }
-        roleCodes.forEach(roleCode -> {
-            // 保存角色用户关系
+        // 保存角色用户关系
+        CollUtil.distinct(roleIds).forEach(roleId -> {
             RoleUserEntity roleUserEntity = new RoleUserEntity();
             roleUserEntity.setUserId(userId);
-            roleUserEntity.setRoleCode(roleCode);
+            roleUserEntity.setRoleId(roleId);
             save(roleUserEntity);
         });
         return true;
@@ -49,13 +50,13 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
     /**
      * 根据角色ids，删除角色用户关系
      *
-     * @param roleCodes 角色ids
+     * @param roleIds 角色ids
      */
-    public boolean deleteByRoleCodes(List<String> roleCodes) {
-        if (CollectionUtils.isEmpty(roleCodes)) {
+    public boolean deleteByRoleIds(List<Long> roleIds) {
+        if (CollectionUtils.isEmpty(roleIds)) {
             return true;
         } else {
-            return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("role_code", roleCodes));
+            return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("role_id", roleIds));
         }
     }
 

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class RoleController {
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         // 查询角色对应的菜单
-        List<Long> menuIdList = menuScopeService.getMenuIdListByRoleCode(data.getTenantCode(), data.getCode());
+        List<Long> menuIdList = menuScopeService.getMenuIdListByRoleId(data.getTenantCode(), data.getId());
         data.setMenuIdList(menuIdList);
 
         return new Result<>().success(data);
@@ -107,13 +108,12 @@ public class RoleController {
         // 判断数据是否存在
         RoleDTO data = roleService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
-        // 删除数据
-        boolean ret = roleService.logicDeleteById(data.getId());
-        AssertUtils.isFalse(ret, "数据删除失败");
+        // 删除角色
+        roleService.logicDeleteById(data.getId());
         // 删除角色菜单关联关系
-        menuScopeService.deleteByRoleCodes(Collections.singletonList(data.getCode()));
+        menuScopeService.deleteByRoleIdList(Collections.singletonList(data.getId()));
         // 删除角色用户关联关系
-        roleUserService.deleteByRoleCodes(Collections.singletonList(data.getCode()));
+        roleUserService.deleteByRoleIds(Collections.singletonList(data.getId()));
         return new Result<>();
     }
 

@@ -45,7 +45,6 @@ public class UserController {
     @Autowired
     DeptService deptService;
 
-    @DataSqlScope(tableAlias = "uc_user", tenantFilter = true)
     @GetMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("uc:user:list")
@@ -55,7 +54,6 @@ public class UserController {
         return new Result<>().success(list);
     }
 
-    @DataSqlScope(tableAlias = "uc_user", tenantFilter = true)
     @GetMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("uc:user:page")
@@ -72,7 +70,7 @@ public class UserController {
         UserDTO data = userService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 用户角色列表
-        data.setRoleCodes(roleService.getRoleCodeListByUserId(id));
+        data.setRoleIds(roleService.getRoleIdListByUserId(id));
         // 部门树
         data.setDeptChain(deptService.getParentChain(data.getDeptCode()));
         return new Result<>().success(data);

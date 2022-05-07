@@ -18,9 +18,17 @@ import org.apache.ibatis.type.Alias;
 public class MenuScopeEntity extends BaseEntity {
 
     /**
-     * 角色编码
+     * 授权类型，1角色授权 2用户授权
      */
-	private String roleCode;
+    private Integer type;
+    /**
+     * 角色ID
+     */
+	private Long roleId;
+    /**
+     * 用户ID
+     */
+    private Long userId;
     /**
      * 菜单ID
      */
@@ -29,16 +37,5 @@ public class MenuScopeEntity extends BaseEntity {
      * 菜单授权
      */
 	private String menuPermissions;
-    /**
-     * 用户ID
-     */
-	private Long userId;
-    /**
-     * 授权类型，1角色授权 2用户授权
-     */
-	private Integer type;
-    /**
-     * 租户编码
-     */
-	private String tenantCode;
+
 }
