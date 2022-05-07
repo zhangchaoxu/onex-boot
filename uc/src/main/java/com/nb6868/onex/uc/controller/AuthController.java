@@ -1,6 +1,7 @@
 package com.nb6868.onex.uc.controller;
 
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.IdUtil;
@@ -32,7 +33,6 @@ import com.nb6868.onex.msg.service.MailLogService;
 import com.nb6868.onex.msg.service.MailTplService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
-import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
 import com.pig4cloud.captcha.base.Captcha;
@@ -161,7 +161,7 @@ public class AuthController {
 
     @PostMapping("userInfo")
     @ApiOperation("用户信息")
-    @ApiOperationSupport(order = 200)
+    @ApiOperationSupport(order = 150)
     public Result<?> userInfo() {
         UserEntity user = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
@@ -170,48 +170,10 @@ public class AuthController {
         return new Result<>().success(data);
     }
 
-    @PostMapping("userMenuScope")
-    @ApiOperation("用户权限范围")
-    @ApiOperationSupport(order = 200)
-    public Result<MenuScopeResult> userMenuScope(@Validated @RequestBody MenuScopeForm form) {
-        ShiroUser user = ShiroUtils.getUser();
-        // 过滤出其中显示菜单
-        List<TreeNode<Long>> menuList = new ArrayList<>();
-        // 过滤出其中路由菜单
-        List<MenuResult> urlList = new ArrayList<>();
-        // 过滤出其中的权限
-        Set<String> permissions = new HashSet<>();
-        // 获取该用户所有menu
-        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), null).forEach(menu -> {
-            if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
-                // 菜单需要显示 && 菜单类型为菜单
-                menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank())));
-            }
-            if (StrUtil.isNotBlank(menu.getUrl())) {
-                urlList.add(ConvertUtils.sourceToTarget(menu, MenuResult.class));
-            }
-            if (form.isPermissions() && StrUtil.isNotBlank(menu.getPermissions())) {
-                permissions.addAll(StrSplitter.splitTrim(menu.getPermissions(), ',', true));
-            }
-        });
-        MenuScopeResult result = new MenuScopeResult()
-                // 将菜单列表转成菜单树
-                .setMenuTree(TreeNodeUtils.buildIdTree(menuList))
-                .setUrlList(urlList);
-        if (form.isPermissions()) {
-            result.setPermissions(permissions);
-        }
-        if (form.isRoles()) {
-            // 获取角色列表
-            Set<String> roles = userService.getUserRoles(user);
-            result.setRoles(roles);
-        }
-        return new Result<MenuScopeResult>().success(result);
-    }
-
     @PostMapping("userChangePassword")
     @ApiOperation("用户修改密码")
     @LogOperation("用户修改密码")
+    @ApiOperationSupport(order = 160)
     public Result<?> userChangePassword(@Validated @RequestBody ChangePasswordForm form) {
         String tenantCode = ShiroUtils.getUserTenantCode();
         // 先校验密码复杂度
@@ -233,9 +195,83 @@ public class AuthController {
     @PostMapping("userChangePasswordEncrypt")
     @ApiOperation("用户修改密码(加密)")
     @LogOperation("用户修改密码(加密)")
+    @ApiOperationSupport(order = 170)
     public Result<?> userChangePasswordEncrypt(@Validated @RequestBody EncryptForm encryptForm) {
         ChangePasswordForm form = SignUtils.decodeAES(encryptForm.getBody(), Const.AES_KEY, ChangePasswordForm.class);
         return ((AuthController) AopContext.currentProxy()).userChangePassword(form);
+    }
+
+    @PostMapping("userMenuScope")
+    @ApiOperation(value = "用户权限范围", notes = "返回包括菜单、路由、权限、角色等所有内容")
+    @ApiOperationSupport(order = 200)
+    public Result<MenuScopeResult> userMenuScope(@Validated @RequestBody MenuScopeForm form) {
+        ShiroUser user = ShiroUtils.getUser();
+        // 过滤出其中显示菜单
+        List<TreeNode<Long>> menuList = new ArrayList<>();
+        // 过滤出其中路由菜单
+        List<MenuResult> urlList = new ArrayList<>();
+        // 过滤出其中的权限
+        Set<String> permissions = new HashSet<>();
+        // 获取该用户所有menu
+        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), null, null).forEach(menu -> {
+            if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
+                // 菜单需要显示 && 菜单类型为菜单
+                menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank())));
+            }
+            if (StrUtil.isNotBlank(menu.getUrl())) {
+                urlList.add(ConvertUtils.sourceToTarget(menu, MenuResult.class));
+            }
+            if (form.isPermissions() && StrUtil.isNotBlank(menu.getPermissions())) {
+                permissions.addAll(StrSplitter.splitTrim(menu.getPermissions(), ',', true));
+            }
+        });
+        // 将菜单列表转成菜单树
+        List<Tree<Long>> menuTree = TreeNodeUtils.buildIdTree(menuList);
+        MenuScopeResult result = new MenuScopeResult()
+                .setMenuTree(menuTree)
+                .setUrlList(urlList);
+        if (form.isPermissions()) {
+            result.setPermissions(permissions);
+        }
+        if (form.isRoles()) {
+            // 获取角色列表
+            Set<String> roles = userService.getUserRoles(user);
+            result.setRoles(roles);
+        }
+        return new Result<MenuScopeResult>().success(result);
+    }
+
+    @PostMapping("userMenuTree")
+    @ApiOperation(value = "用户菜单树", notes = "用户左侧显示菜单")
+    @ApiOperationSupport(order = 230)
+    public Result<?> userMenuTree() {
+        ShiroUser user = ShiroUtils.getUser();
+        List<TreeNode<Long>> menuList = new ArrayList<>();
+        // 获取该用户所有menu, 菜单需要显示 && 菜单类型为菜单
+        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), UcConst.MenuTypeEnum.MENU.value(), 1)
+                .forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
+        List<Tree<Long>> menuTree = TreeNodeUtils.buildIdTree(menuList);
+        return new Result<>().success(menuTree);
+    }
+
+    @PostMapping("userPermissions")
+    @ApiOperation(value = "用户授权编码", notes = "用户具备的权限,可用于按钮等的控制")
+    @ApiOperationSupport(order = 240)
+    public Result<?> userPermissions() {
+        ShiroUser user = ShiroUtils.getUser();
+        Set<String> set = userService.getUserPermissions(user);
+
+        return new Result<>().success(set);
+    }
+
+    @PostMapping("userRoles")
+    @ApiOperation(value = "用户角色编码", notes = "用户具备的角色,可用于按钮等的控制")
+    @ApiOperationSupport(order = 250)
+    public Result<?> userRoles() {
+        ShiroUser user = ShiroUtils.getUser();
+        Set<String> set = userService.getUserRoles(user);
+
+        return new Result<>().success(set);
     }
 
 }

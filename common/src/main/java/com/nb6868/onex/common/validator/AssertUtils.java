@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.validator;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
 import com.nb6868.onex.common.util.MessageUtils;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -12,6 +13,8 @@ import java.util.function.Supplier;
 /**
  * 校验工具类
  * 参考 cn.hutool.lang.Assert
+ *
+ * 注意：区别于Assert，是符合规则才抛出异常
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -33,7 +36,7 @@ public class AssertUtils {
     }
 
     public static void isFalse(boolean expression, Integer code, String msg) {
-        Assert.isFalse(expression, ()-> new OnexException(code, msg));
+        Assert.isTrue(expression, ()-> new OnexException(code, msg));
     }
 
     /**
@@ -52,7 +55,7 @@ public class AssertUtils {
     }
 
     public static void isTrue(boolean expression, Integer code, String msg) {
-        Assert.isTrue(expression, ()-> new OnexException(code, msg));
+        Assert.isFalse(expression, ()-> new OnexException(code, msg));
     }
 
     /**
@@ -71,7 +74,7 @@ public class AssertUtils {
     }
 
     public static void isNull(Object object, Integer code, String msg) {
-        Assert.isNull(object, ()-> new OnexException(code, msg));
+        Assert.notNull(object, ()-> new OnexException(code, msg));
     }
 
     /**
@@ -90,7 +93,7 @@ public class AssertUtils {
     }
 
     public static void isEmpty(Object object, Integer code, String msg) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectUtil.isEmpty(object)) {
             throw new OnexException(code, msg);
         }
     }

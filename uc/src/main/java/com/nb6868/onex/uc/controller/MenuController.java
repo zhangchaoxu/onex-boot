@@ -54,8 +54,9 @@ public class MenuController {
     private UserService userService;
 
     @PostMapping("tree")
-    @ApiOperation("树列表")
+    @ApiOperation(value = "树列表", notes = "按租户来,不做用户的权限区分")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @RequiresPermissions("uc:menu:query")
     public Result<?> tree(@Validated @RequestBody MenuQueryForm form) {
         QueryWrapper<MenuEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<TreeNode<Long>> menuList = new ArrayList<>();
@@ -66,7 +67,7 @@ public class MenuController {
 
     @GetMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:menu:info")
+    @RequiresPermissions("uc:menu:query")
     public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
         MenuDTO data = menuService.getDtoById(id);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -79,7 +80,7 @@ public class MenuController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:menu:save")
+    @RequiresPermissions("uc:menu:edit")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MenuDTO dto) {
         menuService.saveDto(dto);
 
@@ -89,7 +90,7 @@ public class MenuController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:menu:update")
+    @RequiresPermissions("uc:menu:edit")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody MenuDTO dto) {
         menuService.updateDto(dto);
 
@@ -107,24 +108,6 @@ public class MenuController {
         boolean result = menuService.logicDeleteByIds(menuIds);
 
         return new Result<>();
-    }
-
-    @GetMapping("permissions")
-    @ApiOperation("登录用户权限范围")
-    public Result<?> permissions() {
-        ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = userService.getUserPermissions(user);
-
-        return new Result<>().success(set);
-    }
-
-    @GetMapping("roles")
-    @ApiOperation("登录用户角色范围")
-    public Result<?> roles() {
-        ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = userService.getUserRoles(user);
-
-        return new Result<>().success(set);
     }
 
 }
