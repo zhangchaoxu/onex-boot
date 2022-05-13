@@ -44,40 +44,6 @@ public abstract class BaseSwaggerConfig {
                 .securityContexts(securityContexts());
     }
 
-    @Bean("websocket")
-    @Conditional(WebsocketCondition.class)
-    public Docket createWebsocketApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfoBuilder().build())
-                .groupName("websocket")
-                .select()
-                // 包下的类,生成接口文档
-                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.websocket.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .extensions(getExtensions())
-                .directModelSubstitute(java.util.Date.class, String.class)
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
-    }
-
-    @Bean("msg")
-    @Conditional(MsgCondition.class)
-    public Docket createMsgApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfoBuilder().build())
-                .groupName("msg")
-                .select()
-                // 包下的类,生成接口文档
-                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.msg.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .extensions(getExtensions())
-                .directModelSubstitute(java.util.Date.class, String.class)
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
-    }
-
     @Bean("cms")
     @Conditional(CmsCondition.class)
     public Docket createCmsApi() {

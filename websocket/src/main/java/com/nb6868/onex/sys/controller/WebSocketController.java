@@ -1,9 +1,9 @@
-package com.nb6868.onex.websocket.controller;
+package com.nb6868.onex.sys.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.nb6868.onex.websocket.dto.WebSocketSendForm;
+import com.nb6868.onex.sys.dto.WebSocketSendForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
