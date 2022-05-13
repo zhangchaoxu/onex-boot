@@ -8,11 +8,8 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.IdTenantForm;
 import com.nb6868.onex.common.pojo.Result;
-import com.nb6868.onex.common.shiro.ShiroUser;
-import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.TreeNodeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
@@ -20,11 +17,8 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.MenuDTO;
 import com.nb6868.onex.uc.dto.MenuQueryForm;
-import com.nb6868.onex.uc.dto.RoleDTO;
 import com.nb6868.onex.uc.entity.MenuEntity;
-import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.service.MenuService;
-import com.nb6868.onex.uc.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -32,11 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 菜单权限

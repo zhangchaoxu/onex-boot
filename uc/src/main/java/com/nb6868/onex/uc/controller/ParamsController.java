@@ -86,7 +86,7 @@ public class ParamsController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:role:edit")
+    @RequiresPermissions("uc:params:edit")
     @ApiOperationSupport(order = 50)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody ParamsDTO dto) {
         paramsService.updateDto(dto);
@@ -97,7 +97,7 @@ public class ParamsController {
     @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("uc:role:delete")
+    @RequiresPermissions("uc:params:delete")
     @ApiOperationSupport(order = 60)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
