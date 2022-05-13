@@ -1,6 +1,5 @@
 package com.nb6868.onex.uc.controller;
 
-import cn.hutool.core.lang.Assert;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
@@ -15,7 +14,6 @@ import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.dto.UserQueryForm;
-import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.RoleService;
@@ -27,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

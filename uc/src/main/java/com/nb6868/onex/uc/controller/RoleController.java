@@ -19,7 +19,6 @@ import com.nb6868.onex.uc.dto.RoleQueryForm;
 import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.RoleService;
-import com.nb6868.onex.uc.service.RoleUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -55,6 +54,7 @@ public class RoleController {
     @ApiOperation("列表")
     @RequiresPermissions("uc:role:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @ApiOperationSupport(order = 20)
     public Result<?> list(@Validated @RequestBody RoleQueryForm form) {
         List<?> list = roleService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
@@ -64,7 +64,9 @@ public class RoleController {
     @PostMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("uc:role:query")
-    public Result<?> info(@Validated @RequestBody IdForm form) {
+    @ApiOperationSupport(order = 30)
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
         RoleDTO data = roleService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -79,6 +81,7 @@ public class RoleController {
     @ApiOperation("保存")
     @LogOperation("保存")
     @RequiresPermissions("uc:role:edit")
+    @ApiOperationSupport(order = 40)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RoleDTO dto) {
         roleService.saveDto(dto);
 
@@ -89,6 +92,7 @@ public class RoleController {
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("uc:role:edit")
+    @ApiOperationSupport(order = 50)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody RoleDTO dto) {
         roleService.updateDto(dto);
 
@@ -99,6 +103,7 @@ public class RoleController {
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("uc:role:delete")
+    @ApiOperationSupport(order = 60)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
         // 判断数据是否存在
