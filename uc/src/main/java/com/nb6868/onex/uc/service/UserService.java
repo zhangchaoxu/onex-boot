@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -34,6 +33,12 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     @Autowired
     private ShiroDao shiroDao;
+    @Autowired
+    private MenuScopeService menuScopeService;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private RoleUserService roleUserService;
 
     /**
      * 获取用户权限列表
@@ -52,48 +57,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         List<Long> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
         Set<String> set = new HashSet<>();
         roleList.forEach(aLong -> set.add(String.valueOf(aLong)));
-        // 用户角色列表
         return set;
     }
-
-    @Autowired
-    private MenuScopeService menuScopeService;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private RoleUserService roleUserService;
-
-    /*@Override
-    public QueryWrapper<UserEntity> getWrapper(String method, Map<String, Object> params) {
-        QueryWrapper<UserEntity> qw = new WrapperUtils<UserEntity>(new QueryWrapper<>(), params)
-                .eq("state", "uc_user.state")
-                .eq("type", "uc_user.type")
-                .like("username", "uc_user.username")
-                .like("deptId", "uc_user.deptId")
-                .like("mobile", "mobile")
-                .like("realName", "real_name")
-                .eq("tenantId", "tenant_id")
-                .and("search", queryWrapper -> {
-                    String search = (String) params.get("search");
-                    queryWrapper.like("real_name", search).or().like("username", search).like("mobile", search);
-                })
-                // 数据过滤
-                .apply(Const.SQL_FILTER)
-                .getQueryWrapper()
-                .eq("uc_user.deleted", 0);
-
-        // 普通管理员，只能查询所属部门及子部门的数据
-        ShiroUser user = ShiroUtils.getUser();
-        //qw.in(user.getType() > UcConst.UserTypeEnum.SYSADMIN.value() && user.getDeptId() != null, "uc_user.dept_id", deptService.getSubDeptIdList(user.getDeptId()));
-        // 角色
-        String[] roleIds = MapUtil.getStr(params, "roleIds", "").split(",");
-        qw.and(roleIds.length > 0, queryWrapper -> {
-            for (int i = 0; i < roleIds.length; i++) {
-                queryWrapper.or(i != 0).apply("find_in_set({0}, role.role_ids)", roleIds[i]);
-            }
-        });
-        return qw;
-    }*/
 
     @Override
     protected void beforeSaveOrUpdateDto(UserDTO dto, UserEntity toSaveEntity, int type) {

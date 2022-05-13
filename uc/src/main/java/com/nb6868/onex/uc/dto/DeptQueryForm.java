@@ -1,8 +1,6 @@
 package com.nb6868.onex.uc.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.jpa.Query;
-import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.pojo.BasePageForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,10 +16,19 @@ public class DeptQueryForm extends BasePageForm {
     @ApiModelProperty("类型")
     private Integer type;
 
+    @Query
+    @ApiModelProperty("编码")
+    private String code;
+
+    @Query
+    @ApiModelProperty("上级编码")
+    private String pcode;
+
     @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,code,pcode")
     @ApiModelProperty("搜索关键词")
     private String search;
 
     @Query
+    @ApiModelProperty("租户编码")
     private String tenantCode;
 }

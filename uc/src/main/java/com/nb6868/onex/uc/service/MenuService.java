@@ -2,10 +2,10 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.nb6868.onex.common.shiro.ShiroDao;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.common.shiro.ShiroDao;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.MenuDao;
 import com.nb6868.onex.uc.dto.MenuDTO;
@@ -13,6 +13,7 @@ import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
     protected void beforeSaveOrUpdateDto(MenuDTO dto, int type) {
         if (1 == type && dto.getId().equals(dto.getPid())) {
             // 更新 上级菜单不能为自身
-            throw new OnexException(ErrorCode.SUPERIOR_MENU_ERROR);
+            throw new OnexException(ErrorCode.ERROR_REQUEST, "上级不能为自身");
         }
     }
 
@@ -46,26 +47,6 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
             // 更新的时候,同时更新menu_scope中的信息
             menuScopeService.update().set("menu_permissions", dto.getPermissions()).eq("menu_id", dto.getId()).update(new MenuScopeEntity());
         }
-    }
-
-    /**
-     * 递归上级菜单列表
-     *
-     * @param id 菜单ID
-     */
-    public List<MenuDTO> getParentList(Long id) {
-        List<MenuDTO> menus = new ArrayList<>();
-        while (id != 0) {
-            MenuDTO dto = getDtoById(id);
-            if (dto != null) {
-                menus.add(dto);
-                id = dto.getPid();
-            } else {
-                id = 0L;
-            }
-        }
-        Collections.reverse(menus);
-        return menus;
     }
 
     /**
@@ -105,6 +86,25 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
         }
     }
 
+    /**
+     * 递归上级菜单列表
+     *
+     * @param id 菜单ID
+     */
+    public List<MenuDTO> getParentList(Long id) {
+        List<MenuDTO> menus = new ArrayList<>();
+        while (id != 0) {
+            MenuDTO dto = getDtoById(id);
+            if (dto != null) {
+                menus.add(dto);
+                id = dto.getPid();
+            } else {
+                id = 0L;
+            }
+        }
+        Collections.reverse(menus);
+        return menus;
+    }
 
     /**
      * 查询所有级联的子节点id
@@ -123,7 +123,8 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
      *
      * @param id 菜单id
      */
-    public void deleteCascadeById(Long id) {
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteAllCascadeById(Long id) {
         // 获得所有菜单id
         List<Long> menuIds = getCascadeChildrenListByIds(Collections.singletonList(id));
         // 删除所有菜单

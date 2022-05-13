@@ -188,7 +188,7 @@ public class AuthController {
         // 更新密码
         userService.updatePassword(data.getId(), form.getNewPassword());
         // 注销该用户所有token,提示用户重新登录
-        tokenService.deleteByUserIds(Collections.singletonList(data.getId()));
+        tokenService.deleteByUserIdList(Collections.singletonList(data.getId()));
         return new Result<>();
     }
 
