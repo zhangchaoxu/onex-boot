@@ -1,8 +1,8 @@
 package com.nb6868.onex.msg.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.jpa.Query;
 import com.nb6868.onex.common.pojo.BaseForm;
+import com.nb6868.onex.common.pojo.BasePageForm;
 import com.nb6868.onex.common.pojo.PageForm;
 import com.nb6868.onex.common.validator.Page;
 import com.nb6868.onex.common.validator.group.PageGroup;
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "消息记录查询")
-public class MailLogQueryForm extends BaseForm {
+public class MailLogQueryForm extends BasePageForm {
 
     @Query
     @ApiModelProperty("编码")
@@ -31,9 +31,5 @@ public class MailLogQueryForm extends BaseForm {
     @Query
     @ApiModelProperty("租户编码")
     private String tenantCode;
-
-    @ApiModelProperty("分页信息")
-    @Page(groups = PageGroup.class)
-    PageForm page;
 
 }

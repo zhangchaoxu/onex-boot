@@ -49,7 +49,7 @@ public class DeptController {
 
     @PostMapping("tree")
     @ApiOperation("树表")
-    @QueryDataScope(tenantFilter = true)
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("uc:dept:query")
     public Result<?> tree(@Validated @RequestBody DeptQueryForm form) {
         QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);

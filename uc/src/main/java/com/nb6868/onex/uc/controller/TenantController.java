@@ -22,7 +22,11 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -94,8 +98,8 @@ public class TenantController {
     @RequiresPermissions("uc:tenant:delete")
     @ApiOperationSupport(order = 100)
     public Result<?> delete(@Validated @RequestBody IdForm form) {
-        tenantService.logicDeleteById(form.getId());
-        // 按实际需求做检查
+        tenantService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+        // 按业务需求做其它操作
         return new Result<>();
     }
 
