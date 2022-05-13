@@ -1,12 +1,12 @@
 package com.nb6868.onex.uc.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.IdForm;
+import com.nb6868.onex.common.pojo.IdTenantForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -27,8 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -41,8 +39,6 @@ public class RoleController {
     private RoleService roleService;
     @Autowired
     private MenuScopeService menuScopeService;
-    @Autowired
-    private RoleUserService roleUserService;
 
     @PostMapping("page")
     @ApiOperation("分页")
@@ -103,16 +99,13 @@ public class RoleController {
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("uc:role:delete")
-    public Result<?> delete(@RequestBody IdForm form) {
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
         // 判断数据是否存在
-        RoleDTO data = roleService.oneDto(QueryWrapperHelper.getPredicate(form));
+        RoleEntity data = roleService.getOne(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
-        // 删除角色
-        roleService.logicDeleteById(data.getId());
-        // 删除角色菜单关联关系
-        menuScopeService.deleteByRoleIdList(Collections.singletonList(data.getId()));
-        // 删除角色用户关联关系
-        roleUserService.deleteByRoleIds(Collections.singletonList(data.getId()));
+        // 删除
+        roleService.deleteAllById(data.getId());
         return new Result<>();
     }
 

@@ -9,12 +9,14 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.TreeNodeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.DeptDTO;
 import com.nb6868.onex.uc.dto.DeptQueryForm;
@@ -33,11 +35,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 部门管理
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
 @RequestMapping("/uc/dept")
 @Validated
@@ -59,29 +56,29 @@ public class DeptController {
         return new Result<>().success(treeList);
     }
 
-    @GetMapping("list")
+    @PostMapping("list")
     @ApiOperation("列表")
     @RequiresPermissions("uc:dept:query")
-    public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
-        List<DeptDTO> list = deptService.listDto(params);
+    public Result<?> list(@Validated @RequestBody DeptQueryForm form) {
+        List<?> list = deptService.listDto(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>().success(list);
     }
 
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("uc:dept:query")
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<DeptDTO> page = deptService.pageDto(params);
+    public Result<?> page(@Validated(PageGroup.class) @RequestBody DeptQueryForm form) {
+        PageData<?> page = deptService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @PostMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("uc:dept:query")
-    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        DeptDTO data = deptService.getDtoById(id);
+    public Result<?> info(@Validated @RequestBody IdForm form) {
+        DeptDTO data = deptService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
@@ -111,18 +108,8 @@ public class DeptController {
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("uc:dept:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        deptService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
-    @DeleteMapping("deleteBatch")
-    @ApiOperation("批量删除")
-    @LogOperation("批量删除")
-    @RequiresPermissions("uc:dept:delete")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        deptService.logicDeleteByIds(ids);
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
+        deptService.logicDeleteById(form.getId());
 
         return new Result<>();
     }

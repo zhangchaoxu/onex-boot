@@ -1,11 +1,13 @@
 package com.nb6868.onex.uc.controller;
 
+import cn.hutool.core.lang.Assert;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.*;
+import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
@@ -13,6 +15,8 @@ import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.dto.UserQueryForm;
+import com.nb6868.onex.uc.entity.RoleEntity;
+import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.RoleService;
 import com.nb6868.onex.uc.service.UserService;
@@ -23,7 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户管理
@@ -118,12 +125,18 @@ public class UserController {
         return new Result<>();
     }
 
-    @PostMapping("deleteBatch")
-    @LogOperation("批量删除")
+    @PostMapping("delete")
+    @LogOperation("删除")
+    @ApiOperation("删除")
     @RequiresPermissions("uc:user:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
-        userService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+        // 判断数据是否存在
+        UserEntity data = userService.getOne(QueryWrapperHelper.getPredicate(form));
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        AssertUtils.isTrue(Objects.equals(ShiroUtils.getUserId(), data.getId()), "无法删除当前登录用户");
+        // 删除
+        userService.deleteAllByIds(Collections.singletonList(data.getId()));
 
         return new Result<>();
     }

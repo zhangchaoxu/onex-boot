@@ -31,46 +31,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * 消息模板
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
-@RequestMapping("/msg/mailTpl")
+@RequestMapping("/msg/mail/")
 @Validated
-@Api(tags = "消息模板", position = 10)
+@Api(tags = "消息管理", position = 10)
 @ApiSupport(order = 10)
-public class MailTplController {
+public class MailController {
 
     @Autowired
     MailTplService mailTplService;
     @Autowired
     MailLogService mailLogService;
 
-    @PostMapping("page")
-    @ApiOperation("分页列表")
+    @PostMapping("tplPage")
+    @ApiOperation("模板分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 20)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody MailTplQueryForm form) {
+    public Result<?> tplPage(@Validated({PageGroup.class}) @RequestBody MailTplQueryForm form) {
         PageData<?> page = mailTplService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
 
-    @PostMapping("list")
-    @ApiOperation("列表")
+    @PostMapping("tplList")
+    @ApiOperation("模板列表")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 10)
-    public Result<?> list(@Validated @RequestBody MailTplQueryForm form) {
+    public Result<?> tplList(@Validated @RequestBody MailTplQueryForm form) {
         List<?> list = mailTplService.listDto(QueryWrapperHelper.getPredicate(form));
         return new Result<>().success(list);
     }
 
-    @PostMapping("info")
-    @ApiOperation("信息")
+    @PostMapping("tplInfo")
+    @ApiOperation("模板详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailTpl:query")
     @ApiOperationSupport(order = 30)
@@ -81,31 +76,31 @@ public class MailTplController {
         return new Result<>().success(data);
     }
 
-    @PostMapping("save")
-    @ApiOperation("保存")
-    @LogOperation("保存")
+    @PostMapping("tplSave")
+    @ApiOperation("模板保存")
+    @LogOperation("模板保存")
     @RequiresPermissions("msg:mailTpl:edit")
     @ApiOperationSupport(order = 40)
-    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MailTplDTO dto) {
+    public Result<?> tplSave(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MailTplDTO dto) {
         mailTplService.saveDto(dto);
 
         return new Result<>().success(dto);
     }
 
-    @PostMapping("update")
-    @ApiOperation("修改")
-    @LogOperation("修改")
+    @PostMapping("tplUpdate")
+    @ApiOperation("模板修改")
+    @LogOperation("模板修改")
     @RequiresPermissions("msg:mailTpl:edit")
     @ApiOperationSupport(order = 50)
-    public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody MailTplDTO dto) {
+    public Result<?> tplUpdate(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody MailTplDTO dto) {
         mailTplService.updateDto(dto);
 
         return new Result<>().success(dto);
     }
 
-    @PostMapping("delete")
-    @ApiOperation("删除")
-    @LogOperation("删除")
+    @PostMapping("tplDelete")
+    @ApiOperation("模板删除")
+    @LogOperation("模板删除")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("msg:mailTpl:delete")
     @ApiOperationSupport(order = 60)

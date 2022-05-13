@@ -33,7 +33,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds) {
         // 先删除角色用户关系
-        deleteByUserIds(Collections.singletonList(userId));
+        deleteByUserIdList(Collections.singletonList(userId));
 
         // 保存角色用户关系
         CollUtil.distinct(roleIds).forEach(roleId -> {
@@ -50,7 +50,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      *
      * @param roleIds 角色ids
      */
-    public boolean deleteByRoleIds(List<Long> roleIds) {
+    public boolean deleteByRoleIdList(List<Long> roleIds) {
         if (CollectionUtils.isEmpty(roleIds)) {
             return true;
         } else {
@@ -63,7 +63,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      *
      * @param userIds 用户ids
      */
-    public boolean deleteByUserIds(List<Long> userIds) {
+    public boolean deleteByUserIdList(List<Long> userIds) {
         if (CollectionUtils.isEmpty(userIds)) {
             return true;
         } else {

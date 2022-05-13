@@ -134,7 +134,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @param userIds 用户ID数组
      * @return result
      */
-    public boolean deleteByUserIds(List<Long> userIds) {
+    public boolean deleteByUserIdList(List<Long> userIds) {
         return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().in("user_id", userIds));
     }
 

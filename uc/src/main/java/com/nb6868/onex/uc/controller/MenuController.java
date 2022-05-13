@@ -8,6 +8,8 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.pojo.IdForm;
+import com.nb6868.onex.common.pojo.IdTenantForm;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -63,11 +65,12 @@ public class MenuController {
         return new Result<>().success(treeList);
     }
 
-    @GetMapping("info")
+    @PostMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("uc:menu:query")
-    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        MenuDTO data = menuService.getDtoById(id);
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+        MenuDTO data = menuService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 赋值父菜单
         data.setParentMenuList(menuService.getParentList(data.getPid()));
@@ -99,12 +102,12 @@ public class MenuController {
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("uc:menu:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        // 获取级联菜单id，包括自身和子菜单
-        List<Long> menuIds = menuService.getCascadeChildrenListByIds(Collections.singletonList(id));
-        // 然后删除
-        boolean result = menuService.logicDeleteByIds(menuIds);
-
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+        MenuEntity data = menuService.getOne(QueryWrapperHelper.getPredicate(form));
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 级联删除菜单以及下面所有子菜单
+        menuService.deleteCascadeById(form.getId());
         return new Result<>();
     }
 

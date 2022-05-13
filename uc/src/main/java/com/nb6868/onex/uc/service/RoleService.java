@@ -9,6 +9,7 @@ import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -40,6 +41,19 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
      */
     public List<Long> getRoleIdListByUserId(Long userId) {
         return roleUserService.listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId), o -> Long.valueOf(String.valueOf(o)));
+    }
+
+    /**
+     * 删除数据本身及关联关系
+     * @param id 角色id
+     */
+    public void deleteAllById(Long id) {
+        // 删除角色
+        logicDeleteById(id);
+        // 删除角色菜单关联关系
+        menuScopeService.deleteByRoleIdList(Collections.singletonList(id));
+        // 删除角色用户关联关系
+        roleUserService.deleteByRoleIds(Collections.singletonList(id));
     }
 
 }
