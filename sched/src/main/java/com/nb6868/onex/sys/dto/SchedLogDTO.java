@@ -18,10 +18,10 @@ import lombok.EqualsAndHashCode;
 public class SchedLogDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "任务ID")
-	private Long taskId;
+	private Long schedId;
 
 	@ApiModelProperty(value = "任务名称")
-	private String taskName;
+	private String schedName;
 
 	@ApiModelProperty(value = "参数")
 	private JSONObject params;
@@ -35,7 +35,7 @@ public class SchedLogDTO extends BaseDTO {
 	@ApiModelProperty(value = "错误信息")
 	private String error;
 
-	@ApiModelProperty(value = "耗时(单位：毫秒)")
+	@ApiModelProperty(value = "耗时(毫秒)")
 	private Integer times;
 
 	@ApiModelProperty(value = "租户编码")
