@@ -1,8 +1,8 @@
-package com.nb6868.onex.sched.utils;
+package com.nb6868.onex.sys.utils;
 
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.sched.SchedConst;
+import com.nb6868.onex.sys.SchedConst;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 
@@ -43,7 +43,7 @@ public class ScheduleUtils {
     /**
      * 创建定时任务
      */
-    public static void createScheduleJob(Class<? extends Job> jobClass, Scheduler scheduler, TaskInfo taskInfo) {
+    public static void createScheduleJob(Class<? extends Job> jobClass, Scheduler scheduler, SchedTask taskInfo) {
         try {
             // 启动调度器
             scheduler.start();
@@ -58,7 +58,7 @@ public class ScheduleUtils {
             scheduler.scheduleJob(jobDetail, trigger);
 
             // 暂停任务
-            if (taskInfo.getState() == SchedConst.TaskState.PAUSE.getValue()) {
+            if (taskInfo.getState() == SchedConst.SchedState.PAUSE.getValue()) {
                 pauseJob(scheduler, taskInfo.getId());
             }
         } catch (SchedulerException e) {
@@ -69,7 +69,7 @@ public class ScheduleUtils {
     /**
      * 更新定时任务
      */
-    public static void updateScheduleJob(Scheduler scheduler, TaskInfo taskInfo) {
+    public static void updateScheduleJob(Scheduler scheduler, SchedTask taskInfo) {
         try {
             // 启动调度器
             scheduler.start();
@@ -83,7 +83,7 @@ public class ScheduleUtils {
             trigger.getJobDataMap().put(SchedConst.JOB_PARAM_KEY, taskInfo);
             scheduler.rescheduleJob(triggerKey, trigger);
             // 暂停任务
-            if (taskInfo.getState() == SchedConst.TaskState.PAUSE.getValue()) {
+            if (taskInfo.getState() == SchedConst.SchedState.PAUSE.getValue()) {
                 pauseJob(scheduler, taskInfo.getId());
             }
         } catch (SchedulerException e) {
@@ -95,7 +95,7 @@ public class ScheduleUtils {
     /**
      * 立即执行任务
      */
-    public static void run(Scheduler scheduler, TaskInfo taskInfo) {
+    public static void run(Scheduler scheduler, SchedTask taskInfo) {
         try {
             // 参数
             JobDataMap dataMap = new JobDataMap();

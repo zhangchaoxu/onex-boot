@@ -1,4 +1,4 @@
-package com.nb6868.onex.sched.utils;
+package com.nb6868.onex.sys.utils;
 
 import cn.hutool.json.JSONObject;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class TaskInfo implements Serializable {
+public class SchedTask implements Serializable {
 
     /**
      * ID

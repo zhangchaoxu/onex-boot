@@ -1,4 +1,4 @@
-package com.nb6868.onex.sched.dto;
+package com.nb6868.onex.sys.dto;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "定时任务日志")
-public class TaskLogDTO extends BaseDTO {
+public class SchedLogDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "任务ID")
 	private Long taskId;

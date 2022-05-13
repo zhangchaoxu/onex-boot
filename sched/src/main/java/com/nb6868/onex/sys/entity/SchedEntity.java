@@ -1,10 +1,9 @@
-package com.nb6868.onex.sched.entity;
+package com.nb6868.onex.sys.entity;
 
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.nb6868.onex.common.pojo.BaseEntity;
 import com.nb6868.onex.common.pojo.BaseTenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,9 +16,9 @@ import org.apache.ibatis.type.Alias;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName(value = "sched_task", autoResultMap = true)
-@Alias("sched_task")
-public class TaskEntity extends BaseTenantEntity {
+@TableName(value = "sys_sched", autoResultMap = true)
+@Alias("sys_sched")
+public class SchedEntity extends BaseTenantEntity {
 
     /**
      * 名称

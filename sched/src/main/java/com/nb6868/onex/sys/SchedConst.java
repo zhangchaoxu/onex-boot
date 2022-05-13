@@ -1,4 +1,4 @@
-package com.nb6868.onex.sched;
+package com.nb6868.onex.sys;
 
 /**
  * 定时任务相关常量
@@ -19,7 +19,7 @@ public interface SchedConst {
     /**
      * 定时任务状态
      */
-    enum TaskState {
+    enum SchedState {
         /**
          * 暂停
          */
@@ -31,7 +31,7 @@ public interface SchedConst {
 
         private int value;
 
-        TaskState(int value) {
+        SchedState(int value) {
             this.value = value;
         }
 
@@ -40,7 +40,10 @@ public interface SchedConst {
         }
     }
 
-    enum TaskLogState {
+    /**
+     * 任务日志状态
+     */
+    enum SchedLogState {
         /**
          * 初始化
          */
@@ -68,7 +71,7 @@ public interface SchedConst {
 
         private int value;
 
-        TaskLogState(int value) {
+        SchedLogState(int value) {
             this.value = value;
         }
 

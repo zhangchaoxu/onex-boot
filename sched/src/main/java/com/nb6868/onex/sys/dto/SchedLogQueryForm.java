@@ -1,11 +1,7 @@
-package com.nb6868.onex.sched.dto;
+package com.nb6868.onex.sys.dto;
 
 import com.nb6868.onex.common.jpa.Query;
-import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.pojo.BasePageForm;
-import com.nb6868.onex.common.pojo.PageForm;
-import com.nb6868.onex.common.validator.Page;
-import com.nb6868.onex.common.validator.group.PageGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "定时任务记录查询")
-public class TaskLogQueryForm extends BasePageForm {
+public class SchedLogQueryForm extends BasePageForm {
 
     @Query
     @ApiModelProperty("任务ID")
