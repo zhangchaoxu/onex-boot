@@ -73,6 +73,7 @@ public class MenuController {
     @ApiOperation("保存")
     @LogOperation("保存")
     @RequiresPermissions("uc:menu:edit")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MenuDTO dto) {
         menuService.saveDto(dto);
 
@@ -95,10 +96,11 @@ public class MenuController {
     @RequiresPermissions("uc:menu:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+        // 判断数据
         MenuEntity data = menuService.getOne(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 级联删除菜单以及下面所有子菜单
-        menuService.deleteCascadeById(form.getId());
+        menuService.deleteAllCascadeById(data.getId());
         return new Result<>();
     }
 

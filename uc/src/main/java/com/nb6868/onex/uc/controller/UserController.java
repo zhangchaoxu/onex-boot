@@ -1,11 +1,15 @@
 package com.nb6868.onex.uc.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.*;
+import com.nb6868.onex.common.pojo.ChangeStateForm;
+import com.nb6868.onex.common.pojo.IdTenantForm;
+import com.nb6868.onex.common.pojo.PageData;
+import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
@@ -23,7 +27,10 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +60,9 @@ public class UserController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
-        PageData<?> page = userService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
+
+        PageData<?> page = userService.pageDto(form.getPage(), queryWrapper);
 
         return new Result<>().success(page);
     }
@@ -63,7 +72,8 @@ public class UserController {
     @RequiresPermissions("uc:user:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
-        List<?> list = userService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+        QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
+        List<?> list = userService.listDto(queryWrapper);
 
         return new Result<>().success(list);
     }

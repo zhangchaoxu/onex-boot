@@ -25,7 +25,6 @@ public interface UserDao extends BaseDao<UserEntity> {
             " FROM uc_user" +
             " LEFT JOIN (SELECT GROUP_CONCAT(uc_role_user.role_id) AS role_ids, uc_role_user.user_id, GROUP_CONCAT(uc_role.name) AS role_names FROM uc_role_user LEFT JOIN uc_role ON uc_role_user.role_id = uc_role.id WHERE uc_role_user.deleted = 0 AND uc_role.deleted = 0 GROUP BY uc_role_user.user_id) as role ON role.user_id = uc_user.id" +
             " ${ew.customSqlSegment}";
-
     @Select(WITH_ROLE_SQL)
     IPage<UserEntity> selectWithRolePage(IPage<UserEntity> page, @Param(Constants.WRAPPER) Wrapper<UserEntity> ew);
 

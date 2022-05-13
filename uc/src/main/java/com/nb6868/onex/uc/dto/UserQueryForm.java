@@ -19,12 +19,16 @@ public class UserQueryForm extends BasePageForm {
     private String search;
 
     @Query
-    @ApiModelProperty("租户编码,对租户无效")
+    @ApiModelProperty("租户编码")
     private String tenantCode;
 
     @Query
     @ApiModelProperty("状态")
     private Integer state;
+
+    @Query
+    @ApiModelProperty("类型")
+    private Integer type;
 
     @ApiModelProperty("角色id数组")
     private List<Long> roleIds;
