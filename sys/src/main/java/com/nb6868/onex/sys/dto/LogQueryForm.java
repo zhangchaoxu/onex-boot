@@ -2,19 +2,18 @@ package com.nb6868.onex.sys.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.jpa.Query;
-import com.nb6868.onex.common.pojo.BaseForm;
-import com.nb6868.onex.common.pojo.PageForm;
-import com.nb6868.onex.common.validator.Page;
-import com.nb6868.onex.common.validator.group.PageGroup;
+import com.nb6868.onex.common.pojo.BasePageForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "日志记录查询")
-public class LogQueryForm extends BaseForm {
+public class LogQueryForm extends BasePageForm {
 
     @Query
     @ApiModelProperty("状态")
@@ -32,20 +31,12 @@ public class LogQueryForm extends BaseForm {
     @ApiModelProperty("创建用户")
     private String createName;
 
-    @Query(type = Query.Type.GE, column = "create_time")
-    @ApiModelProperty("开始时间")
-    private String startCreateTime;
-
-    @Query(type = Query.Type.LE, column = "create_time")
-    @ApiModelProperty("结束时间")
-    private String endCreateTime;
+    @Query(type = Query.Type.BETWEEN_TIME, column = "create_time")
+    @ApiModelProperty("创建时间区间")
+    private List<String> createTimeRange;
 
     @Query
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String tenantCode;
-
-    @ApiModelProperty("分页信息")
-    @Page(groups = PageGroup.class)
-    PageForm page;
 
 }

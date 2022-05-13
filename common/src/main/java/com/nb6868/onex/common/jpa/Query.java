@@ -41,6 +41,10 @@ public @interface Query {
     enum Type {
         // 相等
         EQ
+        // 严格相等,相等对于null
+        ,EQ_STRICT
+        // 严格相等,相等对于null或者empty会做处理
+        ,EQ_STRICT_EMPTY
         // 大于等于
         , GE
         // 大于
@@ -63,14 +67,10 @@ public @interface Query {
         , NOT_IN
         // 不等于
         , NE
-        // 不为空
-        , IS_NOT_NULL
-        // 为空
-        , IS_NULL
-        // 不为空
-        , IS_NOT_EMPTY
-        // 为空
-        , IS_EMPTY
+        // Null匹配
+        , NULL
+        // 空匹配
+        , EMPTY
         // not between
         , NOT_BETWEEN
         // between

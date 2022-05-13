@@ -1,16 +1,18 @@
 package com.nb6868.onex.uc.controller;
 
-import com.nb6868.onex.common.annotation.DataSqlScope;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.pojo.ChangeStateForm;
-import com.nb6868.onex.common.pojo.PageData;
-import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.UserDTO;
+import com.nb6868.onex.uc.dto.UserQueryForm;
 import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.RoleService;
 import com.nb6868.onex.uc.service.UserService;
@@ -20,12 +22,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 用户管理
@@ -45,32 +43,36 @@ public class UserController {
     @Autowired
     DeptService deptService;
 
-    @GetMapping("list")
-    @ApiOperation("列表")
-    @RequiresPermissions("uc:user:list")
-    public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
-        List<UserDTO> list = userService.listDto(params);
-
-        return new Result<>().success(list);
-    }
-
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:user:page")
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<UserDTO> page = userService.pageDto(params);
+    @RequiresPermissions("uc:user:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @ApiOperationSupport(order = 10)
+    public Result<?> page(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
+        PageData<?> page = userService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @PostMapping("list")
+    @ApiOperation("列表")
+    @RequiresPermissions("uc:user:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> list(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
+        List<?> list = userService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+
+        return new Result<>().success(list);
+    }
+
+    @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:user:info")
-    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        UserDTO data = userService.getDtoById(id);
+    @RequiresPermissions("uc:user:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+        UserDTO data = userService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 用户角色列表
-        data.setRoleIds(roleService.getRoleIdListByUserId(id));
+        data.setRoleIds(roleService.getRoleIdListByUserId(form.getId()));
         // 部门树
         data.setDeptChain(deptService.getParentChain(data.getDeptCode()));
         return new Result<>().success(data);
@@ -79,7 +81,7 @@ public class UserController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:user:save")
+    @RequiresPermissions("uc:user:edit")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody UserDTO dto) {
         userService.saveDto(dto);
 
@@ -89,7 +91,7 @@ public class UserController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:user:update")
+    @RequiresPermissions("uc:user:edit")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody UserDTO dto) {
         userService.updateDto(dto);
 
@@ -99,7 +101,7 @@ public class UserController {
     @PostMapping("changeState")
     @ApiOperation("更新状态")
     @LogOperation("更新状态")
-    @RequiresPermissions("uc:user:update")
+    @RequiresPermissions("uc:user:edit")
     public Result<?> changeState(@Validated(value = {DefaultGroup.class, ChangeStateForm.BoolStateGroup.class}) @RequestBody ChangeStateForm request) {
         userService.changeState(request);
 
@@ -118,9 +120,10 @@ public class UserController {
 
     @PostMapping("deleteBatch")
     @LogOperation("批量删除")
-    @RequiresPermissions("uc:user:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        userService.logicDeleteByIds(ids);
+    @RequiresPermissions("uc:user:delete")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
+        userService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>();
     }

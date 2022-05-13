@@ -50,8 +50,8 @@ public class RoleController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody RoleQueryForm form) {
-        QueryWrapper<RoleEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        PageData<RoleDTO> page = roleService.pageDto(form.getPage(), queryWrapper);
+        PageData<?> page = roleService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+
         return new Result<>().success(page);
     }
 
@@ -60,8 +60,7 @@ public class RoleController {
     @RequiresPermissions("uc:role:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody RoleQueryForm form) {
-        QueryWrapper<RoleEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
-        List<RoleDTO> list = roleService.listDto(queryWrapper);
+        List<?> list = roleService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
         return new Result<>().success(list);
     }

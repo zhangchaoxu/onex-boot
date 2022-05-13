@@ -71,10 +71,15 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 		return ret;
 	}
 
-	public boolean logicDeleteByIds(List<Long> idList) {
-		boolean ret = super.logicDeleteByIds(idList);
+	/**
+	 * 删除任务
+	 * @param id 任务id
+	 * @return
+	 */
+	public boolean delete(Long id) {
+		boolean ret = super.logicDeleteById(id);
 		// 删除任务
-		idList.forEach(id -> ScheduleUtils.deleteScheduleJob(scheduler, id));
+		ScheduleUtils.deleteScheduleJob(scheduler, id);
 		return ret;
 	}
 

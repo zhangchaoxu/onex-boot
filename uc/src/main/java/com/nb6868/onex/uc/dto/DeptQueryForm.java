@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.jpa.Query;
 import com.nb6868.onex.common.pojo.BaseForm;
+import com.nb6868.onex.common.pojo.BasePageForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
