@@ -38,7 +38,7 @@ public class TaskController {
     @RequiresPermissions("sched:task:query")
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody TaskQueryForm form) {
-        PageData<TaskDTO> page = taskService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = taskService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

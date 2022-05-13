@@ -150,16 +150,19 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
                 .one();
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
-        List<Long> ids = (List<Long>) idList;
+    /**
+     * 删除数据本身及关联关系
+     * @param ids 角色id
+     */
+    public void deleteAllByIds(List<Long> ids) {
+        // 删除用户本身
+        logicDeleteByIds(ids);
         // 删除用户-角色关系
-        roleUserService.deleteByUserIds(ids);
+        roleUserService.deleteByUserIdList(ids);
+        // 删除用户-权限关系
+        menuScopeService.deleteByUserIdList(ids);
         // 删除用户token
-        tokenService.deleteByUserIds(ids);
-        return super.logicDeleteByIds(idList);
+        tokenService.deleteByUserIdList(ids);
     }
 
     /**
@@ -170,7 +173,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         if (ret) {
             if (form.getState() == UcConst.UserStateEnum.DISABLE.value()) {
                 // 锁定用户,将token注销
-                tokenService.deleteByUserIds(Collections.singletonList(form.getId()));
+                tokenService.deleteByUserIdList(Collections.singletonList(form.getId()));
             } else if (form.getState() == UcConst.UserStateEnum.ENABLED.value()) {
                 // 激活用户
             }

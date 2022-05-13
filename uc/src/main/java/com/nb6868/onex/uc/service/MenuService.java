@@ -3,7 +3,6 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.shiro.ShiroDao;
-import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -14,12 +13,9 @@ import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,17 +31,6 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
     private MenuScopeService menuScopeService;
     @Autowired
     private ShiroDao shiroDao;
-
-    @SuppressWarnings("unchecked")
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
-        List<Long> ids = (List<Long>) idList;
-        // 删除角色菜单关系
-        menuScopeService.deleteByMenuIds(ids);
-        // 删除菜单
-        return super.logicDeleteByIds(idList);
-    }
 
     @Override
     protected void beforeSaveOrUpdateDto(MenuDTO dto, int type) {
@@ -131,6 +116,20 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
             ids = listObjs(new QueryWrapper<MenuEntity>().select("id").in("pid", ids), o -> Long.valueOf(String.valueOf(o)));
         }
         return menuIds;
+    }
+
+    /**
+     * 级联删除,删除菜单id以及下面所有子菜单
+     *
+     * @param id 菜单id
+     */
+    public void deleteCascadeById(Long id) {
+        // 获得所有菜单id
+        List<Long> menuIds = getCascadeChildrenListByIds(Collections.singletonList(id));
+        // 删除所有菜单
+        logicDeleteByIds(menuIds);
+        // 删除菜单授权关系
+        menuScopeService.deleteByMenuIds(menuIds);
     }
 
 }

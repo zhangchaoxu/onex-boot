@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/sys/log")
+@RequestMapping("/sys/log/")
 @Validated
 @Api(tags = "日志")
 public class LogController {
@@ -37,7 +37,7 @@ public class LogController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    @QueryDataScope(tenantFilter = true)
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sys:log:query")
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody LogQueryForm form) {
         QueryWrapper<LogEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);

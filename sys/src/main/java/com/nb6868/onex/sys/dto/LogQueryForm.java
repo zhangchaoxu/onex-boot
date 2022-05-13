@@ -36,7 +36,7 @@ public class LogQueryForm extends BasePageForm {
     private List<String> createTimeRange;
 
     @Query
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ApiModelProperty("租户编码")
     private String tenantCode;
 
 }

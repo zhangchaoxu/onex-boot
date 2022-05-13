@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("WebSocketController")
-@RequestMapping("/webSocket")
+@RestController("SysWebSocketController")
+@RequestMapping("/sys/webSocket/")
 @Validated
 @Api(tags = "WebSocket")
 public class WebSocketController {
@@ -24,7 +24,7 @@ public class WebSocketController {
 
     @PostMapping("getOpenSockets")
     @ApiOperation("获得目前连接的Socket")
-    @RequiresPermissions("websocket:query")
+    @RequiresPermissions("sys:websocket:query")
     @ApiOperationSupport(order = 10)
     public Result<?> getOpenSockets() {
         List<String> sidList = webSocketServer.getSidList();
@@ -33,7 +33,7 @@ public class WebSocketController {
 
     @PostMapping("sendOneMessage")
     @ApiOperation("发送单点消息")
-    @RequiresPermissions("websocket:send")
+    @RequiresPermissions("sys:websocket:send")
     @ApiOperationSupport(order = 20)
     public Result<?> sendOneMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendOneGroup.class}) @RequestBody WebSocketSendForm form) {
         boolean result = webSocketServer.sendOneMessage(form.getSid(), form.getContent());
@@ -42,7 +42,7 @@ public class WebSocketController {
 
     @PostMapping("sendMultiMessage")
     @ApiOperation("发送批量消息")
-    @RequiresPermissions("websocket:send")
+    @RequiresPermissions("sys:websocket:send")
     @ApiOperationSupport(order = 30)
     public Result<?> sendMultiMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendMultiGroup.class}) @RequestBody WebSocketSendForm form) {
         webSocketServer.sendMultiMessage(form.getSidList(), form.getContent());
@@ -51,7 +51,7 @@ public class WebSocketController {
 
     @PostMapping("sendAllMessage")
     @ApiOperation("发送广播消息")
-    @RequiresPermissions("websocket:send")
+    @RequiresPermissions("sys:websocket:send")
     @ApiOperationSupport(order = 40)
     public Result<?> sendAllMessage(@Validated(value = {DefaultGroup.class}) @RequestBody WebSocketSendForm socketSendRequest) {
         webSocketServer.sendAllMessage(socketSendRequest.getContent());

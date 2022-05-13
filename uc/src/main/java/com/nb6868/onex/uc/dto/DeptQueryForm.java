@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "部门查询")
-public class DeptQueryForm extends BaseForm {
+public class DeptQueryForm extends BasePageForm {
 
     @Query
     @ApiModelProperty("类型")
@@ -23,6 +23,5 @@ public class DeptQueryForm extends BaseForm {
     private String search;
 
     @Query
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String tenantCode;
 }
