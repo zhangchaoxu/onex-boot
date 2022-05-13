@@ -1,4 +1,4 @@
-package com.nb6868.onex.sched.utils;
+package com.nb6868.onex.sys.utils;
 
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.ApiModel;

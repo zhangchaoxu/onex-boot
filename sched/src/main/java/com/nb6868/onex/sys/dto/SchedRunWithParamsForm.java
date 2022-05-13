@@ -1,4 +1,4 @@
-package com.nb6868.onex.sched.dto;
+package com.nb6868.onex.sys.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "定时任务立即执行,指定参数")
-public class TaskRunWithParamsForm implements Serializable {
+public class SchedRunWithParamsForm implements Serializable {
 
     @ApiModelProperty(value = "id")
     @NotNull(message = "{id.require}")

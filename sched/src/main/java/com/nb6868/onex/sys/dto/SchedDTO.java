@@ -1,4 +1,4 @@
-package com.nb6868.onex.sched.dto;
+package com.nb6868.onex.sys.dto;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
@@ -19,7 +19,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "定时任务")
-public class TaskDTO extends BaseDTO {
+public class SchedDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "名称")
 	@NotBlank(message = "{name.require}", groups = DefaultGroup.class)

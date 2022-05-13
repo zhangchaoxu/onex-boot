@@ -1,7 +1,7 @@
-package com.nb6868.onex.sched.dao;
+package com.nb6868.onex.sys.dao;
 
 import com.nb6868.onex.common.jpa.BaseDao;
-import com.nb6868.onex.sched.entity.TaskLogEntity;
+import com.nb6868.onex.sys.entity.SchedLogEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,6 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Mapper
-public interface TaskLogDao extends BaseDao<TaskLogEntity> {
+public interface SchedLogDao extends BaseDao<SchedLogEntity> {
 
 }

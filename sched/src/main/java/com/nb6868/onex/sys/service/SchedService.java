@@ -1,25 +1,23 @@
-package com.nb6868.onex.sched.service;
+package com.nb6868.onex.sys.service;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.sched.SchedConst;
-import com.nb6868.onex.sched.dao.TaskDao;
-import com.nb6868.onex.sched.dto.TaskDTO;
-import com.nb6868.onex.sched.dto.TaskRunWithParamsForm;
-import com.nb6868.onex.sched.entity.TaskEntity;
-import com.nb6868.onex.sched.utils.ScheduleJob;
-import com.nb6868.onex.sched.utils.ScheduleUtils;
-import com.nb6868.onex.sched.utils.TaskInfo;
+import com.nb6868.onex.sys.SchedConst;
+import com.nb6868.onex.sys.dao.SchedDao;
+import com.nb6868.onex.sys.dto.SchedDTO;
+import com.nb6868.onex.sys.dto.SchedRunWithParamsForm;
+import com.nb6868.onex.sys.entity.SchedEntity;
+import com.nb6868.onex.sys.utils.ScheduleJob;
+import com.nb6868.onex.sys.utils.ScheduleUtils;
+import com.nb6868.onex.sys.utils.SchedTask;
 import org.quartz.Scheduler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 定时任务
@@ -35,18 +32,18 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Service
-public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
+public class SchedService extends DtoService<SchedDao, SchedEntity, SchedDTO> {
 
 	@Autowired
 	private Scheduler scheduler;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean saveDto(TaskDTO dto) {
+	public boolean saveDto(SchedDTO dto) {
 		// 检查name是否已存在
 		AssertUtils.isTrue(hasDuplicated(null, "name", dto.getName()), ErrorCode.ERROR_REQUEST, "任务名已存在");
 
-		TaskEntity entity = ConvertUtils.sourceToTarget(dto, TaskEntity.class);
+		SchedEntity entity = ConvertUtils.sourceToTarget(dto, SchedEntity.class);
 		boolean ret = save(entity);
 		if (ret) {
 			// copy主键值到dto
@@ -59,10 +56,10 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean updateDto(TaskDTO dto) {
+	public boolean updateDto(SchedDTO dto) {
 		// 检查name是否已存在
 		AssertUtils.isTrue(hasDuplicated(dto.getId(), "name", dto.getName()), ErrorCode.ERROR_REQUEST, "任务名已存在");
-		TaskEntity entity = ConvertUtils.sourceToTarget(dto, TaskEntity.class);
+		SchedEntity entity = ConvertUtils.sourceToTarget(dto, SchedEntity.class);
 		boolean ret = updateById(entity);
 		if (ret) {
 			// 更新job
@@ -87,15 +84,15 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	 * 修改状态
 	 */
 	public boolean changeState(List<Long> ids, int state) {
-		return SqlHelper.retBool(getBaseMapper().update(new TaskEntity(), new UpdateWrapper<TaskEntity>().set("state", state).in("id", ids)));
+		return SqlHelper.retBool(getBaseMapper().update(new SchedEntity(), new UpdateWrapper<SchedEntity>().set("state", state).in("id", ids)));
 	}
 
 	/**
 	 * 立即执行
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public void runWithParams(TaskRunWithParamsForm requestBody) {
-		TaskInfo taskInfo = getTaskInfoFromTask(getById(requestBody.getId()));
+	public void runWithParams(SchedRunWithParamsForm requestBody) {
+		SchedTask taskInfo = getTaskInfoFromTask(getById(requestBody.getId()));
 		if (StrUtil.isNotBlank(requestBody.getParams())) {
 			JSONObject params = null;
 			try {
@@ -116,7 +113,7 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 	public void pause(List<Long> ids) {
 		ids.forEach(id -> ScheduleUtils.pauseJob(scheduler, id));
 
-		changeState(ids, SchedConst.TaskState.PAUSE.getValue());
+		changeState(ids, SchedConst.SchedState.PAUSE.getValue());
 	}
 
 	/**
@@ -128,13 +125,13 @@ public class TaskService extends DtoService<TaskDao, TaskEntity, TaskDTO> {
 			ScheduleUtils.resumeJob(scheduler, id);
 		}
 
-		changeState(ids, SchedConst.TaskState.NORMAL.getValue());
+		changeState(ids, SchedConst.SchedState.NORMAL.getValue());
 	}
 
 	/**
 	 * 从TaskEntity获得TaskInfo
 	 */
-	private TaskInfo getTaskInfoFromTask(TaskEntity taskEntity) {
-		return ConvertUtils.sourceToTarget(taskEntity, TaskInfo.class);
+	private SchedTask getTaskInfoFromTask(SchedEntity taskEntity) {
+		return ConvertUtils.sourceToTarget(taskEntity, SchedTask.class);
 	}
 }
