@@ -27,10 +27,10 @@ import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.nb6868.onex.msg.dto.MailSendForm;
-import com.nb6868.onex.msg.entity.MailTplEntity;
-import com.nb6868.onex.msg.service.MailLogService;
-import com.nb6868.onex.msg.service.MailTplService;
+import com.nb6868.onex.sys.dto.MsgSendForm;
+import com.nb6868.onex.sys.entity.MsgTplEntity;
+import com.nb6868.onex.sys.service.MsgLogService;
+import com.nb6868.onex.sys.service.MsgTplService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
@@ -69,9 +69,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
-    private MailTplService mailTplService;
+    private MsgTplService mailTplService;
     @Autowired
-    private MailLogService mailLogService;
+    private MsgLogService mailLogService;
 
     @PostMapping("captcha")
     @AccessControl
@@ -90,8 +90,8 @@ public class AuthController {
     @ApiOperation(value = "发送验证码消息", notes = "Anon")
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 20)
-    public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class}) @RequestBody MailSendForm form) {
-        MailTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
+    public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
+        MsgTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
