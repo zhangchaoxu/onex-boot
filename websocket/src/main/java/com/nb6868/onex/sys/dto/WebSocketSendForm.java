@@ -1,5 +1,6 @@
-package com.nb6868.onex.websocket.dto;
+package com.nb6868.onex.sys.dto;
 
+import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,13 +9,12 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "websocket发送请求")
-public class WebSocketSendForm implements Serializable {
+public class WebSocketSendForm extends BaseForm {
 
     /**
      * 单点发送校验

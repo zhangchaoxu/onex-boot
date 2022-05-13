@@ -1,4 +1,4 @@
-package com.nb6868.onex.websocket.config;
+package com.nb6868.onex.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

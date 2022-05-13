@@ -85,12 +85,12 @@ public class AuthController {
         return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
     }
 
-    @PostMapping("sendMailCode")
+    @PostMapping("sendMsgCode")
     @AccessControl
     @ApiOperation(value = "发送验证码消息", notes = "Anon")
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 20)
-    public Result<?> sendMailCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
+    public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
         MsgTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
