@@ -17,7 +17,7 @@ public class MessageUtils {
     private final static ReloadableResourceBundleMessageSource messageSource;
     private final static MessageSourceResourceBundleLocator messageSourceSourceBundleLocator;
 
-    /**
+    /*
      * 文件路径在yml配置文件中定义
      */
     static {
@@ -39,14 +39,18 @@ public class MessageUtils {
     }
 
     public static String getMessage(int code) {
+        return getMessage(String.valueOf(code), new String[0]);
+    }
+
+    public static String getMessage(String code) {
         return getMessage(code, new String[0]);
     }
 
-    public static String getMessage(int code, String... params) {
+    public static String getMessage(String code, String... params) {
         try {
-            return messageSource.getMessage(String.valueOf(code), params, LocaleContextHolder.getLocale());
+            return messageSource.getMessage(code, params, LocaleContextHolder.getLocale());
         } catch (NoSuchMessageException e) {
-            // 找不到会抛NoSuchMessageException
+            // 找不到该代码
             return "未定义的错误代码";
         }
     }
