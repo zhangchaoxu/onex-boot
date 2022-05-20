@@ -3,6 +3,7 @@ package com.nb6868.onex.common.pojo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Range;
 
 /**
@@ -11,6 +12,7 @@ import org.hibernate.validator.constraints.Range;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "修改状态请求")
 public class ChangeStateForm extends IdForm {
 

@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.*;
 public class SchedController {
 
     @Autowired
-    private SchedService taskService;
+    private SchedService schedService;
     @Autowired
-    private SchedLogService taskLogService;
+    private SchedLogService schedLogService;
 
     @PostMapping("page")
     @ApiOperation("分页")
@@ -38,7 +38,7 @@ public class SchedController {
     @RequiresPermissions("sys:sched:query")
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody SchedQueryForm form) {
-        PageData<?> page = taskService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = schedService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
@@ -49,7 +49,7 @@ public class SchedController {
     @RequiresPermissions("sys:sched:query")
     @ApiOperationSupport(order = 20)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
-        SchedDTO data = taskService.oneDto(QueryWrapperHelper.getPredicate(form));
+        SchedDTO data = schedService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
@@ -62,7 +62,7 @@ public class SchedController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 30)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody SchedDTO dto) {
-        taskService.saveDto(dto);
+        schedService.saveDto(dto);
 
         return new Result<>().success(dto);
     }
@@ -73,7 +73,7 @@ public class SchedController {
     @ApiOperationSupport(order = 40)
     @RequiresPermissions("sys:sched:edit")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody SchedDTO dto) {
-        taskService.updateDto(dto);
+        schedService.updateDto(dto);
 
         return new Result<>().success(dto);
     }
@@ -85,10 +85,10 @@ public class SchedController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sys:sched:delete")
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
-        SchedDTO data = taskService.oneDto(QueryWrapperHelper.getPredicate(form));
+        SchedDTO data = schedService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        taskService.delete(form.getId());
+        schedService.delete(form.getId());
 
         return new Result<>();
     }
@@ -99,7 +99,7 @@ public class SchedController {
     @ApiOperationSupport(order = 60)
     @RequiresPermissions("sys:sched:edit")
     public Result<?> runWithParams(@Validated @RequestBody SchedRunWithParamsForm form) {
-        taskService.runWithParams(form);
+        schedService.runWithParams(form);
 
         return new Result<>();
     }
@@ -110,7 +110,7 @@ public class SchedController {
     @RequiresPermissions("sys:sched:edit")
     @ApiOperationSupport(order = 70)
     public Result<?> pause(@Validated @RequestBody IdsForm form) {
-        taskService.pause(form.getIds());
+        schedService.pause(form.getIds());
 
         return new Result<>();
     }
@@ -121,7 +121,7 @@ public class SchedController {
     @RequiresPermissions("sys:sched:edit")
     @ApiOperationSupport(order = 80)
     public Result<?> resume(@Validated @RequestBody IdsForm form) {
-        taskService.resume(form.getIds());
+        schedService.resume(form.getIds());
 
         return new Result<>();
     }
@@ -132,7 +132,7 @@ public class SchedController {
     @RequiresPermissions("sys:schedLog:query")
     @ApiOperationSupport(order = 100)
     public Result<?> logPage(@Validated({PageGroup.class}) @RequestBody SchedLogQueryForm form) {
-        PageData<?> page = taskLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = schedLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
@@ -143,7 +143,7 @@ public class SchedController {
     @RequiresPermissions("sys:schedLog:query")
     @ApiOperationSupport(order = 110)
     public Result<?> logInfo(@Validated @RequestBody IdTenantForm form) {
-        SchedLogDTO data = taskLogService.getDtoById(form.getId());
+        SchedLogDTO data = schedLogService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
@@ -155,7 +155,7 @@ public class SchedController {
     @RequiresPermissions("sys:schedLog:delete")
     @ApiOperationSupport(order = 120)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsForm form) {
-        taskLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+        schedLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>();
     }
