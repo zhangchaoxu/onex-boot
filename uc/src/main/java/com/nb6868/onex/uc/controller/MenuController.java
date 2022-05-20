@@ -51,7 +51,7 @@ public class MenuController {
     public Result<?> tree(@Validated @RequestBody MenuQueryForm form) {
         QueryWrapper<MenuEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<TreeNode<Long>> menuList = new ArrayList<>();
-        menuService.list(queryWrapper).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
+        menuService.list(queryWrapper).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create().set("permissions", menu.getPermissions()).set("type", menu.getType()).set("icon", menu.getIcon()).set("url", menu.getUrl()).set("urlNewBlank", menu.getUrlNewBlank()))));
         List<Tree<Long>> treeList = TreeNodeUtils.buildIdTree(menuList);
         return new Result<>().success(treeList);
     }

@@ -214,8 +214,8 @@ public abstract class BaseExceptionHandler {
     public Object handleMaxUploadSizeExceededException(HttpServletRequest request, MaxUploadSizeExceededException e) {
         e.printStackTrace();
         // 保存日志
-        saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
-        return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
+        saveLog(request, new OnexException(ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, e.getMessage()));
+        return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE);
     }
 
     /**
@@ -231,7 +231,7 @@ public abstract class BaseExceptionHandler {
         e.printStackTrace();
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
-        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, StrUtil.contains(profile, "dev") ? e.getMessage() : MessageUtils.getMessage("data.fmt.error"));
     }
 
     /**

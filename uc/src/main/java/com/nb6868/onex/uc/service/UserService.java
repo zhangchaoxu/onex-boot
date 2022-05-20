@@ -106,7 +106,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 通过用户名获取用户
      * @param tenantCode 租户编码
      * @param mobile 手机号
-     * @return
      */
     public UserEntity getByMobile(String tenantCode, @NotNull String mobile) {
         return query().eq("mobile", mobile)
