@@ -132,6 +132,7 @@ onex:
   # 异常处理
   exception-handler:
     enable: false
+    detail-msg: false
   # 日志
   log:
     enable: false

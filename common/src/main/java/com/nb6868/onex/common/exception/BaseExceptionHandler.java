@@ -51,8 +51,8 @@ public abstract class BaseExceptionHandler {
     /**
      * 当前运行环境
      */
-    @Value("${spring.profiles.active}")
-    protected String profile;
+    @Value("${onex.exception-handler.detail-msg:false}")
+    protected boolean detailMsg;
 
     @Autowired
     protected BaseLogService logService;
@@ -91,7 +91,7 @@ public abstract class BaseExceptionHandler {
     public Object handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
         e.printStackTrace();
         saveLog(request, new OnexException(ErrorCode.DB_VIOLATION_ERROR, e.getMessage()));
-        return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, StrUtil.contains(profile, "dev") ? MessageUtils.getMessage(ErrorCode.INTERNAL_SERVER_ERROR) : null);
+        return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, detailMsg ? e.getMessage() : null);
     }
 
     /**
@@ -231,7 +231,7 @@ public abstract class BaseExceptionHandler {
         e.printStackTrace();
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
-        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, StrUtil.contains(profile, "dev") ? e.getMessage() : MessageUtils.getMessage("data.fmt.error"));
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, detailMsg ? e.getMessage() : MessageUtils.getMessage("data.fmt.error"));
     }
 
     /**
