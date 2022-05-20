@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.5.7] 2022.05.20
+- upgrade: upgrade spring boot to 2.7.0
+- upgrade: upgrade hutool to 5.8.1
+
 ## [3.5.6] 2022.05.05
 - upgrade: add login params
 - upgrade: upgrade hutool to 5.8.0
