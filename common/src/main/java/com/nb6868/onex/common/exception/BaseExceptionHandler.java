@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 public abstract class BaseExceptionHandler {
 
     /**
-     * 当前运行环境
+     * 是否输出详细错误
      */
     @Value("${onex.exception-handler.detail-msg:false}")
     protected boolean detailMsg;

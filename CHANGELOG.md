@@ -3,6 +3,7 @@
 ## [3.5.7] 2022.05.20
 - upgrade: upgrade spring boot to 2.7.0
 - upgrade: upgrade hutool to 5.8.1
+- new: set detail exception msg im onex.exception-handler.detail-msg: true
 
 ## [3.5.6] 2022.05.05
 - upgrade: add login params

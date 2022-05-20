@@ -132,6 +132,7 @@ onex:
   # 异常处理
   exception-handler:
     enable: false
+    # 控制是否在ExceptionHandler中输入详细错误
     detail-msg: false
   # 日志
   log:
