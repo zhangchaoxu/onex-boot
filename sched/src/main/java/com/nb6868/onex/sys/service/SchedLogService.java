@@ -36,8 +36,8 @@ public class SchedLogService extends DtoService<SchedLogDao, SchedLogEntity, Sch
      */
     public long saveLog(SchedTask taskInfo, long timeInterval, int state, String result) {
         SchedLogEntity logEntity = new SchedLogEntity();
-        logEntity.setTaskId(taskInfo.getId());
-        logEntity.setTaskName(taskInfo.getName());
+      /*  logEntity.setTaskId(taskInfo.getId());
+        logEntity.setTaskName(taskInfo.getName());*/
         logEntity.setTenantCode(taskInfo.getTenantCode());
         logEntity.setParams(taskInfo.getParams());
         logEntity.setTimes(timeInterval);
@@ -84,8 +84,8 @@ public class SchedLogService extends DtoService<SchedLogDao, SchedLogEntity, Sch
         } else {
             // 保存
             SchedLogEntity logEntity = new SchedLogEntity();
-            logEntity.setTaskId(taskInfo.getId());
-            logEntity.setTaskName(taskInfo.getName());
+            /*logEntity.setTaskId(taskInfo.getId());
+            logEntity.setTaskName(taskInfo.getName());*/
             logEntity.setTenantCode(taskInfo.getTenantCode());
             logEntity.setParams(taskInfo.getParams());
             logEntity.setTimes(times);

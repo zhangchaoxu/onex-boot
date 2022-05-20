@@ -3,6 +3,7 @@ package com.nb6868.onex.common;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.nb6868.onex.common.pojo.Const;
@@ -88,7 +89,7 @@ public class StringTest {
     @Test
     @DisplayName("passwordDecode")
     void passwordDecode() {
-        String password = "uvZKfb2qJevQrEJLKnKLLg==";
+        String password = "cEdpTbHnCmtD5RzdTy2drg==";
         log.error("password={}", PasswordUtils.aesDecode(password, Const.AES_KEY));
     }
 
@@ -108,6 +109,15 @@ public class StringTest {
         //pageForm.setSortItems(CollUtil.newArrayList(new SortItem(null), new SortItem("sss")));
         List<OrderItem> list = pageForm.toOrderItems();
         log.error("list={}", list);
+    }
+
+    @Test
+    @DisplayName("ase")
+    void aes() {
+        String str = "0PxiZS8Xb8MO97iRQMsNIiQ6CE%2F4NMntbkGWexgySMVZSgUTvcIgynxMomNQE4vsxnEAL7cLcGPRm96NA1cR%2Bbek19dIl37P6M%2FTSeOogABXI70GxODX9WfiKrWEyU%2BE28apfsgyL0VHoMtzHH30SkpjhQ0upDMUDIo9WyxNpbieEsQ17RamHhWeDdQEK7Jsot0vxj%2F2F8sPUYdoyuz%2BCw%3D%3D";
+        String str2 = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(URLUtil.decode(str));
+        log.error(str2);
+
     }
 
 }

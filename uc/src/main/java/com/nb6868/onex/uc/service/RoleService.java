@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * 角色
@@ -53,7 +52,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
         // 删除角色菜单关联关系
         menuScopeService.deleteByRoleIdList(Collections.singletonList(id));
         // 删除角色用户关联关系
-        roleUserService.deleteByRoleIds(Collections.singletonList(id));
+        roleUserService.deleteByRoleIdList(Collections.singletonList(id));
     }
 
 }
