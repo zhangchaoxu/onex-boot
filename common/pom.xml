@@ -22,7 +22,7 @@
         <shiro.version>1.9.0</shiro.version>
         <hutool.version>5.8.1</hutool.version>
         <bcprov.version>1.71</bcprov.version>
-        <jsoup.version>1.14.3</jsoup.version>
+        <jsoup.version>1.15.1</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.3.0</weixin.version>
         <aliyun.oss.version>3.15.0</aliyun.oss.version>
