@@ -1,13 +1,17 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.RoleDao;
 import com.nb6868.onex.uc.dto.RoleDTO;
+import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,13 +27,16 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     @Autowired
     private MenuScopeService menuScopeService;
     @Autowired
+    private MenuService menuService;
+    @Autowired
     private RoleUserService roleUserService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     protected void afterSaveOrUpdateDto(boolean ret, RoleDTO dto, RoleEntity existedEntity, int type) {
         if (ret) {
-            // 保存角色菜单关系
-            menuScopeService.saveOrUpdateByRoleIdAndMenuIds(dto.getId(), dto.getMenuIdList());
+            // 删除角色菜单关系
+            menuService.saveOrUpdateByRoleIdAndMenuIds(dto.getId(), dto.getMenuIdList());
         }
     }
 

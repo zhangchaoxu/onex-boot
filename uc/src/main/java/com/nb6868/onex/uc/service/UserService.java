@@ -21,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 用户
@@ -35,6 +38,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     private ShiroDao shiroDao;
     @Autowired
     private MenuScopeService menuScopeService;
+    @Autowired
+    private MenuService menuService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -91,9 +96,10 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     /**
      * 通过用户名获取用户
+     *
      * @param tenantCode 租户编码
-     * @param username 用户名
-     * @return
+     * @param username   用户名
+     * @return 用户
      */
     public UserEntity getByUsername(String tenantCode, @NotNull String username) {
         return query().eq("username", username)
@@ -104,8 +110,11 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     /**
      * 通过用户名获取用户
+     *
      * @param tenantCode 租户编码
-     * @param mobile 手机号
+     * @param mobile     手机号
+     *
+     * @return 用户
      */
     public UserEntity getByMobile(String tenantCode, @NotNull String mobile) {
         return query().eq("mobile", mobile)
@@ -116,6 +125,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     /**
      * 删除数据本身及关联关系
+     *
      * @param ids 角色id
      */
     public void deleteAllByIds(List<Long> ids) {
@@ -151,7 +161,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     @Transactional(rollbackFor = Exception.class)
     public boolean changeMenuScope(List<Long> menuIds) {
         // 保存用户菜单关系
-        menuScopeService.saveOrUpdateByUserIdAndMenuIds(ShiroUtils.getUserId(), menuIds);
+        Long userId = ShiroUtils.getUserId();
+        menuService.saveOrUpdateByUserIdAndMenuIds(userId, menuIds);
         return true;
     }
 
