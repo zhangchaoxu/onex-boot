@@ -16,6 +16,9 @@ public class LogDTO extends BaseDTO {
     @ApiModelProperty(value = "类型")
     private String type;
 
+    @ApiModelProperty(value = "请求URI")
+    private String uri;
+
     @ApiModelProperty(value = "内容")
     private String content;
 
@@ -25,16 +28,16 @@ public class LogDTO extends BaseDTO {
     @ApiModelProperty(value = "请求参数")
     private JSONObject requestParams;
 
-    @ApiModelProperty(value = "请求参数")
-    private String params;
-
     @ApiModelProperty(value = "耗时(毫秒)")
     private Long requestTime;
 
-    @ApiModelProperty(value = "状态  0：失败   1：成功")
+    @ApiModelProperty(value = "状态")
     private Integer state;
 
     @ApiModelProperty(value = "用户名")
     private String createName;
+
+    @ApiModelProperty(value = "租户编码")
+    private String tenantCode;
 
 }

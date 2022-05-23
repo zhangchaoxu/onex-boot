@@ -1,6 +1,6 @@
 package com.nb6868.onex.sys.entity;
 
-import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -24,11 +24,14 @@ public class LogEntity extends BaseEntity {
      */
     @TableField(fill = FieldFill.INSERT)
     private String createName;
-
     /**
      * 类型
      */
     private String type;
+    /**
+     * 请求URI
+     */
+    private String uri;
     /**
      * 内容
      */
@@ -41,15 +44,12 @@ public class LogEntity extends BaseEntity {
      * 耗时(毫秒)
      */
     private Long requestTime;
-    /**
-     * 请求URI
-     */
-    private String uri;
+
     /**
      * 请求参数
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private Dict requestParams;
+    private JSONObject requestParams;
     /**
      * 状态  0：失败   1：成功
      */
