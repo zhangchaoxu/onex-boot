@@ -45,6 +45,7 @@ spring:
     job-store-type: jdbc
     ## 自动启动
     auto-startup: false
+  # 任务处理
   task:
     execution:
       # 线程名前缀
@@ -58,6 +59,23 @@ spring:
         queue-capacity: 1024
         # 现成最大空闲时间(s)
         keep-alive: 300s
+  # 数据库
+  datasource:
+    druid:
+      stat-view-servlet:
+        enabled: true
+        allow:
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: OneX@2022
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
 
 # mybatis plus
 # see {https://mybatis.plus/config/}
@@ -154,7 +172,7 @@ onex:
     access-control:
       enable: false
       # 扫描包
-      scan-package: com.nb6868.onex.uc.controller,com.nb6868.onex.sched.controller,com.nb6868.onex.msg.controller
+      scan-package: com.nb6868.onex.uc.controller,com.nb6868.onex.sys.controller
     # token在header中的key
     token-header-key: auth-token
     # token在jwt中的key
