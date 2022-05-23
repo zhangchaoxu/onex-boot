@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -131,6 +132,54 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
         logicDeleteByIds(menuIds);
         // 删除菜单授权关系
         menuScopeService.deleteByMenuIds(menuIds);
+    }
+
+    /**
+     * 保存角色和菜单的关系
+     *
+     * @param roleId 角色ID
+     * @param menuIds  菜单ID列表
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrUpdateByRoleIdAndMenuIds(Long roleId, List<Long> menuIds) {
+        // 先删除角色菜单关系
+        menuScopeService.deleteByRoleIdList(Collections.singletonList(roleId));
+
+        if (ObjectUtil.isNotEmpty(menuIds)) {
+            listByIds(menuIds).forEach(menu -> {
+                //保存角色菜单关系
+                MenuScopeEntity menuScope = new MenuScopeEntity();
+                menuScope.setType(UcConst.MenuScopeTypeEnum.ROLE.value());
+                menuScope.setMenuId(menu.getId());
+                menuScope.setMenuPermissions(menu.getPermissions());
+                menuScope.setRoleId(roleId);
+                menuScopeService.save(menuScope);
+            });
+        }
+    }
+
+    /**
+     * 保存用户和菜单的关系
+     *
+     * @param userId  用户ID
+     * @param menuIds 菜单ID列表
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrUpdateByUserIdAndMenuIds(Long userId, List<Long> menuIds) {
+        // 先删除用户菜单关系
+        menuScopeService.deleteByUserIdList(Collections.singletonList(userId));
+
+        if (ObjectUtil.isNotEmpty(menuIds)) {
+            //保存用户菜单关系
+            listByIds(menuIds).forEach(menu -> {
+                MenuScopeEntity menuScope = new MenuScopeEntity();
+                menuScope.setType(UcConst.MenuScopeTypeEnum.USER.value());
+                menuScope.setMenuId(menu.getId());
+                menuScope.setMenuPermissions(menu.getPermissions());
+                menuScope.setUserId(userId);
+                menuScopeService.save(menuScope);
+            });
+        }
     }
 
 }

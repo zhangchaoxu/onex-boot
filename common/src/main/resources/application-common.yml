@@ -38,7 +38,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
     # 允许循环依赖,springboot2.6.0开始默认禁止循环依赖
-    allow-circular-references: true
+    # allow-circular-references: true
   # quartz 定时任务
   quartz:
     ## 任务存储方式

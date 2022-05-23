@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.dao.RoleUserDao;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -20,9 +19,6 @@ import java.util.List;
  */
 @Service
 public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> {
-
-    @Autowired
-    RoleService roleService;
 
     /**
      * 保存或修改
