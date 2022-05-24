@@ -124,7 +124,6 @@ public class SchedService extends DtoService<SchedDao, SchedEntity, SchedDTO> {
 		for (Long id : ids) {
 			ScheduleUtils.resumeJob(scheduler, id);
 		}
-
 		changeState(ids, SchedConst.SchedState.NORMAL.getValue());
 	}
 

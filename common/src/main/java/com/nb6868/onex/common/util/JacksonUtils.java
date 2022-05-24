@@ -136,7 +136,7 @@ public class JacksonUtils {
         }
         try {
             return JacksonUtils.getMapper().readValue(json, pojoClass);
-        } catch (final IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return defaultVal;
         }
@@ -169,7 +169,7 @@ public class JacksonUtils {
         }
         try {
             return JacksonUtils.getMapper().convertValue(json, pojoClass);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return defaultVal;
         }
@@ -198,7 +198,7 @@ public class JacksonUtils {
         }
         try {
             return JacksonUtils.getMapper().readValue(json, JacksonUtils.MAP_TYPE);
-        } catch (final IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return defaultVal;
         }

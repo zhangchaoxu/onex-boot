@@ -1,9 +1,6 @@
 package com.nb6868.onex.uc.entity;
 
-import cn.hutool.json.JSONObject;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +13,7 @@ import org.apache.ibatis.type.Alias;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName(value = "uc_params", autoResultMap = true)
+@TableName(value = "uc_params")
 @Alias("uc_params")
 public class ParamsEntity extends BaseEntity {
     /**
@@ -38,8 +35,7 @@ public class ParamsEntity extends BaseEntity {
     /**
      * 内容
      */
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private JSONObject content;
+    private String content;
     /**
      * 租户编码
      */

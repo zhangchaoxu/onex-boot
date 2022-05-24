@@ -1,6 +1,5 @@
 package com.nb6868.onex.uc.dto;
 
-import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
@@ -36,7 +35,7 @@ public class ParamsDTO extends BaseDTO {
 	private String code;
 
 	@ApiModelProperty(value = "内容")
-	private JSONObject content;
+	private String content;
 
 	@ApiModelProperty(value = "租户编码")
 	private String tenantCode;
