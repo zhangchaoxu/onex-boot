@@ -5,10 +5,12 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.PageForm;
+import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +22,14 @@ import java.util.function.Consumer;
 @DisplayName("字符串测试")
 @Slf4j
 public class StringTest {
+
+    @Test
+    @DisplayName("jsontest")
+    void jsonTest() {
+        String result = "xxx";
+        JSONObject json = JacksonUtils.jsonToPojo("ssss", JSONObject.class, null);
+        log.error("result={}", json.toString());
+    }
 
     @Test
     @DisplayName("string fmt")

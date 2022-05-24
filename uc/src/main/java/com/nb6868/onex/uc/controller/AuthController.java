@@ -111,7 +111,8 @@ public class AuthController {
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
         // 获得对应登录类型的登录参数
-        JSONObject loginParams = paramsService.getContent(UcConst.ParamsTypeEnum.TENANT.value(), form.getTenantCode(), null, form.getType());
+        JSONObject loginParams = paramsService.getContentObject(UcConst.ParamsTypeEnum.TENANT.value(), form.getTenantCode(), null, form.getType(), JSONObject.class, null);
+        AssertUtils.isNull(loginParams, "缺少登录配置");
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
             // 先检验验证码表单
@@ -177,7 +178,8 @@ public class AuthController {
     public Result<?> userChangePassword(@Validated @RequestBody ChangePasswordForm form) {
         String tenantCode = ShiroUtils.getUserTenantCode();
         // 先校验密码复杂度
-        JSONObject paramsContent = paramsService.getContent(null, tenantCode, null, UcConst.PARAMS_CODE_LOGIN);
+        JSONObject paramsContent = paramsService.getContentObject(null, tenantCode, null, UcConst.PARAMS_CODE_LOGIN, JSONObject.class, null);
+        AssertUtils.isNull(paramsContent, "配置信息为空");
         // 密码复杂度正则
         AssertUtils.isTrue(StrUtil.isNotBlank(paramsContent.getStr("passwordRegExp")) && !ReUtil.isMatch(paramsContent.getStr("passwordRegExp"), form.getNewPassword()), ErrorCode.ERROR_REQUEST, paramsContent.getStr("passwordRegError", "密码不符合规则"));
         // 获取数据库中的用户
