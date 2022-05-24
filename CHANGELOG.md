@@ -1,4 +1,6 @@
 # CHANGELOG
+## [3.5.8] 2022.05.23
+- fix: fix params content format issue 
 
 ## [3.5.7] 2022.05.20
 - upgrade: upgrade spring boot to 2.7.0
