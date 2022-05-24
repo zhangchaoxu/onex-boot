@@ -65,4 +65,16 @@ public interface TableSchemaDao {
     @Update("ALTER TABLE ${tableName} COMMENT #{comment}")
     int alterTableComment(@Param("tableName") String tableName, @Param("comment") String comment);
 
+    /**
+     * 查询列表
+     */
+    @Select("${sql}")
+    List<Map<String, Object>> executeQueryList(@Param("sql") String sql);
+
+    /**
+     * 执行sql
+     */
+    @Update("${sql}")
+    int executeUpdate(@Param("sql") String sql);
+
 }
