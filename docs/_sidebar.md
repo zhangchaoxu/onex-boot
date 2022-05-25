@@ -23,6 +23,7 @@
   * [日志](boot/Log.md)
   * [ActiveMQ](boot/ActiveMQ.md)
   * [异步任务](boot/AsyncTask.md)
+  * [定时任务](boot/Schedule.md)
   * [API限流](boot/AccessLimit.md)
   * [代码生成器](boot/coder.md)
   * [文档在线预览](boot/OfficePreview.md)
