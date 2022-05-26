@@ -14,8 +14,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -32,6 +34,9 @@ import java.lang.reflect.Method;
 @Order(100)
 @Slf4j
 public class AccessControlAspect {
+
+    @Autowired
+    private Environment env;
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.AccessControl)")
     public void pointcut() {
@@ -73,21 +78,22 @@ public class AccessControlAspect {
 
     /**
      * 检查access token
-     * @param annotation
-     * @return
      */
     private boolean checkAccessToken(AccessControl annotation) {
-        if (ObjectUtil.isNotEmpty(annotation.allowToken())) {
+        if (ObjectUtil.isNotEmpty(annotation.allowTokenName())) {
             String token = HttpContextUtils.getRequestParameter(Const.ACCESS_TOKEN_KEY);
             if (StrUtil.isNotBlank(token)) {
-                for (String allowToken : annotation.allowToken()) {
-                    if (allowToken.equalsIgnoreCase(token)) {
+                for (String allowTokenName : annotation.allowTokenName()) {
+                    String allowToken = env.getProperty("onex.auth.access-control." + allowTokenName);
+                    if (token.equalsIgnoreCase(allowToken)) {
                         return true;
                     }
                 }
             }
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
 }
