@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.controller;
+package com.nb6868.onex.common.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
@@ -11,17 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-/**
- * 系统接口
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
 @RequestMapping("/")
 @Validated
@@ -56,8 +53,9 @@ public class IndexController {
         return new Result<>().success(result);
     }
 
-    @GetMapping("sys/info")
+    @GetMapping("sysInfo")
     @ApiOperation("系统信息")
+    @AccessControl({"sysInfo"})
     public Result<?> sysInfo() {
         OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
@@ -85,5 +83,4 @@ public class IndexController {
 
         return new Result<>().success(data);
     }
-
 }

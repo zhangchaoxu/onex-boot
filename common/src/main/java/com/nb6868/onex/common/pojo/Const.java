@@ -7,6 +7,11 @@ package com.nb6868.onex.common.pojo;
  */
 public interface Const {
 
+    /**
+     * access token key
+     */
+    String ACCESS_TOKEN_KEY = "access_token";
+
     String AES_KEY = "1234567890adbcde";
     /**
      * 部门根节点标识

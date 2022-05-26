@@ -36,4 +36,9 @@ public @interface AccessControl {
      */
     String[] ipBlack() default {};
 
+    /**
+     * 允许token
+     */
+    String[] allowToken() default {};
+
 }
