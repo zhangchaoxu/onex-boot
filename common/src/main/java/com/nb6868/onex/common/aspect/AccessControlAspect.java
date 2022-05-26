@@ -5,7 +5,6 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -81,11 +80,10 @@ public class AccessControlAspect {
      */
     private boolean checkAccessToken(AccessControl annotation) {
         if (ObjectUtil.isNotEmpty(annotation.allowTokenName())) {
-            String token = HttpContextUtils.getRequestParameter(Const.ACCESS_TOKEN_KEY);
-            if (StrUtil.isNotBlank(token)) {
-                for (String allowTokenName : annotation.allowTokenName()) {
-                    String allowToken = env.getProperty("onex.auth.access-control." + allowTokenName);
-                    if (token.equalsIgnoreCase(allowToken)) {
+            for (String allowTokenName : annotation.allowTokenName()) {
+                String token = HttpContextUtils.getRequestParameter(allowTokenName);
+                if (StrUtil.isNotBlank(token)) {
+                    if (token.equalsIgnoreCase(env.getProperty("onex.auth.access-control." + allowTokenName))) {
                         return true;
                     }
                 }
