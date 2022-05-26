@@ -19,6 +19,8 @@ public interface ErrorCode {
     int NOT_FOUND = 404;
     int METHOD_NOT_ALLOWED = 405;
 
+    int ACCESS_TOKEN_FORBID = 10401;
+
     int COMMON_ERROR = 10000;
     int NOT_NULL = 10001;
     int DB_RECORD_EXISTS = 10002;

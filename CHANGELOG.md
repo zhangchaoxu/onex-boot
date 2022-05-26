@@ -1,7 +1,10 @@
 # CHANGELOG
 
 ## [3.6.0] 2022.05.26
+<del>
 - upgrade: upgrade druid to 1.2.10
+</del>
+- new: add AccessControl allowToken
 
 ## [3.5.9] 2022.05.23
 - fix: fix params content format issue 

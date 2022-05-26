@@ -2,8 +2,10 @@ package com.nb6868.onex.common.aspect;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +48,7 @@ public class AccessControlAspect {
                 String ip = HttpContextUtils.getIpAddr(HttpContextUtils.getHttpServletRequest());
                 for (String s : annotation.ipWhite()) {
                     if (ReUtil.isMatch(s, ip)) {
-                        return joinPoint.proceed();
+                        return checkAccessToken(annotation) ? joinPoint.proceed() : new Result<>().error(ErrorCode.ACCESS_TOKEN_FORBID);
                     }
                 }
                 // 返回错误
@@ -59,14 +61,33 @@ public class AccessControlAspect {
                         return new Result<>().error(ErrorCode.IP_BLACK);
                     }
                 }
-                return joinPoint.proceed();
+                return checkAccessToken(annotation) ? joinPoint.proceed() : new Result<>().error(ErrorCode.ACCESS_TOKEN_FORBID);
             } else {
-                // 放行
-                return joinPoint.proceed();
+                // 不检查ip
+                return checkAccessToken(annotation) ? joinPoint.proceed() : new Result<>().error(ErrorCode.ACCESS_TOKEN_FORBID);
             }
         } else {
             return joinPoint.proceed();
         }
+    }
+
+    /**
+     * 检查access token
+     * @param annotation
+     * @return
+     */
+    private boolean checkAccessToken(AccessControl annotation) {
+        if (ObjectUtil.isNotEmpty(annotation.allowToken())) {
+            String token = HttpContextUtils.getRequestParameter(Const.ACCESS_TOKEN_KEY);
+            if (StrUtil.isNotBlank(token)) {
+                for (String allowToken : annotation.allowToken()) {
+                    if (allowToken.equalsIgnoreCase(token)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }
