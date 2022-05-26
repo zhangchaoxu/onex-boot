@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.wechat;
 
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;

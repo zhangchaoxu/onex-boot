@@ -5,17 +5,18 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.5.8</version>
+        <version>3.6.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>msg</artifactId>
     <packaging>jar</packaging>
+    <description>onex message libs</description>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <onex-common.version>3.5.8</onex-common.version>
+        <onex-common.version>3.6.0</onex-common.version>
         <shiro.version>1.9.0</shiro.version>
     </properties>
 

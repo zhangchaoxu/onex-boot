@@ -5,18 +5,19 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.5.8</version>
+        <version>3.6.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
     <packaging>jar</packaging>
+    <description>onex common libs</description>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
-        <druid.version>1.2.9</druid.version>
+        <druid.version>1.2.10</druid.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
         <mybatisplus.version>3.5.1</mybatisplus.version>
         <shiro.version>1.9.0</shiro.version>
@@ -124,13 +125,6 @@
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-miniapp</artifactId>
-            <version>${weixin.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- wechat pay -->
-        <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-pay</artifactId>
             <version>${weixin.version}</version>
             <scope>provided</scope>
         </dependency>

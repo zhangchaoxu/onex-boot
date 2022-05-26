@@ -1,5 +1,9 @@
 # CHANGELOG
-## [3.5.8] 2022.05.23
+
+## [3.6.0] 2022.05.26
+- upgrade: upgrade druid to 1.2.10
+
+## [3.5.9] 2022.05.23
 - fix: fix params content format issue 
 
 ## [3.5.7] 2022.05.20
