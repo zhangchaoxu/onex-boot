@@ -14,6 +14,7 @@ import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
+import com.nb6868.onex.sys.dto.OssFileBase64UploadForm;
 import com.nb6868.onex.sys.dto.OssQueryForm;
 import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
@@ -92,15 +93,13 @@ public class OssController {
 
     @PostMapping("uploadBase64")
     @ApiOperation(value = "上传单文件(base64形式)")
-    public Result<?> uploadBase64(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramCode,
-                                  @RequestParam(name = "文件base64") String fileBase64,
-                                  @RequestParam(required = false, name = "路径前缀") String prefix) {
+    public Result<?> uploadBase64(@Validated @RequestBody OssFileBase64UploadForm form) {
         // 将base64转成file
-        MultipartFile file = MultipartFileUtils.base64ToMultipartFile(fileBase64);
+        MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
 
         // 上传文件
-        String url = OssPropsConfig.getService(paramCode).upload(prefix, file);
+        String url = OssPropsConfig.getService(form.getParamCode()).upload(form.getPrefix(), file);
         //保存文件信息
         OssEntity oss = new OssEntity();
         oss.setUrl(url);
