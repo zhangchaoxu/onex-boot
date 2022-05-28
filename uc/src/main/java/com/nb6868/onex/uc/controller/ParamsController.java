@@ -10,6 +10,7 @@ import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.IdTenantForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
@@ -47,7 +48,7 @@ public class ParamsController {
         ParamsEntity data = paramsService.getOne(queryWrapper);
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         AssertUtils.isFalse(UcConst.ParamsScopeEnum.PUBLIC.value().equalsIgnoreCase(data.getScope()), "参数非公开");
-        return new Result<>().success(data.getContent());
+        return new Result<>().success(JacksonUtils.jsonToNode(data.getContent()));
     }
 
     @PostMapping("page")
