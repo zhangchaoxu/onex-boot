@@ -3,16 +3,20 @@ package com.nb6868.onex.sys.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.sys.dto.OssDTO;
-import com.nb6868.onex.sys.entity.OssEntity;
-import com.nb6868.onex.sys.service.OssService;
+import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.oss.AbstractOssService;
 import com.nb6868.onex.common.oss.OssPropsConfig;
+import com.nb6868.onex.common.pojo.IdsTenantForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.common.validator.group.PageGroup;
+import com.nb6868.onex.sys.dto.OssQueryForm;
+import com.nb6868.onex.sys.entity.OssEntity;
+import com.nb6868.onex.sys.service.OssService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,13 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 素材库
@@ -42,11 +43,12 @@ public class OssController {
     @Autowired
     private OssService ossService;
 
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation(value = "分页")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sys:oss:page")
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<OssDTO> page = ossService.pageDto(params);
+    public Result<?> page(@Validated({PageGroup.class}) @RequestBody OssQueryForm form) {
+        PageData<?> page = ossService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
@@ -135,22 +137,12 @@ public class OssController {
         return new Result<>().success(Dict.create().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
     }
 
-    @DeleteMapping("delete")
-    @ApiOperation("删除")
-    @LogOperation("删除")
-    @RequiresPermissions("sys:oss:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        ossService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
-    @DeleteMapping("deleteBatch")
+    @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
-    @LogOperation("删除")
-    @RequiresPermissions("sys:oss:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        ossService.logicDeleteByIds(ids);
+    @LogOperation("批量删除")
+    @RequiresPermissions("sys:oss:delete")
+    public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
+        ossService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>();
     }

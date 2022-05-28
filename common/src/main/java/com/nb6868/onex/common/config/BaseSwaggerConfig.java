@@ -27,23 +27,6 @@ public abstract class BaseSwaggerConfig {
     @Value("${onex.auth.token-key:auth-token}")
     private String authTokenKey;
 
-    @Bean(value = "sched")
-    @Conditional(SchedCondition.class)
-    public Docket createSchedApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfoBuilder().build())
-                .groupName("sched")
-                .select()
-                // 包下的类,生成接口文档
-                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.sched.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .extensions(getExtensions())
-                .directModelSubstitute(java.util.Date.class, String.class)
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
-    }
-
     @Bean("cms")
     @Conditional(CmsCondition.class)
     public Docket createCmsApi() {
