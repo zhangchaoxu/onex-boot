@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.1] 2022.05.28
+- new: add FileBase64Form
+
 ## [3.6.0] 2022.05.26
 <del>
 - upgrade: upgrade druid to 1.2.10

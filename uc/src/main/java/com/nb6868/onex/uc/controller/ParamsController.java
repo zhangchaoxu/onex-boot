@@ -41,6 +41,7 @@ public class ParamsController {
     @PostMapping("infoByCode")
     @AccessControl
     @ApiOperation(value = "通过编码获取配置信息")
+    @ApiOperationSupport(order = 5)
     public Result<?> infoByCode(@Validated @RequestBody ParamsInfoQueryForm form) {
         QueryWrapper<ParamsEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         ParamsEntity data = paramsService.getOne(queryWrapper);
