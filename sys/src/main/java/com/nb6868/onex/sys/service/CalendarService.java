@@ -3,9 +3,10 @@ package com.nb6868.onex.sys.service;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.sys.dao.CalendarDao;
+import com.nb6868.onex.sys.dto.CalendarDTO;
 import com.nb6868.onex.sys.entity.CalendarEntity;
-import com.nb6868.onex.common.jpa.EntityService;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.Date;
  * @author Charles zhangchaoxu@gmail.comc
  */
 @Service
-public class CalendarService extends EntityService<CalendarDao, CalendarEntity> {
+public class CalendarService extends DtoService<CalendarDao, CalendarEntity, CalendarDTO> {
 
     /**
      * 是否工作日
