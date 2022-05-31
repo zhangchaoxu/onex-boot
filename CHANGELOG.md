@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.3] 2022.05.30
+- upgrade: upgrade hutool to 5.8.2 
+
 ## [3.6.2] 2022.05.28
 - new: add FileBase64Form
 
