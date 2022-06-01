@@ -40,6 +40,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
         Date now = new Date();
         // jwt99年过期=永不过期
         Date expireDate = tokenExpire <= 0 ? DateUtil.offsetMonth(now, 12 * 99) : DateUtil.offsetSecond(now, tokenExpire);
+        // 注意同一秒内生成的token是一致的
         String jwtToken = JWT.create()
                 .setSubject(loginType)
                 .setKey(tokenKey.getBytes())
@@ -53,7 +54,8 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
                 .setPayload("username", user.getUsername())
                 .setPayload("realName", user.getRealName())
                 .sign();
-        if ("db".equalsIgnoreCase(tokenStoreType)) {
+        // 判断一下token是否已存在
+        if ("db".equalsIgnoreCase(tokenStoreType) && query().eq("token", jwtToken).exists()) {
             // 在数据库中
             if (!multiLogin) {
                 // 不支持多端登录,注销该用户所有token

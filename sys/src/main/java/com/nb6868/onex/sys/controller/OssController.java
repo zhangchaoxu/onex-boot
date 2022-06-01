@@ -54,23 +54,6 @@ public class OssController {
         return new Result<>().success(page);
     }
 
-    @GetMapping("presignedUrl")
-    @ApiOperation(value = "获得授权访问地址")
-    public Result<?> presignedUrl(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode,
-                                  @RequestParam String objectName,
-                                  @RequestParam(required = false, defaultValue = "36000") long expiration) {
-        String url = OssPropsConfig.getService(paramCode).generatePresignedUrl(objectName, expiration);
-
-        return new Result<>().success(url);
-    }
-
-    @GetMapping("getSts")
-    @ApiOperation(value = "获得STS临时访问token")
-    public Result<?> getSts(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode) {
-        Dict dict = OssPropsConfig.getService(paramCode).getSts();
-        return new Result<>().success(dict);
-    }
-
     @PostMapping("upload")
     @ApiOperation(value = "上传单文件(文件形式)")
     public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramCode,
@@ -92,7 +75,7 @@ public class OssController {
     }
 
     @PostMapping("uploadBase64")
-    @ApiOperation(value = "上传单文件(base64形式)")
+    @ApiOperation(value = "上传单文件(base64)")
     public Result<?> uploadBase64(@Validated @RequestBody OssFileBase64UploadForm form) {
         // 将base64转成file
         MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
@@ -134,6 +117,23 @@ public class OssController {
         }
 
         return new Result<>().success(Dict.create().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
+    }
+
+    @GetMapping("presignedUrl")
+    @ApiOperation(value = "获得授权访问地址")
+    public Result<?> presignedUrl(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode,
+                                  @RequestParam String objectName,
+                                  @RequestParam(required = false, defaultValue = "36000") long expiration) {
+        String url = OssPropsConfig.getService(paramCode).generatePresignedUrl(objectName, expiration);
+
+        return new Result<>().success(url);
+    }
+
+    @GetMapping("getSts")
+    @ApiOperation(value = "获得STS临时访问token")
+    public Result<?> getSts(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode) {
+        Dict dict = OssPropsConfig.getService(paramCode).getSts();
+        return new Result<>().success(dict);
     }
 
     @PostMapping("deleteBatch")

@@ -2,6 +2,7 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.uc.UcConst;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Service
-public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO> {
+public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO> implements BaseParamsService {
 
     /**
      * 获得用户参数
