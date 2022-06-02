@@ -13,12 +13,9 @@ import lombok.EqualsAndHashCode;
 public class OssFileBase64UploadForm extends BaseForm {
 
     @ApiModelProperty(value = "配置参数名")
-    private String paramCode = "OSS_PUBLIC";
+    private String paramsCode = "OSS_PUBLIC";
 
     @ApiModelProperty(value = "文件上传表单")
     private FileBase64Form fileBase64;
-
-    @ApiModelProperty(value = "文件前缀")
-    private String prefix;
 
 }

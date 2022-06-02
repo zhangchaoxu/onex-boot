@@ -1,15 +1,18 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.params.BaseParamsService;
+import com.nb6868.onex.common.params.ParamsProps;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.ParamsDao;
 import com.nb6868.onex.uc.dto.ParamsDTO;
 import com.nb6868.onex.uc.entity.ParamsEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +23,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO> implements BaseParamsService {
 
+    @Autowired
+    private ParamsProps paramsProps;
+
+    @Override
+    public <T> T getSystemPropsObject(String code, Class<T> clazz, T defObj) {
+        return JacksonUtils.jsonToPojo(getSystemProps(code), clazz, defObj);
+    }
+
+    @Override
+    public JSONObject getSystemPropsJson(String code) {
+        return getSystemPropsObject(code, JSONObject.class, null);
+    }
+
+    @Override
+    public String getSystemProps(String code) {
+        String content = null;
+        if (paramsProps != null && ObjectUtil.isNotEmpty(paramsProps.getConfigs())) {
+            content = paramsProps.getConfigs().get("code");
+        }
+        if (StrUtil.isEmpty(content)) {
+            content = getSystemContent(code);
+        }
+        return content;
+    }
 
     @Override
     public String getSystemContent(String code) {

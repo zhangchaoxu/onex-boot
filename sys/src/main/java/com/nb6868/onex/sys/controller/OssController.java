@@ -7,7 +7,9 @@ import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.oss.AbstractOssService;
+import com.nb6868.onex.common.oss.OssFactory;
 import com.nb6868.onex.common.oss.OssPropsConfig;
+import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.pojo.IdsTenantForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
@@ -38,6 +40,8 @@ public class OssController {
 
     @Autowired
     private OssService ossService;
+    @Autowired
+    private BaseParamsService paramsService;
 
     @PostMapping("page")
     @ApiOperation(value = "分页")
@@ -50,23 +54,27 @@ public class OssController {
     }
 
     @PostMapping("upload")
-    @ApiOperation(value = "上传单文件(文件形式)")
-    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramCode,
-                            @RequestParam("file") MultipartFile file,
-                            @RequestParam(required = false, name = "路径前缀") String prefix) {
+    @ApiOperation(value = "上传文件(文件形式)")
+    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode, @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        OssPropsConfig.Config ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.Config.class, null);
+        AssertUtils.isNull(ossConfig, "未定义的参数配置");
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        // 上传文件
-        String url = OssPropsConfig.getService(paramCode).upload(prefix, file);
-        //保存文件信息
-        OssEntity oss = new OssEntity();
-        oss.setUrl(url);
-        oss.setFilename(file.getOriginalFilename());
-        oss.setSize(file.getSize());
-        oss.setContentType(file.getContentType());
-        ossService.save(oss);
-
-        return new Result<>().success(Dict.create().set("src", url).set("oss", oss));
+        String url = uploadService.upload(file);
+        Dict result = Dict.create().set("src", url);
+        if (ossConfig.getSaveDb()) {
+            //保存文件信息
+            OssEntity oss = new OssEntity();
+            oss.setUrl(url);
+            oss.setFilename(file.getOriginalFilename());
+            oss.setSize(file.getSize());
+            oss.setContentType(file.getContentType());
+            ossService.save(oss);
+            result.set("oss", oss);
+        }
+        return new Result<>().success(result);
     }
 
     @PostMapping("uploadBase64")
@@ -75,31 +83,14 @@ public class OssController {
         // 将base64转成file
         MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        OssPropsConfig.Config ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.Config.class, null);
+        AssertUtils.isNull(ossConfig, "未定义的参数配置");
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        // 上传文件
-        String url = OssPropsConfig.getService(form.getParamCode()).upload(form.getPrefix(), file);
-        //保存文件信息
-        OssEntity oss = new OssEntity();
-        oss.setUrl(url);
-        oss.setFilename(file.getOriginalFilename());
-        oss.setSize(file.getSize());
-        oss.setContentType(file.getContentType());
-        ossService.save(oss);
-
-        return new Result<>().success(Dict.create().set("src", url).set("oss", oss));
-    }
-
-    @PostMapping("uploadMulti")
-    @ApiOperation(value = "上传多文件")
-    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramCode,
-                                 @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files,
-                                 @RequestParam(required = false, name = "路径前缀") String prefix) {
-        List<String> srcList = new ArrayList<>();
-        List<OssEntity> ossList = new ArrayList<>();
-        AbstractOssService abstractOssService = OssPropsConfig.getService(paramCode);
-        for (MultipartFile file : files) {
-            // 上传文件
-            String url = abstractOssService.upload(prefix, file);
+        String url = uploadService.upload(file);
+        Dict result = Dict.create().set("src", url);
+        if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
             oss.setUrl(url);
@@ -107,8 +98,35 @@ public class OssController {
             oss.setSize(file.getSize());
             oss.setContentType(file.getContentType());
             ossService.save(oss);
-            srcList.add(url);
-            ossList.add(oss);
+            result.set("oss", oss);
+        }
+        return new Result<>().success(result);
+    }
+
+    @PostMapping("uploadMulti")
+    @ApiOperation(value = "上传多文件")
+    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
+                                 @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
+        List<String> srcList = new ArrayList<>();
+        List<OssEntity> ossList = new ArrayList<>();
+        OssPropsConfig.Config ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.Config.class, null);
+        AssertUtils.isNull(ossConfig, "未定义的参数配置");
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
+        for (MultipartFile file : files) {
+            // 上传文件
+            String url = uploadService.upload(file);
+            if (ossConfig.getSaveDb()) {
+                //保存文件信息
+                OssEntity oss = new OssEntity();
+                oss.setUrl(url);
+                oss.setFilename(file.getOriginalFilename());
+                oss.setSize(file.getSize());
+                oss.setContentType(file.getContentType());
+                ossService.save(oss);
+                srcList.add(url);
+                ossList.add(oss);
+            }
         }
 
         return new Result<>().success(Dict.create().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
