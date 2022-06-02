@@ -3,16 +3,15 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.DtoService;
-import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.RoleDao;
 import com.nb6868.onex.uc.dto.RoleDTO;
-import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,7 +45,20 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
      * @param userId 用户id
      */
     public List<Long> getRoleIdListByUserId(Long userId) {
-        return roleUserService.listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId), o -> Long.valueOf(String.valueOf(o)));
+        return roleUserService.listObjs(new QueryWrapper<RoleUserEntity>().select("role_id").eq("user_id", userId).groupBy("role_id"), o -> Long.valueOf(String.valueOf(o)));
+    }
+
+    /**
+     * 根据角色id查询用户列表
+     *
+     * @param roleIds 角色id
+     */
+    public List<Long> getUserIdListByRoleIdList(List<Long> roleIds) {
+        if (ObjectUtil.isEmpty(roleIds)) {
+            return new ArrayList<>();
+        } else {
+            return roleUserService.listObjs(new QueryWrapper<RoleUserEntity>().select("user_id").in("role_id", roleIds).groupBy("user_id"), o -> Long.valueOf(String.valueOf(o)));
+        }
     }
 
     /**
