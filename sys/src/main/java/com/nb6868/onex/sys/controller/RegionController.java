@@ -39,7 +39,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/sys/region")
 @Validated
-@Api(tags = "行政区域")
+@Api(tags = "行政区域", position = 100)
 public class RegionController {
     @Autowired
     private RegionService regionService;

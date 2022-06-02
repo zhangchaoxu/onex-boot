@@ -1,7 +1,6 @@
 package com.nb6868.onex.sys.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -15,7 +14,10 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.sys.dto.*;
+import com.nb6868.onex.sys.dto.MsgLogQueryForm;
+import com.nb6868.onex.sys.dto.MsgSendForm;
+import com.nb6868.onex.sys.dto.MsgTplDTO;
+import com.nb6868.onex.sys.dto.MsgTplQueryForm;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.service.MsgLogService;
 import com.nb6868.onex.sys.service.MsgTplService;
@@ -35,7 +37,6 @@ import java.util.List;
 @RequestMapping("/sys/msg/")
 @Validated
 @Api(tags = "消息管理", position = 10)
-@ApiSupport(order = 10)
 public class MsgController {
 
     @Autowired
