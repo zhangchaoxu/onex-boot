@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [3.6.5] 2022.06.02
+- fix: fix shirodao getMenuIdListByUserId issue
+
+## [3.6.4] 2022.06.01
+- new: add BaseParamsService
+
 ## [3.6.3] 2022.05.30
 - upgrade: upgrade hutool to 5.8.2 
 

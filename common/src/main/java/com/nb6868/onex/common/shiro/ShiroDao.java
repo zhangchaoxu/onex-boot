@@ -53,7 +53,7 @@ public interface ShiroDao {
     /**
      * 通过用户id，获得用户权限列表
      * 在menu_scope中的用户权限，叠加该用户角色在menu_scope中的角色权限
-     *
+     * <p>
      * SELECT uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope WHERE uc_menu_scope.deleted = 0 AND ((uc_menu_scope.type = 1 AND uc_menu_scope.role_id IN ( SELECT role_id FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = ?)) OR (uc_menu_scope.type = 2 AND uc_menu_scope.user_id = ?)) GROUP BY uc_menu_scope.menu_id
      */
     @Select("SELECT DISTINCT(" + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions) AS permissions FROM " + ShiroConst.TABLE_MENU_SCOPE +
@@ -66,11 +66,13 @@ public interface ShiroDao {
     /**
      * 通过用户id，获得用户菜单Id列表
      */
-    @Select("SELECT DISTINCT(" + ShiroConst.TABLE_MENU_SCOPE + ".menu_id) AS menu_id FROM " + ShiroConst.TABLE_MENU_SCOPE +
-            " WHERE " + ShiroConst.TABLE_MENU_SCOPE + ".deleted = 0 AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions != '' AND " + ShiroConst.TABLE_MENU_SCOPE + ".menu_permissions is not null" +
+    @Select("<script>" +
+            "SELECT DISTINCT(" + ShiroConst.TABLE_MENU_SCOPE + ".menu_id) AS menu_id FROM " + ShiroConst.TABLE_MENU_SCOPE +
+            " WHERE " + ShiroConst.TABLE_MENU_SCOPE + ".deleted = 0" +
             " AND ((" + ShiroConst.TABLE_MENU_SCOPE + ".type = 1  AND " + ShiroConst.TABLE_MENU_SCOPE + ".role_id IN " +
             "( SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE " + ShiroConst.TABLE_USER_ROLE + ".deleted = 0 AND " + ShiroConst.TABLE_USER_ROLE + ".user_id = #{userId})) OR " +
-            "(" + ShiroConst.TABLE_MENU_SCOPE + ".type = 2 AND " + ShiroConst.TABLE_MENU_SCOPE + ".user_id = #{userId}))")
+            "(" + ShiroConst.TABLE_MENU_SCOPE + ".type = 2 AND " + ShiroConst.TABLE_MENU_SCOPE + ".user_id = #{userId}))" +
+            "</script>")
     List<Long> getMenuIdListByUserId(@Param("userId") Long userId);
 
     /**
