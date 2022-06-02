@@ -27,7 +27,7 @@ public class HuaweiCloudOssService extends AbstractOssService {
     @Override
     public InputStream download(String objectKey) {
         ObsClient ossClient = null;
-        ObsObject ossObject = null;
+        ObsObject ossObject;
         try {
             ossClient = new ObsClient(config.getAccessKeyId(), config.getAccessKeySecret(), config.getEndPoint());
             ossObject = ossClient.getObject(config.getBucketName(), objectKey);
