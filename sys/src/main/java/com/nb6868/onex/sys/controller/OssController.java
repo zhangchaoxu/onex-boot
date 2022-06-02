@@ -2,6 +2,7 @@ package com.nb6868.onex.sys.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -17,7 +18,9 @@ import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.dto.OssFileBase64UploadForm;
+import com.nb6868.onex.sys.dto.OssPresignedUrlForm;
 import com.nb6868.onex.sys.dto.OssQueryForm;
+import com.nb6868.onex.sys.dto.OssStsForm;
 import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
 import io.swagger.annotations.Api;
@@ -57,7 +60,7 @@ public class OssController {
     @ApiOperation(value = "上传文件(文件形式)")
     public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode, @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
-        OssPropsConfig.Config ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.Config.class, null);
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
@@ -83,7 +86,7 @@ public class OssController {
         // 将base64转成file
         MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
-        OssPropsConfig.Config ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.Config.class, null);
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
@@ -109,7 +112,7 @@ public class OssController {
                                  @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
-        OssPropsConfig.Config ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.Config.class, null);
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
@@ -132,21 +135,29 @@ public class OssController {
         return new Result<>().success(Dict.create().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
     }
 
-    @GetMapping("presignedUrl")
+    @PostMapping("getPresignedUrl")
     @ApiOperation(value = "获得授权访问地址")
-    public Result<?> presignedUrl(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode,
-                                  @RequestParam String objectName,
-                                  @RequestParam(required = false, defaultValue = "36000") long expiration) {
-        String url = OssPropsConfig.getService(paramCode).generatePresignedUrl(objectName, expiration);
+    public Result<?> getPresignedUrl(@Validated @RequestBody OssPresignedUrlForm form) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
+        AssertUtils.isNull(ossConfig, "未定义的参数配置");
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
+
+        String url = uploadService.generatePresignedUrl(form.getObjectName(), form.getExpiration());
 
         return new Result<>().success(url);
     }
 
-    @GetMapping("getSts")
+    @PostMapping("getSts")
     @ApiOperation(value = "获得STS临时访问token")
-    public Result<?> getSts(@RequestParam(required = false, defaultValue = "OSS_PRIVATE") String paramCode) {
-        Dict dict = OssPropsConfig.getService(paramCode).getSts();
-        return new Result<>().success(dict);
+    public Result<?> getSts(@Validated @RequestBody OssStsForm form) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
+        AssertUtils.isNull(ossConfig, "未定义的参数配置");
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
+
+        JSONObject result = uploadService.getSts();
+        return new Result<>().success(result);
     }
 
     @PostMapping("deleteBatch")

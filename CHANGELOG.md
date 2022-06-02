@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.6.6] 2022.06.02
+## [3.6.7] 2022.06.02
 - fix: fix shirodao getMenuIdListByUserId issue
 
 ## [3.6.4] 2022.06.01

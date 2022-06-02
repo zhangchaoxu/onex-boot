@@ -1,7 +1,7 @@
 package com.nb6868.onex.common.oss;
 
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.obs.services.ObsClient;
@@ -9,7 +9,8 @@ import com.obs.services.exception.ObsException;
 import com.obs.services.model.ObsObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 华为云OBS存储
@@ -83,12 +84,12 @@ public class HuaweiCloudOssService extends AbstractOssService {
     }
 
     @Override
-    public String generatePresignedUrl(String objectName, long expiration) {
+    public String getPresignedUrl(String objectName, Long expiration) {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "华为云存储暂不支持生成url模式");
     }
 
     @Override
-    public Dict getSts() {
+    public JSONObject getSts() {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "华为云存储暂不支持sts模式");
     }
 }
