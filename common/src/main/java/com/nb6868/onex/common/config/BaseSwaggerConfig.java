@@ -27,23 +27,6 @@ public abstract class BaseSwaggerConfig {
     @Value("${onex.auth.token-key:auth-token}")
     private String authTokenKey;
 
-    @Bean("cms")
-    @Conditional(CmsCondition.class)
-    public Docket createCmsApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfoBuilder().build())
-                .groupName("cms")
-                .select()
-                // 包下的类,生成接口文档
-                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.cms.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .extensions(getExtensions())
-                .directModelSubstitute(java.util.Date.class, String.class)
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
-    }
-
     @Bean("uc")
     @Conditional(UcCondition.class)
     public Docket createUcApi() {
