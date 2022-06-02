@@ -1,8 +1,8 @@
 package com.nb6868.onex.common.oss;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
@@ -19,13 +19,14 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 
 /**
  * 阿里云存储
- * see https://help.aliyun.com/document_detail/32008.html
+ * see <a href="https://help.aliyun.com/document_detail/32008.html">...</a>
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -88,11 +89,11 @@ public class AliyunOssService extends AbstractOssService {
     }
 
     @Override
-    public String generatePresignedUrl(String objectName, long expire) {
+    public String getPresignedUrl(String objectName, Long expire) {
         OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
         try {
             // 设置URL过期时间。
-            Date expiration = DateUtil.offsetSecond(DateUtil.date(), (int) expire);
+            Date expiration = DateUtil.offsetSecond(DateUtil.date(), expire.intValue());
             // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
             URL url = ossClient.generatePresignedUrl(config.getBucketName(), objectName, expiration);
             return url.toString();
@@ -104,7 +105,7 @@ public class AliyunOssService extends AbstractOssService {
     }
 
     @Override
-    public Dict getSts() {
+    public JSONObject getSts() {
         try {
             // 添加endpoint（直接使用STS endpoint，无需添加region ID）
             DefaultProfile.addEndpoint("", "Sts", "sts." + config.getRegion() + ".aliyuncs.com");
@@ -123,7 +124,7 @@ public class AliyunOssService extends AbstractOssService {
             // 设置凭证有效时间
             request.setDurationSeconds(config.getStsDurationSeconds());
             AssumeRoleResponse response = client.getAcsResponse(request);
-            return Dict.create()
+            return new JSONObject()
                     .set("accessKeyId", response.getCredentials().getAccessKeyId())
                     .set("accessKeySecret", response.getCredentials().getAccessKeySecret())
                     .set("securityToken", response.getCredentials().getSecurityToken())

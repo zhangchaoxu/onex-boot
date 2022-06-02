@@ -2,8 +2,8 @@ package com.nb6868.onex.common.oss;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileWriter;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 
@@ -53,12 +53,12 @@ public class LocalOssService extends AbstractOssService {
     }
 
     @Override
-    public String generatePresignedUrl(String objectName, long expiration) {
+    public String getPresignedUrl(String objectName, Long expiration) {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "本地存储不支持生成url模式");
     }
 
     @Override
-    public Dict getSts() {
+    public JSONObject getSts() {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "本地存储不支持sts模式");
     }
 }

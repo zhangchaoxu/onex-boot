@@ -6,9 +6,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import org.springframework.web.multipart.MultipartFile;
@@ -183,11 +183,11 @@ public abstract class AbstractOssService {
     /**
      * 生成访问时间
      */
-    public abstract String generatePresignedUrl(String objectName, long expiration);
+    public abstract String getPresignedUrl(String objectName, Long expiration);
 
     /**
      * 获得sts
      */
-    public abstract Dict getSts();
+    public abstract JSONObject getSts();
 
 }
