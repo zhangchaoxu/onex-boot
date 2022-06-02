@@ -55,7 +55,7 @@ public class DeptController {
     @ApiOperation("列表")
     @RequiresPermissions("uc:dept:query")
     public Result<?> list(@Validated @RequestBody DeptQueryForm form) {
-        List<?> list = deptService.listDto(QueryWrapperHelper.getPredicate(form));
+        List<?> list = deptService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
         return new Result<>().success(list);
     }

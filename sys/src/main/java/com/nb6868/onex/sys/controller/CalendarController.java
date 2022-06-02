@@ -6,6 +6,7 @@ import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.dto.CalendarDTO;
 import com.nb6868.onex.sys.dto.CalenderDayDateForm;
 import com.nb6868.onex.sys.dto.CalenderQueryForm;
@@ -42,14 +43,14 @@ public class CalendarController {
     @PostMapping("page")
     @ApiOperation("分页")
     @RequiresPermissions("sys:calendar:query")
-    public Result<?> page(@Validated @RequestBody CalenderQueryForm form) {
+    public Result<?> page(@Validated(PageGroup.class) @RequestBody CalenderQueryForm form) {
         QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
         PageData<CalendarDTO> page = calendarService.pageDto(form.getPage(), queryWrapper);
 
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @PostMapping("info")
     @ApiOperation("信息")
     @RequiresPermissions("sys:calendar:query")
     public Result<?> info(@Validated @RequestBody CalenderDayDateForm form) {
