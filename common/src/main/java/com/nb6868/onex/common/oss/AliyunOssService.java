@@ -32,7 +32,7 @@ import java.util.Date;
 @Slf4j
 public class AliyunOssService extends AbstractOssService {
 
-    public AliyunOssService(OssProps.Config config) {
+    public AliyunOssService(OssPropsConfig config) {
         this.config = config;
     }
 

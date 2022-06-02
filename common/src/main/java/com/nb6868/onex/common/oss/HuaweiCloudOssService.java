@@ -13,14 +13,14 @@ import java.io.*;
 
 /**
  * 华为云OBS存储
- * see {https://support.huaweicloud.com/sdk-java-devg-obs/obs_21_0105.html}
+ * see {<a href="https://support.huaweicloud.com/sdk-java-devg-obs/obs_21_0105.html">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
 public class HuaweiCloudOssService extends AbstractOssService {
 
-    public HuaweiCloudOssService(OssProps.Config config) {
+    public HuaweiCloudOssService(OssPropsConfig config) {
         this.config = config;
     }
 

@@ -25,7 +25,7 @@ import java.io.InputStream;
  */
 public abstract class AbstractOssService {
 
-    OssProps.Config config;
+    OssPropsConfig config;
 
     /**
      * 文件路径

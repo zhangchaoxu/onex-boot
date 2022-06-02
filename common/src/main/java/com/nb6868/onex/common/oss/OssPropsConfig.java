@@ -1,51 +1,59 @@
 package com.nb6868.onex.common.oss;
 
-import cn.hutool.core.map.MapUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
-
-@Slf4j
-@ConditionalOnProperty(name = "onex.oss.enable", havingValue = "true")
-@Configuration
+/**
+ * 存储配置
+ *
+ * @author Charles zhangchaoxu@gmail.com
+ */
+@Data
 public class OssPropsConfig {
 
-    @Autowired
-    OssProps props;
+    @ApiModelProperty(value = "类型 aliyun阿里云/huaweicloud华为云/local本地")
+    private String type;
 
-    private final static Map<String, AbstractOssService> ossServices = new HashMap<>();
+    @ApiModelProperty(value = "绑定的域名")
+    private String domain;
 
-    /**
-     * 获得服务
-     */
-    public static AbstractOssService getService(String code) {
-        return ossServices.get(code);
-    }
+    @ApiModelProperty("保留文件名")
+    private Boolean keepFileName;
 
-    @PostConstruct
-    public void init() {
-        if (props == null) {
-            log.info("未配置存储信息,如有需要可配置到onex.yml或持久化");
-            return;
-        }
-        MapUtil.emptyIfNull(props.getConfigs()).forEach((s, prop) -> {
-            if ("aliyun".equalsIgnoreCase(prop.getType())) {
-                ossServices.put(s, new AliyunOssService(prop));
-                log.info("load config oss aliyun [{}]", s);
-            } else if ("huaweicloud".equalsIgnoreCase(prop.getType())) {
-                ossServices.put(s, new HuaweiCloudOssService(prop));
-                log.info("load config oss aliyun [{}]", s);
-            } else if ("local".equalsIgnoreCase(prop.getType())) {
-                ossServices.put(s, new LocalOssService(prop));
-                log.info("load config oss local [{}]", s);
-            } else {
-                log.info("load config fail oss [{}] [{}], only support aliyun/huaweicloud/local", prop.getType(), s);
-            }
-        });
-    }
+    @ApiModelProperty("安全访问")
+    private Boolean secure;
+
+    @ApiModelProperty(value = "角色ARN")
+    private String roleArn;
+
+    @ApiModelProperty(value = "区域")
+    private String region;
+
+    @ApiModelProperty(value = "角色SessionName")
+    private String roleSessionName;
+
+    @ApiModelProperty(value = "STS有效秒数")
+    private Long stsDurationSeconds;
+
+    @ApiModelProperty(value = "全局路径前缀")
+    private String prefix;
+
+    @ApiModelProperty(value = "EndPoint")
+    private String endPoint;
+
+    @ApiModelProperty(value = "AccessKeyId")
+    private String accessKeyId;
+
+    @ApiModelProperty(value = "AccessKeySecret")
+    private String accessKeySecret;
+
+    @ApiModelProperty(value = "阿里云BucketName")
+    private String bucketName;
+
+    @ApiModelProperty(value = "本地上传存储目录")
+    private String localPath;
+
+    @ApiModelProperty(value = "是否保存到存储记录")
+    private Boolean saveDb;
+
 }

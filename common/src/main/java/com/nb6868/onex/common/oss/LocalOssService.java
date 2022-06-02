@@ -17,7 +17,7 @@ import java.io.InputStream;
  */
 public class LocalOssService extends AbstractOssService {
 
-    public LocalOssService(OssProps.Config config) {
+    public LocalOssService(OssPropsConfig config) {
         this.config = config;
     }
 

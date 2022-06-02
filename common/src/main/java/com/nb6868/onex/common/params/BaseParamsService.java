@@ -9,6 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public interface BaseParamsService {
 
+    <T> T getSystemPropsObject(String code, Class<T> clazz, T defObj);
+
+    JSONObject getSystemPropsJson(String code);
+
+    String getSystemProps(String code);
+
     /**
      * 获得系统参数
      */
