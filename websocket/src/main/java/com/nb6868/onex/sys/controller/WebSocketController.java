@@ -16,7 +16,7 @@ import java.util.List;
 @RestController("SysWebSocketController")
 @RequestMapping("/sys/webSocket/")
 @Validated
-@Api(tags = "WebSocket")
+@Api(tags = "WebSocket", position = 200)
 public class WebSocketController {
 
     @Autowired

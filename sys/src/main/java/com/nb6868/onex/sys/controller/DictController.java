@@ -29,7 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/sys/dict")
 @Validated
-@Api(tags="数据字典")
+@Api(tags="数据字典", position = 50)
 public class DictController {
     @Autowired
     private DictService dictService;

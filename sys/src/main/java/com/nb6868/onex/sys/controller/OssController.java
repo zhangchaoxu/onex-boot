@@ -30,15 +30,10 @@ import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 素材库
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
 @RequestMapping("/sys/oss")
 @Validated
-@Api(tags = "素材库")
+@Api(tags = "存储管理", position = 40)
 public class OssController {
 
     @Autowired

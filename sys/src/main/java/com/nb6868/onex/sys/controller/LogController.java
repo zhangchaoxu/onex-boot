@@ -30,7 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys/log/")
 @Validated
-@Api(tags = "日志")
+@Api(tags = "日志管理", position = 30)
 public class LogController {
 
     @Autowired

@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys/calendar")
 @Validated
-@Api(tags = "万年历")
+@Api(tags = "万年历", position = 110)
 public class CalendarController {
 
     @Autowired

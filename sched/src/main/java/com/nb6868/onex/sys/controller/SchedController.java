@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/sys/sched/")
 @Validated
-@Api(tags = "定时任务")
+@Api(tags = "定时任务", position = 20)
 public class SchedController {
 
     @Autowired
