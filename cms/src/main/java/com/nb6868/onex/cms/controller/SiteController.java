@@ -1,25 +1,31 @@
 package com.nb6868.onex.cms.controller;
 
 import com.nb6868.onex.cms.dto.SiteDTO;
+import com.nb6868.onex.cms.dto.SiteQueryForm;
 import com.nb6868.onex.cms.service.SiteService;
 import com.nb6868.onex.common.annotation.LogOperation;
+import com.nb6868.onex.common.annotation.QueryDataScope;
+import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.pojo.IdTenantForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 站点
@@ -35,30 +41,33 @@ public class SiteController {
     @Autowired
     private SiteService siteService;
 
-    @GetMapping("list")
+    @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("cms:site:list")
-    public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
-        List<SiteDTO> list = siteService.listDto(params);
+    @RequiresPermissions("cms:site:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> list(@Validated @RequestBody SiteQueryForm form) {
+        List<?> list = siteService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
         return new Result<>().success(list);
     }
 
-    @GetMapping("page")
+    @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("cms:site:page")
-    public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageData<SiteDTO> page = siteService.pageDto(params);
+    @RequiresPermissions("cms:site:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> page(@Validated({PageGroup.class}) @RequestBody SiteQueryForm form) {
+        PageData<?> page = siteService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
 
-    @GetMapping("info")
+    @PostMapping("info")
     @ApiOperation("信息")
     @LogOperation("信息")
-    @RequiresPermissions("cms:site:info")
-    public Result<?> info(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        SiteDTO data = siteService.getDtoById(id);
+    @RequiresPermissions("cms:site:query")
+    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+        SiteDTO data = siteService.oneDto(QueryWrapperHelper.getPredicate(form));
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
     }
@@ -66,7 +75,8 @@ public class SiteController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("cms:site:save")
+    @RequiresPermissions("cms:site:edit")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody SiteDTO dto) {
         siteService.saveDto(dto);
 
@@ -76,7 +86,8 @@ public class SiteController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("cms:site:update")
+    @RequiresPermissions("cms:site:edit")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody SiteDTO dto) {
         siteService.updateDto(dto);
 
@@ -87,18 +98,9 @@ public class SiteController {
     @ApiOperation("删除")
     @LogOperation("删除")
     @RequiresPermissions("cms:site:delete")
-    public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        siteService.logicDeleteById(id);
-
-        return new Result<>();
-    }
-
-    @DeleteMapping("deleteBatch")
-    @ApiOperation("批量删除")
-    @LogOperation("批量删除")
-    @RequiresPermissions("cms:site:deleteBatch")
-    public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}") @RequestBody List<Long> ids) {
-        siteService.logicDeleteByIds(ids);
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+        siteService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>();
     }
