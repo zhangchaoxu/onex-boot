@@ -55,7 +55,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
                 .setPayload("realName", user.getRealName())
                 .sign();
         // 判断一下token是否已存在
-        if ("db".equalsIgnoreCase(tokenStoreType) && query().eq("token", jwtToken).exists()) {
+        if ("db".equalsIgnoreCase(tokenStoreType) && !query().eq("token", jwtToken).exists()) {
             // 在数据库中
             if (!multiLogin) {
                 // 不支持多端登录,注销该用户所有token

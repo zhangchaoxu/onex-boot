@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -61,7 +62,13 @@ public class UserController {
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-
+        if (ObjectUtil.isNotEmpty(form.getRoleIds())) {
+            List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
+            if (ObjectUtil.isEmpty(userIds)) {
+                return new Result<>().success(new PageData<>());
+            }
+            queryWrapper.in("id", userIds);
+        }
         PageData<?> page = userService.pageDto(form.getPage(), queryWrapper);
 
         return new Result<>().success(page);
