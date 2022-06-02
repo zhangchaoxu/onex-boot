@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/uc/params/")
 @Validated
-@Api(tags = "参数管理", position = 10)
+@Api(tags = "参数管理", position = 25)
 public class ParamsController {
 
     @Autowired

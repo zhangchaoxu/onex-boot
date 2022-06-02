@@ -51,7 +51,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Api(tags = "用户授权", position = 1)
+@Api(tags = "用户授权", position = 10)
 public class AuthController {
 
     @Autowired
