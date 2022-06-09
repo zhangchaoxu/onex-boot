@@ -40,7 +40,7 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
     public String getSystemProps(String code) {
         String content = null;
         if (paramsProps != null && ObjectUtil.isNotEmpty(paramsProps.getConfigs())) {
-            content = paramsProps.getConfigs().get("code");
+            content = paramsProps.getConfigs().get(code);
         }
         if (StrUtil.isEmpty(content)) {
             content = getSystemContent(code);

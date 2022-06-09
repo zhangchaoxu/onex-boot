@@ -3,6 +3,7 @@ package com.nb6868.onex.sys.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.json.JSONObject;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
@@ -50,14 +51,17 @@ public class OssController {
     @PostMapping("uploadAnon")
     @ApiOperation(value = "匿名上传文件(文件形式)", notes = "@Anon")
     @AccessControl
-    public Result<?> uploadAnon(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode, @RequestParam("file") MultipartFile file) {
+    @ApiOperationSupport(order = 10)
+    public Result<?> uploadAnon(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
+                                @RequestParam(required = false, name = "路径前缀") String prefix,
+                                @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.upload(file);
+        String url = uploadService.upload(prefix, file);
         Dict result = Dict.create().set("src", url);
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -74,14 +78,17 @@ public class OssController {
 
     @PostMapping("upload")
     @ApiOperation(value = "上传文件(文件形式)")
-    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode, @RequestParam("file") MultipartFile file) {
+    @ApiOperationSupport(order = 20)
+    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
+                            @RequestParam(required = false, name = "路径前缀") String prefix,
+                            @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.upload(file);
+        String url = uploadService.upload(prefix, file);
         Dict result = Dict.create().set("src", url);
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -99,6 +106,7 @@ public class OssController {
     @PostMapping("anonUploadBase64")
     @ApiOperation(value = "匿名上传单文件(base64)", notes = "@Anon")
     @AccessControl
+    @ApiOperationSupport(order = 30)
     public Result<?> anonUploadBase64(@Validated @RequestBody OssFileBase64UploadForm form) {
         // 将base64转成file
         MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
@@ -108,7 +116,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.upload(file);
+        String url = uploadService.upload(form.getPrefix(), file);
         Dict result = Dict.create().set("src", url);
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -125,6 +133,7 @@ public class OssController {
 
     @PostMapping("uploadBase64")
     @ApiOperation(value = "上传单文件(base64)")
+    @ApiOperationSupport(order = 40)
     public Result<?> uploadBase64(@Validated @RequestBody OssFileBase64UploadForm form) {
         // 将base64转成file
         MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
@@ -134,7 +143,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.upload(file);
+        String url = uploadService.upload(form.getPrefix(), file);
         Dict result = Dict.create().set("src", url);
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -151,8 +160,10 @@ public class OssController {
 
     @PostMapping("anonUploadMulti")
     @ApiOperation(value = "匿名上传多文件", notes = "@Anon")
+    @ApiOperationSupport(order = 50)
     public Result<?> anonUploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
-                                 @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
+                                     @RequestParam(required = false, name = "路径前缀") String prefix,
+                                     @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
@@ -161,7 +172,7 @@ public class OssController {
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         for (MultipartFile file : files) {
             // 上传文件
-            String url = uploadService.upload(file);
+            String url = uploadService.upload(prefix, file);
             if (ossConfig.getSaveDb()) {
                 //保存文件信息
                 OssEntity oss = new OssEntity();
@@ -180,7 +191,9 @@ public class OssController {
 
     @PostMapping("uploadMulti")
     @ApiOperation(value = "上传多文件")
+    @ApiOperationSupport(order = 60)
     public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
+                                 @RequestParam(required = false, name = "路径前缀") String prefix,
                                  @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
@@ -190,7 +203,7 @@ public class OssController {
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         for (MultipartFile file : files) {
             // 上传文件
-            String url = uploadService.upload(file);
+            String url = uploadService.upload(prefix, file);
             if (ossConfig.getSaveDb()) {
                 //保存文件信息
                 OssEntity oss = new OssEntity();
@@ -209,6 +222,7 @@ public class OssController {
 
     @PostMapping("getPresignedUrl")
     @ApiOperation(value = "获得授权访问地址")
+    @ApiOperationSupport(order = 70)
     public Result<?> getPresignedUrl(@Validated @RequestBody OssPresignedUrlForm form) {
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
@@ -222,6 +236,7 @@ public class OssController {
 
     @PostMapping("getSts")
     @ApiOperation(value = "获得STS临时访问token")
+    @ApiOperationSupport(order = 80)
     public Result<?> getSts(@Validated @RequestBody OssStsForm form) {
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
@@ -236,6 +251,7 @@ public class OssController {
     @ApiOperation(value = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sys:oss:page")
+    @ApiOperationSupport(order = 100)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody OssQueryForm form) {
         PageData<?> page = ossService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
@@ -245,6 +261,7 @@ public class OssController {
     @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
+    @ApiOperationSupport(order = 110)
     @RequiresPermissions("sys:oss:delete")
     public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
         ossService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
