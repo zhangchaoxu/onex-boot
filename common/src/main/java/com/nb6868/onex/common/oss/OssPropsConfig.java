@@ -14,6 +14,9 @@ public class OssPropsConfig {
     @ApiModelProperty(value = "类型 aliyun阿里云/huaweicloud华为云/local本地")
     private String type;
 
+    @ApiModelProperty("类名称")
+    private String serviceClassName;
+
     @ApiModelProperty(value = "绑定的域名")
     private String domain;
 
