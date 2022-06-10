@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 /**
  * 短信 阿里云 消息服务
- * see {https://help.aliyun.com/document_detail/59210.html}
+ * see {<a href="https://help.aliyun.com/document_detail/59210.html">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -40,7 +41,8 @@ public class SmsAliyunMailService extends AbstractMailService {
 
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
-        request.getContentParams().forEach((key, value) -> request.getContentParams().set(key, StrUtil.sub(ObjectUtil.defaultIfNull(value, " ").toString(), 0, 20)));
+        ObjectUtil.defaultIfNull(request.getContentParams(), new JSONObject())
+                .forEach((key, value) -> request.getContentParams().set(key, StrUtil.sub(ObjectUtil.defaultIfNull(value, " ").toString(), 0, 20)));
         // 消息记录
         MsgLogService mailLogService = SpringContextUtils.getBean(MsgLogService.class);
         MsgLogEntity mailLog = new MsgLogEntity();

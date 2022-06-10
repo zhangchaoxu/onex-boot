@@ -83,10 +83,13 @@ public class MsgLogService extends DtoService<MsgLogDao, MsgLogEntity, MsgLogDTO
         }
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {
-            String code = RandomUtil.randomString(mailTpl.getParams().getStr("codeBaseString", RandomUtil.BASE_NUMBER), mailTpl.getParams().getInt("codeLength", 4));
-            form.setContentParams(new JSONObject().set("code", code));
+            // 编码关键词
+            String codeKey =  mailTpl.getParams().getStr("codeKey", "code");
+            if (form.getContentParams() == null || StrUtil.isBlank(form.getContentParams().getStr("codeKey"))) {
+                String code = RandomUtil.randomString(mailTpl.getParams().getStr("codeBaseString", RandomUtil.BASE_NUMBER), mailTpl.getParams().getInt("codeLength", 4));
+                form.setContentParams(new JSONObject().set(codeKey, code));
+            }
         }
-
         AbstractMailService mailService = null;
         if (MsgConst.MailChannelEnum.EMAIL.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 邮件
