@@ -71,7 +71,7 @@ public class AuthController {
     @Autowired
     private MsgTplService mailTplService;
     @Autowired
-    private MsgLogService mailLogService;
+    private MsgLogService msgLogService;
 
     @PostMapping("captcha")
     @AccessControl
@@ -100,7 +100,7 @@ public class AuthController {
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
         }
         // 结果标记
-        boolean flag = mailLogService.send(mailTpl, form);
+        boolean flag = msgLogService.send(mailTpl, form);
         return new Result<>().boolResult(flag);
     }
 

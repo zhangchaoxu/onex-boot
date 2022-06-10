@@ -8,6 +8,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
@@ -53,7 +54,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
         JSONArray paramArray = new JSONArray();
-        request.getContentParams().forEach((key, value) -> {
+        ObjectUtil.defaultIfNull(request.getContentParams(), new JSONObject()).forEach((key, value) -> {
             String v = StrUtil.sub(ObjectUtil.defaultIfNull(value, " ").toString(), 0, 20);
             request.getContentParams().set(key, v);
             paramArray.add(v);

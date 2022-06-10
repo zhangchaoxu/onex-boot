@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.util;
 
 import cn.hutool.core.date.DatePattern;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,8 +57,11 @@ public class JacksonUtils {
                 return JacksonUtils.mapper;
             }
             JacksonUtils.mapper = new ObjectMapper();
-            // 设置时间格式
+            // 设置忽略属性
             JacksonUtils.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            // 设置允许转义字符,比如CTRL-CHAR
+            JacksonUtils.mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+            // 设置时间格式
             JacksonUtils.mapper.setDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
             JacksonUtils.mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
             // Long类型转String类型

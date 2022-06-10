@@ -2,6 +2,7 @@ package com.nb6868.onex.common.util;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrJoiner;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import lombok.SneakyThrows;
@@ -77,9 +78,9 @@ public class SignUtils {
         MapUtil.sort(params).forEach((key, value) -> {
             if (!(value instanceof File)) {
                 if (urlEncode) {
-                    stringJoiner.append(urlEncode(key) + keyValueDelimiter + urlEncode(value.toString()));
+                    stringJoiner.append(urlEncode(key) + keyValueDelimiter + urlEncode(ObjectUtil.defaultIfNull(value, "").toString()));
                 } else {
-                    stringJoiner.append(key + keyValueDelimiter + value.toString());
+                    stringJoiner.append(key + keyValueDelimiter + ObjectUtil.defaultIfNull(value, "").toString());
                 }
             }
         });

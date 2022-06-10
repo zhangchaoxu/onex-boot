@@ -2,7 +2,9 @@ package com.nb6868.onex.sys.mail;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrJoiner;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
@@ -38,7 +40,7 @@ public class SmsJuheMailService extends AbstractMailService {
 
         MsgLogService mailLogService = SpringContextUtils.getBean(MsgLogService.class);
         StrJoiner paramJuhe = new StrJoiner("&");
-        request.getContentParams().forEach((key, value) -> {
+        ObjectUtil.defaultIfNull(request.getContentParams(), new JSONObject()).forEach((key, value) -> {
             // 遍历json,拼装参数
             paramJuhe.append("#" + key + "#=" + value);
         });
