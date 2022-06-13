@@ -167,6 +167,9 @@ public class QueryWrapperHelper {
                             case LIKE_RIGHT:
                                 queryWrapper.likeRight(ObjectUtil.isNotEmpty(val), column, val);
                                 break;
+                            case FIND_IN_SET:
+                                queryWrapper.and(ObjectUtil.isNotEmpty(val), qw -> qw.last("find_in_set('" + val + "', " + columnFinal + ")"));
+                                break;
                             case IN:
                                 if (ObjectUtil.isNotEmpty(val) && val instanceof Collection) {
                                     queryWrapper.in(column, (Collection<?>) val);
