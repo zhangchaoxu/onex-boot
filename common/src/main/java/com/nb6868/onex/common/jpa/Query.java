@@ -81,6 +81,8 @@ public @interface Query {
         , ORDER_BY
         // limit
         , LIMIT
+        // find in set
+        , FIND_IN_SET
     }
 
 }

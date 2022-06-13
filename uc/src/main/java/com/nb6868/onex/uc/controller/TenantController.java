@@ -43,7 +43,7 @@ public class TenantController {
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody TenantQueryForm form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        PageData<TenantDTO> page = tenantService.pageDto(form.getPage(), queryWrapper);
+        PageData<?> page = tenantService.pageDto(form.getPage(), queryWrapper);
 
         return new Result<>().success(page);
     }
@@ -54,7 +54,7 @@ public class TenantController {
     @ApiOperationSupport(order = 20)
     public Result<?> list(@Validated @RequestBody TenantQueryForm form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
-        List<TenantDTO> list = tenantService.listDto(queryWrapper);
+        List<?> list = tenantService.listDto(queryWrapper);
 
         return new Result<>().success(list);
     }
