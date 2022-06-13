@@ -1,9 +1,11 @@
 # CHANGELOG
 
-## [3.6.11] 2022.06.13
+## [3.6.12] 2022.06.13
 - new: add other oss support
 - new: add find in set in query helper 
 - upgrade: upgrade hutool to 5.8.3 
+- new: add oss path support
+- new: add excel export
 
 ## [3.6.7] 2022.06.02
 - fix: fix shirodao getMenuIdListByUserId issue

@@ -163,7 +163,7 @@ onex:
   # oss
   oss:
     # 文件请求路径
-    file-request-path:
+    file-request-path: /oss/**
     # 文件存储路径,以/结尾
     file-storage-path:
   # 授权配置
@@ -172,7 +172,7 @@ onex:
     access-control:
       enable: false
       # 扫描包
-      scan-package: com.nb6868.onex.uc.controller,com.nb6868.onex.sys.controller
+      scan-package: com.nb6868.onex.common.controller,com.nb6868.onex.uc.controller,com.nb6868.onex.sys.controller
     # token在header中的key
     token-header-key: auth-token
     # token在jwt中的key

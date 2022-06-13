@@ -6,20 +6,20 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.validator.AssertUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -29,11 +29,15 @@ import java.util.List;
 
 /**
  * excel工具类
- * [easypoi](https://opensource.afterturn.cn/doc/easypoi.html)
+ * [easypoi](<a href="https://opensource.afterturn.cn/doc/easypoi.html">...</a>)
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 public class ExcelUtils {
+
+    // 文件存储路径
+    @Value("${onex.oss.file-storage-path}")
+    private static String ossFileStoragePath;
 
     private final static String CONTENT_TYPE_XLS = "application/vnd.ms-excel";
     private final static String FILENAME_XLS_FMT = "attachment;filename={}.xls";
@@ -68,6 +72,40 @@ public class ExcelUtils {
     public static void downloadExcel(HttpServletResponse response, String fileName, ExportParams exportParams, Class<?> pojoClass, Collection<?> list) {
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
         downloadExcelFromWorkbook(response, fileName, workbook);
+    }
+
+    /**
+     * Excel生成，先sourceList转换成List<targetClass>
+     *
+     * @param fileName    文件名
+     * @param sourceList  原数据List
+     * @param targetClass 目标对象Class
+     */
+    public static String genExcelToTarget(String fileName, Collection<?> sourceList, Class<?> targetClass) {
+        AssertUtils.isEmpty(ossFileStoragePath, ErrorCode.EXCEL_EXPORT_ERROR, "文件存储路径未配置");
+        List<Object> targetList = new ArrayList<>(sourceList.size());
+        for (Object source : sourceList) {
+            Object target;
+            try {
+                target = targetClass.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+                throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
+            }
+            BeanUtils.copyProperties(source, target);
+            targetList.add(target);
+        }
+
+        try {
+            BufferedOutputStream excelFos = FileUtil.getOutputStream(ossFileStoragePath + fileName);
+            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), targetClass, targetList);
+            workbook.write(excelFos);
+            excelFos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
+        }
+        return fileName;
     }
 
     /**
