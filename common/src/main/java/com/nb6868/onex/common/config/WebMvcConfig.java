@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.config;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,7 +93,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 文件读取映射
         if (StrUtil.isNotBlank(ossFileRequestPath) && StrUtil.isNotBlank(ossFileStoragePath)) {
             // 先创建目录
-            // FileUtil.mkdir(ossFileStoragePath);
+            FileUtil.mkdir(ossFileStoragePath);
             registry.addResourceHandler(ossFileRequestPath).addResourceLocations("file:/" + ossFileStoragePath);
         }
     }
