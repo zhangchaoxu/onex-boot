@@ -40,9 +40,9 @@ import java.util.List;
 public class MsgController {
 
     @Autowired
-    MsgTplService mailTplService;
+    MsgTplService msgTplService;
     @Autowired
-    MsgLogService mailLogService;
+    MsgLogService msgLogService;
 
     @PostMapping("tplPage")
     @ApiOperation("模板分页")
@@ -50,7 +50,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgTpl:query")
     @ApiOperationSupport(order = 20)
     public Result<?> tplPage(@Validated({PageGroup.class}) @RequestBody MsgTplQueryForm form) {
-        PageData<?> page = mailTplService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = msgTplService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
@@ -61,7 +61,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgTpl:query")
     @ApiOperationSupport(order = 10)
     public Result<?> tplList(@Validated @RequestBody MsgTplQueryForm form) {
-        List<?> list = mailTplService.listDto(QueryWrapperHelper.getPredicate(form));
+        List<?> list = msgTplService.listDto(QueryWrapperHelper.getPredicate(form));
         return new Result<>().success(list);
     }
 
@@ -71,7 +71,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgTpl:query")
     @ApiOperationSupport(order = 30)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
-        MsgTplDTO data = mailTplService.oneDto(QueryWrapperHelper.getPredicate(form));
+        MsgTplDTO data = msgTplService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<>().success(data);
@@ -83,7 +83,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgTpl:edit")
     @ApiOperationSupport(order = 40)
     public Result<?> tplSave(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MsgTplDTO dto) {
-        mailTplService.saveDto(dto);
+        msgTplService.saveDto(dto);
 
         return new Result<>().success(dto);
     }
@@ -94,7 +94,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgTpl:edit")
     @ApiOperationSupport(order = 50)
     public Result<?> tplUpdate(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody MsgTplDTO dto) {
-        mailTplService.updateDto(dto);
+        msgTplService.updateDto(dto);
 
         return new Result<>().success(dto);
     }
@@ -106,7 +106,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgTpl:delete")
     @ApiOperationSupport(order = 60)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
-        mailTplService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+        msgTplService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>();
     }
@@ -117,7 +117,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgLog:query")
     @ApiOperationSupport(order = 100)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody MsgLogQueryForm form) {
-        PageData<?> page = mailLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = msgLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
@@ -128,10 +128,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgLog:send")
     @ApiOperationSupport(order = 110)
     public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
-        MsgTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
-        AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "模板不存在");
-        // 发送
-        boolean flag = mailLogService.send(mailTpl, form);
+        boolean flag = msgLogService.send(form);
         return new Result<>().boolResult(flag);
     }
 
@@ -142,7 +139,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgLog:delete")
     @ApiOperationSupport(order = 50)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsTenantForm form) {
-        mailLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+        msgLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
         return new Result<>();
     }

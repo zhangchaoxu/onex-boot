@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.6.14] 2022.06.13
+## [3.6.15] 2022.06.13
 - new: add other oss support
 - new: add find in set in query helper 
 - upgrade: upgrade hutool to 5.8.3 

@@ -13,7 +13,7 @@ import com.nb6868.onex.sys.service.MsgLogService;
 
 /**
  * 钉钉机器人消息
- * see {https://developers.dingtalk.com/document/robots/custom-robot-access}
+ * see {<a href="https://developers.dingtalk.com/document/robots/custom-robot-access">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */

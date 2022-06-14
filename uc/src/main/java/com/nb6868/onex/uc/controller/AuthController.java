@@ -69,7 +69,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
-    private MsgTplService mailTplService;
+    private MsgTplService msgTplService;
     @Autowired
     private MsgLogService msgLogService;
 
@@ -91,7 +91,7 @@ public class AuthController {
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 20)
     public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
-        MsgTplEntity mailTpl = mailTplService.getByCode(form.getTenantCode(), form.getTplCode());
+        MsgTplEntity mailTpl = msgTplService.getByCode(form.getTenantCode(), form.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
