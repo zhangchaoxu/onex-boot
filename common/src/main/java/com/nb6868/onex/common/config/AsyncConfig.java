@@ -1,8 +1,8 @@
 package com.nb6868.onex.common.config;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
@@ -82,8 +82,7 @@ public class AsyncConfig implements AsyncConfigurer {
             logBody.setOperation("async");
             logBody.setUri(method.getDeclaringClass().getName() + "." + method.getName());
             logBody.setContent(ExceptionUtil.stacktraceToString(throwable));
-            Dict requestParams = Dict.create().set("params", paramArray.size() > 0 ? paramArray.toString() : null);
-            logBody.setRequestParams(requestParams);
+            logBody.setRequestParams(new JSONObject().set("params", paramArray.size() > 0 ? paramArray.toString() : null));
             logService.saveLog(logBody);
         };
     }

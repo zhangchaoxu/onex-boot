@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.LoginForm;
@@ -131,7 +132,7 @@ public class LogOperationAspect {
             logEntity.setContent(e instanceof OnexException ? e.toString() : ExceptionUtil.stacktraceToString(e));
         }
         // 请求参数
-        Dict requestParams = Dict.create().set("params", params);
+        JSONObject requestParams = new JSONObject().set("params", params);
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         if (null != request) {
             logEntity.setUri(request.getRequestURI());
