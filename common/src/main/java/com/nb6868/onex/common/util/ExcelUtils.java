@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -33,6 +34,7 @@ import java.util.List;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Component
 public class ExcelUtils {
 
     // 文件存储路径
