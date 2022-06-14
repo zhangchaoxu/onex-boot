@@ -2,8 +2,8 @@ package com.nb6868.onex.common.exception;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.pojo.Result;
@@ -318,15 +318,15 @@ public abstract class BaseExceptionHandler {
         if (null != request) {
             logEntity.setUri(request.getRequestURI());
             // 记录内容
-            Dict requestParams = Dict.create();
-            requestParams.set("ip", HttpContextUtils.getIpAddr(request));
-            requestParams.set("ua", request.getHeader(HttpHeaders.USER_AGENT));
+            JSONObject requestParams = new JSONObject()
+                    .set("ip", HttpContextUtils.getIpAddr(request))
+                    .set("ua", request.getHeader(HttpHeaders.USER_AGENT))
+                    .set("url", request.getRequestURL())
+                    .set("method", request.getMethod())
+                    .set("contentType", request.getContentType());
             if (StrUtil.isNotBlank(request.getQueryString())) {
                 requestParams.set("queryString", request.getQueryString());
             }
-            requestParams.set("url", request.getRequestURL());
-            requestParams.set("method", request.getMethod());
-            requestParams.set("contentType", request.getContentType());
             if (HttpMethod.POST.name().equalsIgnoreCase(request.getMethod()) && StrUtil.nullToEmpty(request.getContentType()).toLowerCase().startsWith("application/json")) {
                 try {
                     requestParams.set("params", IoUtil.read(request.getInputStream()).toString());

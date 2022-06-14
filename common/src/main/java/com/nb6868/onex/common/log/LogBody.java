@@ -1,6 +1,6 @@
 package com.nb6868.onex.common.log;
 
-import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,7 +46,7 @@ public class LogBody implements Serializable {
     /**
      * 请求参数
      */
-    private Dict requestParams;
+    private JSONObject requestParams;
     /**
      * 用户名
      */
