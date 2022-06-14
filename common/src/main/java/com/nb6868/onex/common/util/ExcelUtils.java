@@ -47,6 +47,7 @@ public class ExcelUtils {
 
     private final static String CONTENT_TYPE_XLS = "application/vnd.ms-excel";
     private final static String FILENAME_XLS_FMT = "attachment;filename={}.xls";
+    private final static String FILENAME_XLS_SUFFIX = ".xls";
 
     // [导出相关]
     /**
@@ -102,16 +103,27 @@ public class ExcelUtils {
             targetList.add(target);
         }
 
+        return genExcel(fileName, targetList, targetClass);
+    }
+
+    /**
+     * Excel生成
+     *
+     * @param fileName  文件名
+     * @param list      数据List
+     * @param pojoClass 对象Class
+     */
+    public static String genExcel(String fileName, Collection<?> list, Class<?> pojoClass) {
         try {
-            BufferedOutputStream excelFos = FileUtil.getOutputStream(ossFileStoragePath + fileName + ".xls");
-            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), targetClass, targetList);
+            BufferedOutputStream excelFos = FileUtil.getOutputStream(ossFileStoragePath + fileName + FILENAME_XLS_SUFFIX);
+            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
             workbook.write(excelFos);
             excelFos.close();
         } catch (Exception e) {
             e.printStackTrace();
             throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
         }
-        return fileName + ".xls";
+        return fileName + FILENAME_XLS_SUFFIX;
     }
 
     /**
