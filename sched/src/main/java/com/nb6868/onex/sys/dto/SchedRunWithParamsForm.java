@@ -1,5 +1,6 @@
 package com.nb6868.onex.sys.dto;
 
+import cn.hutool.json.JSONObject;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,6 +19,6 @@ public class SchedRunWithParamsForm implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "参数")
-    private String params;
+    private JSONObject params;
 
 }
