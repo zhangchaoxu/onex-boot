@@ -94,7 +94,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         if (StrUtil.isNotBlank(ossFileRequestPath) && StrUtil.isNotBlank(ossFileStoragePath)) {
             // 先创建目录
             FileUtil.mkdir(ossFileStoragePath);
-            registry.addResourceHandler(ossFileRequestPath).addResourceLocations("file:/" + ossFileStoragePath);
+            registry.addResourceHandler(ossFileRequestPath).addResourceLocations("file:" + ossFileStoragePath);
         }
     }
 

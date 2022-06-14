@@ -10,6 +10,8 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.filter.InvalidRequestFilter;
+import org.apache.shiro.web.filter.mgt.DefaultFilter;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,7 @@ public class BaseShiroConfig {
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager, AuthProps authProps) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
+        // 设置securityManager
         shiroFilter.setSecurityManager(securityManager);
         // shiro过滤
         shiroFilter.setFilters(initFilters(authProps));
@@ -55,6 +58,14 @@ public class BaseShiroConfig {
      */
     protected Map<String, Filter> initFilters(AuthProps authProps) {
         Map<String, Filter> filters = new HashMap<>();
+        // 关闭InvalidRequestFilter,避免对中文文件的读取错误
+        // see https://blog.csdn.net/ngl272/article/details/111691083
+        InvalidRequestFilter invalidRequestFilter = new InvalidRequestFilter();
+        // invalidRequestFilter.setBlockSemicolon(false);
+        // invalidRequestFilter.setBlockBackslash(false);
+        // 关闭校验
+        invalidRequestFilter.setBlockNonAscii(false);
+        filters.put(DefaultFilter.invalidRequest.name(), invalidRequestFilter);
         filters.put("shiro", new SimpleShiroFilter(authProps.getTokenHeaderKey()));
         return filters;
     }
