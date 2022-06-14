@@ -36,8 +36,12 @@ import java.util.List;
 public class ExcelUtils {
 
     // 文件存储路径
-    @Value("${onex.oss.file-storage-path}")
     private static String ossFileStoragePath;
+
+    @Value("${onex.oss.file-storage-path}")
+    public void setOssFileStoragePath(String path) {
+        ossFileStoragePath = path;
+    }
 
     private final static String CONTENT_TYPE_XLS = "application/vnd.ms-excel";
     private final static String FILENAME_XLS_FMT = "attachment;filename={}.xls";
@@ -97,7 +101,7 @@ public class ExcelUtils {
         }
 
         try {
-            BufferedOutputStream excelFos = FileUtil.getOutputStream(ossFileStoragePath + fileName);
+            BufferedOutputStream excelFos = FileUtil.getOutputStream(ossFileStoragePath + fileName + ".xls");
             Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), targetClass, targetList);
             workbook.write(excelFos);
             excelFos.close();
@@ -105,7 +109,7 @@ public class ExcelUtils {
             e.printStackTrace();
             throw new OnexException(ErrorCode.EXCEL_EXPORT_ERROR, e);
         }
-        return fileName;
+        return fileName + ".xls";
     }
 
     /**
