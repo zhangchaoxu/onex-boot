@@ -19,6 +19,7 @@ import com.nb6868.onex.sys.dto.MsgSendForm;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.mail.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
@@ -31,6 +32,9 @@ import java.util.Map;
  */
 @Service
 public class MsgLogService extends DtoService<MsgLogDao, MsgLogEntity, MsgLogDTO> {
+
+    @Autowired
+    private MsgTplService msgTplService;
 
     @Override
     public QueryWrapper<MsgLogEntity> getWrapper(String method, Map<String, Object> params) {
@@ -72,6 +76,13 @@ public class MsgLogService extends DtoService<MsgLogDao, MsgLogEntity, MsgLogDTO
     /**
      * 发送消息
      */
+    public boolean send(MsgSendForm form) {
+        MsgTplEntity mailTpl = msgTplService.getByCode(form.getTenantCode(), form.getTplCode());
+        AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
+
+        return send(mailTpl, form);
+    }
+
     public boolean send(MsgTplEntity mailTpl, MsgSendForm form) {
         // 检查消息模板是否有时间限制
         int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
