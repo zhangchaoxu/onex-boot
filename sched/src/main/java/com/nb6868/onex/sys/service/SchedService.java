@@ -1,9 +1,5 @@
 package com.nb6868.onex.sys.service;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONException;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -15,9 +11,9 @@ import com.nb6868.onex.sys.dao.SchedDao;
 import com.nb6868.onex.sys.dto.SchedDTO;
 import com.nb6868.onex.sys.dto.SchedRunWithParamsForm;
 import com.nb6868.onex.sys.entity.SchedEntity;
+import com.nb6868.onex.sys.utils.SchedTask;
 import com.nb6868.onex.sys.utils.ScheduleJob;
 import com.nb6868.onex.sys.utils.ScheduleUtils;
-import com.nb6868.onex.sys.utils.SchedTask;
 import org.quartz.Scheduler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,18 +87,11 @@ public class SchedService extends DtoService<SchedDao, SchedEntity, SchedDTO> {
 	 * 立即执行
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public void runWithParams(SchedRunWithParamsForm requestBody) {
-		SchedTask taskInfo = getTaskInfoFromTask(getById(requestBody.getId()));
-		if (StrUtil.isNotBlank(requestBody.getParams())) {
-			JSONObject params = null;
-			try {
-				params = JSONUtil.parseObj(requestBody.getParams());
-			} catch (JSONException e) {
-				log.error("序列化参数失败", e);
-			} finally {
-				taskInfo.setParams(params);
-			}
-		}
+	public void runWithParams(SchedRunWithParamsForm form) {
+		SchedEntity task = getById(form.getId());
+		AssertUtils.isNull(task, ErrorCode.DB_RECORD_NOT_EXISTED);
+
+		SchedTask taskInfo = getTaskInfoFromTask(task);
 		ScheduleUtils.run(scheduler, taskInfo);
 	}
 
@@ -130,7 +119,7 @@ public class SchedService extends DtoService<SchedDao, SchedEntity, SchedDTO> {
 	/**
 	 * 从TaskEntity获得TaskInfo
 	 */
-	private SchedTask getTaskInfoFromTask(SchedEntity taskEntity) {
+	public SchedTask getTaskInfoFromTask(SchedEntity taskEntity) {
 		return ConvertUtils.sourceToTarget(taskEntity, SchedTask.class);
 	}
 }
