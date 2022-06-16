@@ -96,7 +96,7 @@ public interface UcConst {
          * 详见name
          */
         PUBLIC("public", "公开"),
-        TENANT("private", "私有");
+        PRIVATE("private", "私有");
 
         private String value;
         private String name;
