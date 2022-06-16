@@ -15,6 +15,8 @@ import com.nb6868.onex.uc.entity.ParamsEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 租户参数
  *
@@ -103,6 +105,17 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
     }
 
     @Override
+    public JSONObject getContentJson(String tenantCode, Long userId, @NotNull String code) {
+        if (StrUtil.isNotBlank(tenantCode)) {
+            return getTenantContentJson(tenantCode, code);
+        } else if (null != userId) {
+            return getUserContentJson(userId, code);
+        } else {
+            return getSystemContentJson(code);
+        }
+    }
+
+    @Override
     public <T> T getSystemContentObject(String code, Class<T> clazz, T defObj) {
         return getContentObject(UcConst.ParamsTypeEnum.SYSTEM.value(), null, null, code, null, null, clazz, defObj);
     }
@@ -126,6 +139,68 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
     public <T> T getContentObject(Integer type, String tenantCode, Long userId, String code, String contentJsonKey, String contentJsonValue, Class<T> clazz, T defObj) {
         String content = getContent(type, tenantCode, userId, code, contentJsonKey, contentJsonValue);
         return JacksonUtils.jsonToPojo(content, clazz, defObj);
+    }
+
+    /**
+     * 新增或者更新数据,通过code来判断
+     */
+    public ParamsEntity saveOrUpdateUserParams(String code, String content, String scope, Long userId) {
+        ParamsEntity params = query().eq("type", UcConst.ParamsTypeEnum.USER.value()).eq("code", code).eq("user_id", userId).last(Const.LIMIT_ONE).one();
+        if (params != null) {
+            params.setContent(content);
+            params.setScope(scope);
+            updateById(params);
+        } else {
+            params = new ParamsEntity();
+            params.setContent(content);
+            params.setScope(scope);
+            params.setType(UcConst.ParamsTypeEnum.USER.value());
+            params.setUserId(userId);
+            params.setCode(code);
+            save(params);
+        }
+        return params;
+    }
+
+    /**
+     * 新增或者更新数据,通过code来判断
+     */
+    public ParamsEntity saveOrUpdateSystemParams(String code, String content, String scope) {
+        ParamsEntity params = query().eq("type", UcConst.ParamsTypeEnum.SYSTEM.value()).eq("code", code).last(Const.LIMIT_ONE).one();
+        if (params != null) {
+            params.setContent(content);
+            params.setScope(scope);
+            updateById(params);
+        } else {
+            params = new ParamsEntity();
+            params.setContent(content);
+            params.setScope(scope);
+            params.setType(UcConst.ParamsTypeEnum.SYSTEM.value());
+            params.setCode(code);
+            save(params);
+        }
+        return params;
+    }
+
+    /**
+     * 新增或者更新数据,通过code来判断
+     */
+    public ParamsEntity saveOrUpdateTenantParams(String code, String content, String scope, String tenantCode) {
+        ParamsEntity params = query().eq("type", UcConst.ParamsTypeEnum.TENANT.value()).eq("tenant_code", tenantCode).eq("code", code).last(Const.LIMIT_ONE).one();
+        if (params != null) {
+            params.setContent(content);
+            params.setScope(scope);
+            updateById(params);
+        } else {
+            params = new ParamsEntity();
+            params.setContent(content);
+            params.setScope(scope);
+            params.setTenantCode(tenantCode);
+            params.setType(UcConst.ParamsTypeEnum.TENANT.value());
+            params.setCode(code);
+            save(params);
+        }
+        return params;
     }
 
 }

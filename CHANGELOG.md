@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.6.17] 2022.06.16
+- new: login support no params
+- new: add params update
+
 ## [3.6.16] 2022.06.13
 - new: add other oss support
 - new: add find in set in query helper 

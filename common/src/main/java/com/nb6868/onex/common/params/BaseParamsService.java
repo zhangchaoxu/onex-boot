@@ -3,6 +3,8 @@ package com.nb6868.onex.common.params;
 import cn.hutool.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 基础参数服务,实现方法见uc中的ParamsService
  */
@@ -80,5 +82,7 @@ public interface BaseParamsService {
      * @param code 参数编码
      */
     <T> T getContentObject(Integer type, String tenantCode, Long userId, String code, String contentJsonKey, String contentJsonValue, Class<T> clazz, T defObj);
+
+    JSONObject getContentJson(String tenantCode, Long userId, @NotNull String code);
 
 }

@@ -38,6 +38,7 @@ import com.nb6868.onex.uc.service.*;
 import com.pig4cloud.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -52,6 +53,7 @@ import java.util.*;
 @RequestMapping("/uc/auth/")
 @Validated
 @Api(tags = "用户授权", position = 10)
+@Slf4j
 public class AuthController {
 
     @Autowired
@@ -111,8 +113,8 @@ public class AuthController {
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
         // 获得对应登录类型的登录参数
-        JSONObject loginParams = paramsService.getContentObject(UcConst.ParamsTypeEnum.TENANT.value(), form.getTenantCode(), null, form.getType(), JSONObject.class, null);
-        AssertUtils.isNull(loginParams, "缺少登录配置");
+        JSONObject loginParams = paramsService.getContentJson(form.getTenantCode(), null, form.getType());
+        log.info("未找到登录配置,将使用默认参数");
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
             // 先检验验证码表单
