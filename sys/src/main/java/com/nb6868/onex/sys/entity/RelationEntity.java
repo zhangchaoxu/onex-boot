@@ -28,4 +28,8 @@ public class RelationEntity extends BaseEntity {
      * 右表ID
      */
     private Long rightId;
+    /**
+     * 排序
+     */
+    private Integer sort;
 }
