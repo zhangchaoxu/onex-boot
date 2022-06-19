@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.18] 2022.06.16
+- new: add sys relation table
+
 ## [3.6.17] 2022.06.16
 - new: login support no params
 - new: add params update
