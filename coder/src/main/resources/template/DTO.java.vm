@@ -31,7 +31,7 @@ public class ${className}DTO extends BaseDTO {
 && $column.columnName != 'updater' && $column.columnName != 'update_id'
 && $column.columnName != 'update_date' && $column.columnName != 'update_time'
 && $column.columnName != 'del_flag' && $column.columnName != 'deleted')
-	@ApiModelProperty(value = "$column.comments")
+	@ApiModelProperty("$column.comments")
 	private $column.attrType $column.attrname;
 
 #end
