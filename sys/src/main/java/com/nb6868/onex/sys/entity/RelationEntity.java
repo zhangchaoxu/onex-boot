@@ -23,13 +23,9 @@ public class RelationEntity extends BaseEntity {
     /**
      * 左表ID
      */
-    private Long tableLeft;
+    private Long leftId;
     /**
      * 右表ID
      */
-    private Long tableRight;
-    /**
-     * 租户编码
-     */
-    private String tenantCode;
+    private Long rightId;
 }
