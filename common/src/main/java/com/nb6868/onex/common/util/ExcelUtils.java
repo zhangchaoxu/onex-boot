@@ -89,6 +89,17 @@ public class ExcelUtils {
      * @param targetClass 目标对象Class
      */
     public static String genExcelToTarget(String fileName, Collection<?> sourceList, Class<?> targetClass) {
+        return genExcelToTarget(fileName, sourceList, targetClass, new ExportParams());
+    }
+
+    /**
+     * Excel生成，先sourceList转换成List<targetClass>
+     *
+     * @param fileName    文件名
+     * @param sourceList  原数据List
+     * @param targetClass 目标对象Class
+     */
+    public static String genExcelToTarget(String fileName, Collection<?> sourceList, Class<?> targetClass, ExportParams exportParams) {
         AssertUtils.isEmpty(ossFileStoragePath, ErrorCode.EXCEL_EXPORT_ERROR, "文件存储路径未配置");
         List<Object> targetList = new ArrayList<>(sourceList.size());
         for (Object source : sourceList) {
@@ -103,20 +114,13 @@ public class ExcelUtils {
             targetList.add(target);
         }
 
-        return genExcel(fileName, targetList, targetClass);
+        return genExcel(fileName, targetList, targetClass, exportParams);
     }
 
-    /**
-     * Excel生成
-     *
-     * @param fileName  文件名
-     * @param list      数据List
-     * @param pojoClass 对象Class
-     */
-    public static String genExcel(String fileName, Collection<?> list, Class<?> pojoClass) {
+    public static String genExcel(String fileName, Collection<?> list, Class<?> pojoClass, ExportParams exportParams) {
         try {
             BufferedOutputStream excelFos = FileUtil.getOutputStream(ossFileStoragePath + fileName + FILENAME_XLS_SUFFIX);
-            Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
             workbook.write(excelFos);
             excelFos.close();
         } catch (Exception e) {
@@ -135,6 +139,18 @@ public class ExcelUtils {
      * @param targetClass 目标对象Class
      */
     public static void exportExcelToTarget(HttpServletResponse response, String fileName, Collection<?> sourceList, Class<?> targetClass) {
+        exportExcelToTarget(response, fileName, sourceList, targetClass, new ExportParams());
+    }
+
+    /**
+     * Excel导出，先sourceList转换成List<targetClass>，再导出
+     *
+     * @param response    response
+     * @param fileName    文件名
+     * @param sourceList  原数据List
+     * @param targetClass 目标对象Class
+     */
+    public static void exportExcelToTarget(HttpServletResponse response, String fileName, Collection<?> sourceList, Class<?> targetClass, ExportParams exportParams) {
         List<Object> targetList = new ArrayList<>(sourceList.size());
         for (Object source : sourceList) {
             Object target;
@@ -148,7 +164,7 @@ public class ExcelUtils {
             targetList.add(target);
         }
 
-        exportExcel(response, fileName, targetList, targetClass);
+        exportExcel(response, fileName, targetList, targetClass, exportParams);
     }
 
     /**
@@ -159,10 +175,10 @@ public class ExcelUtils {
      * @param list      数据List
      * @param pojoClass 对象Class
      */
-    public static void exportExcel(HttpServletResponse response, String fileName, Collection<?> list, Class<?> pojoClass) {
+    public static void exportExcel(HttpServletResponse response, String fileName, Collection<?> list, Class<?> pojoClass, ExportParams exportParams) {
         fileName += DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
 
-        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, list);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
         downloadExcelFromWorkbook(response, fileName, workbook);
     }
 
