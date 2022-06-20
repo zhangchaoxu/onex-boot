@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.6.19] 2022.06.16
+## [3.6.20] 2022.06.20
 - new: add sys relation table
+- fix: fix user update password issue
 
 ## [3.6.17] 2022.06.16
 - new: login support no params
