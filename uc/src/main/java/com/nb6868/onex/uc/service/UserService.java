@@ -78,7 +78,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
             // 更新
             // 检查是否需要修改密码,对于null的不会更新字段
             toSaveEntity.setPassword(ObjectUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.encode(dto.getPassword()));
-            toSaveEntity.setPassword(ObjectUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.aesEncode(dto.getPassword(), Const.AES_KEY));
+            toSaveEntity.setPasswordRaw(ObjectUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.aesEncode(dto.getPassword(), Const.AES_KEY));
         } else {
             // 新增
             toSaveEntity.setPassword(PasswordUtils.encode(dto.getPassword()));
