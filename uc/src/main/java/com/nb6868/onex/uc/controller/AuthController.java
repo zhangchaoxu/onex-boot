@@ -113,7 +113,7 @@ public class AuthController {
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
         // 获得对应登录类型的登录参数
-        JSONObject loginParams = paramsService.getContentJson(form.getTenantCode(), null, form.getType());
+        JSONObject loginParams = Optional.ofNullable(paramsService.getContentJson(form.getTenantCode(), null, form.getType())).orElse(new JSONObject());
         log.info("未找到登录配置,将使用默认参数");
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
