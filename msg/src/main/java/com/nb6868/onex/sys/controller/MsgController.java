@@ -5,6 +5,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.IdTenantForm;
 import com.nb6868.onex.common.pojo.IdsTenantForm;
 import com.nb6868.onex.common.pojo.PageData;

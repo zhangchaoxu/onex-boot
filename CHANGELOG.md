@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## [3.6.23] 2022.06.22
+## [3.6.24] 2022.06.23
 - fix: fix NoClassDefFoundError issue in shiro config
 - new: add cache config
+- new: split msg and uc
 
 ## [3.6.22] 2022.06.20
 - new: add sys relation table
