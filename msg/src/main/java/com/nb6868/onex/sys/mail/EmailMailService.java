@@ -8,7 +8,6 @@ import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.sys.dto.MsgSendForm;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.mail.email.EmailProps;

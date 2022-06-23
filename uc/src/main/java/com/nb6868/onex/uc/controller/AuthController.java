@@ -18,6 +18,9 @@ import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.auth.LoginResult;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.msg.BaseMsgService;
+import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.Result;
@@ -27,10 +30,6 @@ import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.nb6868.onex.sys.dto.MsgSendForm;
-import com.nb6868.onex.sys.entity.MsgTplEntity;
-import com.nb6868.onex.sys.service.MsgLogService;
-import com.nb6868.onex.sys.service.MsgTplService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
@@ -71,9 +70,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
-    private MsgTplService msgTplService;
-    @Autowired
-    private MsgLogService msgLogService;
+    private BaseMsgService msgService;
 
     @PostMapping("captcha")
     @AccessControl
@@ -92,8 +89,8 @@ public class AuthController {
     @ApiOperation(value = "发送验证码消息", notes = "Anon")
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 20)
-    public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgCodeSendForm form) {
-        MsgTplEntity mailTpl = msgTplService.getByCode(form.getTenantCode(), form.getTplCode());
+    public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
+        MsgTplBody mailTpl = msgService.getTplByCode(form.getTenantCode(), form.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
@@ -102,7 +99,7 @@ public class AuthController {
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
         }
         // 结果标记
-        boolean flag = msgLogService.send(mailTpl, ConvertUtils.sourceToTarget(form, MsgSendForm.class));
+        boolean flag = msgService.sendMail(form);
         return new Result<>().boolResult(flag);
     }
 

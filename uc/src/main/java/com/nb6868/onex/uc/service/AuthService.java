@@ -6,13 +6,12 @@ import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.log.BaseLogService;
+import com.nb6868.onex.common.msg.BaseMsgService;
+import com.nb6868.onex.common.msg.MsgLogBody;
 import com.nb6868.onex.common.pojo.ChangeStateForm;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
-import com.nb6868.onex.sys.MsgConst;
-import com.nb6868.onex.sys.entity.MsgLogEntity;
-import com.nb6868.onex.sys.service.MsgLogService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class AuthService {
     @Autowired
     private BaseLogService logService;
     @Autowired
-    private MsgLogService mailLogService;
+    private BaseMsgService msgService;
 
     /**
      * 帐号密码登录
@@ -91,12 +90,12 @@ public class AuthService {
         AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
 
         // 获取最后一次短信记录
-        MsgLogEntity lastSmsLog = mailLogService.getLatestByTplCode(form.getTenantCode(), loginParams.getStr("mailTplCode", MsgConst.SMS_TPL_LOGIN), form.getMobile());
+        MsgLogBody lastSmsLog = msgService.getLatestByTplCode(form.getTenantCode(), loginParams.getStr("mailTplCode", "CODE_LOGIN"), form.getMobile());
         AssertUtils.isTrue(lastSmsLog == null || !form.getSms().equalsIgnoreCase(lastSmsLog.getContentParams().getStr("code")), ErrorCode.SMS_CODE_ERROR);
         // 验证码正确,校验过期时间
         AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
         // 将短信消费掉
-        mailLogService.consumeById(lastSmsLog.getId());
+        msgService.consumeLog(lastSmsLog.getId());
         return user;
     }
 }

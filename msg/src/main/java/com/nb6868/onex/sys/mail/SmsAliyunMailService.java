@@ -11,7 +11,6 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.sys.dto.MsgSendForm;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.service.MsgLogService;

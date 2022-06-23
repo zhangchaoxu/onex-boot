@@ -28,13 +28,6 @@
             <version>${onex-common.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- msg -->
-        <dependency>
-            <groupId>com.nb6868.onex</groupId>
-            <artifactId>msg</artifactId>
-            <version>${onex-msg.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- captcha -->
         <dependency>
             <groupId>com.pig4cloud.plugin</groupId>
