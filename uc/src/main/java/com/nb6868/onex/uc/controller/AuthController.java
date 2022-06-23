@@ -92,7 +92,7 @@ public class AuthController {
     @ApiOperation(value = "发送验证码消息", notes = "Anon")
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 20)
-    public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
+    public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgCodeSendForm form) {
         MsgTplEntity mailTpl = msgTplService.getByCode(form.getTenantCode(), form.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
@@ -102,7 +102,7 @@ public class AuthController {
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
         }
         // 结果标记
-        boolean flag = msgLogService.send(mailTpl, form);
+        boolean flag = msgLogService.send(mailTpl, ConvertUtils.sourceToTarget(form, MsgSendForm.class));
         return new Result<>().boolResult(flag);
     }
 
