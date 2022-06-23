@@ -8,6 +8,7 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
@@ -15,7 +16,6 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.dao.MsgLogDao;
 import com.nb6868.onex.sys.dto.MsgLogDTO;
-import com.nb6868.onex.sys.dto.MsgSendForm;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.mail.*;
@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * 邮件发送记录
+ * 消息发送记录
  *
  * @author Charles zhangchaoxu@gmail.com
  */
