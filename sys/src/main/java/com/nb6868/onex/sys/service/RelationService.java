@@ -44,7 +44,7 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
      * 获得左id关联的数量
      * @param type 类型
      * @param leftId 左表ID
-     * @return
+     * @return 数量
      */
     public Long getCountByLeftId(String type, Long leftId) {
         return query().eq("type", type).eq("left_id", leftId).count();
@@ -52,9 +52,9 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
 
     /**
      * 做的左id关联的内容列表
-     * @param type
-     * @param leftId
-     * @return
+     * @param type 类型
+     * @param leftId 左表ID
+     * @return 关联列表
      */
     public List<RelationEntity> getListByLeftId(String type, Long leftId) {
         return query().eq("type", type).eq("left_id", leftId).orderByAsc("sort", "id").list();
@@ -62,9 +62,9 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
 
     /**
      * 做的左id关联的内容列表
-     * @param type
-     * @param leftId
-     * @return
+     * @param type 类型
+     * @param leftId 左表ID
+     * @return 关联id
      */
     public List<Object> getRightIdListByLeftId(String type, Long leftId) {
         return getBaseMapper().selectObjs(new QueryWrapper<RelationEntity>()

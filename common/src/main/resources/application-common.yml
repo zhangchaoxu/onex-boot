@@ -144,6 +144,9 @@ onex:
   # async
   async:
     enable: false
+  # cache
+  cache:
+    enable: false
   # 自动填充
   auto-fill:
     enable: false

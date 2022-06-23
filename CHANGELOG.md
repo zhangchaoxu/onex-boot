@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.6.23] 2022.06.22
+- fix: fix NoClassDefFoundError issue in shiro config
+- new: add cache config
+
 ## [3.6.22] 2022.06.20
 - new: add sys relation table
 - fix: fix user update password issue
