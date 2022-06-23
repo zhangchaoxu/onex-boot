@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
+import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.sys.entity.MsgLogEntity;

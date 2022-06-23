@@ -1,5 +1,6 @@
 package com.nb6868.onex.sys.mail;
 
+import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 
 /**
