@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.6.26] 2022.06.30
+- upgrade: upgrade hutool to 5.8.4
+- new: jackson utils json to pojo support bytep[]
+
 ## [3.6.25] 2022.06.27
 - upgrade: upgrade springboot to 2.7.1
 - upgrade: upgrade druid to 1.2.11

@@ -121,6 +121,39 @@ public class JacksonUtils {
      * @param <T>       对象类型
      * @return 转换的对象实例
      */
+    public static <T> T jsonToPojo(byte[] json, Class<T> pojoClass) {
+        return jsonToPojo(json, pojoClass, null);
+    }
+
+    /**
+     * JSON字符串转对象实例。
+     *
+     * @param json       JSON串
+     * @param pojoClass  对象类型
+     * @param <T>        对象类型
+     * @param defaultVal 默认值
+     * @return 转换的对象实例
+     */
+    public static <T> T jsonToPojo(byte[] json, Class<T> pojoClass, T defaultVal) {
+        if (ObjectUtils.isEmpty(json)) {
+            return defaultVal;
+        }
+        try {
+            return JacksonUtils.getMapper().readValue(json, pojoClass);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return defaultVal;
+        }
+    }
+
+    /**
+     * JSON字符串转对象实例。
+     *
+     * @param json      JSON串
+     * @param pojoClass 对象类型
+     * @param <T>       对象类型
+     * @return 转换的对象实例
+     */
     public static <T> T jsonToPojo(String json, Class<T> pojoClass) {
         return jsonToPojo(json, pojoClass, null);
     }

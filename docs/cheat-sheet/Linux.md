@@ -32,6 +32,7 @@ ip addr
 ### 查看出口IP
 ```shell
 curl ifconfig.me
+curl icanhazip.com
 ```
 
 ### 安装软件
