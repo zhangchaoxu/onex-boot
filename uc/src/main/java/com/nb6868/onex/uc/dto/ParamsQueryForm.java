@@ -13,6 +13,22 @@ import lombok.EqualsAndHashCode;
 public class ParamsQueryForm extends BasePageForm {
 
     @Query
+    @ApiModelProperty(value = "类型")
+    private Integer type;
+
+    @Query(type = Query.Type.LIKE_RIGHT)
+    @ApiModelProperty(value = "参数编码")
+    private String codeRight;
+
+    @Query(type = Query.Type.LIKE_LEFT)
+    @ApiModelProperty(value = "参数编码")
+    private String codeLeft;
+
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,remark,content")
+    @ApiModelProperty(value = "关键词搜索")
+    private String search;
+
+    @Query
     @ApiModelProperty(value = "参数编码")
     private String code;
 
