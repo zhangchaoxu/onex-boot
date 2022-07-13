@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.28] 2022.07.13
+- enhance: enhance params search
+
 ## [3.6.27] 2022.07.06
 - upgrade: upgrade shiro to 1.9.1
 - upgrade: upgrade jsoup to 1.15.2

@@ -17,7 +17,9 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.UcConst;
-import com.nb6868.onex.uc.dto.*;
+import com.nb6868.onex.uc.dto.ParamsDTO;
+import com.nb6868.onex.uc.dto.ParamsInfoQueryForm;
+import com.nb6868.onex.uc.dto.ParamsQueryForm;
 import com.nb6868.onex.uc.entity.ParamsEntity;
 import com.nb6868.onex.uc.service.ParamsService;
 import io.swagger.annotations.Api;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/uc/params/")
@@ -49,6 +53,17 @@ public class ParamsController {
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         AssertUtils.isFalse(UcConst.ParamsScopeEnum.PUBLIC.value().equalsIgnoreCase(data.getScope()), "参数非公开");
         return new Result<>().success(JacksonUtils.jsonToNode(data.getContent()));
+    }
+
+    @PostMapping("list")
+    @ApiOperation("列表")
+    @RequiresPermissions("uc:params:query")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @ApiOperationSupport(order = 8)
+    public Result<?> list(@RequestBody ParamsQueryForm form) {
+        List<?> list = paramsService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+
+        return new Result<>().success(list);
     }
 
     @PostMapping("page")
