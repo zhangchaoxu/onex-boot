@@ -78,7 +78,7 @@ public class UserController {
     @ApiOperation("列表")
     @RequiresPermissions("uc:user:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> list(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
+    public Result<?> list(@Validated @RequestBody UserQueryForm form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
         List<?> list = userService.listDto(queryWrapper);
 
