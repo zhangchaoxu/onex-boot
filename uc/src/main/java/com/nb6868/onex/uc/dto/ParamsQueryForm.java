@@ -16,11 +16,11 @@ public class ParamsQueryForm extends BasePageForm {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
-    @Query(type = Query.Type.LIKE_RIGHT)
+    @Query(type = Query.Type.LIKE_RIGHT, column = "code")
     @ApiModelProperty(value = "参数编码")
     private String codeRight;
 
-    @Query(type = Query.Type.LIKE_LEFT)
+    @Query(type = Query.Type.LIKE_LEFT, column = "code")
     @ApiModelProperty(value = "参数编码")
     private String codeLeft;
 

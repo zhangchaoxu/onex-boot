@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.6.29] 2022.07.13
+## [3.6.30] 2022.07.13
 - enhance: enhance params search
 - new: add uc bill
 
