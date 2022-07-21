@@ -59,7 +59,7 @@ public class ShiroJwtRealm extends AuthorizingRealm {
         // 获取jwt中的登录配置
         String loginType = jwt.getPayload().getClaimsJson().getStr(authProps.getTokenJwtKey());
         AssertUtils.isEmpty(loginType, ErrorCode.UNAUTHORIZED);
-        AuthProps.Config loginConfig = authProps.getConfigs().get(jwt.getPayload().getClaimsJson().getStr(authProps.getTokenJwtKey()));
+        AuthProps.Config loginConfig = authProps.getConfigs().get(loginType);
         AssertUtils.isNull(loginConfig, ErrorCode.UNAUTHORIZED);
 
         // 获取用户id
