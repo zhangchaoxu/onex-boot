@@ -78,6 +78,14 @@ public class UserEntity extends BaseEntity {
      */
 	private String avatar;
     /**
+     * 地址
+     */
+    private String address;
+    /**
+     * 岗位编码
+     */
+    private String postCode;
+    /**
      * 备注
      */
 	private String remark;

@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
@@ -87,6 +86,12 @@ public class UserDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "类型")
 	private Integer type;
+
+	@ApiModelProperty(value = "地址")
+	private String address;
+
+	@ApiModelProperty(value = "岗位编码")
+	private String postCode;
 
 	@ApiModelProperty(value = "状态  0：停用   1：正常  2：锁定")
 	private Integer state;
