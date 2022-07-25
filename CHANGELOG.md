@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.6.32] 2022.07.22
+- new: add user post
+- upgrade: upgrade springboot 2
+
 ## [3.6.30] 2022.07.13
 - enhance: enhance params search
 - new: add uc bill
