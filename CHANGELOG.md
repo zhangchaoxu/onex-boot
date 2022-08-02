@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## [3.6.32] 2022.07.22
+## [3.6.33] 2022.07.22
 - new: add user post
-- upgrade: upgrade springboot 2
+- upgrade: upgrade springboot 2.7.2
+- upgrade: upgrade hutool to 5.8.5
 
 ## [3.6.30] 2022.07.13
 - enhance: enhance params search
