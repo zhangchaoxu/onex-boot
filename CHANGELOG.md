@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.34] 2022.08.18
+- upgrade: upgrade springboot 2.7.3
+- 
 ## [3.6.33] 2022.07.22
 - new: add user post
 - upgrade: upgrade springboot 2.7.2
