@@ -83,6 +83,8 @@ public @interface Query {
         , LIMIT
         // find in set
         , FIND_IN_SET
+        // apply
+        , APPLY
     }
 
 }
