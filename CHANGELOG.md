@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.35] 2022.08.23
+- new: add apply in Query
+- 
 ## [3.6.34] 2022.08.18
 - upgrade: upgrade springboot 2.7.3
 - 

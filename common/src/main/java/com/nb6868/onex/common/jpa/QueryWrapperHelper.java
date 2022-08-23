@@ -90,6 +90,9 @@ public class QueryWrapperHelper {
                                         case LIKE_RIGHT:
                                             wrapper.likeRight(column, val);
                                             break;
+                                        case APPLY:
+                                            wrapper.apply(column, val);
+                                            break;
                                         case NULL:
                                             if (val instanceof Boolean) {
                                                 if ((Boolean) val) {
@@ -169,6 +172,9 @@ public class QueryWrapperHelper {
                                 break;
                             case FIND_IN_SET:
                                 queryWrapper.and(ObjectUtil.isNotEmpty(val), qw -> qw.last("find_in_set('" + val + "', " + columnFinal + ")"));
+                                break;
+                            case APPLY:
+                                queryWrapper.apply(ObjectUtil.isNotEmpty(val), columnFinal, val);
                                 break;
                             case IN:
                                 if (ObjectUtil.isNotEmpty(val) && val instanceof Collection) {
