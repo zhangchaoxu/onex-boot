@@ -8,14 +8,16 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
-import com.nb6868.onex.common.auth.AuthProps;
-import com.nb6868.onex.common.auth.ChangePasswordForm;
-import com.nb6868.onex.common.auth.LoginForm;
-import com.nb6868.onex.common.auth.LoginResult;
+import com.nb6868.onex.common.auth.*;
+import com.nb6868.onex.common.dingtalk.DingTalkApi;
+import com.nb6868.onex.common.dingtalk.ResultResponse;
+import com.nb6868.onex.common.dingtalk.UserContactResponse;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.msg.BaseMsgService;
@@ -32,6 +34,7 @@ import com.nb6868.onex.common.validator.ValidatorUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
+import com.nb6868.onex.uc.entity.ParamsEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
 import com.pig4cloud.captcha.base.Captcha;
@@ -71,6 +74,8 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private BaseMsgService msgService;
+    @Autowired
+    private RoleUserService roleUserService;
 
     @PostMapping("captcha")
     @AccessControl
@@ -273,6 +278,68 @@ public class AuthController {
         Set<String> set = userService.getUserRoles(user);
 
         return new Result<>().success(set);
+    }
+
+    @PostMapping("userDingtalkCodeLogin")
+    @AccessControl
+    @ApiOperation(value = "钉钉免密code登录", notes = "Anon")
+    @LogOperation(value = "钉钉免密code登录", type = "login")
+    @ApiOperationSupport(order = 300)
+    public Result<?> userDingtalkCodeLogin(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginForm form) {
+        // 获得对应登录类型的登录参数
+        JSONObject loginParams = paramsService.getContentJson(form.getTenantCode(), null, form.getType());
+        AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
+        AssertUtils.isTrue(StrUtil.hasBlank(loginParams.getStr("appId"), loginParams.getStr("appSecret")), "登录配置缺少appId和appSecret信息");
+
+        ResultResponse<UserContactResponse> userContactResponse = DingTalkApi.getUserContactByCode(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
+        if (userContactResponse.isSuccess() && null != userContactResponse.getResult() && StrUtil.isNotBlank(userContactResponse.getResult().getUnionId())) {
+            // 封装自己的业务逻辑,比如用unionId去找用户
+            ParamsEntity params = paramsService.query().eq("type", UcConst.ParamsTypeEnum.USER).eq("code", "DINGTALK_" + userContactResponse.getResult().getUnionId()).last(Const.LIMIT_ONE).one();
+            if (params == null) {
+                // 不存在
+                if (loginParams.getBool("autoCreateUserEnable", false)) {
+                    // 自动创建用户
+                    UserEntity userEntity = new UserEntity();
+                    userEntity.setUsername(userContactResponse.getResult().getMobile());
+                    userEntity.setRealName(userContactResponse.getResult().getNick());
+                    userEntity.setPassword(DigestUtil.bcrypt(userEntity.getUsername()));
+                    userEntity.setMobile(userContactResponse.getResult().getMobile());
+                    userEntity.setRealName(userContactResponse.getResult().getNick());
+                    userEntity.setType(UcConst.UserTypeEnum.DEPT_ADMIN.value());
+                    userEntity.setState(UcConst.UserStateEnum.ENABLED.value());
+                    userEntity.setTenantCode(form.getTenantCode());
+                    userEntity.setAvatar(userContactResponse.getResult().getAvatarUrl());
+                    AssertUtils.isTrue(userService.hasDuplicated(null, "username", userEntity.getUsername()), ErrorCode.ERROR_REQUEST, "用户名已存在");
+                    AssertUtils.isTrue(userService.hasDuplicated(null, "mobile", userEntity.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已存在");
+                    userService.save(userEntity);
+                    // 保存角色关系
+                    roleUserService.saveOrUpdateByUserIdAndRoleIds(userEntity.getId(), loginParams.getBeanList("authCreateUserRoleIds", Long.class));
+                    // 保存param
+                    params = new ParamsEntity();
+                    params.setTenantCode(form.getTenantCode());
+                    params.setCode("DINGTALK_" + userContactResponse.getResult().getUnionId());
+                    params.setRemark("钉钉用户信息:" + userEntity.getRealName());
+                    params.setType(UcConst.ParamsTypeEnum.USER.value());
+                    params.setScope(UcConst.ParamsScopeEnum.PRIVATE.value());
+                    params.setContent(JSONUtil.parseObj(userContactResponse.getResult()).toString());
+                    paramsService.save(params);
+                } else {
+                    return new Result<>().error("用户未注册");
+                }
+            }
+            UserEntity user = userService.getById(params.getUserId());
+            // 判断用户是否存在
+            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+            // 判断用户状态
+            AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+            LoginResult loginResult = new LoginResult()
+                    .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
+                    .setToken(tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), loginParams.getStr("type"), loginParams.getStr("tokenKey", "onex@2021"), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true)))
+                    .setTokenKey(loginParams.getStr("tokenHeaderKey", "auth-token"));
+            return new Result<>().success(loginResult);
+        } else {
+            return new Result<>().error(userContactResponse.getErrcode() + ":" + userContactResponse.getErrmsg());
+        }
     }
 
 }

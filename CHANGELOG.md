@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.36] 2022.08.26
+- new: add dingtalk login
+- 
 ## [3.6.35] 2022.08.23
 - new: add apply in Query
 - 

@@ -7,10 +7,7 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.util.SignUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -29,6 +26,8 @@ public class DingTalkApi {
 
     // token 缓存,有效时间2小时
     static TimedCache<String, String> tokenCache = CacheUtil.newTimedCache(7200 * 1000);
+
+    private final static String ACS_TOKEN_KEY = "x-acs-dingtalk-access-token";
 
     /**
      * 获取企业内部应用的access_token
@@ -61,6 +60,16 @@ public class DingTalkApi {
      * https://ding-doc.dingtalk.com/document/app/query-user-details
      */
     private final static String GET_USER_DETAIL_BY_USERID = "https://oapi.dingtalk.com/topapi/v2/user/get?access_token={1}";
+
+    /**
+     * 获取用户access token
+     */
+    private final static String GET_USER_ACCESS_TOKEN = "https://api.dingtalk.com/v1.0/oauth2/userAccessToken";
+
+    /**
+     * 获取用户信息
+     */
+    private final static String GET_USER_CONTACT = "https://api.dingtalk.com/v1.0/contact/users/";
 
     /**
      * 自定义机器人消息发送
@@ -161,6 +170,56 @@ public class DingTalkApi {
             }
         } else {
             ResultResponse<UserGetByCodeResponse> response = new ResultResponse<>();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
+            return response;
+        }
+    }
+
+    /**
+     * 通过免登码code获取用户信息
+     */
+    public static ResultResponse<UserContactResponse> getUserContactByCode(String accessKey, String appSecret, String code) {
+        // 1 获得系统access token
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            JSONObject param = new JSONObject().set("clientId", accessKey).set("clientSecret", appSecret).set("code", code).set("grantType", "authorization_code");
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(ACS_TOKEN_KEY, tokenResponse.getAccess_token());
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            JSONObject userAccessTokenResult;
+            try {
+                userAccessTokenResult = new RestTemplate().postForObject(GET_USER_ACCESS_TOKEN, new HttpEntity<>(param.toString(), headers), JSONObject.class);
+            } catch (Exception e) {
+                ResultResponse<UserContactResponse> response = new ResultResponse<>();
+                response.setErrcode(1000);
+                response.setErrmsg("获取用户AccessToken失败");
+                return response;
+            }
+
+            if (StrUtil.isNotBlank(userAccessTokenResult.getStr("accessToken"))) {
+                HttpHeaders headers2 = new HttpHeaders();
+                headers2.add(ACS_TOKEN_KEY, userAccessTokenResult.getStr("accessToken"));
+                headers2.setContentType(MediaType.APPLICATION_JSON);
+                try {
+                    ResponseEntity<UserContactResponse> userContact = new RestTemplate().exchange(GET_USER_CONTACT + "me", HttpMethod.GET, new HttpEntity<>(null, headers2), UserContactResponse.class);
+                    ResultResponse<UserContactResponse> response = new ResultResponse<>();
+                    response.setResult(userContact.getBody());
+                    return response;
+                } catch (Exception e) {
+                    ResultResponse<UserContactResponse> response = new ResultResponse<>();
+                    response.setErrcode(1000);
+                    response.setErrmsg("获取用户具体信息失败");
+                    return response;
+                }
+            } else {
+                ResultResponse<UserContactResponse> response = new ResultResponse<>();
+                response.setErrcode(1000);
+                response.setErrmsg("获取用户AccessToken失败");
+                return response;
+            }
+        } else {
+            ResultResponse<UserContactResponse> response = new ResultResponse<>();
             response.setErrcode(tokenResponse.getErrcode());
             response.setErrmsg(tokenResponse.getErrmsg());
             return response;
