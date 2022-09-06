@@ -1,11 +1,14 @@
 # CHANGELOG
 
-## [3.6.36] 2022.08.26
+## [3.6.37] 2022.09.06
+- new: upgrade shiro and jsoup
+
+- ## [3.6.36] 2022.08.26
 - new: add dingtalk login
-- 
+
 ## [3.6.35] 2022.08.23
 - new: add apply in Query
-- 
+ 
 ## [3.6.34] 2022.08.18
 - upgrade: upgrade springboot 2.7.3
 - 
