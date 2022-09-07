@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.6.37</version>
+        <version>3.6.38</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sched</artifactId>
@@ -16,7 +16,7 @@
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
-        <onex-common.version>3.6.37</onex-common.version>
+        <onex-common.version>3.6.38</onex-common.version>
         <shiro.version>1.9.0</shiro.version>
     </properties>
 

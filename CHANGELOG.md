@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.6.37] 2022.09.06
+## [3.6.38] 2022.09.06
 - new: upgrade shiro and jsoup
+- new: upgrade hutool to 5.8.6
 
 - ## [3.6.36] 2022.08.26
 - new: add dingtalk login
