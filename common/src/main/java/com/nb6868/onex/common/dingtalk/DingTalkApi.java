@@ -62,6 +62,12 @@ public class DingTalkApi {
     private final static String GET_USER_DETAIL_BY_USERID = "https://oapi.dingtalk.com/topapi/v2/user/get?access_token={1}";
 
     /**
+     * 发送工作通知
+     * https://open.dingtalk.com/document/orgapp-server/asynchronous-sending-of-enterprise-session-messages
+     */
+    private final static String MESSAGE_SEND = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token={1}";
+
+    /**
      * 获取用户access token
      */
     private final static String GET_USER_ACCESS_TOKEN = "https://api.dingtalk.com/v1.0/oauth2/userAccessToken";
@@ -285,6 +291,28 @@ public class DingTalkApi {
             BaseResponse response = new BaseResponse();
             response.setErrcode(1000);
             response.setErrmsg("robot/send接口调用失败," + e.getMessage());
+            return response;
+        }
+    }
+
+    /**
+     * 消息通知发送
+     */
+    public static BaseResponse sendNotifyMsg(String accessKey, String appSecret, JSONObject requestBody) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            try {
+                return new RestTemplate().postForObject(MESSAGE_SEND, requestBody, BaseResponse.class, tokenResponse.getAccess_token());
+            } catch (Exception e) {
+                BaseResponse response = new BaseResponse();
+                response.setErrcode(1000);
+                response.setErrmsg("notify/send接口调用失败," + e.getMessage());
+                return response;
+            }
+        } else {
+            BaseResponse response = new BaseResponse();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
             return response;
         }
     }

@@ -120,10 +120,12 @@ public class MsgLogService extends DtoService<MsgLogDao, MsgLogEntity, MsgLogDTO
         } else if (MsgConst.MailChannelEnum.WX_MA_SUBSCRIBE.name().equalsIgnoreCase(mailTpl.getChannel())) {
             // 微信小程序模板消息
             mailService = new WxMaSubscribeMailService();
-        } else if (MsgConst.MailChannelEnum.ROBOT.name().equalsIgnoreCase(mailTpl.getChannel())) {
-            // 钉钉机器人
-            if ("dingtalk".equalsIgnoreCase(mailTpl.getPlatform())) {
-                mailService = new RobotDingtalkMailService();
+        } else if (MsgConst.MailChannelEnum.DINGTALK.name().equalsIgnoreCase(mailTpl.getChannel())) {
+            // 钉钉
+            if ("robot".equalsIgnoreCase(mailTpl.getPlatform())) {
+                mailService = new DingtalkRobotMailService();
+            } else if ("notify".equalsIgnoreCase(mailTpl.getPlatform())) {
+                mailService = new DingtalkNotifyMailService();
             }
         }
         if (null != mailService) {
