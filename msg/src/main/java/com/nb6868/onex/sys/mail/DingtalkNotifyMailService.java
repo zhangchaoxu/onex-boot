@@ -1,7 +1,7 @@
 package com.nb6868.onex.sys.mail;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
 import com.nb6868.onex.common.msg.MsgSendForm;
@@ -12,30 +12,22 @@ import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.service.MsgLogService;
 
 /**
- * 钉钉机器人消息
- * see {<a href="https://developers.dingtalk.com/document/robots/custom-robot-access">...</a>}
+ * 钉钉工作通知消息
+ * see {<a href="https://open.dingtalk.com/document/orgapp-server/asynchronous-sending-of-enterprise-session-messages">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class RobotDingtalkMailService extends AbstractMailService {
+public class DingtalkNotifyMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
-        String msgtype = request.getContentParams().getStr("msgtype");
-        String keywords = mailTpl.getParams().getStr("keywords");
-        if ("text".equalsIgnoreCase(msgtype)) {
-            // text类型消息,要求有关键词,但实际未包含,补充上
-            if (StrUtil.isNotBlank(keywords) && !StrUtil.contains(request.getContentParams().getJSONObject("text").getStr("content"), keywords)) {
-                request.getContentParams().getJSONObject("text").set("content", keywords + "\n" + request.getContentParams().getJSONObject("text").getStr("content"));
-            }
-        }
-        // https://oapi.dingtalk.com/robot/send?access_token=xxxx
-        BaseResponse sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("access_token"), request.getContentParams());
+        JSONObject params = request.getContentParams().set("agent_id", mailTpl.getParams().getStr("agentId"));
+        BaseResponse sendResponse = DingTalkApi.sendNotifyMsg(mailTpl.getParams().getStr("appId"), mailTpl.getParams().getStr("appSecret"), params);
         // 保存记录
         MsgLogEntity mailLog = new MsgLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
-        mailLog.setMailFrom("dingtalk_robot");
+        mailLog.setMailFrom("dingtalk_notify");
         mailLog.setMailTo(request.getMailTo());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
