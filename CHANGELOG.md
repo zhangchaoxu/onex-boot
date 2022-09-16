@@ -1,12 +1,15 @@
 # CHANGELOG
 
+## [3.6.41] 2022.09.16
+- new: DynamicTableParamHelper.setParamDataSingle
+
 ## [3.6.40] 2022.09.13
-- new: add dingtalk notifu
-- 
+- new: add dingtalk notify
+
 ## [3.6.39] 2022.09.09
 - new: MP to 3.5.2
 - new: weixin to 4.4.0
-- 
+ 
 ## [3.6.38] 2022.09.06
 - new: upgrade shiro and jsoup
 - new: upgrade hutool to 5.8.6
