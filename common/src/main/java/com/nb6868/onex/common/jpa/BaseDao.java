@@ -24,7 +24,7 @@ public interface BaseDao<T> extends BaseMapper<T> {
      *
      * @param entity 实体
      * @param id 主键
-     * @return result
+     * @return result 删除结果
      */
     Integer deleteByIdWithFill(@Param(Constants.ENTITY) T entity, Serializable id);
 
@@ -34,7 +34,7 @@ public interface BaseDao<T> extends BaseMapper<T> {
      *
      * @param entity 实体
      * @param idList 主键ID列表(不能为 null 以及 empty)
-     * * @return result
+     * @return result 删除结果
      */
     Integer deleteBatchByIdsWithFill(@Param(Constants.ENTITY) T entity, @Param(Constants.COLL) Collection<? extends Serializable> idList);
 
@@ -44,7 +44,7 @@ public interface BaseDao<T> extends BaseMapper<T> {
      *
      * @param entity  实体
      * @param wrapper wrapper
-     * @return result
+     * @return result 删除结果
      */
     Integer deleteByWrapperWithFill(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> wrapper);
 
