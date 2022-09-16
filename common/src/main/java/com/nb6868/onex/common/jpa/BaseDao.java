@@ -36,7 +36,7 @@ public interface BaseDao<T> extends BaseMapper<T> {
      * @param idList 主键ID列表(不能为 null 以及 empty)
      * * @return result
      */
-    Integer deleteBatchByIdsWithFill(@Param(Constants.ENTITY) T entity, @Param(Constants.COLLECTION) Collection<? extends Serializable> idList);
+    Integer deleteBatchByIdsWithFill(@Param(Constants.ENTITY) T entity, @Param(Constants.COLL) Collection<? extends Serializable> idList);
 
     /**
      * 通过wrapper软删除

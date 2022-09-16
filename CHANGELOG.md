@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.6.42] 2022.09.16
+- upgrade: upgrade hutool to 5.8.7
+- upgrade: upgrade druid to 1.2.12
+
 ## [3.6.41] 2022.09.16
 - new: DynamicTableParamHelper.setParamDataSingle
 
@@ -7,12 +11,12 @@
 - new: add dingtalk notify
 
 ## [3.6.39] 2022.09.09
-- new: MP to 3.5.2
-- new: weixin to 4.4.0
+- upgrade: upgrade MP to 3.5.2
+- upgrade: upgrade weixin to 4.4.0
  
 ## [3.6.38] 2022.09.06
-- new: upgrade shiro and jsoup
-- new: upgrade hutool to 5.8.6
+- upgrade: upgrade shiro and jsoup
+- upgrade: upgrade hutool to 5.8.6
 
 - ## [3.6.36] 2022.08.26
 - new: add dingtalk login
