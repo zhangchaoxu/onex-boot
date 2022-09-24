@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.43] 2022.09.24
+- upgrade: upgrade springboot to 2.7.4
+- 
 ## [3.6.42] 2022.09.16
 - upgrade: upgrade hutool to 5.8.7
 - upgrade: upgrade druid to 1.2.12
