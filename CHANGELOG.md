@@ -1,11 +1,16 @@
 # CHANGELOG
 
+## [3.6.43] 2022.10.06
+- upgrade: upgrade hutool to 5.8.8
+- upgrade: upgrade aliyun.oss to 3.15.2 
+
 ## [3.6.43] 2022.09.24
 - upgrade: upgrade springboot to 2.7.4
 - 
 ## [3.6.42] 2022.09.16
 - upgrade: upgrade hutool to 5.8.7
 - upgrade: upgrade druid to 1.2.12
+- 注意: druid在这个版本设置了默认超时10s,查询超过这个时间会报错Communications link failure，详见[文档](https://github.com/alibaba/druid/releases/tag/1.2.12)
 
 ## [3.6.41] 2022.09.16
 - new: DynamicTableParamHelper.setParamDataSingle

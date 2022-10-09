@@ -21,6 +21,7 @@ import com.nb6868.onex.common.dingtalk.UserContactResponse;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.msg.BaseMsgService;
+import com.nb6868.onex.common.msg.MsgLogBody;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.Const;
@@ -192,6 +193,35 @@ public class AuthController {
         AssertUtils.isFalse(PasswordUtils.verify(form.getPassword(), data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
         // 更新密码
         userService.updatePassword(data.getId(), form.getNewPassword());
+        // 注销该用户所有token,提示用户重新登录
+        tokenService.deleteByUserIdList(Collections.singletonList(data.getId()));
+        return new Result<>();
+    }
+
+    @PostMapping("userResetPassword")
+    @AccessControl
+    @ApiOperation("用户重置密码(帐号找回)")
+    @LogOperation("用户重置密码(帐号找回)")
+    @ApiOperationSupport(order = 164)
+    public Result<?> userResetPassword(@Validated @RequestBody ChangePasswordByMailCodeForm form) {
+        String tenantCode = ShiroUtils.getUserTenantCode();
+        // 先校验密码复杂度
+        JSONObject paramsContent = paramsService.getContentObject(null, tenantCode, null, UcConst.PARAMS_CODE_LOGIN, JSONObject.class, null);
+        AssertUtils.isNull(paramsContent, "配置信息为空");
+        // 密码复杂度正则
+        AssertUtils.isTrue(StrUtil.isNotBlank(paramsContent.getStr("passwordRegExp")) && !ReUtil.isMatch(paramsContent.getStr("passwordRegExp"), form.getPassword()), ErrorCode.ERROR_REQUEST, paramsContent.getStr("passwordRegError", "密码不符合规则"));
+        // 获取数据库中的用户
+        UserEntity data = userService.getById(ShiroUtils.getUserId());
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 校验短信
+        MsgLogBody lastSmsLog = msgService.getLatestByTplCode(null, "CODE_LOGIN", form.getMailTo());
+        AssertUtils.isTrue(lastSmsLog == null || !form.getSmsCode().equalsIgnoreCase(lastSmsLog.getContentParams().getStr("code")), ErrorCode.SMS_CODE_ERROR);
+        // 验证码正确,校验过期时间
+        AssertUtils.isTrue(lastSmsLog.getValidEndTime() != null && lastSmsLog.getValidEndTime().before(new Date()), ErrorCode.SMS_CODE_EXPIRED);
+        // 将短信消费掉
+        msgService.consumeLog(lastSmsLog.getId());
+        // 更新密码
+        userService.updatePassword(data.getId(), form.getPassword());
         // 注销该用户所有token,提示用户重新登录
         tokenService.deleteByUserIdList(Collections.singletonList(data.getId()));
         return new Result<>();
