@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## [3.6.43] 2022.10.06
+## [3.6.45] 2022.10.21
+- upgrade: upgrade springboot to 2.7.5
+- upgrade: upgrade druid to 1.2.13
+- upgrade: upgrade bcprov to 1.72
+
+## [3.6.44] 2022.10.06
 - upgrade: upgrade hutool to 5.8.8
 - upgrade: upgrade aliyun.oss to 3.15.2 
 
