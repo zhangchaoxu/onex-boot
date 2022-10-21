@@ -1,5 +1,7 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.ArrayUtil;
@@ -7,9 +9,12 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.extra.expression.ExpressionEngine;
+import cn.hutool.extra.expression.engine.spel.SpELEngine;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.PageForm;
@@ -224,6 +229,23 @@ public class StringTest {
         // verify只验证内容，不验证时间
         System.out.println("verify=" + jwt.setKey("1234567890".getBytes()).validate(0));
         System.out.println("verify=" + jwt.setKey("1234567890".getBytes()).verify());
+    }
+
+    @Test
+    @DisplayName("测试EL表达式")
+    void elTest() {
+        ExpressionEngine engine = new SpELEngine();
+        final Dict dict = Dict.create()
+                .set("a", 100.3)
+                .set("b", 45)
+                .set("c", -199.100);
+        LoginForm loginForm = new LoginForm();
+        loginForm.setType("sss");
+        loginForm.setSms("sms2232");
+        final Object eval = engine.eval("#a-(#b-#c)", dict);
+        final Object eval2 = BeanUtil.getProperty(loginForm, "sms");
+        log.error("eval={}", eval);
+        log.error("eval2={}", eval2);
     }
 
 }
