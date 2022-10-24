@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.6.46] 2022.10.24
+- upgrade: upgrade druid to 1.2.14
+- upgrade: upgrade hutool to 5.8.9
+- upgrade: upgrade shiro to 1.10.0
+
 ## [3.6.45] 2022.10.21
 - upgrade: upgrade springboot to 2.7.5
 - upgrade: upgrade druid to 1.2.13
@@ -16,6 +21,15 @@
 - upgrade: upgrade hutool to 5.8.7
 - upgrade: upgrade druid to 1.2.12
 - 注意: druid在这个版本设置了默认超时10s,查询超过这个时间会报错Communications link failure，详见[文档](https://github.com/alibaba/druid/releases/tag/1.2.12)
+可以通过修改配置避免  
+```ymal
+datasource:
+  druid:
+  # 建立连接时连接超时时间 默认：10s,单位ms
+  socket-timeout: 1000000
+  # 建立连接时连接超时时间 默认：10s,单位ms
+  connect-timeout: 1000000
+```
 
 ## [3.6.41] 2022.09.16
 - new: DynamicTableParamHelper.setParamDataSingle
