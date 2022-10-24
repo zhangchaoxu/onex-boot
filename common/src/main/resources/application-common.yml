@@ -62,10 +62,6 @@ spring:
   # 数据库
   datasource:
     druid:
-      # 建立连接时连接超时时间 默认：10s,单位ms
-      socket-timeout: 100000
-      # 建立连接时连接超时时间 默认：10s,单位ms
-      connect-timeout: 100000
       # 管理面板
       stat-view-servlet:
         enabled: true
