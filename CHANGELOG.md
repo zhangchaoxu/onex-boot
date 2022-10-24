@@ -1,7 +1,7 @@
 # CHANGELOG
 
-## [3.6.46] 2022.10.24
-- upgrade: upgrade druid to 1.2.14
+## [3.6.47] 2022.10.24
+- downgrade: upgrade druid to 1.2.11
 - upgrade: upgrade hutool to 5.8.9
 - upgrade: upgrade shiro to 1.10.0
 
