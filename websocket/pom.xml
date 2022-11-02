@@ -16,7 +16,7 @@
         <skipTests>true</skipTests>
         <!-- version -->
         <onex-common.version>3.6.47</onex-common.version>
-        <shiro.version>1.9.1</shiro.version>
+        <shiro.version>1.10.0</shiro.version>
     </properties>
 
     <dependencies>
