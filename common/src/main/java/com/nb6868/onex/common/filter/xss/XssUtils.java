@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.filter.xss;
 
+import cn.hutool.http.HtmlUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
@@ -14,6 +15,14 @@ public class XssUtils extends Safelist {
      * XSS过滤
      */
     public static String filter(String html){
+        // powered by hutool
+        return HtmlUtil.filter(html);
+    }
+
+    /**
+     * Jsoup XSS过滤
+     */
+    public static String filterByJsoup(String html){
         return Jsoup.clean(html, xssWhitelist());
     }
 

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.6.48] 2022.11.03
+- fix: remove xss filter in filter config
+- new: add XssStringDeserializer
+- remove: change jsoup lib scope to provided
+
 ## [3.6.47] 2022.10.24
 - downgrade: upgrade druid to 1.2.11
 - upgrade: upgrade hutool to 5.8.9

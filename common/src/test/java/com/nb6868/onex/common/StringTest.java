@@ -11,10 +11,12 @@ import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.expression.ExpressionEngine;
 import cn.hutool.extra.expression.engine.spel.SpELEngine;
+import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.nb6868.onex.common.auth.LoginForm;
+import com.nb6868.onex.common.filter.xss.XssUtils;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
 import com.nb6868.onex.common.pojo.PageForm;
@@ -246,6 +248,30 @@ public class StringTest {
         final Object eval2 = BeanUtil.getProperty(loginForm, "sms");
         log.error("eval={}", eval);
         log.error("eval2={}", eval2);
+    }
+
+    @Test
+    @DisplayName("xss过滤器测试")
+    void xssTest() {
+        String raw = "{\"id\":\"1567452017224237057\",\"type\":1,\"title\":\"<p>我国消防工作的原则是()<img src=\\\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\\\"></p>\",\"optionsA\":\"政府统一领导、部门依法监管、单位有限责任、公民广泛参与\",\"optionsB\":\"部门依法领导、政府统一监管、单位全面负责、公民积极参与\",\"optionsC\":\"政府统一领导、部门全面负责、单位依法管理、公民积极参与\",\"optionsD\":\"政府统一领导、部门依法监管、单位全面负责、公民积极参与\",\"optionsE\":null,\"optionsF\":null,\"optionsCorrect\":\"D\",\"content\":\"\",\"tags\":null,\"relType\":\"course\",\"relId\":\"1556192543100547074\",\"createId\":\"1510103618900885505\",\"createTime\":\"2022-09-07 17:57:37\",\"updateId\":\"1510103618900885505\",\"updateTime\":\"2022-11-03 12:07:28\",\"sort\":0,\"options\":null,\"score\":0,\"imgs\":null,\"remark\":null,\"tenantCode\":null,\"relName\":\"消防基础知识\"}";
+        String raw2 = "<p>我国消防工作的原则是()<img src=\\\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\\\"></p>";
+        String txt = XssUtils.filter(raw);
+        String txt2 = XssUtils.filter(raw2);
+        log.error("raw={}", raw);
+        log.error("txt={}", txt);
+        log.error("txt2={}", txt2);
+    }
+
+    @Test
+    @DisplayName("xss过滤器测试")
+    void hutoolXssTest() {
+        String raw = "{\"id\":\"1567452017224237057\",\"type\":1,\"title\":\"<p>我国消防工作的原则是()<img src=\\\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\\\"></p>\",\"optionsA\":\"政府统一领导、部门依法监管、单位有限责任、公民广泛参与\",\"optionsB\":\"部门依法领导、政府统一监管、单位全面负责、公民积极参与\",\"optionsC\":\"政府统一领导、部门全面负责、单位依法管理、公民积极参与\",\"optionsD\":\"政府统一领导、部门依法监管、单位全面负责、公民积极参与\",\"optionsE\":null,\"optionsF\":null,\"optionsCorrect\":\"D\",\"content\":\"\",\"tags\":null,\"relType\":\"course\",\"relId\":\"1556192543100547074\",\"createId\":\"1510103618900885505\",\"createTime\":\"2022-09-07 17:57:37\",\"updateId\":\"1510103618900885505\",\"updateTime\":\"2022-11-03 12:07:28\",\"sort\":0,\"options\":null,\"score\":0,\"imgs\":null,\"remark\":null,\"tenantCode\":null,\"relName\":\"消防基础知识\"}";
+        String raw2 = "<p>我国消防工作的原则是()<img src=\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\"></p><alert> sss</alert>";
+        String txt = HtmlUtil.filter(raw);
+        String txt2 = HtmlUtil.filter(raw2);
+        log.error("raw={}", raw);
+        log.error("txt={}", txt);
+        log.error("txt2={}", txt2);
     }
 
 }

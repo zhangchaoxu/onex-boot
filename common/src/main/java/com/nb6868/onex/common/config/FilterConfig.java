@@ -2,7 +2,6 @@ package com.nb6868.onex.common.config;
 
 import com.nb6868.onex.common.filter.CrosFilter;
 import com.nb6868.onex.common.filter.HttpServletRequestReplaceFilter;
-import com.nb6868.onex.common.filter.XssFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -65,7 +64,7 @@ public class FilterConfig {
         return registration;
     }
 
-    @Bean
+    /*@Bean
     public FilterRegistrationBean<?> xssFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setDispatcherTypes(DispatcherType.REQUEST);
@@ -74,5 +73,6 @@ public class FilterConfig {
         registration.setName("xssFilter");
         registration.setOrder(Integer.MAX_VALUE);
         return registration;
-    }
+    }*/
+
 }
