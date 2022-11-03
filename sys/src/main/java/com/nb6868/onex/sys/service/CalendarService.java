@@ -1,14 +1,13 @@
 package com.nb6868.onex.sys.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.sys.dao.CalendarDao;
 import com.nb6868.onex.sys.dto.CalendarDTO;
 import com.nb6868.onex.sys.entity.CalendarEntity;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,16 +38,8 @@ public class CalendarService extends DtoService<CalendarDao, CalendarEntity, Cal
             // 调用接口,用jsoup,而不是RestTemplate是由于可能会被拦截403
             try {
                 // 直接接口读取可能会被403,所以用jsoup模拟
-                Connection.Response res = Jsoup.connect("http://timor.tech/api/holiday/info/" + DateUtil.format(startDay, "yyyy-MM-dd"))
-                        .header("Accept", "*/*")
-                        .header("Accept-Encoding", "gzip, deflate")
-                        .header("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3")
-                        .header("Content-Type", "application/json;charset=UTF-8")
-                        .header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0")
-                        .timeout(3000000)
-                        .ignoreContentType(true)
-                        .execute();
-                JSONObject jsonResult = JSONUtil.parseObj(res.body());
+                String res = HttpUtil.get("http://timor.tech/api/holiday/info/" + DateUtil.format(startDay, "yyyy-MM-dd"));
+                JSONObject jsonResult = JSONUtil.parseObj(res);
                 JSONObject jsonType = jsonResult.getJSONObject("type");
                 CalendarEntity calendar = new CalendarEntity();
                 calendar.setWeek(jsonType.getInt("week"));
