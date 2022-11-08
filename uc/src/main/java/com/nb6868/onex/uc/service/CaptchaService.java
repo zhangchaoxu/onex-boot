@@ -1,23 +1,23 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.OnexException;
 import com.pig4cloud.captcha.*;
 import com.pig4cloud.captcha.base.Captcha;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 
 /**
- * 验证码
+ * 验证码服务
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class CaptchaService {
 
-    @Autowired
-    Cache captchaCache;
+    // 有效期默认10分钟
+    TimedCache<String, String> captchaCache = CacheUtil.newTimedCache(15 * 60 * 1000);
 
     /**
      * 生成图片验证码
@@ -33,6 +33,7 @@ public class CaptchaService {
     public Captcha createCaptcha(String uuid, int width, int height, String type) {
         return createCaptcha(uuid, width, height, type, 4, Captcha.TYPE_ONLY_NUMBER);
     }
+
 
     public Captcha createCaptcha(String uuid, int width, int height, String type, int len, int charType) {
         Captcha captcha;
@@ -70,13 +71,13 @@ public class CaptchaService {
      * @return 验证结果
      */
     public boolean validate(String uuid, String code) {
-        // 从缓存获取验证码
-        String captcha = captchaCache.get(uuid, String.class);
+        // 从缓存获取验证码,不更新时间
+        String captcha = captchaCache.get(uuid, false);
         if (StrUtil.isBlank(captcha)) {
             return false;
         }
         // 取出后,从缓存中删除
-        captchaCache.evictIfPresent(uuid);
+        captchaCache.remove(uuid);
         return code.equalsIgnoreCase(captcha);
     }
 

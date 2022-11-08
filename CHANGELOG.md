@@ -1,7 +1,11 @@
 # CHANGELOG
 
+## [3.6.50] 2022.11.08
+- upgrade: replace captcha cache imp
+
 ## [3.6.49] 2022.11.08
 - remove: remove SpringContextUtils
+- upgrade: replace captcha cache imp
 
 ## [3.6.48] 2022.11.03
 - fix: remove xss filter in filter config
