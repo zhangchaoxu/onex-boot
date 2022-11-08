@@ -17,7 +17,7 @@
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
         <onex-common.version>3.6.50</onex-common.version>
-        <shiro.version>1.9.0</shiro.version>
+        <shiro.version>1.10.0</shiro.version>
     </properties>
 
     <dependencies>

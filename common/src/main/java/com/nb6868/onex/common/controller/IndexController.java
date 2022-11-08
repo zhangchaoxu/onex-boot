@@ -2,14 +2,13 @@ package com.nb6868.onex.common.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.extra.spring.SpringUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.pojo.Result;
 import com.sun.management.OperatingSystemMXBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +25,6 @@ import java.math.RoundingMode;
 @Slf4j
 public class IndexController {
 
-    @Autowired
-    private Environment env;
-
     @GetMapping("/")
     @ApiOperation("index")
     @AccessControl({"",
@@ -39,17 +35,18 @@ public class IndexController {
             "doc.html", "swagger-resources", "v2/api-docs"
     })
     public Result<?> index() {
+
         Dict result = Dict.create()
                 .set("onex", Dict.create()
-                        .set("parent-artifact-id", env.getProperty("onex.parent-artifact-id"))
-                        .set("artifact-id", env.getProperty("onex.artifact-id"))
-                        .set("version", env.getProperty("onex.version"))
-                        .set("build-time", env.getProperty("onex.build-time")))
+                        .set("parent-artifact-id", SpringUtil.getProperty("onex.parent-artifact-id"))
+                        .set("artifact-id", SpringUtil.getProperty("onex.artifact-id"))
+                        .set("version", SpringUtil.getProperty("onex.version"))
+                        .set("build-time", SpringUtil.getProperty("onex.build-time")))
                 .set("app", Dict.create()
-                        .set("parent-artifact-id", env.getProperty("onex.app.parent-artifact-id"))
-                        .set("artifact-id", env.getProperty("onex.app.artifact-id"))
-                        .set("version", env.getProperty("onex.app.version"))
-                        .set("build-time", env.getProperty("onex.app.build-time")));
+                        .set("parent-artifact-id", SpringUtil.getProperty("onex.app.parent-artifact-id"))
+                        .set("artifact-id", SpringUtil.getProperty("onex.app.artifact-id"))
+                        .set("version", SpringUtil.getProperty("onex.app.version"))
+                        .set("build-time", SpringUtil.getProperty("onex.app.build-time")));
         return new Result<>().success(result);
     }
 

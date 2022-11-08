@@ -7,11 +7,10 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -35,16 +34,13 @@ public class MultipartFileUtils {
      */
     private static String uploadPath;
 
-    @Autowired
-    private Environment env;
-
     @PostConstruct
     public void init() {
         // 若定义了upload-path,则获取上传路径
         // 若无定义,则获取server.tomcat.basedir同路径下创建upload路径
-        String path = env.getProperty("onex.upload-path");
+        String path = SpringUtil.getProperty("onex.upload-path");
         if (StrUtil.isBlank(path)) {
-            path = new File(env.getProperty("server.tomcat.basedir")).getParentFile().getPath() + File.separator + "upload";
+            path = new File(SpringUtil.getProperty("server.tomcat.basedir")).getParentFile().getPath() + File.separator + "upload";
         }
         uploadPath = path;
     }
