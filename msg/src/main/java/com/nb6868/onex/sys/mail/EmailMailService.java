@@ -2,11 +2,11 @@ package com.nb6868.onex.sys.mail;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
@@ -101,7 +101,7 @@ public class EmailMailService extends AbstractMailService {
             log.error("send error", e);
             mailLog.setState(Const.ResultEnum.FAIL.value());
         }
-        MsgLogService mailLogService = SpringContextUtils.getBean(MsgLogService.class);
+        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
         mailLogService.save(mailLog);
         return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
     }

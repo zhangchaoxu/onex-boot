@@ -7,6 +7,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -14,7 +15,6 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
-import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
@@ -61,7 +61,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
         });
 
         // 消息记录
-        MsgLogService mailLogService = SpringContextUtils.getBean(MsgLogService.class);
+        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
         MsgLogEntity mailLog = new MsgLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());

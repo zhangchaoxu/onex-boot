@@ -4,13 +4,13 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.common.util.WrapperUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
@@ -134,7 +134,7 @@ public class MsgLogService extends DtoService<MsgLogDao, MsgLogEntity, MsgLogDTO
             // 对于未定义的消息类型,需要实例化
             String serviceName = StrUtil.format("{}{}MailService", StrUtil.nullToEmpty(StrUtil.upperFirst(StrUtil.toCamelCase(mailTpl.getChannel()))), StrUtil.nullToEmpty(StrUtil.upperFirst(StrUtil.toCamelCase(mailTpl.getPlatform()))));
             // 通过bean获取实现Service
-            Object target = SpringContextUtils.getBean(serviceName);
+            Object target = SpringUtil.getBean(serviceName);
             // 通过反射执行run方法
             try {
                 Method method = target.getClass().getDeclaredMethod("sendMail", MsgTplEntity.class, MsgSendForm.class);

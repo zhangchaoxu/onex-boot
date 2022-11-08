@@ -5,8 +5,8 @@ import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
-import com.nb6868.onex.common.util.SpringContextUtils;
 import com.nb6868.onex.sys.SchedConst;
 import com.nb6868.onex.sys.service.SchedLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +27,10 @@ public class ScheduleJob extends QuartzJobBean {
     protected void executeInternal(JobExecutionContext context) {
         SchedTask task = (SchedTask) context.getMergedJobDataMap().get(SchedConst.JOB_PARAM_KEY);
         // 未指定环境或者当前环境包含了指定环境
-        boolean activeContainAllow = StrUtil.isBlank(task.getEnv()) || ArrayUtil.containsAny(SpringContextUtils.getEnvironment().getActiveProfiles(), StrUtil.splitToArray(task.getEnv(), ","));
+        boolean activeContainAllow = StrUtil.isBlank(task.getEnv()) || ArrayUtil.containsAny(SpringUtil.getActiveProfiles(), StrUtil.splitToArray(task.getEnv(), ","));
         if (activeContainAllow) {
             // 执行
-            SchedLogService taskLogService = SpringContextUtils.getBean(SchedLogService.class);
+            SchedLogService taskLogService = SpringUtil.getBean(SchedLogService.class);
             // 任务计时器
             TimeInterval timer = DateUtil.timer();
             Long taskLogId = 0L;
@@ -40,7 +40,7 @@ public class ScheduleJob extends QuartzJobBean {
                 // 记录初始化日志
                 taskLogId = taskLogService.saveLog(task, 0L, SchedConst.SchedLogState.INIT.getValue(), null);
                 // 通过bean获取实现ITask的Task
-                Object target = SpringContextUtils.getBean(task.getName());
+                Object target = SpringUtil.getBean(task.getName());
                 // 通过反射执行run方法
                 Method method = target.getClass().getDeclaredMethod("run", SchedTask.class, Long.class);
                 ScheduleRunResult invokeResult = (ScheduleRunResult) method.invoke(target, task, taskLogId);
