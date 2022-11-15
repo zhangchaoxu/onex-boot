@@ -24,30 +24,77 @@ public class StaticScheduleTask {
 缺点：硬编码，任务的规则、启停都需要修改代码和部署
 
 ## 实现SchedulingConfigurer接口
-
-### code
 ```java
 @Configuration
 @EnableScheduling
-@ConditionalOnProperty(name = "onex.scheduled.guochou", havingValue = "true")
+@ConditionalOnProperty(name = "xxxx.scheduled.enable", havingValue = "true")
 @Slf4j
 public class ScheduledConfig implements SchedulingConfigurer {
 
+    @Autowired
+    private ParamsService paramsService;
+
+    /**
+     * Spring初始化时候执行
+     * 获取需要执行的任务，添加到定时器里
+     *
+     * @param taskRegistrar
+     */
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        // 任务执行
+        // 从数据库或者其它配置中读取需要执行的任务列表
+        paramsService.query()
+                .select("code")
+                .likeRight("code", "TEST_SCHEDULE")
+                .list()
+                .forEach(paramsEntity -> initTrigger(taskRegistrar, paramsEntity.getCode()));
+    }
+
+    /**
+     * 添加trigger
+     */
+    private void initTrigger(ScheduledTaskRegistrar taskRegistrar, String paramsCode) {
         taskRegistrar.addTriggerTask(() -> {
-            // 执行任务内容
-            log.debug("run taskRun @ {}", DateUtil.now());
+            // 配置参数要再从数据库读一遍，否则不会变更
+            JSONObject params = paramsService.getSystemContentJson(paramsCode);
+            if (params != null && StrUtil.isNotBlank(params.getStr("taskName"))) {
+                try {
+                    ReflectUtil.invoke(SpringUtil.getBean(params.getStr("taskName")), "run", params);
+                    log.info("run {} @ {}", params.getStr("taskName"), DateUtil.now());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.error("error run {}", params.getStr("taskName"));
+                }
+            }
         }, triggerContext -> {
-            // 查询配置中的cron规则
-            // String cron = db.query()
-            return new CronTrigger(cron).nextExecutionTime(triggerContext);
+            log.info("TriggerTask next Trigger");
+            // 配置参数要再从数据库读一遍，否则不会变更
+            JSONObject params = paramsService.getSystemContentJson(paramsCode);
+            if (params != null && StrUtil.isNotBlank(params.getStr("cron"))) {
+                return new CronTrigger(params.getStr("cron")).nextExecutionTime(triggerContext);
+            } else {
+                return null;
+            }
         });
     }
 
 }
+```
 
+## 自定义Task
+```java
+@Component("TestTask")
+@Slf4j
+public class TestTask {
+
+    /**
+     * 任务执行
+     * @param json 执行参数
+     */
+    public void run(JSONObject json) {
+        log.info("scheduled TestTask start, param = {}", json.toString());
+    }
+}
 ```
 
 ### 优缺点

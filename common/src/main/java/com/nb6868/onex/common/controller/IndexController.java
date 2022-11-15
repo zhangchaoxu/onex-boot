@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 @RequestMapping("/")
 @Validated
 @Api(tags = "首页")
-@Slf4j
 public class IndexController {
 
     @GetMapping("/")
@@ -35,7 +34,6 @@ public class IndexController {
             "doc.html", "swagger-resources", "v2/api-docs"
     })
     public Result<?> index() {
-
         Dict result = Dict.create()
                 .set("onex", Dict.create()
                         .set("parent-artifact-id", SpringUtil.getProperty("onex.parent-artifact-id"))
