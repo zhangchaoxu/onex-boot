@@ -120,3 +120,6 @@ mv /www/server/panel/data/bind.pl /www/server/panel/data/bind.pl.bak
 2. 本地代码与远程代码需要保持一致
 3. console不会打印出信息,只能在断点寻找需要的信息
 
+## 12. 在DAO中使用<script>报错org.xml.sax.SAXParseException; lineNumber: 1; columnNumbe
+- 原因：这是由于在sql中含有< >等符号，编译出现错误
+- 解决：`<`替换为`&lt;` `>`替换为`&gt;`  
