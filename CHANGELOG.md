@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.6.51] 2022.11.25
+- upgrade: upgrade springboot to 2.7.6
+- upgrade: upgrade hutool to 5.8.10
+- upgrade: upgrade shiro to 1.10.1
+
 ## [3.6.50] 2022.11.08
 - upgrade: replace captcha cache imp
 
@@ -126,6 +131,7 @@ datasource:
 <del>
 - upgrade: upgrade druid to 1.2.10
 </del>
+
 - new: add AccessControl allowToken
 
 ## [3.5.9] 2022.05.23

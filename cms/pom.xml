@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.6.50</version>
+        <version>3.6.51</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cms</artifactId>
@@ -15,8 +15,8 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <onex-common.version>3.6.50</onex-common.version>
-        <shiro.version>1.9.0</shiro.version>
+        <onex-common.version>3.6.51</onex-common.version>
+        <shiro.version>1.10.1</shiro.version>
     </properties>
 
     <dependencies>
