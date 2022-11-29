@@ -82,9 +82,9 @@ public class BaseShiroConfig {
          * 2. anon接口不过shiro,无法记录访问用户信息
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
-        // 允许匿名访问地址,在IndexController中用AccessControl加入
-        // favicon
-        // filterMap.put("/favicon.ico", "anon");
+        // 允许匿名访问地址,在authProp中添加白名单
+        StrUtil.splitTrim(authProps.getWhiteList(), ",").forEach(s -> filterMap.put(s, "anon"));
+        // 允许匿名访问地址,在Controller中用AccessControl加入
         // 扫描RequestMapping类
         if (authProps.getAccessControl() != null && authProps.getAccessControl().isEnable() && StrUtil.isNotBlank(authProps.getAccessControl().getScanPackage())) {
             StrUtil.splitTrim(authProps.getAccessControl().getScanPackage(), ',').forEach(scanPackage ->

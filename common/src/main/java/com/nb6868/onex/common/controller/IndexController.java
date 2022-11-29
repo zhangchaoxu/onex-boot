@@ -8,7 +8,6 @@ import com.nb6868.onex.common.pojo.Result;
 import com.sun.management.OperatingSystemMXBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,13 +25,7 @@ public class IndexController {
 
     @GetMapping("/")
     @ApiOperation("index")
-    @AccessControl({"",
-            "favicon.ico",
-            "static/**", "webjars/**",
-            "ws/**",
-            "druid/**",
-            "doc.html", "swagger-resources", "v2/api-docs"
-    })
+    @AccessControl("")
     public Result<?> index() {
         Dict result = Dict.create()
                 .set("onex", Dict.create()
@@ -50,7 +43,7 @@ public class IndexController {
 
     @GetMapping("sysInfo")
     @ApiOperation("系统信息")
-    @AccessControl({"sysInfo"})
+    @AccessControl("sysInfo")
     public Result<?> sysInfo() {
         OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 

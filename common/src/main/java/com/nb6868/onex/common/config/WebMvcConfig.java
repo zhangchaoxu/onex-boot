@@ -3,7 +3,7 @@ package com.nb6868.onex.common.config;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
@@ -91,7 +91,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // registry.addResourceHandler("/easypoi-preview.html").addResourceLocations("classpath:/META-INF/resources/");
         // registry.addResourceHandler("/easypoijs/**").addResourceLocations("classpath:/META-INF/resources/easypoijs/");
         // 文件读取映射
-        if (StrUtil.isNotBlank(ossFileRequestPath) && StrUtil.isNotBlank(ossFileStoragePath)) {
+        if (StrUtil.isAllNotBlank(ossFileRequestPath, ossFileStoragePath)) {
             // 先创建目录
             FileUtil.mkdir(ossFileStoragePath);
             registry.addResourceHandler(ossFileRequestPath).addResourceLocations("file:" + ossFileStoragePath);
@@ -145,13 +145,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * 选用jackson实现json的序列化
      */
     @Bean
-    @SuppressWarnings("deprecation")
     public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        ObjectMapper objectMapper = JacksonUtils.getMapper();
+        JsonMapper.builder().enable(MapperFeature.USE_ANNOTATIONS);
+        JsonMapper.Builder builder = JacksonUtils.getMapperBuilder();
         // enable USE_ANNOTATIONS,否则swagger ApiModelProperty中的内容会无法解析,导致页面上无法显示
-        objectMapper.enable(MapperFeature.USE_ANNOTATIONS);
-        converter.setObjectMapper(objectMapper);
+        builder.enable(MapperFeature.USE_ANNOTATIONS);
+        converter.setObjectMapper(builder.build());
         return converter;
     }
 

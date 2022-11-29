@@ -1,12 +1,11 @@
 package com.nb6868.onex.common.util;
 
 import cn.hutool.core.date.DatePattern;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,8 @@ public class JacksonUtils {
     /**
      * 普通对象 Mapper
      */
-    private static ObjectMapper mapper;
+    // private static ObjectMapper mapper;
+    private static JsonMapper.Builder mapperBuilder;
 
     /**
      * 私有构造函数。
@@ -47,7 +47,7 @@ public class JacksonUtils {
      *
      * @return ObjectMapper实例
      */
-    @SuppressWarnings("deprecation")
+    /*@SuppressWarnings("deprecation")
     public static ObjectMapper getMapper() {
         if (JacksonUtils.mapper != null) {
             return JacksonUtils.mapper;
@@ -74,6 +74,34 @@ public class JacksonUtils {
             JacksonUtils.mapper.disable(MapperFeature.USE_ANNOTATIONS);
             return JacksonUtils.mapper;
         }
+    }*/
+
+    public static JsonMapper.Builder getMapperBuilder() {
+        if (JacksonUtils.mapperBuilder != null) {
+            return JacksonUtils.mapperBuilder;
+        }
+        synchronized (JacksonUtils.class) {
+            if (JacksonUtils.mapperBuilder != null) {
+                return JacksonUtils.mapperBuilder;
+            }
+            JacksonUtils.mapperBuilder = JsonMapper.builder();
+            // 设置忽略属性
+            JacksonUtils.mapperBuilder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            // 设置允许转义字符,比如CTRL-CHAR
+            JacksonUtils.mapperBuilder.configure( com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS, true);
+            // 设置时间格式
+            JacksonUtils.mapperBuilder.defaultDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
+            JacksonUtils.mapperBuilder.defaultTimeZone(TimeZone.getTimeZone("GMT+8"));
+            // Long类型转String类型
+            // 解决js中Long型数据精度丢失的问题 {https://mybatis.plus/guide/faq.html#id-worker-生成主键太长导致-js-精度丢失}
+            SimpleModule simpleModule = new SimpleModule();
+            simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+            simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+            JacksonUtils.mapperBuilder.addModule(simpleModule);
+            // 设置
+            JacksonUtils.mapperBuilder.disable(MapperFeature.USE_ANNOTATIONS);
+            return JacksonUtils.mapperBuilder;
+        }
     }
 
     /**
@@ -88,7 +116,7 @@ public class JacksonUtils {
             return null;
         }
         try {
-            return JacksonUtils.getMapper().writeValueAsString(pojo);
+            return JacksonUtils.getMapperBuilder().build().writeValueAsString(pojo);
         } catch (IOException e) {
             throw new RuntimeException("Failed to convert Object2JSONString. ", e);
         }
@@ -106,7 +134,7 @@ public class JacksonUtils {
             return defaultVal;
         }
         try {
-            return JacksonUtils.getMapper().writeValueAsString(pojo);
+            return JacksonUtils.getMapperBuilder().build().writeValueAsString(pojo);
         } catch (IOException e) {
             log.error(e.getMessage());
             return defaultVal;
@@ -139,7 +167,7 @@ public class JacksonUtils {
             return defaultVal;
         }
         try {
-            return JacksonUtils.getMapper().readValue(json, pojoClass);
+            return JacksonUtils.getMapperBuilder().build().readValue(json, pojoClass);
         } catch (Exception e) {
             log.error(e.getMessage());
             return defaultVal;
@@ -172,7 +200,7 @@ public class JacksonUtils {
             return defaultVal;
         }
         try {
-            return JacksonUtils.getMapper().readValue(json, pojoClass);
+            return JacksonUtils.getMapperBuilder().build().readValue(json, pojoClass);
         } catch (Exception e) {
             log.error(e.getMessage());
             return defaultVal;
@@ -205,7 +233,7 @@ public class JacksonUtils {
             return defaultVal;
         }
         try {
-            return JacksonUtils.getMapper().convertValue(json, pojoClass);
+            return JacksonUtils.getMapperBuilder().build().convertValue(json, pojoClass);
         } catch (Exception e) {
             log.error(e.getMessage());
             return defaultVal;
@@ -234,7 +262,7 @@ public class JacksonUtils {
             return defaultVal;
         }
         try {
-            return JacksonUtils.getMapper().readValue(json, JacksonUtils.MAP_TYPE);
+            return JacksonUtils.getMapperBuilder().build().readValue(json, JacksonUtils.MAP_TYPE);
         } catch (Exception e) {
             log.error(e.getMessage());
             return defaultVal;
@@ -260,7 +288,7 @@ public class JacksonUtils {
             return defaultVal;
         }
         try {
-            return JacksonUtils.getMapper().writeValueAsString(map);
+            return JacksonUtils.getMapperBuilder().build().writeValueAsString(map);
         } catch (final IOException e) {
             log.error(e.getMessage());
             return defaultVal;
@@ -299,7 +327,7 @@ public class JacksonUtils {
             return null;
         }
         try {
-            return JacksonUtils.getMapper().readTree(json);
+            return JacksonUtils.getMapperBuilder().build().readTree(json);
         } catch (final IOException e) {
             log.error(e.getMessage());
             return null;
@@ -327,7 +355,7 @@ public class JacksonUtils {
             return defaultValue;
         }
         try {
-            return JacksonUtils.getMapper().readValue(json, typeReference);
+            return JacksonUtils.getMapperBuilder().build().readValue(json, typeReference);
         } catch (final IOException e) {
             log.error(e.getMessage());
             return defaultValue;

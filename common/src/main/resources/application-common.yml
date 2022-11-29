@@ -181,3 +181,5 @@ onex:
     token-header-key: auth-token
     # token在jwt中的key
     token-jwt-key: sub
+    # 访问白名单
+    white-list: favicon.ico,static/**,webjars/**,ws/**,druid/**,doc.html,swagger-resources,v2/api-docs,/oss/**

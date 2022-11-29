@@ -25,6 +25,9 @@ public class AuthProps {
     @ApiModelProperty(value = "token类型在jwt中的key")
     private String tokenJwtKey = "sub";
 
+    @ApiModelProperty(value = "访问白名单")
+    private String whiteList;
+
     @ApiModelProperty(value = "访问控制")
     private AccessControl accessControl;
 
