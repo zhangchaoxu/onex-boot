@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [3.6.53] 2022.12.05
+- fix: fix local file path issue
+
+## [3.6.52] 2022.11.29
+- upgrade: add auth whiteList
+
 ## [3.6.51] 2022.11.25
 - upgrade: upgrade springboot to 2.7.6
 - upgrade: upgrade hutool to 5.8.10

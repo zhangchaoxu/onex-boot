@@ -1,6 +1,6 @@
 # How to Set Up
 
-## 接口
+## 后端接口
 
 ## 技术准备
 * [SpringBoot](https://spring.io/projects/spring-boot/) 
@@ -10,14 +10,14 @@
 * [Java Mail Sender](https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-email)
 
 ## 开发准备
-1. 建议使用JDK1.8+
+1. JDK需使用1.8以上版本,为兼容后续的Springboot3.0,建议使用JDK17
 2. 建议使用[Intellij IDEA](https://www.jetbrains.com/idea/)开发
 3. 在IDEA中安装[Lombok](https://projectlombok.org/)插件
 
 ## 开发步骤
 1. 检出代码
 ```shell
-git clone https://github.com/zhangchaoxu/onex-boot.git
+git clone https://github.com/zhangchaoxu/onex-api.git
 ```
 2. 使用IDEA打开检出代码文件夹
 3. 创建MySQL数据库,并导入初始数据
@@ -30,7 +30,7 @@ git clone https://github.com/zhangchaoxu/onex-boot.git
 ### java开发规范
 详见[阿里巴巴Java开发手册](https://github.com/alibaba/p3c)
 
-## 前端
+## 管理后台前端
 
 ### 技术准备
 * [VUE](https://cn.vuejs.org/)

@@ -46,6 +46,7 @@ public class LocalOssService extends AbstractOssService {
         if (localFile.exists()) {
             // 文件已存在,则需要对文件重命名
             objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), true);
+            localFile = new File(config.getLocalPath() + File.separator + objectKey);
         }
         new FileWriter(localFile).writeFromStream(inputStream, true);
         //FileUtil.copy(inputStream, localFile, true);
