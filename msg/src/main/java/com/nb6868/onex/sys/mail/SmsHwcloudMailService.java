@@ -10,15 +10,12 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
-import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
-import com.nb6868.onex.sys.mail.sms.SmsProps;
 import com.nb6868.onex.sys.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -48,9 +45,6 @@ public class SmsHwcloudMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
-        SmsProps smsProps = JSONUtil.toBean(mailTpl.getParams(), SmsProps.class);
-        AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
-
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
         JSONArray paramArray = new JSONArray();
@@ -70,22 +64,22 @@ public class SmsHwcloudMailService extends AbstractMailService {
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
         mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
-        mailLog.setState(Const.ResultEnum.FAIL.value());
+        mailLog.setState(MsgConst.MailSendStateEnum.SENDING.value());
         // 设置有效时间
-        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
-        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
+        int validTimeLimit = mailTpl.getParams().getInt("validTimeLimit", 0);
+        mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
 
         //必填,请参考"开发准备"获取如下数据,替换为实际值
         //APP接入地址(在控制台"应用管理"页面获取)+接口访问URI
-        String appKey = smsProps.getAppKey(); //APP_Key
-        String appSecret = smsProps.getAppSecret(); //APP_Secret
-        String sender = smsProps.getChannelId(); //国内短信签名通道号或国际/港澳台短信通道号
-        String templateId = smsProps.getTplId(); //模板ID
+        String appKey = mailTpl.getParams().getStr("AppKeyId"); //APP_Key
+        String appSecret = mailTpl.getParams().getStr("AppKeySecret"); //APP_Secret
+        String sender = mailTpl.getParams().getStr("ChannelId"); //国内短信签名通道号或国际/港澳台短信通道号
+        String templateId = mailTpl.getParams().getStr("TemplateId"); //模板ID
         //条件必填,国内短信关注,当templateId指定的模板类型为通用模板时生效且必填,必须是已审核通过的,与模板类型一致的签名名称
         //国际/港澳台短信不用关注该参数
-        String signature = smsProps.getSign(); //签名名称
+        String signature = mailTpl.getParams().getStr("SignName"); //签名名称
         //必填,全局号码格式(包含国家码),示例:+8615123456789,多个号码之间用英文逗号分隔
         String receiver = request.getMailTo(); //短信接收人号码
         //选填,短信状态报告接收地址,推荐使用域名,为空或者不填表示不接收状态报告
@@ -121,19 +115,19 @@ public class SmsHwcloudMailService extends AbstractMailService {
         try {
             // 设置链接超时
             SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-            String result = new RestTemplate(factory).postForObject(smsProps.getRegionId() + "/sms/batchSendSms/v1", httpEntity, String.class);
+            String result = new RestTemplate(factory).postForObject(mailTpl.getParams().getStr("RegionId") + "/sms/batchSendSms/v1", httpEntity, String.class);
 
             Map<String, Object> json = JacksonUtils.jsonToMap(result);
             mailLog.setResult(result);
-            mailLog.setState("000000".equalsIgnoreCase(MapUtil.getStr(json, "code")) ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
+            mailLog.setState("000000".equalsIgnoreCase(MapUtil.getStr(json, "code")) ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
         } catch (Exception e) {
             log.error("HwcloudSms", e);
-            mailLog.setState(Const.ResultEnum.FAIL.value());
+            mailLog.setState(MsgConst.MailSendStateEnum.FAIL.value());
             mailLog.setResult(e.getMessage());
         }
 
         mailLogService.updateById(mailLog);
-        return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
+        return mailLog.getState() == MsgConst.MailSendStateEnum.SUCCESS.value();
     }
 
     /**

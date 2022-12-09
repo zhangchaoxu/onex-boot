@@ -4,14 +4,13 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
-import cn.hutool.json.JSONUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.TemplateUtils;
-import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
-import com.nb6868.onex.sys.mail.email.EmailProps;
 import com.nb6868.onex.sys.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -38,12 +37,12 @@ public class EmailMailService extends AbstractMailService {
      * @param props 配置参数
      * @return 邮件发送器
      */
-    private JavaMailSenderImpl createMailSender(EmailProps props) {
+    private JavaMailSenderImpl createMailSender(JSONObject props) {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setHost(props.getHost());
-        sender.setPort(props.getPort());
-        sender.setUsername(props.getUsername());
-        sender.setPassword(props.getPassword());
+        sender.setHost(props.getStr("host"));
+        sender.setPort(props.getInt("port", 25));
+        sender.setUsername(props.getStr("username"));
+        sender.setPassword(props.getStr("password"));
         sender.setDefaultEncoding(StandardCharsets.UTF_8.name());
         Properties p = new Properties();
         p.setProperty("mail.smtp.timeout", "10000");
@@ -54,16 +53,14 @@ public class EmailMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
-        // 序列化电子邮件配置
-        EmailProps emailProps = JSONUtil.toBean(mailTpl.getParams(), EmailProps.class);
-        AssertUtils.isNull(emailProps, "电子邮件配置参数异常");
         // 组装标题和内容
         String title = TemplateUtils.renderRaw(mailTpl.getTitle(), request.getTitleParams(), FreemarkerEngine.class);
         String content = TemplateUtils.renderRaw(mailTpl.getContent(), request.getContentParams(), FreemarkerEngine.class);
         // 创建发送器和邮件消息
-        JavaMailSenderImpl mailSender = createMailSender(emailProps);
+        JavaMailSenderImpl mailSender = createMailSender(mailTpl.getParams());
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         // 保存记录
+        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
         MsgLogEntity mailLog = new MsgLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
@@ -73,12 +70,16 @@ public class EmailMailService extends AbstractMailService {
         mailLog.setTitle(title);
         mailLog.setContent(content);
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
+        mailLog.setState(MsgConst.MailSendStateEnum.SENDING.value());
         // 设置有效时间
-        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
-        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
+        int validTimeLimit = mailTpl.getParams().getInt("validTimeLimit", 0);
+        mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
+        // 先保存获得id,后续再更新状态和内容
+        mailLogService.save(mailLog);
+
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
-            messageHelper.setFrom(emailProps.getUsername());
+            messageHelper.setFrom(mailTpl.getParams().getStr("username"));
             if (StrUtil.isNotBlank(request.getMailTo())) {
                 messageHelper.setTo(StrUtil.splitToArray(request.getMailTo(), ',', -1));
             }
@@ -96,13 +97,14 @@ public class EmailMailService extends AbstractMailService {
             //发送邮件
             mailSender.send(mimeMessage);
             // 保存记录
-            mailLog.setState(Const.ResultEnum.SUCCESS.value());
+            mailLog.setState(MsgConst.MailSendStateEnum.SUCCESS.value());
         } catch (Exception e) {
             log.error("send error", e);
-            mailLog.setState(Const.ResultEnum.FAIL.value());
+            mailLog.setState(MsgConst.MailSendStateEnum.FAIL.value());
+            mailLog.setResult(e.getMessage());
         }
-        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
-        mailLogService.save(mailLog);
-        return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
+
+        mailLogService.updateById(mailLog);
+        return mailLog.getState() == MsgConst.MailSendStateEnum.SUCCESS.value();
     }
 }

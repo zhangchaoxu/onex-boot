@@ -6,15 +6,12 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
-import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
-import com.nb6868.onex.sys.mail.sms.SmsProps;
 import com.nb6868.onex.sys.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
@@ -35,16 +32,14 @@ public class SmsJuheMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
-        SmsProps smsProps = JSONUtil.toBean(mailTpl.getParams(), SmsProps.class);
-        AssertUtils.isNull(smsProps, ErrorCode.PARAM_CFG_ERROR);
-
-        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
+        // 拼接参数
         StrJoiner paramJuhe = new StrJoiner("&");
         ObjectUtil.defaultIfNull(request.getContentParams(), new JSONObject()).forEach((key, value) -> {
             // 遍历json,拼装参数
             paramJuhe.append("#" + key + "#=" + value);
         });
-        // 发送记录记录
+        // 消息记录
+        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
         MsgLogEntity mailLog = new MsgLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
@@ -52,30 +47,27 @@ public class SmsJuheMailService extends AbstractMailService {
         mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
+        mailLog.setState(MsgConst.MailSendStateEnum.SENDING.value());
         // 设置有效时间
-        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
-        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
+        int validTimeLimit = mailTpl.getParams().getInt("validTimeLimit", 0);
+        mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
+        // 先保存获得id,后续再更新状态和内容
+        mailLogService.save(mailLog);
 
         // 调用接口发送
-        Const.ResultEnum state = Const.ResultEnum.FAIL;
-        RestTemplate restTemplate = new RestTemplate();
-        String result;
         try {
-            result = restTemplate.getForObject(JUHE_SMS_SEND_URL, String.class, smsProps.getAppKey(), request.getMailTo(), smsProps.getTplId(), URLEncoder.encode(paramJuhe.toString(), StandardCharsets.UTF_8.name()));
+            String result = new RestTemplate().getForObject(JUHE_SMS_SEND_URL, String.class, mailTpl.getParams().getStr("AppKeyId"), request.getMailTo(), mailTpl.getParams().getStr("TemplateId"), URLEncoder.encode(paramJuhe.toString(), StandardCharsets.UTF_8.name()));
+            Map<String, Object> json = JacksonUtils.jsonToMap(result);
+            mailLog.setResult(result);
+            mailLog.setState((int) json.get("error_code") == 0 ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
         } catch (Exception e) {
             // 接口调用失败
             log.error("JuheSms", e);
-            mailLog.setState(state.value());
+            mailLog.setState(Const.ResultEnum.FAIL.value());
             mailLog.setResult(e.getMessage());
-            mailLogService.save(mailLog);
-            return false;
         }
-
-        Map<String, Object> json = JacksonUtils.jsonToMap(result);
-        mailLog.setResult(result);
-        mailLog.setState((int) json.get("error_code") == 0 ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
-        mailLogService.save(mailLog);
-        return mailLog.getState() == Const.ResultEnum.SUCCESS.value();
+        mailLogService.updateById(mailLog);
+        return mailLog.getState() == MsgConst.MailSendStateEnum.SUCCESS.value();
     }
 
 }

@@ -35,4 +35,5 @@ public class MsgService implements BaseMsgService {
     public boolean sendMail(MsgSendForm form) {
         return msgLogService.send(form);
     }
+
 }

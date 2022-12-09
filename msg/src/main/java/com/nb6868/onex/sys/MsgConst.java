@@ -77,4 +77,29 @@ public interface MsgConst {
         }
     }
 
+    /**
+     * 消息发送状态
+     */
+    enum MailSendStateEnum {
+
+        /**
+         * 支持的消息类型定义
+         */
+        SENDING(0, "发送中"),
+        SUCCESS(1, "发送成功"),
+        FAIL(3, "发送失败");
+
+        private Integer value;
+        private String name;
+
+        MailSendStateEnum(Integer value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int value() {
+            return this.value;
+        }
+    }
+
 }
