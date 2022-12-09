@@ -69,7 +69,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.put("PhoneNumbers", request.getMailTo());
         paras.put("SignName", mailTpl.getParams().getStr("SignName"));
         paras.put("TemplateParam", request.getContentParams());
-        paras.put("TemplateCode", mailTpl.getParams().getStr("TemplateCode"));
+        paras.put("TemplateCode", mailTpl.getParams().getStr("TemplateId"));
         // 外部流水扩展字段
         paras.put("OutId", String.valueOf(mailLog.getId()));
         // 去除签名关键字Key

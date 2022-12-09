@@ -83,7 +83,7 @@ public class AuthService {
     public UserEntity loginByMobileSms(LoginForm form, JSONObject loginParams) {
         // 校验参数
         ValidatorUtils.validateEntity(form, LoginForm.MobileSmsGroup.class);
-        // 获得用不
+        // 获得用户
         UserEntity user = userService.getByMobile(form.getTenantCode(), form.getMobile());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
         // 判断用户状态

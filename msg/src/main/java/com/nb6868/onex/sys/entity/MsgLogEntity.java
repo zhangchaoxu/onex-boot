@@ -27,10 +27,6 @@ public class MsgLogEntity extends BaseTenantEntity {
      */
     private String tplCode;
     /**
-     * 验证码
-     */
-    private String code;
-    /**
      * 有效期结束
      */
     private Date validEndTime;
