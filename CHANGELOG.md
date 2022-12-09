@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.54] 2022.12.09
+- fix: simplify msg code
+
 ## [3.6.53] 2022.12.05
 - fix: fix local file path issue
 

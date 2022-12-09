@@ -52,3 +52,12 @@ port: 发件端port
 username: 发件邮箱
 password: 发件密码
 
+### 钉钉-工作通知
+AppKeyId: 应用ID
+AppKeySecret: 应用密钥
+AgentId: 发送消息时使用的微应用的AgentID
+
+### 钉钉-机器人
+access_token: 机器人token
+keywords: 加密关键词
+

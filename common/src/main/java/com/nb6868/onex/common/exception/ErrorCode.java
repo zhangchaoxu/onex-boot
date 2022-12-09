@@ -58,8 +58,6 @@ public interface ErrorCode {
     int MAIL_CONFIG_ERROR = 10039;
     int DB_VIOLATION_ERROR = 10040;
     int FILE_EXCEED_MAX_FILE_SIZE = 10041;
-    int SMS_CODE_ERROR = 10042;
-    int SMS_CODE_EXPIRED = 10043;
     int AES_ENCRYPT_ERROR = 10044;
     int SMS_TPL_NOT_EXISTED = 10045;
     int ID_NOT_NULL_IN_SAVE = 10046;

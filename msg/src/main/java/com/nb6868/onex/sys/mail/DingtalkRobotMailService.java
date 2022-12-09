@@ -7,6 +7,7 @@ import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.service.MsgLogService;
@@ -29,9 +30,8 @@ public class DingtalkRobotMailService extends AbstractMailService {
                 request.getContentParams().getJSONObject("text").set("content", keywords + "\n" + request.getContentParams().getJSONObject("text").getStr("content"));
             }
         }
-        // https://oapi.dingtalk.com/robot/send?access_token=xxxx
-        BaseResponse sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("access_token"), request.getContentParams());
         // 保存记录
+        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
         MsgLogEntity mailLog = new MsgLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
@@ -39,12 +39,17 @@ public class DingtalkRobotMailService extends AbstractMailService {
         mailLog.setMailTo(request.getMailTo());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
+        mailLog.setState(MsgConst.MailSendStateEnum.SENDING.value());
         // 设置有效时间
-        int timeLimit = mailTpl.getParams().getInt("timeLimit", -1);
-        mailLog.setValidEndTime(timeLimit < 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), timeLimit));
-        mailLog.setState(sendResponse.isSuccess() ? Const.ResultEnum.SUCCESS.value() : Const.ResultEnum.FAIL.value());
-        MsgLogService mailLogService = SpringUtil.getBean(MsgLogService.class);
+        int validTimeLimit = mailTpl.getParams().getInt("validTimeLimit", 0);
+        mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         mailLogService.save(mailLog);
+
+        // https://oapi.dingtalk.com/robot/send?access_token=xxxx
+        BaseResponse sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("access_token"), request.getContentParams());
+        mailLog.setState(sendResponse.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+        mailLog.setResult(sendResponse.toString());
+        mailLogService.updateById(mailLog);
 
         return sendResponse.isSuccess();
     }

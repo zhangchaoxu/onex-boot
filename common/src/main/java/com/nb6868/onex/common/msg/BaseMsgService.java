@@ -12,10 +12,9 @@ public interface BaseMsgService {
 
     /**
      * 消费记录
-     * @param logId
-     * @return 结果
      */
     boolean consumeLog(Long logId);
+
     /**
      * 获得最后一次记录
      */
@@ -30,4 +29,10 @@ public interface BaseMsgService {
      * 发送消息
      */
     boolean sendMail(MsgSendForm form);
+
+    /**
+     * 验证消息验证码
+     */
+    boolean verifyMailCode(String tenantCode, String tplCode, String mailTo, String mailCode);
+
 }

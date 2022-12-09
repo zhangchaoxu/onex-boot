@@ -13,15 +13,21 @@ public class MsgLogBody implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-
     /**
      * 有效期结束
      */
     private Date validEndTime;
-
+    /**
+     * 创建时间
+     */
+    private Date createTime;
     /**
      * 内容参数
      */
     private JSONObject contentParams;
+    /**
+     * 发送状态
+     */
+    private Integer state;
 
 }

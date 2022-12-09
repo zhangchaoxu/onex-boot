@@ -51,6 +51,10 @@ public interface Const {
      * 数据权限过滤,自己创建的
      */
     String SQL_FILTER_MY = "sqlFilterMy";
+    /**
+     * JSON SQL key
+     */
+    String SQL_JSON_KEY = "{}>'$.{}'";
 
     /**
      * 当前页码
