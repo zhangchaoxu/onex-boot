@@ -9,11 +9,13 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
@@ -26,12 +28,17 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
+@Service("SmsJuheMailService")
 public class SmsJuheMailService extends AbstractMailService {
 
     private static final String JUHE_SMS_SEND_URL = "http://v.juhe.cn/sms/send?key={1}&mobile={2}&tpl_id={3}&tpl_value={4}";
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+        AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
+                mailTpl.getParams().getStr("AppKeyId"),
+                mailTpl.getParams().getStr("TemplateId")
+        ), "请检查消息模板参数配置");
         // 拼接参数
         StrJoiner paramJuhe = new StrJoiner("&");
         ObjectUtil.defaultIfNull(request.getContentParams(), new JSONObject()).forEach((key, value) -> {

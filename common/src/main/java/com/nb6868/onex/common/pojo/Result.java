@@ -80,6 +80,19 @@ public class Result<T> implements Serializable {
         return this;
     }
 
+    public Result<T> bool(boolean bool) {
+        return bool ? success() : error();
+    }
+
+    public Result<T> bool(boolean bool, int code,  String msg) {
+        return bool ? success() : error(code, msg);
+    }
+
+    public Result<T> bool(boolean bool, String msg) {
+        return bool ? success() : error(msg);
+    }
+
+    @Deprecated
     public Result<T> boolResult(boolean bool) {
         this.code = bool ? ErrorCode.SUCCESS : ErrorCode.INTERNAL_SERVER_ERROR;
         this.msg = MessageUtils.getMessage(this.code);

@@ -13,6 +13,7 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
@@ -22,6 +23,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -36,6 +38,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
+@Service("SmsHwcloudMailService")
 public class SmsHwcloudMailService extends AbstractMailService {
 
     // 无需修改,用于格式化鉴权头域,给"X-WSSE"参数赋值
@@ -45,6 +48,13 @@ public class SmsHwcloudMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+        // 检查模板参数
+        AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
+                mailTpl.getParams().getStr("AppKeyId"),
+                mailTpl.getParams().getStr("AppKeySecret"),
+                mailTpl.getParams().getStr("TemplateId"),
+                mailTpl.getParams().getStr("SignName")
+        ), "请检查消息模板参数配置");
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
         JSONArray paramArray = new JSONArray();

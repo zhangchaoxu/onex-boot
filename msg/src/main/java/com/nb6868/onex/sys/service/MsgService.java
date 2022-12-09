@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.msg.BaseMsgService;
 import com.nb6868.onex.common.msg.MsgLogBody;
 import com.nb6868.onex.common.msg.MsgSendForm;
@@ -143,7 +144,7 @@ public class MsgService implements BaseMsgService {
             return (boolean) method.invoke(target, mailTpl, sendForm);
         } catch (Exception e) {
             log.error("发送消息发生错误", e);
-            return false;
+            throw new OnexException(ErrorCode.ERROR_REQUEST, "发送失败,请检查消息渠道与平台");
         }
     }
 }

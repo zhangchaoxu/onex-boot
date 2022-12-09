@@ -7,10 +7,13 @@ import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
 import com.nb6868.onex.sys.service.MsgLogService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * 钉钉机器人消息
@@ -18,10 +21,15 @@ import com.nb6868.onex.sys.service.MsgLogService;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
+@Service("DingtalkRobotMailService")
 public class DingtalkRobotMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+        AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
+                mailTpl.getParams().getStr("access_token")
+        ), "请检查消息模板参数配置");
         String msgtype = request.getContentParams().getStr("msgtype");
         String keywords = mailTpl.getParams().getStr("keywords");
         if ("text".equalsIgnoreCase(msgtype)) {

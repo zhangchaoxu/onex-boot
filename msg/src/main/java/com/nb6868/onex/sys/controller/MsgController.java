@@ -19,6 +19,7 @@ import com.nb6868.onex.sys.dto.MsgLogQueryForm;
 import com.nb6868.onex.sys.dto.MsgTplDTO;
 import com.nb6868.onex.sys.dto.MsgTplQueryForm;
 import com.nb6868.onex.sys.service.MsgLogService;
+import com.nb6868.onex.sys.service.MsgService;
 import com.nb6868.onex.sys.service.MsgTplService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +39,8 @@ import java.util.List;
 @Api(tags = "消息管理", position = 10)
 public class MsgController {
 
+    @Autowired
+    MsgService msgService;
     @Autowired
     MsgTplService msgTplService;
     @Autowired
@@ -127,7 +130,7 @@ public class MsgController {
     @RequiresPermissions("sys:msgLog:send")
     @ApiOperationSupport(order = 110)
     public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
-        boolean flag = msgLogService.send(form);
+        boolean flag = msgService.sendMail(form);
         return new Result<>().boolResult(flag);
     }
 

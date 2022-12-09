@@ -8,6 +8,7 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.TemplateUtils;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
@@ -15,6 +16,7 @@ import com.nb6868.onex.sys.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.mail.internet.MimeMessage;
@@ -29,6 +31,7 @@ import java.util.Properties;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
+@Service("EmailMailService")
 public class EmailMailService extends AbstractMailService {
 
     /**
@@ -53,6 +56,11 @@ public class EmailMailService extends AbstractMailService {
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+        AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
+                mailTpl.getParams().getStr("host"),
+                mailTpl.getParams().getStr("username"),
+                mailTpl.getParams().getStr("password")
+        ), "请检查消息模板参数配置");
         // 组装标题和内容
         String title = TemplateUtils.renderRaw(mailTpl.getTitle(), request.getTitleParams(), FreemarkerEngine.class);
         String content = TemplateUtils.renderRaw(mailTpl.getContent(), request.getContentParams(), FreemarkerEngine.class);
