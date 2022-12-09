@@ -54,7 +54,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
                 mailTpl.getParams().getStr("AppKeySecret"),
                 mailTpl.getParams().getStr("TemplateId"),
                 mailTpl.getParams().getStr("SignName")
-        ), "请检查消息模板参数配置");
+        ), MsgConst.MAIL_TPL_PARAMS_ERROR);
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
         JSONArray paramArray = new JSONArray();

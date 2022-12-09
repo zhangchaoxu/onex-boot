@@ -29,7 +29,7 @@ public class DingtalkRobotMailService extends AbstractMailService {
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("access_token")
-        ), "请检查消息模板参数配置");
+        ), MsgConst.MAIL_TPL_PARAMS_ERROR);
         String msgtype = request.getContentParams().getStr("msgtype");
         String keywords = mailTpl.getParams().getStr("keywords");
         if ("text".equalsIgnoreCase(msgtype)) {

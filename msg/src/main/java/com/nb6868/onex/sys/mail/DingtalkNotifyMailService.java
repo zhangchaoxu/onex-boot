@@ -31,7 +31,7 @@ public class DingtalkNotifyMailService extends AbstractMailService {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("AppKeyId"),
                 mailTpl.getParams().getStr("AppKeySecret")
-        ), "请检查消息模板参数配置");
+        ), MsgConst.MAIL_TPL_PARAMS_ERROR);
 
         JSONObject params = request.getContentParams().set("agent_id", mailTpl.getParams().getStr("AgentId"));
         // 保存记录

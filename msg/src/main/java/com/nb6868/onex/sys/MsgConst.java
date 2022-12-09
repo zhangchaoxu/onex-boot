@@ -29,6 +29,10 @@ public interface MsgConst {
      * 短信验证码模板-注册
      */
     String SMS_TPL_REGISTER = SMS_CODE_TPL_PREFIX+  "REGISTER";
+    /**
+     * 模板参数配置错误
+     */
+    String MAIL_TPL_PARAMS_ERROR = "请检查消息模板参数配置";
 
     /**
      * 消息渠道类型
@@ -87,7 +91,7 @@ public interface MsgConst {
          */
         SENDING(0, "发送中"),
         SUCCESS(1, "发送成功"),
-        FAIL(3, "发送失败");
+        FAIL(-1, "发送失败");
 
         private Integer value;
         private String name;

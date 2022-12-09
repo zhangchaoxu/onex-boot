@@ -38,7 +38,7 @@ public class SmsJuheMailService extends AbstractMailService {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("AppKeyId"),
                 mailTpl.getParams().getStr("TemplateId")
-        ), "请检查消息模板参数配置");
+        ), MsgConst.MAIL_TPL_PARAMS_ERROR);
         // 拼接参数
         StrJoiner paramJuhe = new StrJoiner("&");
         ObjectUtil.defaultIfNull(request.getContentParams(), new JSONObject()).forEach((key, value) -> {

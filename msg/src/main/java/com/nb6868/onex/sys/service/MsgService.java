@@ -18,12 +18,12 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
 import com.nb6868.onex.sys.entity.MsgLogEntity;
 import com.nb6868.onex.sys.entity.MsgTplEntity;
+import com.nb6868.onex.sys.mail.AbstractMailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.lang.reflect.Method;
 import java.util.Date;
 
 /**
@@ -135,16 +135,15 @@ public class MsgService implements BaseMsgService {
             sendForm.setContentParams(contentParams);
         }
         // 对于未定义的消息类型,需要实例化
+        AbstractMailService mailService;
         String serviceName = StrUtil.format("{}{}MailService", StrUtil.nullToEmpty(StrUtil.upperFirst(StrUtil.toCamelCase(mailTpl.getChannel()))), StrUtil.nullToEmpty(StrUtil.upperFirst(StrUtil.toCamelCase(mailTpl.getPlatform()))));
         try {
             // 通过bean获取实现Service
-            Object target = SpringUtil.getBean(serviceName);
-            // 通过反射执行run方法
-            Method method = target.getClass().getDeclaredMethod("sendMail", MsgTplEntity.class, MsgSendForm.class);
-            return (boolean) method.invoke(target, mailTpl, sendForm);
+            mailService = SpringUtil.getBean(serviceName, AbstractMailService.class);
         } catch (Exception e) {
-            log.error("发送消息发生错误", e);
+            log.error("Msg Send Exception", e);
             throw new OnexException(ErrorCode.ERROR_REQUEST, "发送失败,请检查消息渠道与平台");
         }
+        return mailService.sendMail(mailTpl, sendForm);
     }
 }

@@ -60,7 +60,7 @@ public class EmailMailService extends AbstractMailService {
                 mailTpl.getParams().getStr("host"),
                 mailTpl.getParams().getStr("username"),
                 mailTpl.getParams().getStr("password")
-        ), "请检查消息模板参数配置");
+        ), MsgConst.MAIL_TPL_PARAMS_ERROR);
         // 组装标题和内容
         String title = TemplateUtils.renderRaw(mailTpl.getTitle(), request.getTitleParams(), FreemarkerEngine.class);
         String content = TemplateUtils.renderRaw(mailTpl.getContent(), request.getContentParams(), FreemarkerEngine.class);
