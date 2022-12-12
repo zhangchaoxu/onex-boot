@@ -28,10 +28,10 @@ public class DingtalkRobotMailService extends AbstractMailService {
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
-                mailTpl.getParams().getStr("access_token")
+                mailTpl.getParams().getStr("AccessToken")
         ), MsgConst.MAIL_TPL_PARAMS_ERROR);
         String msgtype = request.getContentParams().getStr("msgtype");
-        String keywords = mailTpl.getParams().getStr("keywords");
+        String keywords = mailTpl.getParams().getStr("Keywords");
         if ("text".equalsIgnoreCase(msgtype)) {
             // text类型消息,要求有关键词,但实际未包含,补充上
             if (StrUtil.isNotBlank(keywords) && !StrUtil.contains(request.getContentParams().getJSONObject("text").getStr("content"), keywords)) {
@@ -54,7 +54,7 @@ public class DingtalkRobotMailService extends AbstractMailService {
         mailLogService.save(mailLog);
 
         // https://oapi.dingtalk.com/robot/send?access_token=xxxx
-        BaseResponse sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("access_token"), request.getContentParams());
+        BaseResponse sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("AccessToken"), request.getContentParams());
         mailLog.setState(sendResponse.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
         mailLog.setResult(sendResponse.toString());
         mailLogService.updateById(mailLog);

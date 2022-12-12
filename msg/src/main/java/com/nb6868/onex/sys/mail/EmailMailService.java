@@ -42,14 +42,14 @@ public class EmailMailService extends AbstractMailService {
      */
     private JavaMailSenderImpl createMailSender(JSONObject props) {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setHost(props.getStr("host"));
-        sender.setPort(props.getInt("port", 25));
-        sender.setUsername(props.getStr("username"));
-        sender.setPassword(props.getStr("password"));
+        sender.setHost(props.getStr("Host"));
+        sender.setPort(props.getInt("Port", 25));
+        sender.setUsername(props.getStr("Username"));
+        sender.setPassword(props.getStr("Password"));
         sender.setDefaultEncoding(StandardCharsets.UTF_8.name());
         Properties p = new Properties();
-        p.setProperty("mail.smtp.timeout", "10000");
-        p.setProperty("mail.smtp.auth", "false");
+        p.setProperty("mail.smtp.timeout", props.getStr("SMTPTimeout", "10000"));
+        p.setProperty("mail.smtp.auth", props.getStr("SMTPAuth", "false"));
         sender.setJavaMailProperties(p);
         return sender;
     }
@@ -57,9 +57,9 @@ public class EmailMailService extends AbstractMailService {
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
-                mailTpl.getParams().getStr("host"),
-                mailTpl.getParams().getStr("username"),
-                mailTpl.getParams().getStr("password")
+                mailTpl.getParams().getStr("Host"),
+                mailTpl.getParams().getStr("Username"),
+                mailTpl.getParams().getStr("Password")
         ), MsgConst.MAIL_TPL_PARAMS_ERROR);
         // 组装标题和内容
         String title = TemplateUtils.renderRaw(mailTpl.getTitle(), request.getTitleParams(), FreemarkerEngine.class);
@@ -87,7 +87,7 @@ public class EmailMailService extends AbstractMailService {
 
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
-            messageHelper.setFrom(mailTpl.getParams().getStr("username"));
+            messageHelper.setFrom(mailTpl.getParams().getStr("Username"));
             if (StrUtil.isNotBlank(request.getMailTo())) {
                 messageHelper.setTo(StrUtil.splitToArray(request.getMailTo(), ',', -1));
             }
