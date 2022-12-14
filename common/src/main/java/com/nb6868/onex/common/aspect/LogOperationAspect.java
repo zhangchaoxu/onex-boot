@@ -115,8 +115,8 @@ public class LogOperationAspect {
                 } else if (loginForm.getType().endsWith("MOBILE_SMS")) {
                     logEntity.setCreateName(loginForm.getMobile());
                 }
-            } catch (Exception jsonException) {
-                jsonException.printStackTrace();
+            } catch (Exception e2) {
+                log.error("LogOperationAspect setCreateName error", e2);
             }
         } else {
             // 操作日志
