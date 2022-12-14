@@ -8,7 +8,11 @@
 
   * [用户中心-权限管理](boot/Uc_RBAC.md)
   * [系统-消息](boot/Sys_Msg.md)
+  * [系统-日志](boot/Sys_Log.md)
   * [系统-日历](boot/Sys_Calendar.md)
+  * [系统-区域](boot/Sys_Region.md)
+  * [系统-数据字典](boot/Sys_Dict.md)
+  * [系统-文件存储](boot/Sys_OSS.md)
   * [系统-定时任务](boot/Sys_Schd.md)
   * [系统-Websocket](boot/Sys_Websocket.md)
   * [代码生成器](boot/coder.md)
@@ -19,24 +23,17 @@
   * [数据库设计规范和实现](boot/db.md)
   * [接口规范](boot/ApiStandard.md)
   * [json解析器](boot/json.md)
-  * [数据字典](boot/Dict.md)
   * [参数校验](boot/validator.md)
   * [国际化i18n](boot/i18n.md)
   * [数据传输加密](boot/ApiEncrypt.md)
-  * [第三方登录](boot/UserOauth.md)
-  * [数据存储](boot/OSS.md)
   * [支付](boot/Pay.md)
   * [POI操作](boot/Poi.md)
   * [多数据源](boot/DynamicDatasource.md)
   * [Test](boot/Test.md)
-  * [日志](boot/Log.md)
   * [ActiveMQ](boot/ActiveMQ.md)
   * [异步任务](boot/AsyncTask.md)
-  * [定时任务](boot/Sys_Schd.md)
   * [API限流](boot/AccessLimit.md)
   * [文档在线预览](boot/OfficePreview.md)
-  
-* 中间件
   * [ElasticSearch](boot/ElasticSearch.md)
   * [MongDB](boot/MongoDB.md)
 
@@ -51,9 +48,6 @@
     
 * [DevOps](DevOps.md)
   * [运维实践](DevOpsCase.md)
-
-* 系统功能
-  * [地理区域](GEO.md)
 
 * Cheat Sheet
   * [Linux Cheat Sheet](cheat-sheet/Linux.md)
