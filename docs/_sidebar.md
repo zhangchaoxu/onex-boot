@@ -6,9 +6,12 @@
 
 * 功能模块
 
+  * [用户中心-权限管理](boot/Uc_RBAC.md)
   * [系统-消息](boot/Sys_Msg.md)
   * [系统-日历](boot/Sys_Calendar.md)
   * [系统-定时任务](boot/Sys_Schd.md)
+  * [系统-Websocket](boot/Sys_Websocket.md)
+  * [代码生成器](boot/coder.md)
   
 * 接口开发
 
@@ -31,7 +34,6 @@
   * [异步任务](boot/AsyncTask.md)
   * [定时任务](boot/Sys_Schd.md)
   * [API限流](boot/AccessLimit.md)
-  * [代码生成器](boot/coder.md)
   * [文档在线预览](boot/OfficePreview.md)
   
 * 中间件

@@ -1,19 +1,23 @@
 # OneX
 ![img](./_media/icon.svg ':size=120x120')
 
-> OneX致力于搭建一套软件项目中经常遇到的一些常见需求,比如权限管理、消息管理、日志管理等。     
-结合代码生成器工具,减轻开发人员的繁琐开发工作。
+> OneX致力于减轻开发人员的项目初始化搭建工作,减轻开发人员的繁琐开发工作。
+> 
+> 主要针对日常开发项目建设过程中遇到的常见需求,比如权限管理、消息管理、日志管理、定时任务等。
+> 
+> 项目无意于搭建一个低代码平台或者非常完善的代码生成工具，只是想为陷于日常繁琐工作的朋友们提供点能减轻工作量的途径。
+> 
+> 项目比较适用于业务功能相对比较简单，同时数据量(不需要考虑分库分表)和并发量(不需要考虑负载均衡)不大的业务场景。
+> 
+> 项目虽然考虑了多租户的使用场景，并且预留了租户信息字段，但是考虑不够完善，对于有多租户需求的，建议按照自己的业务需求定制多租户部分的代码。 
 
 ## 演示地址
-* [OneX 管理后台](http://portal.onex.nb6868.com)
-* [OneX 代码生成器](http://coder.onex.nb6868.com)
+* 
 
 ## 项目组成
-项目前后端分离
-
-* [boot](https://github.com/zhangchaoxu/onex-boot/)  SpringBoot实现的Restful接口
-* [portal](https://github.com/zhangchaoxu/onex-portal) Vue实现的后端管理页面
-* [onex-coder](https://github.com/zhangchaoxu/onex-coder) 代码生成器
+* [onex-boot](https://github.com/zhangchaoxu/onex-boot/)  OneX基础工程，包含了common、sys、uc等模块，引入依赖即可使用
+* [onex-api](https://github.com/zhangchaoxu/onex-api/)  基于onex-boot实现的一套接口，作为一个工程模板，可以直接fork创建新工厂
+* [portal](https://github.com/zhangchaoxu/onex-portal) Vue2与ElementUI实现的管理页面
 
 ## 已实现功能模块
 ### 用户权限管理模块
@@ -60,11 +64,4 @@
 * [JeeCMS](http://www.jeecms.com/)
 * [Docsify](https://docsify.js.org/)
 * [vue-admin-better](https://github.com/chuzhixin/vue-admin-better)
-
-## 数据来源
-* [行政区域](https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov/)
-* [万年历](http://timor.tech/api/holiday/)
-
-## 文档
-更多详细内容见[gitbook文档](https://onex.nb6868.com)
 
