@@ -3,6 +3,12 @@
 * 入门
   
   * [Set Up](Setup.md)
+
+* 功能模块
+
+  * [系统-消息](boot/Sys_Msg.md)
+  * [系统-日历](boot/Sys_Calendar.md)
+  * [系统-定时任务](boot/Sys_Schd.md)
   
 * 接口开发
 
@@ -23,7 +29,7 @@
   * [日志](boot/Log.md)
   * [ActiveMQ](boot/ActiveMQ.md)
   * [异步任务](boot/AsyncTask.md)
-  * [定时任务](boot/Schedule.md)
+  * [定时任务](boot/Sys_Schd.md)
   * [API限流](boot/AccessLimit.md)
   * [代码生成器](boot/coder.md)
   * [文档在线预览](boot/OfficePreview.md)
