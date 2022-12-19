@@ -54,7 +54,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Api(tags = "用户授权", position = 10)
+@Api(tags = "用户授权", position = 1)
 @Slf4j
 public class AuthController {
 
@@ -79,14 +79,15 @@ public class AuthController {
 
     @PostMapping("captcha")
     @AccessControl
-    @ApiOperation(value = "图形验证码(base64)", notes = "Anon@验证时需将uuid和验证码内容一起提交")
+    @ApiOperation(value = "图形验证码(base64)", notes = "Anon")
     @ApiOperationSupport(order = 10)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
         String uuid = IdUtil.fastSimpleUUID();
         // 随机arithmetic/spec
         Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(new String[]{"spec"}));
         // 将uuid和图片base64返回给前端
-        return new Result<>().success(Dict.create().set("uuid", uuid).set("image", captcha.toBase64()));
+        Dict result = Dict.create().set("uuid", uuid).set("image", captcha.toBase64());
+        return new Result<>().success(result);
     }
 
     @PostMapping("sendMsgCode")
@@ -105,7 +106,11 @@ public class AuthController {
         }
         // 结果标记
         boolean flag = msgService.sendMail(form);
-        return new Result<>().boolResult(flag);
+        if (flag) {
+            return new Result<>().success("短信发送成功", null);
+        } else {
+            return new Result<>().error("短信发送失败");
+        }
     }
 
     @PostMapping("userLogin")

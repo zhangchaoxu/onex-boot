@@ -2,6 +2,7 @@ package com.nb6868.onex.common.msg;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseForm;
+import com.nb6868.onex.common.pojo.FileBase64Form;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.TenantGroup;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +12,6 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.io.File;
 import java.util.List;
 
 @Data
@@ -41,6 +41,6 @@ public class MsgSendForm extends BaseForm {
     private JSONObject contentParams;
 
     @ApiModelProperty(value = "附件")
-    List<File> attachments;
+    List<FileBase64Form> attachments;
 
 }

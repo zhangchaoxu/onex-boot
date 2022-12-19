@@ -1,12 +1,15 @@
 package com.nb6868.onex.sys.mail;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.MsgConst;
@@ -17,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -97,11 +99,18 @@ public class EmailMailService extends AbstractMailService {
             messageHelper.setSubject(title);
             messageHelper.setText(content, true);
             // 附件
-            if (!ObjectUtils.isEmpty(request.getAttachments())) {
-                for (File attachment : request.getAttachments()) {
-                    messageHelper.addAttachment(MimeUtility.encodeWord(attachment.getName()), attachment);
+            CollUtil.emptyIfNull(request.getAttachments()).forEach(fileBase64Form -> {
+                if (StrUtil.isNotBlank(fileBase64Form.getFileBase64())) {
+                    File file = MultipartFileUtils.base64ToFile(fileBase64Form.getFileBase64());
+                    if (ObjectUtil.isNotNull(file)) {
+                        try {
+                            messageHelper.addAttachment(MimeUtility.encodeWord(fileBase64Form.getFilaName()), file);
+                        } catch (Exception e) {
+                            log.error("addAttachment error", e);
+                        }
+                    }
                 }
-            }
+            });
             //发送邮件
             mailSender.send(mimeMessage);
             // 保存记录
