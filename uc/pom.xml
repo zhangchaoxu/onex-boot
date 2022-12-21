@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.6.54</version>
+        <version>3.6.55</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>uc</artifactId>
@@ -15,8 +15,8 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <onex-common.version>3.6.54</onex-common.version>
-        <onex-msg.version>3.6.54</onex-msg.version>
+        <onex-common.version>3.6.55</onex-common.version>
+        <onex-msg.version>3.6.55</onex-msg.version>
         <easy-captcha.version>2.2.2</easy-captcha.version>
     </properties>
 

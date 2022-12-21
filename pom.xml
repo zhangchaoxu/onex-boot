@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>3.6.54</version>
+    <version>3.6.55</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -50,7 +50,7 @@
 		<module>sys</module>
         <module>msg</module>
         <module>sched</module>
-        <module>sched-quartz</module>
+        <module>job</module>
         <module>cms</module>
 		<module>coder</module>
     </modules>

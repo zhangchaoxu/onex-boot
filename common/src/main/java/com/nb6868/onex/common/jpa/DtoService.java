@@ -16,6 +16,8 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
