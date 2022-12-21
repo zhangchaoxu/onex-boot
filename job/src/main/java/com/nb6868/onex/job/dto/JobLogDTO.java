@@ -18,10 +18,10 @@ import lombok.EqualsAndHashCode;
 public class JobLogDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "任务ID")
-	private Long schedId;
+	private Long jobId;
 
 	@ApiModelProperty(value = "任务名称")
-	private String schedName;
+	private String jobCode;
 
 	@ApiModelProperty(value = "参数")
 	private JSONObject params;

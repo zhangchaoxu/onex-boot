@@ -16,7 +16,7 @@ public class JobLogQueryForm extends BasePageForm {
     @ApiModelProperty("任务ID")
     private Long taskId;
 
-    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "task_name,result,error")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "job_code,result,error")
     @ApiModelProperty("关键词搜索")
     private String search;
 

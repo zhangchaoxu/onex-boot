@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "定时任务查询")
 public class JobQueryForm extends BasePageForm {
 
-    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,remark")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,remark")
     @ApiModelProperty("关键词搜索")
     private String search;
 

@@ -23,11 +23,11 @@ public class JobLogEntity extends BaseTenantEntity {
     /**
      * 任务ID
      */
-	private Long schedId;
+	private Long jobId;
     /**
      * 任务名称
      */
-	private String schedName;
+	private String jobCode;
     /**
      * 参数
      */
