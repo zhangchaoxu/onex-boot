@@ -50,6 +50,7 @@
 		<module>sys</module>
         <module>msg</module>
         <module>sched</module>
+        <module>sched-quartz</module>
         <module>cms</module>
 		<module>coder</module>
     </modules>
