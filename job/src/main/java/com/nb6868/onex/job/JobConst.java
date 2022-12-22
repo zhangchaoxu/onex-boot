@@ -1,11 +1,11 @@
-package com.nb6868.onex.sys;
+package com.nb6868.onex.job;
 
 /**
  * 定时任务相关常量
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public interface SchedConst {
+public interface JobConst {
 
     /**
      * 任务前缀
@@ -19,7 +19,7 @@ public interface SchedConst {
     /**
      * 定时任务状态
      */
-    enum SchedState {
+    enum JobState {
         /**
          * 暂停
          */
@@ -31,7 +31,7 @@ public interface SchedConst {
 
         private int value;
 
-        SchedState(int value) {
+        JobState(int value) {
             this.value = value;
         }
 
@@ -43,7 +43,7 @@ public interface SchedConst {
     /**
      * 任务日志状态
      */
-    enum SchedLogState {
+    enum JobLogState {
         /**
          * 初始化
          */
@@ -71,7 +71,7 @@ public interface SchedConst {
 
         private int value;
 
-        SchedLogState(int value) {
+        JobLogState(int value) {
             this.value = value;
         }
 

@@ -19,8 +19,8 @@ import com.nb6868.onex.job.dto.JobLogDTO;
 import com.nb6868.onex.job.dto.JobLogQueryForm;
 import com.nb6868.onex.job.dto.JobQueryForm;
 import com.nb6868.onex.job.dto.JobRunWithParamsForm;
-import com.nb6868.onex.sys.service.JobLogService;
-import com.nb6868.onex.sys.service.JobService;
+import com.nb6868.onex.job.service.JobLogService;
+import com.nb6868.onex.job.service.JobService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sys/job/")
 @Validated
 @Api(tags = "定时任务", position = 20)
-public class SchedController {
+public class JobController {
 
     @Autowired
     private JobService jobService;
@@ -45,7 +45,7 @@ public class SchedController {
     @PostMapping("page")
     @ApiOperation("分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:sched:query")
+    @RequiresPermissions("sys:job:query")
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody JobQueryForm form) {
         PageData<?> page = jobService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
@@ -56,7 +56,7 @@ public class SchedController {
     @PostMapping("info")
     @ApiOperation("详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:sched:query")
+    @RequiresPermissions("sys:job:query")
     @ApiOperationSupport(order = 20)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
         JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(form));
@@ -68,7 +68,7 @@ public class SchedController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("sys:sched:edit")
+    @RequiresPermissions("sys:job:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 30)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody JobDTO dto) {
@@ -81,7 +81,7 @@ public class SchedController {
     @ApiOperation("修改")
     @LogOperation("修改")
     @ApiOperationSupport(order = 40)
-    @RequiresPermissions("sys:sched:edit")
+    @RequiresPermissions("sys:job:edit")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody JobDTO dto) {
         jobService.updateDto(dto);
 
@@ -93,7 +93,7 @@ public class SchedController {
     @LogOperation("删除")
     @ApiOperationSupport(order = 50)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:sched:delete")
+    @RequiresPermissions("sys:job:delete")
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
         JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -107,7 +107,7 @@ public class SchedController {
     @ApiOperation("指定参数立即执行")
     @LogOperation("指定参数立即执行")
     @ApiOperationSupport(order = 60)
-    @RequiresPermissions("sys:sched:edit")
+    @RequiresPermissions("sys:job:edit")
     public Result<?> runWithParams(@Validated @RequestBody JobRunWithParamsForm form) {
         jobService.runWithParams(form);
 
@@ -117,7 +117,7 @@ public class SchedController {
     @PostMapping("/pause")
     @ApiOperation("暂停")
     @LogOperation("暂停")
-    @RequiresPermissions("sys:sched:edit")
+    @RequiresPermissions("sys:job:edit")
     @ApiOperationSupport(order = 70)
     public Result<?> pause(@Validated @RequestBody IdsForm form) {
         jobService.pause(form.getIds());
@@ -128,7 +128,7 @@ public class SchedController {
     @PostMapping("/resume")
     @ApiOperation("恢复")
     @LogOperation("恢复")
-    @RequiresPermissions("sys:sched:edit")
+    @RequiresPermissions("sys:job:edit")
     @ApiOperationSupport(order = 80)
     public Result<?> resume(@Validated @RequestBody IdsForm form) {
         jobService.resume(form.getIds());
@@ -139,7 +139,7 @@ public class SchedController {
     @PostMapping("logPage")
     @ApiOperation("日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:schedLog:query")
+    @RequiresPermissions("sys:jobLog:query")
     @ApiOperationSupport(order = 100)
     public Result<?> logPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryForm form) {
         PageData<?> page = jobLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
@@ -150,7 +150,7 @@ public class SchedController {
     @PostMapping("logInfo")
     @ApiOperation("日志详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:schedLog:query")
+    @RequiresPermissions("sys:jobLog:query")
     @ApiOperationSupport(order = 110)
     public Result<?> logInfo(@Validated @RequestBody IdTenantForm form) {
         JobLogDTO data = jobLogService.getDtoById(form.getId());
@@ -162,7 +162,7 @@ public class SchedController {
     @PostMapping("logDeleteBatch")
     @ApiOperation("日志批量删除")
     @LogOperation("日志批量删除")
-    @RequiresPermissions("sys:schedLog:delete")
+    @RequiresPermissions("sys:jobLog:delete")
     @ApiOperationSupport(order = 120)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsForm form) {
         jobLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));

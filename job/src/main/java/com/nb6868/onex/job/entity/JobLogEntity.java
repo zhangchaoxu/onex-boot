@@ -48,5 +48,5 @@ public class JobLogEntity extends BaseTenantEntity {
     /**
      * 耗时(单位：毫秒)
      */
-	private Long times;
+	private Long timeInterval;
 }

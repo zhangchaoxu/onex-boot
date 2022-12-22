@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.utils;
+package com.nb6868.onex.job.sched;
 
 import cn.hutool.core.lang.Dict;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @ApiModel("定时任务执行结果")
-public class ScheduleRunResult implements Serializable {
+public class JobRunResult implements Serializable {
 
     @ApiModelProperty("将结果保存到数据库")
     private Boolean logToDb;
@@ -19,7 +19,7 @@ public class ScheduleRunResult implements Serializable {
     @ApiModelProperty("结果")
     private Dict result;
 
-    public ScheduleRunResult(Dict result) {
+    public JobRunResult(Dict result) {
         this.result = result;
     }
 }

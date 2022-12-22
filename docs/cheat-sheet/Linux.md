@@ -247,7 +247,50 @@ mount /dev/vdb1 /mnt/sdc
 
 # 查看挂载结果
 df -TH
-
-
-
 ```
+
+### CPU占用
+有些服务器提供方有对cpu占用的要求(WTF),用一个脚本占用服务器CPU
+```shell
+# 查看占用情况
+top
+
+# 查看cpu数量
+cat /proc/cpuinfo |grep "processor"|wc -l
+
+# 执行脚本,参数为占用数量
+./killcpu.sh 1
+
+# 杀死脚本,先在top中查看占用的pid
+kill -9 {pid}
+```
+
+#### killcpu.sh
+```shell
+#! /bin/bash
+# filename killcpu.sh
+endless_loop()
+{
+echo -ne "i=0;
+while true
+do
+i=i+100;
+i=100
+done" | /bin/bash &
+}
+if [ $# != 1 ] ; then
+echo "USAGE: $0 <cpus>"
+exit 1;
+fi
+for i in `seq $1`
+do
+endless_loop
+pid_array[$i]=$! ;
+done
+for i in "${pid_array[@]}"; do
+echo 'kill ' $i ';';
+done
+```
+
+### 内存占用,同上
+

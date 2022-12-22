@@ -36,7 +36,7 @@ public class JobLogDTO extends BaseDTO {
 	private String error;
 
 	@ApiModelProperty(value = "耗时(毫秒)")
-	private Integer times;
+	private Integer timeInterval;
 
 	@ApiModelProperty(value = "租户编码")
 	private String tenantCode;
