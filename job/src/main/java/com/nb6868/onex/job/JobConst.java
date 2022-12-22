@@ -8,15 +8,6 @@ package com.nb6868.onex.job;
 public interface JobConst {
 
     /**
-     * 任务前缀
-     */
-    String JOB_NAME = "TASK_";
-    /**
-     * 任务调度参数key
-     */
-    String JOB_PARAM_KEY = "JOB_PARAM_KEY";
-
-    /**
      * 定时任务状态
      */
     enum JobState {
