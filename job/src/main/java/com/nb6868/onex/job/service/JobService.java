@@ -5,7 +5,6 @@ import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -85,9 +84,9 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
 		if (jobLogId == 0 && runResult.getLogToDb()) {
 			// 执行结果要求存入数据库
 			job.setLogType("db");
-			jobLogService.saveLog(job, timer.interval(), JobConst.JobLogState.COMPLETED.getValue(), JSONUtil.toJsonStr(runResult.getResult()));
+			jobLogService.saveLog(job, timer.interval(), JobConst.JobLogState.COMPLETED.getValue(), runResult.getResult().toString());
 		} else if (jobLogId > 0) {
-			jobLogService.update().set("result", JSONUtil.toJsonStr(runResult.getResult()))
+			jobLogService.update().set("result", runResult.getResult().toString())
 					.set("time_interval", timer.interval())
 					.set("state", JobConst.JobLogState.COMPLETED.getValue())
 					.eq("id", jobLogId)

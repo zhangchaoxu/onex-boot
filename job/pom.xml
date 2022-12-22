@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.6.54</version>
+        <version>3.6.56</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>job</artifactId>
@@ -16,8 +16,6 @@
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
-        <onex-common.version>3.6.54</onex-common.version>
-        <shiro.version>1.10.1</shiro.version>
     </properties>
 
     <dependencies>
@@ -25,7 +23,7 @@
         <dependency>
             <groupId>com.nb6868.onex</groupId>
             <artifactId>common</artifactId>
-            <version>${onex-common.version}</version>
+            <version>${onex.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

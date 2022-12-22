@@ -141,10 +141,12 @@ public class AuthController {
             throw new OnexException(ErrorCode.UNKNOWN_LOGIN_TYPE);
         }
 
+        // 创建token
+        String token = tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), form.getType(), loginParams.getStr("tokenKey", "onex@2021"), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true));
         // 登录成功
         LoginResult loginResult = new LoginResult()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
-                .setToken(tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), loginParams.getStr("type"), loginParams.getStr("tokenKey", "onex@2021"), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true)))
+                .setToken(token)
                 .setTokenKey(loginParams.getStr("tokenHeaderKey", "auth-token"));
         return new Result<>().success(loginResult);
     }

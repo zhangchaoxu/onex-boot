@@ -33,7 +33,7 @@ public class LoginForm implements Serializable {
     }
 
     @ApiModelProperty(value = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
-    @NotEmpty(message = "登录类型不能为空", groups = {DefaultGroup.class})
+    @NotEmpty(message = "请指定登录类型", groups = {DefaultGroup.class})
     private String type;
 
     @ApiModelProperty(value = "用户名")

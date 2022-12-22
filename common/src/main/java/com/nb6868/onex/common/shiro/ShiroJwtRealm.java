@@ -2,6 +2,7 @@ package com.nb6868.onex.common.shiro;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
@@ -115,8 +116,17 @@ public class ShiroJwtRealm extends AuthorizingRealm {
             // 塞入权限列表,超级管理员全部
             List<Long> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
             Set<String> set = new HashSet<>();
+            // 提前塞入超级管理员
+            if (user.isFullRoles()) {
+                set.add("super_admin");
+            }
             roleList.forEach(aLong -> set.add(String.valueOf(aLong)));
             info.setRoles(set);
+        } else {
+            // 提前塞入超级管理员
+            if (user.isFullRoles()) {
+                info.setRoles(CollUtil.newHashSet("super_admin"));
+            }
         }
         return info;
     }

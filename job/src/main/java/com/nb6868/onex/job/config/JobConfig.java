@@ -1,5 +1,6 @@
 package com.nb6868.onex.job.config;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.job.JobConst;
 import com.nb6868.onex.job.entity.JobEntity;
@@ -12,6 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableScheduling
@@ -55,12 +58,17 @@ public class JobConfig implements SchedulingConfigurer {
             log.info("TriggerTask next Trigger");
             // 配置参数要再从数据库读一遍，否则不会变更
             JobEntity job = jobService.getById(jobId);
-            if (job != null && StrUtil.isNotBlank(job.getCron())) {
+            if (ObjectUtil.isNotNull(job) && StrUtil.isNotBlank(job.getCron())) {
                 return new CronTrigger(job.getCron()).nextExecutionTime(triggerContext);
             } else {
                 return null;
             }
         });
+    }
+
+    @PostConstruct
+    public void init() {
+        log.info("job enable run");
     }
 
 }

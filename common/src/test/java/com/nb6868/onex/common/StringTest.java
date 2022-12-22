@@ -104,7 +104,7 @@ public class StringTest {
     @Test
     @DisplayName("passwordDecode")
     void passwordDecode() {
-        String password = "cEdpTbHnCmtD5RzdTy2drg==";
+        String password = "93MZAb5qPtW1x3l2ufgnbQ==";
         log.error("password={}", PasswordUtils.aesDecode(password, Const.AES_KEY));
     }
 

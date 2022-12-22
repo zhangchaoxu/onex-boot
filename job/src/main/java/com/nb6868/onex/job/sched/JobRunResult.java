@@ -1,6 +1,6 @@
 package com.nb6868.onex.job.sched;
 
-import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONObject;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,9 +17,9 @@ public class JobRunResult implements Serializable {
     private Boolean logToDb;
 
     @ApiModelProperty("结果")
-    private Dict result;
+    private JSONObject result;
 
-    public JobRunResult(Dict result) {
+    public JobRunResult(JSONObject result) {
         this.result = result;
     }
 }

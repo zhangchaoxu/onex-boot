@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.55] 2022.12.22
+- new: add job module
+- 
 ## [3.6.54] 2022.12.09
 - fix: simplify msg code
 
