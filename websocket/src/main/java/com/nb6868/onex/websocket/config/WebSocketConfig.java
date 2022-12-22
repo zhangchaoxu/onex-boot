@@ -1,5 +1,7 @@
-package com.nb6868.onex.config;
+package com.nb6868.onex.websocket.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -10,6 +12,8 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
+@ConditionalOnProperty(name = "onex.websocket.enable", havingValue = "true")
+@Slf4j
 public class WebSocketConfig {
 
     /**

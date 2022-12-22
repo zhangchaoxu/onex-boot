@@ -16,6 +16,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 基础swagger config
+ *
+ * @author Charles zhangchaoxu@gmail.com
+ */
 public abstract class BaseSwaggerConfig {
 
     @Value("${knife4j.title:OneX-API}")
@@ -52,7 +57,10 @@ public abstract class BaseSwaggerConfig {
                 .groupName("sys")
                 .select()
                 // 包下的类,生成接口文档
-                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.sys.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.sys.controller")
+                        .or(RequestHandlerSelectors.basePackage("com.nb6868.onex.websocket.controller"))
+                        .or(RequestHandlerSelectors.basePackage("com.nb6868.onex.job.controller"))
+                )
                 .paths(PathSelectors.any())
                 .build()
                 .extensions(getExtensions())
@@ -79,7 +87,7 @@ public abstract class BaseSwaggerConfig {
     protected List<SecurityContext> securityContexts() {
         return Collections.singletonList(
                 SecurityContext.builder().securityReferences(Collections.singletonList(
-                        new SecurityReference(authTokenKey, new AuthorizationScope[]{ new AuthorizationScope("global", "") }))
+                        new SecurityReference(authTokenKey, new AuthorizationScope[]{new AuthorizationScope("global", "")}))
                 ).build()
         );
     }

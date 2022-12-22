@@ -1,12 +1,14 @@
-package com.nb6868.onex.sys.controller;
+package com.nb6868.onex.websocket.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import com.nb6868.onex.sys.dto.WebSocketSendForm;
+import com.nb6868.onex.websocket.form.WebSocketSendForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class WebSocketController {
 
     @PostMapping("getOpenSockets")
     @ApiOperation("获得目前连接的Socket")
-    @RequiresPermissions("sys:websocket:query")
+    @RequiresRoles(value = {"super_admin", "websocket_admin"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
     public Result<?> getOpenSockets() {
         List<String> sidList = webSocketServer.getSidList();
@@ -33,7 +35,7 @@ public class WebSocketController {
 
     @PostMapping("sendOneMessage")
     @ApiOperation("发送单点消息")
-    @RequiresPermissions("sys:websocket:send")
+    @RequiresRoles(value = {"super_admin", "websocket_admin"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
     public Result<?> sendOneMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendOneGroup.class}) @RequestBody WebSocketSendForm form) {
         boolean result = webSocketServer.sendOneMessage(form.getSid(), form.getContent());
@@ -42,7 +44,7 @@ public class WebSocketController {
 
     @PostMapping("sendMultiMessage")
     @ApiOperation("发送批量消息")
-    @RequiresPermissions("sys:websocket:send")
+    @RequiresRoles(value = {"super_admin", "websocket_admin"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     public Result<?> sendMultiMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendMultiGroup.class}) @RequestBody WebSocketSendForm form) {
         webSocketServer.sendMultiMessage(form.getSidList(), form.getContent());
@@ -51,7 +53,7 @@ public class WebSocketController {
 
     @PostMapping("sendAllMessage")
     @ApiOperation("发送广播消息")
-    @RequiresPermissions("sys:websocket:send")
+    @RequiresRoles(value = {"super_admin", "websocket_admin"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
     public Result<?> sendAllMessage(@Validated(value = {DefaultGroup.class}) @RequestBody WebSocketSendForm socketSendRequest) {
         webSocketServer.sendAllMessage(socketSendRequest.getContent());

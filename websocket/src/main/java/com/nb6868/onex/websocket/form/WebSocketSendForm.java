@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.dto;
+package com.nb6868.onex.websocket.form;
 
 import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
