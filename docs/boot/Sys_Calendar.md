@@ -19,7 +19,7 @@
 </dependency>
 ```
 
-3按业务使用，如判断某一日是否工作日CalendarService.isWorkday()
+3. 按业务需求使用相关功能，如判断某一日是否工作日CalendarService.isWorkday()
 
 ## 数据来源
 节假日数据来源[免费节假日 API](http://timor.tech/api/holiday/)
