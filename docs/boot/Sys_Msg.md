@@ -7,7 +7,18 @@
 消息日志中记录每次消息发送的内容等信息
 
 ## 使用
-若需要使用电子邮件，需要引入mail依赖
+1. 数据库中导入[sys_msg.sql](./sql/sys_msg.sql)
+
+2. 引入依赖
+```xml
+<dependency>
+    <groupId>com.nb6868.onex</groupId>
+    <artifactId>msg</artifactId>
+    <version>${onex.version}</version>
+</dependency>
+```
+
+3. 若需要使用电子邮件,引入mail依赖
 ```xml
 <!-- mail -->
 <dependency>
@@ -15,6 +26,9 @@
     <artifactId>spring-boot-starter-mail</artifactId>
 </dependency>
 ```
+4. 添加消息模板
+
+5. 使用消息模板发送消息
 
 ## 消息模板配置参数
 ### 公共参数

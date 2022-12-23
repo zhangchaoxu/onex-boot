@@ -17,7 +17,7 @@
 ## 项目组成
 * [onex-boot](https://github.com/zhangchaoxu/onex-boot/)  OneX基础工程，包含了common、sys、uc等模块，引入依赖即可使用
 * [onex-api](https://github.com/zhangchaoxu/onex-api/)  基于onex-boot实现的一套接口，作为一个工程模板，可以直接fork创建工程
-* [portal](https://github.com/zhangchaoxu/onex-portal) Vue2与ElementUI实现的管理页面
+* [onex-portal](https://github.com/zhangchaoxu/onex-portal) Vue2与ElementUI实现的管理页面
 
 ## 功能模块
 ### 已实现
