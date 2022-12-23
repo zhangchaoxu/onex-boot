@@ -25,7 +25,16 @@ onex:
     enable: true
 ```
 
-4. 在需要记录日志的接口中添加注解
+4. 在需要记录日志的接口中添加LogOperation注解
 ```java
- @LogOperation("接口名称")
+@PostMapping("logDeleteBatch")
+@ApiOperation("记录批量删除")
+@LogOperation("记录批量删除")
+@QueryDataScope(tenantFilter = true, tenantValidate = false)
+@RequiresPermissions("sys:msgLog:delete")
+@ApiOperationSupport(order = 50)
+public Result<?> logDeleteBatch(@Validated @RequestBody IdsTenantForm form) {
+    // todo
+    return new Result<>();
+}
 ```
