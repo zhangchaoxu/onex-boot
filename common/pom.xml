@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.6.56</version>
+        <version>3.6.57</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -25,7 +25,7 @@
         <jsoup.version>1.15.3</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.4.0</weixin.version>
-        <aliyun.oss.version>3.15.2</aliyun.oss.version>
+        <aliyun.oss.version>3.16.0</aliyun.oss.version>
         <huaweicloud.obs.version>3.22.3</huaweicloud.obs.version>
         <easypoi.version>4.4.0</easypoi.version>
     </properties>

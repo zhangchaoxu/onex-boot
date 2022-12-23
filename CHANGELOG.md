@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.6.57] 2022.12.23
+- upgrade: upgrade springboot to 2.7.7
+- upgrade: upgrade aliyun oss to 3.16.0
+
 ## [3.6.56] 2022.12.22
 - new: add job module
 - 
