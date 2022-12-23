@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.6.58] 2022.12.23
+- upgrade: upgrade dynamic-datasource to 3.6.1
+- upgrade: upgrade druid to 1.2.15
+
 ## [3.6.57] 2022.12.23
 - upgrade: upgrade springboot to 2.7.7
 - upgrade: upgrade aliyun oss to 3.16.0
