@@ -8,7 +8,7 @@
 日历表中记录日期、星期、等信息    
 
 ## 使用
-1. 数据库中导入[sys_msg.sql](./sql/sys_msg.sql)
+1. 数据库中导入[sys_calendar.sql](https://onex.nb6868.com/sql/sys_calendar.sql)
    
 2. 日历模块集成在sys模块中，若需使用，引入sys依赖
 ```xml

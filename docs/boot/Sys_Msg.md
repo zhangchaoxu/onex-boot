@@ -7,7 +7,7 @@
 消息日志中记录每次消息发送的内容等信息
 
 ## 使用
-1. 数据库中导入[sys_msg.sql](../sql/sys_msg.sql)
+1. 数据库中导入[sys_msg.sql](https://onex.nb6868.com/sql/sys_msg.sql)
 
 2. 引入依赖
 ```xml

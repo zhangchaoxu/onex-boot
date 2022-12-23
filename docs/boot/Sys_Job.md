@@ -8,7 +8,7 @@ Onex使用SchedulingConfigurer封装了一套定时任务的管理工具。
 任务日志中记录每次执行的状态、结果等信息
 
 ## 使用
-1. 数据库中导入[sys_job.sql](./sql/sys_job.sql)
+1. 数据库中导入[sys_job.sql](https://onex.nb6868.com/sql/sys_job.sql)
 
 2. 引入依赖
 ```xml
