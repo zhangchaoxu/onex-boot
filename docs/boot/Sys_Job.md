@@ -1,6 +1,47 @@
 # 定时任务
-包括定时任务管理，定时任务的启停和日志,可在后台启停任务,修改任务的执行周期,便于系统中定时任务需求的集成;
-定时执行任务是比较常见的需求，常用的思路有@Scheduled注解、实现SchedulingConfigurer接口和第三方组件Quartz。
+适用于需求不高的定时任务场景，支持定时任务的添加，后台启动、暂停、修改执行周期等简单操作。
+Onex使用SchedulingConfigurer封装了一套定时任务的管理工具。
+
+## 设计思路
+提供定时任务(job)和任务日志(job_log)两张表    
+定时任务表中定义任务的状态、参数、cron等信息    
+任务日志中记录每次执行的状态、结果等信息
+
+## 使用
+1. 数据库中导入[sys_job.sql](./sql/sys_job.sql)
+
+2. 引入依赖
+```xml
+<dependency>
+    <groupId>com.nb6868.onex</groupId>
+    <artifactId>job</artifactId>
+    <version>${onex.version}</version>
+</dependency>
+```
+
+3. 代码中加入定时任务的代码
+```java
+@Service("TestJob")
+@Slf4j
+public class TestJob extends AbstractJobRunService {
+
+    @Override
+    public JobRunResult run(JSONObject runParams, Long jobLogId) {
+        log.error("run jobLogId={},param={}", jobLogId, runParams);
+        Dict dict = Dict.create().set("sss", "sss");
+        // 若有必要，更具jobLogId更新执行状态
+        return new JobRunResult(dict);
+    }
+}
+```
+
+4. 在数据库中加入定时任务记录，code为上述代码中Service的名称
+
+5. 重新部署工程后，可以对任务做管理
+
+## 定时任务实现方式比较
+定时执行任务是比较常见的需求，常用的思路有@Scheduled注解、实现SchedulingConfigurer接口、第三方组件(比如Quartz、xxl-job)。         
+对于简单需求推荐使用@Scheduled和SchedulingConfigurer，对于定时任务要求较高有分布等要求的推荐使用xxl-job.
 
 ## @Scheduled注解
 
@@ -103,6 +144,7 @@ public class TestTask {
 缺点：规则的生效需要在下次周期后/当cron错误时，会导致任务被停止/无法控制任务的启停
 
 ## 第三方组件Quartz
+sched模块是Quartz实现的定时任务，废弃不再继续支持
 
 ### 优缺点
 优点：灵活、可以自由控制

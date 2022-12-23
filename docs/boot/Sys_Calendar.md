@@ -3,9 +3,23 @@
 在实际需求中,经常需要判断该日期是否工作日/休息日的需求,需要结合该年的节假日安排与调休。       
 因此设置了calendar模块，保存该日期是否节假日，甚至薪资倍数。
 
-## 常用方法支持
-1. 判断某一日是否工作日CalendarService.isWorkday()
-2. 
+## 设计思路
+提供日历(calendar)表    
+日历表中记录日期、星期、等信息    
+
+## 使用
+1. 数据库中导入[sys_msg.sql](./sql/sys_msg.sql)
+   
+2. 日历模块集成在sys模块中，若需使用，引入sys依赖
+```xml
+<dependency>
+    <groupId>com.nb6868.onex</groupId>
+    <artifactId>sys</artifactId>
+    <version>${onex.version}</version>
+</dependency>
+```
+
+3按业务使用，如判断某一日是否工作日CalendarService.isWorkday()
 
 ## 数据来源
 节假日数据来源[免费节假日 API](http://timor.tech/api/holiday/)
@@ -13,9 +27,3 @@
 
 ## 数据范围
 2010年-2023年
-
-## todo
-## 表字段,表名sys_calendar
-
-字段|类型|描述
-:--:|:--:|--
