@@ -14,6 +14,7 @@ import com.nb6868.onex.sys.entity.CalendarEntity;
 import com.nb6868.onex.sys.service.CalendarService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +33,7 @@ public class CalendarController {
 
     @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("sys:calendar:query")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
     public Result<?> list(@Validated @RequestBody CalenderQueryForm form) {
         QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
         List<CalendarDTO> list = calendarService.listDto(queryWrapper);
@@ -42,7 +43,7 @@ public class CalendarController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("sys:calendar:query")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody CalenderQueryForm form) {
         QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
         PageData<CalendarDTO> page = calendarService.pageDto(form.getPage(), queryWrapper);
@@ -52,7 +53,7 @@ public class CalendarController {
 
     @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("sys:calendar:query")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
     public Result<?> info(@Validated @RequestBody CalenderDayDateForm form) {
         CalendarDTO data = calendarService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

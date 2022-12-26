@@ -25,6 +25,7 @@ import com.nb6868.onex.uc.service.RoleService;
 import com.nb6868.onex.uc.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -57,7 +58,7 @@ public class UserController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:user:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
@@ -76,7 +77,7 @@ public class UserController {
 
     @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("uc:user:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody UserQueryForm form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
@@ -87,7 +88,7 @@ public class UserController {
 
     @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:user:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
         UserDTO data = userService.oneDto(QueryWrapperHelper.getPredicate(form));
@@ -102,7 +103,7 @@ public class UserController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:user:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody UserDTO dto) {
         userService.saveDto(dto);
 
@@ -112,7 +113,7 @@ public class UserController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:user:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody UserDTO dto) {
         userService.updateDto(dto);
 
@@ -122,7 +123,7 @@ public class UserController {
     @PostMapping("changeState")
     @ApiOperation("更新状态")
     @LogOperation("更新状态")
-    @RequiresPermissions("uc:user:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> changeState(@Validated(value = {DefaultGroup.class, ChangeStateForm.BoolStateGroup.class}) @RequestBody ChangeStateForm request) {
         userService.changeState(request);
 
@@ -132,7 +133,7 @@ public class UserController {
     @PostMapping("changeMenuScope")
     @ApiOperation("修改用户授权")
     @LogOperation("修改用户授权")
-    @RequiresPermissions("uc:user:changeMenuScope")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> changeMenuScope(@RequestBody List<Long> menuIds) {
         userService.changeMenuScope(menuIds);
 
@@ -142,7 +143,7 @@ public class UserController {
     @PostMapping("delete")
     @LogOperation("删除")
     @ApiOperation("删除")
-    @RequiresPermissions("uc:user:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:delete"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
         // 判断数据是否存在

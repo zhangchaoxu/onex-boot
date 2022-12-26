@@ -24,10 +24,12 @@ import com.nb6868.onex.uc.entity.DeptEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -42,7 +44,7 @@ public class DeptController {
     @PostMapping("tree")
     @ApiOperation("树表")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("uc:dept:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
     public Result<?> tree(@Validated @RequestBody DeptQueryForm form) {
         QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<Tree<String>> treeList = TreeNodeUtils.buildCodeTree(
@@ -53,7 +55,7 @@ public class DeptController {
 
     @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("uc:dept:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
     public Result<?> list(@Validated @RequestBody DeptQueryForm form) {
         List<?> list = deptService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
@@ -62,7 +64,7 @@ public class DeptController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:dept:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody DeptQueryForm form) {
         PageData<?> page = deptService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
@@ -71,7 +73,7 @@ public class DeptController {
 
     @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:dept:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
     public Result<?> info(@Validated @RequestBody IdForm form) {
         DeptDTO data = deptService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -82,7 +84,7 @@ public class DeptController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:dept:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:edit"}, logical = Logical.OR)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody DeptDTO dto) {
         deptService.saveDto(dto);
 
@@ -92,7 +94,7 @@ public class DeptController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:dept:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:edit"}, logical = Logical.OR)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody DeptDTO dto) {
         deptService.updateDto(dto);
 
@@ -102,7 +104,7 @@ public class DeptController {
     @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("uc:dept:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:delete"}, logical = Logical.OR)
     public Result<?> delete(@Validated @RequestBody IdForm form) {
         deptService.logicDeleteById(form.getId());
 

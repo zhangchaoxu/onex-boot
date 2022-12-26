@@ -24,7 +24,7 @@ import com.nb6868.onex.job.service.JobService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +46,7 @@ public class JobController {
     @PostMapping("page")
     @ApiOperation("分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody JobQueryForm form) {
         PageData<?> page = jobService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
@@ -57,7 +57,7 @@ public class JobController {
     @PostMapping("info")
     @ApiOperation("详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
         JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(form));
@@ -69,7 +69,7 @@ public class JobController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:edit"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 30)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody JobDTO dto) {
@@ -82,7 +82,7 @@ public class JobController {
     @ApiOperation("修改")
     @LogOperation("修改")
     @ApiOperationSupport(order = 40)
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:edit"}, logical = Logical.OR)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody JobDTO dto) {
         jobService.updateDto(dto);
 
@@ -94,7 +94,7 @@ public class JobController {
     @LogOperation("删除")
     @ApiOperationSupport(order = 50)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:delete"}, logical = Logical.OR)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
         JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -108,7 +108,7 @@ public class JobController {
     @ApiOperation("指定参数立即执行")
     @LogOperation("指定参数立即执行")
     @ApiOperationSupport(order = 60)
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:run"}, logical = Logical.OR)
     public Result<?> runWithParams(@Validated @RequestBody JobRunWithParamsForm form) {
         jobService.runWithParams(form);
 
@@ -118,7 +118,7 @@ public class JobController {
     @PostMapping("logPage")
     @ApiOperation("日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
     public Result<?> logPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryForm form) {
         PageData<?> page = jobLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
@@ -129,7 +129,7 @@ public class JobController {
     @PostMapping("logInfo")
     @ApiOperation("日志详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 110)
     public Result<?> logInfo(@Validated @RequestBody IdTenantForm form) {
         JobLogDTO data = jobLogService.getDtoById(form.getId());
@@ -141,7 +141,7 @@ public class JobController {
     @PostMapping("logDeleteBatch")
     @ApiOperation("日志批量删除")
     @LogOperation("日志批量删除")
-    @RequiresRoles(value = {"super_admin", "job_admin"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 120)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsForm form) {
         jobLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));

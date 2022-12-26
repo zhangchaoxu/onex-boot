@@ -23,6 +23,7 @@ import com.nb6868.onex.sys.service.MsgService;
 import com.nb6868.onex.sys.service.MsgTplService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -49,7 +50,7 @@ public class MsgController {
     @PostMapping("tplPage")
     @ApiOperation("模板分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:msgTpl:query")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
     public Result<?> tplPage(@Validated({PageGroup.class}) @RequestBody MsgTplQueryForm form) {
         PageData<?> page = msgTplService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
@@ -60,7 +61,7 @@ public class MsgController {
     @PostMapping("tplList")
     @ApiOperation("模板列表")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:msgTpl:query")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
     public Result<?> tplList(@Validated @RequestBody MsgTplQueryForm form) {
         List<?> list = msgTplService.listDto(QueryWrapperHelper.getPredicate(form));
@@ -70,7 +71,7 @@ public class MsgController {
     @PostMapping("tplInfo")
     @ApiOperation("模板详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:msgTpl:query")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
         MsgTplDTO data = msgTplService.oneDto(QueryWrapperHelper.getPredicate(form));
@@ -82,7 +83,7 @@ public class MsgController {
     @PostMapping("tplSave")
     @ApiOperation("模板保存")
     @LogOperation("模板保存")
-    @RequiresPermissions("sys:msgTpl:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
     public Result<?> tplSave(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody MsgTplDTO dto) {
         msgTplService.saveDto(dto);
@@ -93,7 +94,7 @@ public class MsgController {
     @PostMapping("tplUpdate")
     @ApiOperation("模板修改")
     @LogOperation("模板修改")
-    @RequiresPermissions("sys:msgTpl:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
     public Result<?> tplUpdate(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody MsgTplDTO dto) {
         msgTplService.updateDto(dto);
@@ -105,7 +106,7 @@ public class MsgController {
     @ApiOperation("模板删除")
     @LogOperation("模板删除")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:msgTpl:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
         msgTplService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
@@ -116,7 +117,7 @@ public class MsgController {
     @PostMapping("logPage")
     @ApiOperation("日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:msgLog:query")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody MsgLogQueryForm form) {
         PageData<?> page = msgLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
@@ -127,7 +128,7 @@ public class MsgController {
     @PostMapping("/send")
     @ApiOperation("发送消息")
     @LogOperation("发送消息")
-    @RequiresPermissions("sys:msgLog:send")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msg:send"}, logical = Logical.OR)
     @ApiOperationSupport(order = 110)
     public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
         boolean flag = msgService.sendMail(form);
@@ -138,7 +139,7 @@ public class MsgController {
     @ApiOperation("记录批量删除")
     @LogOperation("记录批量删除")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:msgLog:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgLog:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsTenantForm form) {
         msgLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));

@@ -19,6 +19,7 @@ import com.nb6868.onex.uc.entity.TenantEntity;
 import com.nb6868.onex.uc.service.TenantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +40,7 @@ public class TenantController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:tenant:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody TenantQueryForm form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
@@ -50,7 +51,7 @@ public class TenantController {
 
     @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("uc:tenant:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
     public Result<?> list(@Validated @RequestBody TenantQueryForm form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
@@ -61,7 +62,7 @@ public class TenantController {
 
     @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:tenant:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     public Result<?> info(@Validated @RequestBody IdForm form) {
         TenantDTO data = tenantService.oneDto(QueryWrapperHelper.getPredicate(form));
@@ -73,7 +74,7 @@ public class TenantController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:tenant:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody TenantDTO dto) {
         tenantService.saveDto(dto);
@@ -84,7 +85,7 @@ public class TenantController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:tenant:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody TenantDTO dto) {
         tenantService.updateDto(dto);
@@ -95,7 +96,7 @@ public class TenantController {
     @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("uc:tenant:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
     public Result<?> delete(@Validated @RequestBody IdForm form) {
         tenantService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));

@@ -16,6 +16,7 @@ import com.nb6868.onex.sys.excel.LogExcel;
 import com.nb6868.onex.sys.service.LogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +40,7 @@ public class LogController {
     @PostMapping("page")
     @ApiOperation("分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:log:query")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:query"}, logical = Logical.OR)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody LogQueryForm form) {
         QueryWrapper<LogEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
         PageData<LogDTO> page = logService.pageDto(form.getPage(), queryWrapper);
@@ -51,7 +52,7 @@ public class LogController {
     @ApiOperation("导出")
     @LogOperation("导出")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:log:export")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:query"}, logical = Logical.OR)
     public void export(@Validated @RequestBody LogQueryForm form, HttpServletResponse response) {
         QueryWrapper<LogEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
         List<LogDTO> list = logService.listDto(queryWrapper);
@@ -62,7 +63,7 @@ public class LogController {
     @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
-    @RequiresPermissions("sys:log:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:delete"}, logical = Logical.OR)
     public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
         logService.logicDeleteByIds(form.getIds());
 

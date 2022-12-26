@@ -19,6 +19,7 @@ import com.nb6868.onex.uc.entity.PostEntity;
 import com.nb6868.onex.uc.service.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +41,7 @@ public class PostController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:post:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody PostQueryForm form) {
@@ -51,7 +52,7 @@ public class PostController {
 
     @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("uc:post:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 20)
     public Result<?> list(@Validated @RequestBody PostQueryForm form) {
@@ -62,7 +63,7 @@ public class PostController {
 
     @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:post:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
@@ -75,7 +76,7 @@ public class PostController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:post:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody PostDTO dto) {
         postService.saveDto(dto);
@@ -86,7 +87,7 @@ public class PostController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:post:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody PostDTO dto) {
         postService.updateDto(dto);
@@ -97,7 +98,7 @@ public class PostController {
     @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("uc:post:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {

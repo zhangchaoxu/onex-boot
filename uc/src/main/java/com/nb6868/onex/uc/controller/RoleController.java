@@ -21,6 +21,7 @@ import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +42,7 @@ public class RoleController {
 
     @PostMapping("page")
     @ApiOperation("分页")
-    @RequiresPermissions("uc:role:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody RoleQueryForm form) {
@@ -52,7 +53,7 @@ public class RoleController {
 
     @PostMapping("list")
     @ApiOperation("列表")
-    @RequiresPermissions("uc:role:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 20)
     public Result<?> list(@Validated @RequestBody RoleQueryForm form) {
@@ -63,7 +64,7 @@ public class RoleController {
 
     @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("uc:role:query")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> info(@Validated @RequestBody IdTenantForm form) {
@@ -80,7 +81,7 @@ public class RoleController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("uc:role:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RoleDTO dto) {
         roleService.saveDto(dto);
@@ -91,7 +92,7 @@ public class RoleController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("uc:role:edit")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody RoleDTO dto) {
         roleService.updateDto(dto);
@@ -102,7 +103,7 @@ public class RoleController {
     @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("uc:role:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> delete(@Validated @RequestBody IdTenantForm form) {

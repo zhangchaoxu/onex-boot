@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.59] 2022.12.26
+- upgrade: change RequiresPermissions in job/websocket/msg
+
 ## [3.6.58] 2022.12.23
 - upgrade: upgrade dynamic-datasource to 3.6.1
 - upgrade: upgrade druid to 1.2.15

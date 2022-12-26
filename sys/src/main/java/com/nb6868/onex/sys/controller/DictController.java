@@ -17,6 +17,7 @@ import com.nb6868.onex.sys.dto.DictQueryForm;
 import com.nb6868.onex.sys.service.DictService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys/dict")
 @Validated
-@Api(tags="数据字典", position = 50)
+@Api(tags = "数据字典", position = 50)
 public class DictController {
 
     @Autowired
@@ -35,7 +36,7 @@ public class DictController {
 
     @PostMapping("page")
     @ApiOperation("字典分类")
-    @RequiresPermissions("sys:dict:query")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody DictQueryForm form) {
         PageData<?> page = dictService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
 
@@ -44,7 +45,7 @@ public class DictController {
 
     @PostMapping("list")
     @ApiOperation("字典分类数据")
-    @RequiresPermissions("sys:dict:query")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:query"}, logical = Logical.OR)
     public Result<?> list(@Validated @RequestBody DictQueryForm form) {
         List<?> list = dictService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
@@ -53,7 +54,7 @@ public class DictController {
 
     @PostMapping("info")
     @ApiOperation("信息")
-    @RequiresPermissions("sys:dict:query")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:query"}, logical = Logical.OR)
     public Result<DictDTO> info(@Validated @RequestBody IdForm form) {
         DictDTO data = dictService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -64,8 +65,8 @@ public class DictController {
     @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("sys:dict:edit")
-    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody DictDTO dto){
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:edit"}, logical = Logical.OR)
+    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody DictDTO dto) {
         dictService.saveDto(dto);
 
         return new Result<>();
@@ -74,8 +75,8 @@ public class DictController {
     @PostMapping("update")
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("sys:dict:edit")
-    public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody DictDTO dto){
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:edit"}, logical = Logical.OR)
+    public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody DictDTO dto) {
         dictService.updateDto(dto);
 
         return new Result<>();
@@ -84,7 +85,7 @@ public class DictController {
     @PostMapping("delete")
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("sys:dict:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:delete"}, logical = Logical.OR)
     public Result<?> delete(@Validated @RequestBody IdForm form) {
         dictService.logicDeleteById(form.getId());
 
@@ -94,7 +95,7 @@ public class DictController {
     @PostMapping("deleteBatch")
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
-    @RequiresPermissions("sys:dict:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:delete"}, logical = Logical.OR)
     public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
         dictService.logicDeleteByIds(form.getIds());
 

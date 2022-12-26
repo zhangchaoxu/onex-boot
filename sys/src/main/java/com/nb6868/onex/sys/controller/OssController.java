@@ -27,6 +27,7 @@ import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -250,7 +251,7 @@ public class OssController {
     @PostMapping("page")
     @ApiOperation(value = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions("sys:oss:page")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss", "sys:oss:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody OssQueryForm form) {
         PageData<?> page = ossService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
@@ -262,7 +263,7 @@ public class OssController {
     @ApiOperation("批量删除")
     @LogOperation("批量删除")
     @ApiOperationSupport(order = 110)
-    @RequiresPermissions("sys:oss:delete")
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss", "sys:oss:delete"}, logical = Logical.OR)
     public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
         ossService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
 
