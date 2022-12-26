@@ -136,9 +136,17 @@ onex:
   # mybatis配置
   mybatisplus:
     enable: false
+  # 定时任务
+  job:
+    enable: false
   # swagger
   swagger:
     enable: false
+    portal: true
+    client: true
+    uc: true
+    sys: true
+    default: true
   # WebMVC
   webmvc:
     enable: false
