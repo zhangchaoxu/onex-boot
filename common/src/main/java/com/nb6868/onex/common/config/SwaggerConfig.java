@@ -45,22 +45,4 @@ public class SwaggerConfig extends BaseSwaggerConfig {
         return openApiExtensionResolver.buildSettingExtensions();
     }
 
-    @Bean("default")
-    public Docket createDefaultApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfoBuilder().build())
-                .groupName("default")
-                .select()
-                // 扫描注解,生成接口文档
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // 包下的类,生成接口文档
-                //.apis(RequestHandlerSelectors.basePackage("com.nb6868.onex.modules.*.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .extensions(getExtensions())
-                .directModelSubstitute(java.util.Date.class, String.class)
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
-    }
-
 }

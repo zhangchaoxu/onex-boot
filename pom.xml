@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>3.6.59</version>
+    <version>3.6.60</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -49,10 +49,10 @@
         <module>uc</module>
 		<module>sys</module>
         <module>msg</module>
-        <module>sched</module>
         <module>job</module>
         <module>cms</module>
 		<module>coder</module>
+        <module>sched</module>
     </modules>
 
     <properties>
@@ -66,7 +66,7 @@
         <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <!-- libs -->
-        <onex.version>3.6.59</onex.version>
+        <onex.version>3.6.60</onex.version>
         <shiro.version>1.10.1</shiro.version>
     </properties>
 

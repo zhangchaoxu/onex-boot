@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.6.59] 2022.12.26
+## [3.6.60] 2022.12.26
 - upgrade: change RequiresPermissions in job/websocket/msg
 
 ## [3.6.58] 2022.12.23
