@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys;
+package com.nb6868.onex.msg;
 
 /**
  * 消息模块常量

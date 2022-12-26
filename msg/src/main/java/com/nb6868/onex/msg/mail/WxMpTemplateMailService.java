@@ -1,7 +1,7 @@
-package com.nb6868.onex.sys.mail;
+package com.nb6868.onex.msg.mail;
 
 import com.nb6868.onex.common.msg.MsgSendForm;
-import com.nb6868.onex.sys.entity.MsgTplEntity;
+import com.nb6868.onex.msg.entity.MsgTplEntity;
 
 /**
  * 微信公众号模板消息 消息服务

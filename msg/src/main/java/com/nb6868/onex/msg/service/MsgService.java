@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.service;
+package com.nb6868.onex.msg.service;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
@@ -15,10 +15,10 @@ import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.sys.MsgConst;
-import com.nb6868.onex.sys.entity.MsgLogEntity;
-import com.nb6868.onex.sys.entity.MsgTplEntity;
-import com.nb6868.onex.sys.mail.AbstractMailService;
+import com.nb6868.onex.msg.MsgConst;
+import com.nb6868.onex.msg.entity.MsgLogEntity;
+import com.nb6868.onex.msg.entity.MsgTplEntity;
+import com.nb6868.onex.msg.mail.AbstractMailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

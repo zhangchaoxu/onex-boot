@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.dto;
+package com.nb6868.onex.msg.dto;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;

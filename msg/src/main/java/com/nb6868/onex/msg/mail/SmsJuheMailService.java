@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.mail;
+package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrJoiner;
@@ -10,10 +10,10 @@ import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.sys.MsgConst;
-import com.nb6868.onex.sys.entity.MsgLogEntity;
-import com.nb6868.onex.sys.entity.MsgTplEntity;
-import com.nb6868.onex.sys.service.MsgLogService;
+import com.nb6868.onex.msg.MsgConst;
+import com.nb6868.onex.msg.entity.MsgLogEntity;
+import com.nb6868.onex.msg.entity.MsgTplEntity;
+import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

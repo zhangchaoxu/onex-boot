@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.entity;
+package com.nb6868.onex.msg.entity;
 
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;

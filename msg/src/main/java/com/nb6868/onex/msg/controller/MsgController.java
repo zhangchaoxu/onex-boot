@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.controller;
+package com.nb6868.onex.msg.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -15,12 +15,12 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import com.nb6868.onex.sys.dto.MsgLogQueryForm;
-import com.nb6868.onex.sys.dto.MsgTplDTO;
-import com.nb6868.onex.sys.dto.MsgTplQueryForm;
-import com.nb6868.onex.sys.service.MsgLogService;
-import com.nb6868.onex.sys.service.MsgService;
-import com.nb6868.onex.sys.service.MsgTplService;
+import com.nb6868.onex.msg.dto.MsgLogQueryForm;
+import com.nb6868.onex.msg.dto.MsgTplDTO;
+import com.nb6868.onex.msg.dto.MsgTplQueryForm;
+import com.nb6868.onex.msg.service.MsgLogService;
+import com.nb6868.onex.msg.service.MsgService;
+import com.nb6868.onex.msg.service.MsgTplService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.Logical;

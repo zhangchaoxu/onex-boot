@@ -1,7 +1,7 @@
-package com.nb6868.onex.sys.dto;
+package com.nb6868.onex.msg.dto;
 
 import com.nb6868.onex.common.pojo.BaseForm;
-import com.nb6868.onex.sys.MsgConst;
+import com.nb6868.onex.msg.MsgConst;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

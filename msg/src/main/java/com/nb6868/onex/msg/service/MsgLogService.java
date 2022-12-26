@@ -1,9 +1,9 @@
-package com.nb6868.onex.sys.service;
+package com.nb6868.onex.msg.service;
 
 import com.nb6868.onex.common.jpa.DtoService;
-import com.nb6868.onex.sys.dao.MsgLogDao;
-import com.nb6868.onex.sys.dto.MsgLogDTO;
-import com.nb6868.onex.sys.entity.MsgLogEntity;
+import com.nb6868.onex.msg.dao.MsgLogDao;
+import com.nb6868.onex.msg.dto.MsgLogDTO;
+import com.nb6868.onex.msg.entity.MsgLogEntity;
 import org.springframework.stereotype.Service;
 
 /**

@@ -1,13 +1,13 @@
-package com.nb6868.onex.sys.service;
+package com.nb6868.onex.msg.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.sys.dao.MsgTplDao;
-import com.nb6868.onex.sys.dto.MsgTplDTO;
-import com.nb6868.onex.sys.entity.MsgTplEntity;
+import com.nb6868.onex.msg.dao.MsgTplDao;
+import com.nb6868.onex.msg.dto.MsgTplDTO;
+import com.nb6868.onex.msg.entity.MsgTplEntity;
 import org.springframework.stereotype.Service;
 
 /**

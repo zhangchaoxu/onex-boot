@@ -1,4 +1,4 @@
-package com.nb6868.onex.sys.mail;
+package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -12,10 +12,10 @@ import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.sys.MsgConst;
-import com.nb6868.onex.sys.entity.MsgLogEntity;
-import com.nb6868.onex.sys.entity.MsgTplEntity;
-import com.nb6868.onex.sys.service.MsgLogService;
+import com.nb6868.onex.msg.MsgConst;
+import com.nb6868.onex.msg.entity.MsgLogEntity;
+import com.nb6868.onex.msg.entity.MsgTplEntity;
+import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
