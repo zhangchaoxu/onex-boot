@@ -8,11 +8,6 @@ package com.nb6868.onex.uc;
 public interface UcConst {
 
     /**
-     * 默认租户
-     */
-    String TENANT_CODE_DEFAULT = "default";
-
-    /**
      * 登录配置
      */
     String PARAMS_CODE_LOGIN = "LOGIN";

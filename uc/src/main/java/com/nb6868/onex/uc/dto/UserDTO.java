@@ -26,14 +26,26 @@ import java.util.List;
 @ApiModel(value = "用户")
 public class UserDTO extends BaseDTO {
 
+	@ApiModelProperty(value = "类型")
+	private Integer type;
+
 	@ApiModelProperty(value = "部门编码")
 	private String deptCode;
 
 	@ApiModelProperty(value = "区域编码")
 	private String areaCode;
 
+	@ApiModelProperty(value = "岗位编码")
+	private String postCode;
+
+	@ApiModelProperty(value = "状态")
+	private Integer state;
+
 	@ApiModelProperty(value = "编号")
 	private String code;
+
+	@ApiModelProperty(value = "等级")
+	private String level;
 
 	@ApiModelProperty(value = "用户名")
 	@NotBlank(message = "{username.require}", groups = DefaultGroup.class)
@@ -47,9 +59,6 @@ public class UserDTO extends BaseDTO {
 	@ApiModelProperty(value = "真实姓名")
 	private String realName;
 
-	@ApiModelProperty(value = "邀请码")
-	private String inviteCode;
-
 	@ApiModelProperty(value = "昵称")
 	private String nickname;
 
@@ -59,21 +68,11 @@ public class UserDTO extends BaseDTO {
 	@ApiModelProperty(value = "邮箱")
 	private String email;
 
-	@ApiModelProperty(value = "身份证号")
-	private String idNo;
-
-	@ApiModelProperty(value = "生日")
-	private Date birthday;
-
 	@ApiModelProperty(value = "头像")
 	private String avatar;
 
 	@ApiModelProperty(value = "备注")
 	private String remark;
-
-	@ApiModelProperty(value = "性别   0：男   1：女    2：保密")
-	@EnumValue(intValues = {0, 1,2}, message = "性别取值0-2", groups = DefaultGroup.class)
-	private Integer gender;
 
 	@ApiModelProperty(value = "账户余额")
 	private BigDecimal balance;
@@ -83,18 +82,6 @@ public class UserDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "收入余额")
 	private BigDecimal income;
-
-	@ApiModelProperty(value = "类型")
-	private Integer type;
-
-	@ApiModelProperty(value = "地址")
-	private String address;
-
-	@ApiModelProperty(value = "岗位编码")
-	private String postCode;
-
-	@ApiModelProperty(value = "状态  0：停用   1：正常  2：锁定")
-	private Integer state;
 
 	@ApiModelProperty(value = "租户编码")
 	private String tenantCode;

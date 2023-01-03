@@ -348,7 +348,6 @@ public class AuthController {
                         user.setCode(userIdResponse.getResult().getUserid());
                         user.setMobile(userContactResponse.getResult().getMobile());
                         user.setAvatar(userContactResponse.getResult().getAvatarUrl());
-                        user.setAddress(userContactResponse.getResult().getOpenId() + "$" + userContactResponse.getResult().getUnionId());
                         user.setType(UcConst.UserTypeEnum.DEPT_ADMIN.value());
                         user.setState(UcConst.UserStateEnum.ENABLED.value());
                         user.setTenantCode(form.getTenantCode());

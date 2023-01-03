@@ -22,6 +22,22 @@ import java.util.Date;
 public class UserEntity extends BaseEntity {
 
     /**
+     * 类型
+     */
+    private Integer type;
+    /**
+     * 编号
+     */
+    private String code;
+    /**
+     * 状态
+     */
+    private Integer state;
+    /**
+     * 等级
+     */
+    private String level;
+    /**
      * 部门编码
      */
 	private String deptCode;
@@ -30,13 +46,13 @@ public class UserEntity extends BaseEntity {
      */
     private String areaCode;
     /**
-     * 编号
-     */
-	private String code;
-    /**
      * 用户名
      */
 	private String username;
+    /**
+     * 岗位编码
+     */
+    private String postCode;
     /**
      * 密码
      */
@@ -50,10 +66,6 @@ public class UserEntity extends BaseEntity {
      */
 	private String realName;
     /**
-     * 邀请码
-     */
-	private String inviteCode;
-    /**
      * 昵称
      */
 	private String nickname;
@@ -66,33 +78,13 @@ public class UserEntity extends BaseEntity {
      */
 	private String email;
     /**
-     * 身份证号
-     */
-	private String idNo;
-    /**
-     * 生日
-     */
-	private Date birthday;
-    /**
      * 头像
      */
 	private String avatar;
     /**
-     * 地址
-     */
-    private String address;
-    /**
-     * 岗位编码
-     */
-    private String postCode;
-    /**
      * 备注
      */
 	private String remark;
-    /**
-     * 性别   0：男   1：女    2：保密
-     */
-	private Integer gender;
     /**
      * 账户余额
      */
@@ -106,25 +98,7 @@ public class UserEntity extends BaseEntity {
      */
 	private BigDecimal income;
     /**
-     * 类型
-     */
-	private Integer type;
-    /**
-     * 状态  0：停用   1：正常  2：锁定
-     */
-	private Integer state;
-    /**
      * 租户编码
      */
 	private String tenantCode;
-    /**
-     * 角色编码
-     */
-    @TableField(exist = false)
-    private String roleCodes;
-    /**
-     * 角色名称
-     */
-    @TableField(exist = false)
-    private String roleNames;
 }
