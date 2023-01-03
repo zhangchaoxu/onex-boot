@@ -108,4 +108,13 @@ public class UserEntity extends BaseEntity {
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private JSONObject extInfo;
+    /**
+     * 第三方帐号信息
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private JSONObject oauthInfo;
+    /**
+     * 第三方帐号用户id
+     */
+    private String oauthUserid;
 }

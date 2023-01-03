@@ -3,7 +3,6 @@ package com.nb6868.onex.uc.dto;
 import cn.hutool.json.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.pojo.BaseDTO;
-import com.nb6868.onex.common.validator.EnumValue;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
@@ -12,7 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -98,5 +96,11 @@ public class UserDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "额外信息")
 	private JSONObject extInfo;
+
+	@ApiModelProperty(value = "第三方帐号信息")
+	private JSONObject oauthInfo;
+
+	@ApiModelProperty(value = "第三方帐号用户id")
+	private String oauthUserid;
 
 }

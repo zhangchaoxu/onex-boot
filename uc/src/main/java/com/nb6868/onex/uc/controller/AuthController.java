@@ -10,6 +10,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -121,7 +122,7 @@ public class AuthController {
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
         // 获得对应登录类型的登录参数
         JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
-        AssertUtils.isNull(loginParams, "未找到登录配置");
+        AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
             // 先检验验证码表单
@@ -326,7 +327,7 @@ public class AuthController {
     @ApiOperationSupport(order = 300)
     public Result<?> userDingtalkCodeLogin(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginForm form) {
         // 获得对应登录类型的登录参数
-        JSONObject loginParams = paramsService.getContentJson(form.getTenantCode(), null, form.getType());
+        JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
         AssertUtils.isTrue(StrUtil.hasBlank(loginParams.getStr("appId"), loginParams.getStr("appSecret")), "登录配置缺少appId和appSecret信息");
 
@@ -335,7 +336,7 @@ public class AuthController {
             GetUserIdByUnionidResponse userIdResponse = DingTalkApi.getUserIdByUnionid(loginParams.getStr("appId"), loginParams.getStr("appSecret"), userContactResponse.getResult().getUnionId());
             if (userIdResponse.isSuccess()) {
                 // 封装自己的业务逻辑,比如用userId去找用户
-                UserEntity user = userService.query().eq("code", userIdResponse.getResult().getUserid()).last(Const.LIMIT_ONE).one();
+                UserEntity user = userService.query().eq("oauth_userid", userIdResponse.getResult().getUserid()).last(Const.LIMIT_ONE).one();
                 if (user == null) {
                     // 不存在
                     if (loginParams.getBool("autoCreateUserEnable", false)) {
@@ -345,7 +346,8 @@ public class AuthController {
                         user.setRealName(userContactResponse.getResult().getNick());
                         user.setPassword(DigestUtil.bcrypt(userIdResponse.getResult().getUserid()));
                         user.setPasswordRaw(PasswordUtils.aesEncode(userIdResponse.getResult().getUserid(), Const.AES_KEY));
-                        user.setCode(userIdResponse.getResult().getUserid());
+                        user.setOauthUserid(userIdResponse.getResult().getUserid());
+                        user.setOauthInfo(JSONUtil.parseObj(userContactResponse.getResult()));
                         user.setMobile(userContactResponse.getResult().getMobile());
                         user.setAvatar(userContactResponse.getResult().getAvatarUrl());
                         user.setType(UcConst.UserTypeEnum.DEPT_ADMIN.value());
