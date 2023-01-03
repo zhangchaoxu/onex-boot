@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.6.70] 2023.01.03
+- upgrade: upgrade hutool to 5.8.11
+
 ## [3.6.61] 2022.12.26
 - upgrade: change RequiresPermissions in job/websocket/msg
 
