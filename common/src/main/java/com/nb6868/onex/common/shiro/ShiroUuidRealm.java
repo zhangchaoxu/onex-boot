@@ -36,8 +36,6 @@ import java.util.Set;
 public class ShiroUuidRealm extends AuthorizingRealm {
 
     @Autowired
-    private AuthProps authProps;
-    @Autowired
     private BaseParamsService paramsService;
     @Autowired
     private ShiroDao shiroDao;
@@ -56,7 +54,8 @@ public class ShiroUuidRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        // AuthenticationToken包含身份信息和认证信息
+        // AuthenticationToken包含身份信息和认证信息，在Filter中塞入
+        AssertUtils.isNull(authenticationToken.getCredentials(), ErrorCode.UNAUTHORIZED);
         String token = authenticationToken.getCredentials().toString();
         // token存在数据库中
         Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
