@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.dto;
 
+import cn.hutool.json.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.pojo.BaseDTO;
 import com.nb6868.onex.common.validator.EnumValue;
@@ -94,5 +95,8 @@ public class UserDTO extends BaseDTO {
 
 	@ApiModelProperty(value = "角色ID列表")
 	private List<Long> roleIds;
+
+	@ApiModelProperty(value = "额外信息")
+	private JSONObject extInfo;
 
 }

@@ -120,8 +120,8 @@ public class AuthController {
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
         // 获得对应登录类型的登录参数
-        JSONObject loginParams = Optional.ofNullable(paramsService.getContentJson(form.getTenantCode(), null, form.getType())).orElse(new JSONObject());
-        log.info("未找到登录配置,将使用默认参数");
+        JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
+        AssertUtils.isNull(loginParams, "未找到登录配置");
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
             // 先检验验证码表单
@@ -142,7 +142,7 @@ public class AuthController {
         }
 
         // 创建token
-        String token = tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), form.getType(), loginParams.getStr("tokenKey", "onex@2021"), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true));
+        String token = tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), form.getType(), loginParams.getStr("tokenKey", Const.TOKEN_KEY), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true));
         // 登录成功
         LoginResult loginResult = new LoginResult()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))

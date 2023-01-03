@@ -128,6 +128,11 @@ onex:
   # 过滤器
   filter:
     enable: false
+    # 自定义过滤器
+    httpRequestReplaceFilter: true
+    crosFilter: true
+    shiroFilter: true
+    xssFilter: false
   # Shiro
   shiro:
     enable: false

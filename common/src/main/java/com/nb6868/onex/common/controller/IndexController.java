@@ -44,6 +44,7 @@ public class IndexController {
     @GetMapping("sysInfo")
     @ApiOperation("系统信息")
     @AccessControl("sysInfo")
+    @SuppressWarnings("deprecation")
     public Result<?> sysInfo() {
         OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 

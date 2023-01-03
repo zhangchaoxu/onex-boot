@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SimpleShiroFilter extends BaseShiroFilter {
 
+    /**
+     * token在header中的key，定义在配置文件中
+     */
     private final String tokenHeaderKey;
 
     public SimpleShiroFilter(String tokenHeaderKey) {

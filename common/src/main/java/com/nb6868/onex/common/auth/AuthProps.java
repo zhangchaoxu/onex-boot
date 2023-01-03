@@ -1,13 +1,9 @@
 package com.nb6868.onex.common.auth;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 登录配置
@@ -42,7 +38,7 @@ public class AuthProps {
 
     }
 
-    @ApiModelProperty(value = "登录配置项")
+    /*@ApiModelProperty(value = "登录配置项")
     private Map<String, Config> configs = new HashMap<>();
 
     @Data
@@ -55,10 +51,10 @@ public class AuthProps {
         @ApiModelProperty(value = "token存储类型,db/cache/none")
         private String tokenStoreType = "db";
 
-        /**
+        *//**
          * 支持多端登录,表示可以在不同客户端登录,创建token的时候不判断原先的
          * 不支持多端登录,表示同一个帐号只能在一个地方登录,创建token的时候会将原先的token删除
-         */
+         *//*
         @JsonIgnore
         @ApiModelProperty(value = "支持多客户端登录")
         private boolean multiLogin = true;
@@ -83,6 +79,6 @@ public class AuthProps {
         @ApiModelProperty(value = "基于权限控制")
         private boolean permissionBase = true;
 
-    }
+    }*/
 
 }

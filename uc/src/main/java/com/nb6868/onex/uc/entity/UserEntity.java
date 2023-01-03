@@ -1,7 +1,9 @@
 package com.nb6868.onex.uc.entity;
 
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("uc_user")
+@TableName(value = "uc_user", autoResultMap = true)
 @Alias("uc_user")
 public class UserEntity extends BaseEntity {
 
@@ -40,7 +42,7 @@ public class UserEntity extends BaseEntity {
     /**
      * 部门编码
      */
-	private String deptCode;
+    private String deptCode;
     /**
      * 区域编码
      */
@@ -48,7 +50,7 @@ public class UserEntity extends BaseEntity {
     /**
      * 用户名
      */
-	private String username;
+    private String username;
     /**
      * 岗位编码
      */
@@ -56,49 +58,54 @@ public class UserEntity extends BaseEntity {
     /**
      * 密码
      */
-	private String password;
+    private String password;
     /**
      * 密码RAW
      */
-	private String passwordRaw;
+    private String passwordRaw;
     /**
      * 真实姓名
      */
-	private String realName;
+    private String realName;
     /**
      * 昵称
      */
-	private String nickname;
+    private String nickname;
     /**
      * 手机号
      */
-	private String mobile;
+    private String mobile;
     /**
      * 邮箱
      */
-	private String email;
+    private String email;
     /**
      * 头像
      */
-	private String avatar;
+    private String avatar;
     /**
      * 备注
      */
-	private String remark;
+    private String remark;
     /**
      * 账户余额
      */
-	private BigDecimal balance;
+    private BigDecimal balance;
     /**
      * 积分
      */
-	private BigDecimal points;
+    private BigDecimal points;
     /**
      * 收入余额
      */
-	private BigDecimal income;
+    private BigDecimal income;
     /**
      * 租户编码
      */
-	private String tenantCode;
+    private String tenantCode;
+    /**
+     * 额外信息
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private JSONObject extInfo;
 }

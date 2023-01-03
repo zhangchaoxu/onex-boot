@@ -4,8 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.validator.AssertUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -36,6 +38,8 @@ public class ShiroUuidRealm extends AuthorizingRealm {
     @Autowired
     private AuthProps authProps;
     @Autowired
+    private BaseParamsService paramsService;
+    @Autowired
     private ShiroDao shiroDao;
 
     /**
@@ -61,7 +65,7 @@ public class ShiroUuidRealm extends AuthorizingRealm {
         AssertUtils.isNull(userId, ErrorCode.UNAUTHORIZED);
         String loginType = MapUtil.getStr(tokenEntity, "type");
         // 获取jwt中的登录配置
-        AuthProps.Config loginConfig = authProps.getConfigs().get(loginType);
+        JSONObject loginConfig = paramsService.getSystemPropsJson(loginType);
         AssertUtils.isNull(loginConfig, ErrorCode.UNAUTHORIZED);
 
         // 验证用户是否还存在
@@ -72,10 +76,10 @@ public class ShiroUuidRealm extends AuthorizingRealm {
         AssertUtils.isFalse(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ErrorCode.ACCOUNT_LOCK);
         // 转换成UserDetail对象
         ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
-        shiroUser.setLoginType(loginConfig.getType());
-        if (loginConfig.isTokenRenewal()) {
+        shiroUser.setLoginType(loginType);
+        if (loginConfig.getBool("tokenRenewal", false)) {
             // 更新token
-            shiroDao.updateTokenExpireTime(token, loginConfig.getTokenExpire());
+            shiroDao.updateTokenExpireTime(token, loginConfig.getInt("tokenExpire", 604800));
         }
         return new SimpleAuthenticationInfo(shiroUser, token, getName());
     }
@@ -88,20 +92,23 @@ public class ShiroUuidRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        ShiroUser user = (ShiroUser) principals.getPrimaryPrincipal();
+        ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        AuthProps.Config loginConfig = authProps.getConfigs().get(user.getLoginType());
         // 根据配置中的role和permission设置SimpleAuthorizationInfo
-        if (null != loginConfig && loginConfig.isPermissionBase()) {
+        Set<String> permissionSet = new HashSet<>();
+        if (null != shiroUser.getLoginConfig() && shiroUser.getLoginConfig().getBool("permissionBase", true)) {
             // 塞入角色列表,超级管理员全部
-            List<String> permissionsList = user.isFullPermissions() ? shiroDao.getAllPermissionsList(user.getTenantCode()) : shiroDao.getPermissionsListByUserId(user.getId());
-            Set<String> set = new HashSet<>();
-            permissionsList.forEach(permissions -> set.addAll(StrUtil.splitTrim(permissions, ",")));
-            info.setStringPermissions(set);
+            List<String> permissionsList = shiroUser.isFullPermissions() ? shiroDao.getAllPermissionsList(shiroUser.getTenantCode()) : shiroDao.getPermissionsListByUserId(shiroUser.getId());
+            permissionsList.forEach(permissions -> permissionSet.addAll(StrUtil.splitTrim(permissions, ",")));
         }
-        if (null != loginConfig && loginConfig.isRoleBase()) {
+        // 超级管理员，加入角色权限
+        if (shiroUser.isFullRoles()) {
+            permissionSet.add("admin:super");
+        }
+        info.setStringPermissions(permissionSet);
+        if (null != shiroUser.getLoginConfig() && shiroUser.getLoginConfig().getBool("roleBase", false)) {
             // 塞入权限列表,超级管理员全部
-            List<Long> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
+            List<Long> roleList = shiroUser.isFullRoles() ? shiroDao.getAllRoleIdList(shiroUser.getTenantCode()) : shiroDao.getRoleIdListByUserId(shiroUser.getId());
             Set<String> set = new HashSet<>();
             roleList.forEach(aLong -> set.add(String.valueOf(aLong)));
             info.setRoles(set);
