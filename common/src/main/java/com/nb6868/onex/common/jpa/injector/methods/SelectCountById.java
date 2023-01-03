@@ -19,11 +19,15 @@ public class SelectCountById extends AbstractMethod {
      */
     private static final String MAPPER_METHOD = "selectCountById";
 
+    public SelectCountById() {
+        super(MAPPER_METHOD);
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         String sqlFmt = "SELECT COUNT(1) FROM %s WHERE %s=#{%s} %s";
         SqlSource sqlSource = new RawSqlSource(configuration, String.format(sqlFmt, tableInfo.getTableName(), tableInfo.getKeyColumn(), tableInfo.getKeyProperty(), tableInfo.getLogicDeleteSql(true, true)), Object.class);
-        return this.addSelectMappedStatementForOther(mapperClass, MAPPER_METHOD, sqlSource, Integer.class);
+        return this.addSelectMappedStatementForOther(mapperClass, methodName, sqlSource, Integer.class);
     }
 
 }

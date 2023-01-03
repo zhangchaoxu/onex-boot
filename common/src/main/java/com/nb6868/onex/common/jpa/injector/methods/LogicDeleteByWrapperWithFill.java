@@ -29,6 +29,10 @@ public class LogicDeleteByWrapperWithFill extends AbstractMethod {
      */
     private static final String MAPPER_METHOD = "deleteByWrapperWithFill";
 
+    public LogicDeleteByWrapperWithFill() {
+        super(MAPPER_METHOD);
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.LOGIC_DELETE;
@@ -53,7 +57,7 @@ public class LogicDeleteByWrapperWithFill extends AbstractMethod {
             sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), sqlWhereEntityWrapper(true, tableInfo), sqlComment());
         }
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return this.addDeleteMappedStatement(mapperClass, MAPPER_METHOD, sqlSource);
+        return this.addDeleteMappedStatement(mapperClass, methodName, sqlSource);
     }
 
 }

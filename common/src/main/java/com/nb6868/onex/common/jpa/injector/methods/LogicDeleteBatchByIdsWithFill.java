@@ -30,6 +30,10 @@ public class LogicDeleteBatchByIdsWithFill extends AbstractMethod {
      */
     private static final String MAPPER_METHOD = "deleteBatchByIdsWithFill";
 
+    public LogicDeleteBatchByIdsWithFill() {
+        super(MAPPER_METHOD);
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.LOGIC_DELETE_BATCH_BY_IDS;
@@ -54,7 +58,7 @@ public class LogicDeleteBatchByIdsWithFill extends AbstractMethod {
             sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), tableInfo.getKeyColumn(), SqlScriptUtils.convertForeach("#{item}", COLLECTION, null, "item", COMMA));
         }
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return addUpdateMappedStatement(mapperClass, modelClass, MAPPER_METHOD, sqlSource);
+        return addUpdateMappedStatement(mapperClass, modelClass, methodName, sqlSource);
     }
 
 }
