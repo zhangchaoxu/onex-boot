@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.6.71</version>
+        <version>3.6.72</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -19,7 +19,7 @@
         <!-- version -->
         <druid.version>1.2.15</druid.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
-        <mybatisplus.version>3.5.2</mybatisplus.version>
+        <mybatisplus.version>3.5.3.1</mybatisplus.version>
         <hutool.version>5.8.11</hutool.version>
         <bcprov.version>1.72</bcprov.version>
         <jsoup.version>1.15.3</jsoup.version>

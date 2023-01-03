@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.6.71] 2023.01.03
+## [3.6.72] 2023.01.03
 - upgrade: upgrade hutool to 5.8.11
+- upgrade: upgrade mybatisplus to 3.5.3.1
 
 ## [3.6.61] 2022.12.26
 - upgrade: change RequiresPermissions in job/websocket/msg
