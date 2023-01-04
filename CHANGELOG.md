@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## [3.6.72] 2023.01.03
+## [3.6.73] 2023.01.04
+- fix: fix common yml auth define
+
+## [3.6.73] 2023.01.03
 - upgrade: upgrade hutool to 5.8.11
 - upgrade: upgrade mybatisplus to 3.5.3.1
 
@@ -17,7 +20,7 @@
 
 ## [3.6.56] 2022.12.22
 - new: add job module
-- 
+
 ## [3.6.54] 2022.12.09
 - fix: simplify msg code
 

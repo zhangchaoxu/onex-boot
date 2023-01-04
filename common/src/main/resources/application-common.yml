@@ -189,10 +189,10 @@ onex:
     access-control:
       enable: false
       # 扫描包
-      scan-package: com.nb6868.onex.common.controller,com.nb6868.onex.uc.controller,com.nb6868.onex.sys.controller
+      scan-package: com.nb6868.onex
     # token在header中的key
     token-header-key: auth-token
     # token在jwt中的key
     token-jwt-key: sub
     # 访问白名单
-    white-list: favicon.ico,static/**,webjars/**,ws/**,druid/**,doc.html,swagger-resources,v2/api-docs,/oss/**
+    white-list: /favicon.ico,/static/**,/webjars/**,/ws/**,/druid/**,/doc.html,/swagger-resources,/v2/api-docs,/oss/**
