@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 @EnableScheduling
 @ConditionalOnProperty(name = "onex.job.enable", havingValue = "true")
 @Slf4j
-public class JobConfig implements SchedulingConfigurer {
+public class JobConfig extends BaseJobConfig {
 
     @Autowired
     private JobService jobService;
@@ -38,37 +38,6 @@ public class JobConfig implements SchedulingConfigurer {
                 .select("id")
                 .list()
                 .forEach(job -> initTrigger(taskRegistrar, job.getId()));
-    }
-
-    /**
-     * 添加trigger
-     */
-    private void initTrigger(ScheduledTaskRegistrar taskRegistrar, Long jobId) {
-        taskRegistrar.addTriggerTask(() -> {
-            // 配置参数要再从数据库读一遍，否则不会变更
-            JobEntity job = jobService.getById(jobId);
-            if (job == null) {
-                log.info("任务不存在，任务ID：{}", jobId);
-            } else if (job.getState() != JobConst.JobState.NORMAL.getValue()) {
-                log.info("任务状态异常，任务ID：{}，状态：{}", jobId, job.getState());
-            } else {
-                jobService.run(job, job.getParams());
-            }
-        }, triggerContext -> {
-            log.info("TriggerTask next Trigger");
-            // 配置参数要再从数据库读一遍，否则不会变更
-            JobEntity job = jobService.getById(jobId);
-            if (ObjectUtil.isNotNull(job) && StrUtil.isNotBlank(job.getCron())) {
-                return new CronTrigger(job.getCron()).nextExecutionTime(triggerContext);
-            } else {
-                return null;
-            }
-        });
-    }
-
-    @PostConstruct
-    public void init() {
-        log.info("job enable run");
     }
 
 }

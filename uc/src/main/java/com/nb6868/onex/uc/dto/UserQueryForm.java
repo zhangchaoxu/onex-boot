@@ -43,10 +43,6 @@ public class UserQueryForm extends BasePageForm {
     private String tenantCode;
 
     @Query
-    @ApiModelProperty("邀请码")
-    private String inviteCode;
-
-    @Query
     @ApiModelProperty("状态")
     private Integer state;
 

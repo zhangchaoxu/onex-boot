@@ -17,7 +17,11 @@ public class RegionQueryForm extends BasePageForm {
     @ApiModelProperty("深度")
     private Integer deep;
 
-    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,code,pcode")
+    @Query
+    @ApiModelProperty("上级id")
+    private Long pid;
+
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,code,ext_name")
     @ApiModelProperty("搜索关键词")
     private String search;
 
