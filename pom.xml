@@ -52,7 +52,7 @@
         <module>job</module>
         <module>cms</module>
 		<module>coder</module>
-        <module>sched</module>
+        <!--<module>sched</module>-->
     </modules>
 
     <properties>
