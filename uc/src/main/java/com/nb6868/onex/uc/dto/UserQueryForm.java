@@ -38,6 +38,10 @@ public class UserQueryForm extends BasePageForm {
     @ApiModelProperty("区域编码")
     private String areaCode;
 
+    @Query(type = Query.Type.LIKE_LEFT)
+    @ApiModelProperty("岗位编码")
+    private String postCode;
+
     @Query
     @ApiModelProperty("租户编码")
     private String tenantCode;
@@ -50,11 +54,7 @@ public class UserQueryForm extends BasePageForm {
     @ApiModelProperty("类型")
     private Integer type;
 
-    @Query
-    @ApiModelProperty("性别")
-    private Integer gender;
-
-    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,username,real_name,nickname,mobile,remark,id_no")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,username,real_name,nickname,mobile,remark")
     @ApiModelProperty("搜索关键词")
     private String search;
 

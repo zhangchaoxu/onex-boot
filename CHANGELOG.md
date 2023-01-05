@@ -1,9 +1,15 @@
 # CHANGELOG
 
+## [3.7.0] 2023.01.05
+- release: release new version
+
+## [3.6.74] 2023.01.04
+- fix: fix region and user query issue
+
 ## [3.6.73] 2023.01.04
 - fix: fix common yml auth define
 
-## [3.6.73] 2023.01.03
+## [3.6.72] 2023.01.03
 - upgrade: upgrade hutool to 5.8.11
 - upgrade: upgrade mybatisplus to 3.5.3.1
 
