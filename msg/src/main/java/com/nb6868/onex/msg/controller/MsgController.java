@@ -6,8 +6,8 @@ import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.msg.MsgSendForm;
-import com.nb6868.onex.common.pojo.IdTenantForm;
-import com.nb6868.onex.common.pojo.IdsTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
+import com.nb6868.onex.common.pojo.IdsForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -73,7 +73,7 @@ public class MsgController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         MsgTplDTO data = msgTplService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -108,8 +108,8 @@ public class MsgController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
-        msgTplService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
+        msgTplService.removeById(form.getId());
 
         return new Result<>();
     }
@@ -141,8 +141,8 @@ public class MsgController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgLog:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
-    public Result<?> logDeleteBatch(@Validated @RequestBody IdsTenantForm form) {
-        msgLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+    public Result<?> logDeleteBatch(@Validated @RequestBody IdsForm form) {
+        msgLogService.removeByIds(form.getIds());
 
         return new Result<>();
     }

@@ -80,7 +80,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @return result
      */
     public boolean deleteToken(String token) {
-        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().eq("token", token));
+        return logicDeleteByWrapper(update().eq("token", token));
     }
 
     /**
@@ -91,7 +91,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @return result
      */
     public boolean deleteTokenByUserId(Long userId, String type) {
-        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>()
+        return logicDeleteByWrapper(update()
                 .eq("user_id", userId)
                 .eq(StrUtil.isNotBlank(type), "type", type));
     }
@@ -103,7 +103,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @return result
      */
     public boolean deleteByUserIdList(List<Long> userIds) {
-        return logicDeleteByWrapper(new QueryWrapper<TokenEntity>().in("user_id", userIds));
+        return logicDeleteByWrapper(update().in("user_id", userIds));
     }
 
 }

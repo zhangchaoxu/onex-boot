@@ -15,30 +15,13 @@ import java.util.Collection;
  * 参数 Serializable 为任意类型主键 Mybatis-Plus 不推荐使用复合主键约定每一张表都有自己的唯一 id 主键
  * 对象 Wrapper 为 条件构造器
  *
+ * 原deleteByIdWithFill等方法由自带的deleteById替换
+ *
  * @author Charles zhangchaoxu@gmail.com
  */
 public interface BaseDao<T> extends BaseMapper<T> {
     /**
-     * 通过id软删除
-     * see {LogicDeleteByIdWithFill}
-     *
-     * @param entity 实体
-     * @param id 主键
-     * @return result 删除结果
-     */
-    Integer deleteByIdWithFill(@Param(Constants.ENTITY) T entity, Serializable id);
-
-    /**
-     * 删除（根据ID 批量删除）
-     * see {LogicDeleteBatchByIdsWithFill}
-     *
-     * @param entity 实体
-     * @param idList 主键ID列表(不能为 null 以及 empty)
-     * @return result 删除结果
-     */
-    Integer deleteBatchByIdsWithFill(@Param(Constants.ENTITY) T entity, @Param(Constants.COLL) Collection<? extends Serializable> idList);
-
-    /**
+     * @deprecated
      * 通过wrapper软删除
      * see {LogicDeleteByIdWithFill}
      *

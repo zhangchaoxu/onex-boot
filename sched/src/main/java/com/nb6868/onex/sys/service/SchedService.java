@@ -70,7 +70,7 @@ public class SchedService extends DtoService<SchedDao, SchedEntity, SchedDTO> {
 	 * @return
 	 */
 	public boolean delete(Long id) {
-		boolean ret = super.logicDeleteById(id);
+		boolean ret = super.removeById(id);
 		// 删除任务
 		ScheduleUtils.deleteScheduleJob(scheduler, id);
 		return ret;

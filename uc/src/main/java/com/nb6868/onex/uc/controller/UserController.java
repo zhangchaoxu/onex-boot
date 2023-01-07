@@ -8,7 +8,7 @@ import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.ChangeStateForm;
-import com.nb6868.onex.common.pojo.IdTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -90,7 +90,7 @@ public class UserController {
     @ApiOperation("信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         UserDTO data = userService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 用户角色列表
@@ -145,7 +145,7 @@ public class UserController {
     @ApiOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:delete"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
         // 判断数据是否存在
         UserEntity data = userService.getOne(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

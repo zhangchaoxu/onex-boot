@@ -11,6 +11,8 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
+import com.baomidou.mybatisplus.extension.conditions.update.ChainUpdate;
+import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -54,36 +56,16 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     protected Log log = LogFactory.getLog(getClass());
 
     /**
-     * 通过id删除
-     *
-     * @param id id
-     * @return 删除结果
-     */
-    public boolean logicDeleteById(Serializable id) {
-        return SqlHelper.retBool(getBaseMapper().deleteByIdWithFill(currentModel(), id));
-    }
-
-    /**
-     * 通过id数组删除
-     *
-     * @param idList 数组
-     * @return 删除结果
-     */
-    public boolean logicDeleteByIds(Collection<? extends Serializable> idList) {
-        if (ObjectUtils.isEmpty(idList)) {
-            return false;
-        }
-        return SqlHelper.retBool(getBaseMapper().deleteBatchByIdsWithFill(currentModel(), idList));
-    }
-
-    /**
      * 通过条件删除内容
      *
      * @param wrapper 查询条件
      * @return 删除结果
      */
-    public boolean logicDeleteByWrapper(Wrapper<T> wrapper) {
-        return SqlHelper.retBool(getBaseMapper().deleteByWrapperWithFill(currentModel(), wrapper));
+    public boolean logicDeleteByWrapper(UpdateChainWrapper<T> wrapper) {
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
+        return wrapper
+                .set(tableInfo.getLogicDeleteFieldInfo().getColumn(), tableInfo.getLogicDeleteFieldInfo().getLogicDeleteValue())
+                .update(currentModel());
     }
 
     /**

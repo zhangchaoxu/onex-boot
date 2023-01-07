@@ -130,7 +130,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      */
     public void deleteAllByIds(List<Long> ids) {
         // 删除用户本身
-        logicDeleteByIds(ids);
+        removeByIds(ids);
         // 删除用户-角色关系
         roleUserService.deleteByUserIdList(ids);
         // 删除用户-权限关系
@@ -187,7 +187,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     @Transactional(rollbackFor = Exception.class)
     public boolean merge(String mergeTo, List<String> mergeFrom) {
         // 删除被合并帐号
-        logicDeleteByIds(mergeFrom);
+        removeByIds(mergeFrom);
         // 将被删除业务数据中的create_id/update_id更新为mergeTo
         return true;
     }

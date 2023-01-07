@@ -8,7 +8,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.TreeNodeUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -61,7 +61,7 @@ public class MenuController {
     @ApiOperation("信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         MenuDTO data = menuService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 赋值父菜单
@@ -96,7 +96,7 @@ public class MenuController {
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:delete"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
         // 判断数据
         MenuEntity data = menuService.getOne(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);

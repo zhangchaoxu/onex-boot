@@ -2,6 +2,8 @@ package com.nb6868.onex.sys.service;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.sys.dao.RelationDao;
 import com.nb6868.onex.sys.entity.RelationEntity;
@@ -22,13 +24,13 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
     /**
      * 保存或修改
      *
-     * @param leftId 左表ID
+     * @param leftId   左表ID
      * @param rightIds 右表ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveOrUpdateByLeftIdsAndRightIds(@NotNull  Long leftId, List<Long> rightIds) {
+    public boolean saveOrUpdateByLeftIdsAndRightIds(@NotNull Long leftId, List<Long> rightIds) {
         // 先删除关系
-        logicDeleteByWrapper(new QueryWrapper<RelationEntity>().eq("left_id", leftId));
+        logicDeleteByWrapper(update().eq("left_id", leftId));
 
         // 保存关系
         CollUtil.distinct(rightIds).forEach(id -> {
@@ -42,7 +44,8 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
 
     /**
      * 获得左id关联的数量
-     * @param type 类型
+     *
+     * @param type   类型
      * @param leftId 左表ID
      * @return 数量
      */
@@ -52,7 +55,8 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
 
     /**
      * 做的左id关联的内容列表
-     * @param type 类型
+     *
+     * @param type   类型
      * @param leftId 左表ID
      * @return 关联列表
      */
@@ -62,7 +66,8 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
 
     /**
      * 做的左id关联的内容列表
-     * @param type 类型
+     *
+     * @param type   类型
      * @param leftId 左表ID
      * @return 关联id
      */

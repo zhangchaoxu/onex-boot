@@ -2,6 +2,9 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.dao.RoleUserDao;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
@@ -50,7 +53,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
         if (CollectionUtils.isEmpty(roleIds)) {
             return true;
         } else {
-            return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("role_id", roleIds));
+            return logicDeleteByWrapper(update().in("role_id", roleIds));
         }
     }
 
@@ -63,7 +66,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
         if (CollectionUtils.isEmpty(userIds)) {
             return true;
         } else {
-            return logicDeleteByWrapper(new QueryWrapper<RoleUserEntity>().in("user_id", userIds));
+            return logicDeleteByWrapper(update().in("user_id", userIds));
         }
     }
 

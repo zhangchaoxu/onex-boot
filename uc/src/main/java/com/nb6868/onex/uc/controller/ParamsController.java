@@ -7,7 +7,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -83,7 +83,7 @@ public class ParamsController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 20)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         ParamsDTO data = paramsService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -118,8 +118,8 @@ public class ParamsController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
-        paramsService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
+        paramsService.removeById(form.getId());
         return new Result<>();
     }
 

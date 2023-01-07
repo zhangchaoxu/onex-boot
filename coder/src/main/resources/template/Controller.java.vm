@@ -100,7 +100,7 @@ public class ${className}Controller {
     @LogOperation("删除")
     @RequiresPermissions("${moduleName}:${pathName}:delete")
     public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
-        ${classname}Service.logicDeleteById(id);
+        ${classname}Service.removeById(id);
 
         return new Result<>();
     }
@@ -110,7 +110,7 @@ public class ${className}Controller {
     @LogOperation("批量删除")
     @RequiresPermissions("${moduleName}:${pathName}:deleteBatch")
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}")@RequestBody List<Long> ids) {
-        ${classname}Service.logicDeleteByIds(ids);
+        ${classname}Service.removeByIds(ids);
 
         return new Result<>();
     }

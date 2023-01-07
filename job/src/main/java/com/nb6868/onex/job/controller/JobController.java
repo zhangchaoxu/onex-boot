@@ -5,7 +5,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.IdsForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
@@ -59,7 +59,7 @@ public class JobController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -95,11 +95,11 @@ public class JobController {
     @ApiOperationSupport(order = 50)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:delete"}, logical = Logical.OR)
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
         JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        jobService.logicDeleteById(form.getId());
+        jobService.removeById(form.getId());
 
         return new Result<>();
     }
@@ -131,7 +131,7 @@ public class JobController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 110)
-    public Result<?> logInfo(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> logInfo(@Validated @RequestBody IdForm form) {
         JobLogDTO data = jobLogService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -144,7 +144,7 @@ public class JobController {
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 120)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsForm form) {
-        jobLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+        jobLogService.removeByIds(form.getIds());
 
         return new Result<>();
     }

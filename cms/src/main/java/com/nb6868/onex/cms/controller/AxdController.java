@@ -7,8 +7,8 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdTenantForm;
-import com.nb6868.onex.common.pojo.IdsTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
+import com.nb6868.onex.common.pojo.IdsForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -65,7 +65,7 @@ public class AxdController {
     @ApiOperation("信息")
     @RequiresPermissions("cms:axd:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         AxdDTO data = axdService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -99,8 +99,8 @@ public class AxdController {
     @LogOperation("删除")
     @RequiresPermissions("cms:axd:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
-        axdService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
+        axdService.removeById(form.getId());
 
         return new Result<>();
     }
@@ -110,8 +110,8 @@ public class AxdController {
     @LogOperation("批量删除")
     @RequiresPermissions("cms:axd:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
-        axdService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+    public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
+        axdService.removeByIds(form.getIds());
 
         return new Result<>();
     }

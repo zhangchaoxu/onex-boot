@@ -13,7 +13,7 @@ import com.nb6868.onex.common.oss.AbstractOssService;
 import com.nb6868.onex.common.oss.OssFactory;
 import com.nb6868.onex.common.oss.OssPropsConfig;
 import com.nb6868.onex.common.params.BaseParamsService;
-import com.nb6868.onex.common.pojo.IdsTenantForm;
+import com.nb6868.onex.common.pojo.IdsForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.MultipartFileUtils;
@@ -264,8 +264,8 @@ public class OssController {
     @LogOperation("批量删除")
     @ApiOperationSupport(order = 110)
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss", "sys:oss:delete"}, logical = Logical.OR)
-    public Result<?> deleteBatch(@Validated @RequestBody IdsTenantForm form) {
-        ossService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+    public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
+        ossService.removeByIds(form.getIds());
 
         return new Result<>();
     }

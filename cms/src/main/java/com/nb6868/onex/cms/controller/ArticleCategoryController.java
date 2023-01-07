@@ -9,7 +9,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -68,7 +68,7 @@ public class ArticleCategoryController {
     @ApiOperation("信息")
     @RequiresPermissions("cms:articleCategory:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         ArticleCategoryDTO data = articleCategoryService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -102,14 +102,14 @@ public class ArticleCategoryController {
     @LogOperation("删除")
     @RequiresPermissions("cms:articleCategory:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
         // 判断数据是否存在
         ArticleCategoryEntity data = articleCategoryService.getOne(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 检查是否存在子类和文章
         AssertUtils.isTrue(articleCategoryService.childrenCount(data.getId()) > 0, "存在子类,不允许删除");
         AssertUtils.isTrue(articleService.countByArticleCategoryId(data.getId()) > 0, "存在文章,不允许删除");
-        articleCategoryService.logicDeleteById(data.getId());
+        articleCategoryService.removeById(data.getId());
         return new Result<>();
     }
 

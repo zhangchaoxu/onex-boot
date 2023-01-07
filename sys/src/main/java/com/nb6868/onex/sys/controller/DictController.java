@@ -87,7 +87,7 @@ public class DictController {
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:delete"}, logical = Logical.OR)
     public Result<?> delete(@Validated @RequestBody IdForm form) {
-        dictService.logicDeleteById(form.getId());
+        dictService.removeById(form.getId());
 
         return new Result<>();
     }
@@ -97,7 +97,7 @@ public class DictController {
     @LogOperation("批量删除")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:delete"}, logical = Logical.OR)
     public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {
-        dictService.logicDeleteByIds(form.getIds());
+        dictService.removeByIds(form.getIds());
 
         return new Result<>();
     }

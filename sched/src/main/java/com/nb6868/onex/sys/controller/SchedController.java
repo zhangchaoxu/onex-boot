@@ -5,7 +5,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.IdTenantForm;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.IdsForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
@@ -54,7 +54,7 @@ public class SchedController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sys:sched:query")
     @ApiOperationSupport(order = 20)
-    public Result<?> info(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> info(@Validated @RequestBody IdForm form) {
         SchedDTO data = schedService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -90,7 +90,7 @@ public class SchedController {
     @ApiOperationSupport(order = 50)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sys:sched:delete")
-    public Result<?> delete(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
         SchedDTO data = schedService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -148,7 +148,7 @@ public class SchedController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions("sys:schedLog:query")
     @ApiOperationSupport(order = 110)
-    public Result<?> logInfo(@Validated @RequestBody IdTenantForm form) {
+    public Result<?> logInfo(@Validated @RequestBody IdForm form) {
         SchedLogDTO data = schedLogService.getDtoById(form.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -161,7 +161,7 @@ public class SchedController {
     @RequiresPermissions("sys:schedLog:delete")
     @ApiOperationSupport(order = 120)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsForm form) {
-        schedLogService.logicDeleteByWrapper(QueryWrapperHelper.getPredicate(form));
+        schedLogService.removeByIds(form.getIds());
 
         return new Result<>();
     }
