@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.7.1] 2023.01.07
+## [3.7.2] 2023.01.07
 - upgrade: replace logic delete method 
 
 ## [3.7.0] 2023.01.05
