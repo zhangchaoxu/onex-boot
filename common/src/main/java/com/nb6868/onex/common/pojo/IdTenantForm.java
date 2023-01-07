@@ -7,6 +7,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * @deprecated
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "ID租户请求")
