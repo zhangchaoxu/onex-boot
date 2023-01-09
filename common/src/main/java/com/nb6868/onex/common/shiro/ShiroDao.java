@@ -22,7 +22,10 @@ public interface ShiroDao {
     @Select("SELECT * FROM " + ShiroConst.TABLE_USER + " WHERE deleted = 0 AND id = #{id} LIMIT 1")
     Map<String, Object> getUserById(@Param("id") Long id);
 
-    @Select("SELECT type, user_id FROM " + ShiroConst.TABLE_TOKEN + " WHERE deleted = 0 AND token = #{token} AND expire_time > now() LIMIT 1")
+    /**
+     * 通过token value获得token实体
+     */
+    @Select("SELECT type, user_id FROM " + ShiroConst.TABLE_TOKEN + " WHERE deleted = 0 AND token = #{token} AND expire_time >= now() LIMIT 1")
     Map<String, Object> getUserTokenByToken(@Param("token") String token);
 
     /**
@@ -89,12 +92,12 @@ public interface ShiroDao {
             "</otherwise>" +
             "</choose>" +
             "</script>")
-    List<Long> getAllRoleIdList(@Param("tenantCode") String tenantCode);
+    List<String> getAllRoleIdList(@Param("tenantCode") String tenantCode);
 
     /**
      * 通过用户id，获得用户角色列表
      */
     @Select("SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE user_id = #{userId} AND deleted = 0")
-    List<Long> getRoleIdListByUserId(@Param("userId") Long userId);
+    List<String> getRoleIdListByUserId(@Param("userId") Long userId);
 
 }

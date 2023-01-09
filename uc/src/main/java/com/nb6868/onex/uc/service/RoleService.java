@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.dao.RoleDao;
@@ -39,8 +40,9 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     @Override
     protected void beforeSaveOrUpdateDto(RoleDTO dto, int type) {
         if (0 == type) {
-            // 检查角色是否存在
-            AssertUtils.isTrue(hasIdRecord(dto.getId()), "角色编码[" + dto.getId() + "]已存在");
+            // 新增，检查角色编码是否存在
+            boolean hasRecord = hasIdRecord(dto.getId());
+            AssertUtils.isTrue(hasRecord, "编码[" + dto.getId() + "]已存在");
         }
     }
 

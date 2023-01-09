@@ -1,6 +1,5 @@
 package com.nb6868.onex.uc.service;
 
-import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -51,7 +50,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     public Set<String> getUserPermissions(ShiroUser user) {
         List<String> permissionsList = user.isFullPermissions() ? shiroDao.getAllPermissionsList(user.getTenantCode()) : shiroDao.getPermissionsListByUserId(user.getId());
         Set<String> set = new HashSet<>();
-        permissionsList.forEach(permissions -> set.addAll(StrSplitter.splitTrim(permissions, ',', true)));
+        permissionsList.forEach(permissions -> set.addAll(StrUtil.splitTrim(permissions, ',')));
         return set;
     }
 
@@ -59,10 +58,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 获取用户角色列表
      */
     public Set<String> getUserRoles(ShiroUser user) {
-        List<Long> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
-        Set<String> set = new HashSet<>();
-        roleList.forEach(aLong -> set.add(String.valueOf(aLong)));
-        return set;
+        List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
+        return new HashSet<>(roleList);
     }
 
     @Override
