@@ -1,5 +1,7 @@
 package com.nb6868.onex.uc.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
@@ -17,6 +19,8 @@ import org.apache.ibatis.type.Alias;
 @Alias("uc_role")
 public class RoleEntity extends BaseEntity {
 
+    @TableId(type = IdType.INPUT)
+    private String id;
     /**
      * 名称
      */

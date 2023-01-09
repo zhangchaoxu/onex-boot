@@ -2,6 +2,7 @@ package com.nb6868.onex.common.jpa;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrSplitter;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -108,7 +109,15 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      * @param id 查询主键
      */
     public boolean hasIdRecord(Serializable id) {
-        return SqlHelper.retBool(getBaseMapper().selectCountById(id));
+        if (ObjectUtil.isEmpty(id)) {
+            return false;
+        }
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(currentModelClass());
+        Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
+        String keyProperty = tableInfo.getKeyProperty();
+        Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
+
+        return query().eq(tableInfo.getKeyColumn(), id).exists();
     }
 
     /**
@@ -161,7 +170,8 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         Class<T> modelClass = currentModelClass();
         try {
             return modelClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             return null;
         }
@@ -170,7 +180,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     /**
      * 获取分页对象
      *
-     * @param pageForm          分页请求
+     * @param pageForm 分页请求
      */
     protected IPage<T> getPage(PageForm pageForm) {
         // 分页对象 参数,当前页和每页数

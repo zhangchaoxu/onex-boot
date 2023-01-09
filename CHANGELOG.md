@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.3] 2023.01.09
+- change: change role id from Long to String
+
 ## [3.7.2] 2023.01.07
 - upgrade: replace logic delete method 
 

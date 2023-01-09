@@ -30,9 +30,9 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      * @param roleIds 角色ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds) {
+    public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<String> roleIds) {
         // 先删除角色用户关系
-        deleteByUserIdList(Collections.singletonList(userId));
+        deleteByUserIdList(CollUtil.toList(userId));
 
         // 保存角色用户关系
         CollUtil.distinct(roleIds).forEach(roleId -> {
@@ -49,12 +49,11 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      *
      * @param roleIds 角色ids
      */
-    public boolean deleteByRoleIdList(List<Long> roleIds) {
-        if (CollectionUtils.isEmpty(roleIds)) {
+    public boolean deleteByRoleIdList(List<String> roleIds) {
+        if (CollUtil.isEmpty(roleIds)) {
             return true;
-        } else {
-            return logicDeleteByWrapper(update().in("role_id", roleIds));
         }
+        return logicDeleteByWrapper(update().in("role_id", roleIds));
     }
 
     /**
@@ -63,11 +62,10 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      * @param userIds 用户ids
      */
     public boolean deleteByUserIdList(List<Long> userIds) {
-        if (CollectionUtils.isEmpty(userIds)) {
+        if (CollUtil.isEmpty(userIds)) {
             return true;
-        } else {
-            return logicDeleteByWrapper(update().in("user_id", userIds));
         }
+        return logicDeleteByWrapper(update().in("user_id", userIds));
     }
 
 }

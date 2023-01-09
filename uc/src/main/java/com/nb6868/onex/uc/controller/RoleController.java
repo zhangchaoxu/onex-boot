@@ -5,10 +5,8 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.pojo.IdForm;
-import com.nb6868.onex.common.pojo.IdForm;
-import com.nb6868.onex.common.pojo.PageData;
-import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
@@ -67,7 +65,7 @@ public class RoleController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> info(@Validated @RequestBody IdForm form) {
+    public Result<?> info(@Validated @RequestBody StringIdForm form) {
         RoleDTO data = roleService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -106,12 +104,11 @@ public class RoleController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody IdForm form) {
+    public Result<?> delete(@Validated @RequestBody StringIdForm form) {
         // 判断数据是否存在
-        RoleEntity data = roleService.getOne(QueryWrapperHelper.getPredicate(form));
-        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        AssertUtils.isFalse(roleService.hasIdRecord(form.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
         // 删除
-        roleService.deleteAllById(data.getId());
+        roleService.deleteAllById(form.getId());
         return new Result<>();
     }
 

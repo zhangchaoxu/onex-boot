@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -63,9 +64,9 @@ public class UserController {
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        if (ObjectUtil.isNotEmpty(form.getRoleIds())) {
+        if (CollUtil.isNotEmpty(form.getRoleIds())) {
             List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
-            if (ObjectUtil.isEmpty(userIds)) {
+            if (CollUtil.isEmpty(userIds)) {
                 return new Result<>().success(new PageData<>());
             }
             queryWrapper.in("id", userIds);
@@ -81,6 +82,13 @@ public class UserController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody UserQueryForm form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
+        if (CollUtil.isNotEmpty(form.getRoleIds())) {
+            List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
+            if (CollUtil.isEmpty(userIds)) {
+                return new Result<>().success(new PageData<>());
+            }
+            queryWrapper.in("id", userIds);
+        }
         List<?> list = userService.listDto(queryWrapper);
 
         return new Result<>().success(list);

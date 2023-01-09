@@ -1,7 +1,9 @@
 package com.nb6868.onex.uc.dto;
 
 import com.nb6868.onex.common.pojo.BaseDTO;
+import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.common.validator.group.UpdateGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,6 +11,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -21,6 +24,10 @@ import java.util.List;
 @ApiModel(value = "角色")
 public class RoleDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
+
+	@ApiModelProperty(value = "id")
+	@NotNull(message = "角色编码不能为空", groups = DefaultGroup.class)
+	private String id;
 
 	@ApiModelProperty(value = "名称")
 	@NotBlank(message = "{name.require}", groups = DefaultGroup.class)

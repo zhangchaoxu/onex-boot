@@ -1,5 +1,6 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -46,7 +47,10 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
     protected void afterSaveOrUpdateDto(boolean ret, MenuDTO dto, MenuEntity existedEntity, int type) {
         if (ret && type == 1) {
             // 更新的时候,同时更新menu_scope中的信息
-            menuScopeService.update().set("menu_permissions", dto.getPermissions()).eq("menu_id", dto.getId()).update(new MenuScopeEntity());
+            menuScopeService.lambdaUpdate()
+                    .set(MenuScopeEntity::getMenuPermissions, dto.getPermissions())
+                    .eq(MenuScopeEntity::getMenuId, dto.getId())
+                    .update(new MenuScopeEntity());
         }
     }
 
@@ -61,12 +65,11 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
         if (userType == UcConst.UserTypeEnum.SUPER_ADMIN.value() || userType == UcConst.UserTypeEnum.TENANT_ADMIN.value()) {
             // 系统/租户管理员
             // 获得对应租户下所有菜单内容
-            return query()
-                    .eq(menuType != null, "type", menuType)
-                    .eq(showMenu != null, "show_menu", showMenu)
-                    .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
-                    .isNull(StrUtil.isBlank(tenantCode), "tenant_code")
-                    .orderByAsc("sort")
+            return lambdaQuery().eq(menuType != null, MenuEntity::getType, menuType)
+                    .eq(showMenu != null, MenuEntity::getShowMenu, showMenu)
+                    .eq(StrUtil.isNotBlank(tenantCode), MenuEntity::getTenantCode, tenantCode)
+                    .isNull(StrUtil.isBlank(tenantCode), MenuEntity::getTenantCode)
+                    .orderByAsc(MenuEntity::getSort)
                     .list();
         } else {
             // 其它用户
@@ -75,13 +78,12 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
             if (ObjectUtils.isEmpty(menuIds)) {
                 return new ArrayList<>();
             } else {
-                return query()
-                        .eq(menuType != null, "type", menuType)
-                        .eq(showMenu != null, "show_menu", showMenu)
-                        .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
-                        .isNull(StrUtil.isBlank(tenantCode), "tenant_code")
-                        .in("id", menuIds)
-                        .orderByAsc("sort")
+                return lambdaQuery().eq(menuType != null, MenuEntity::getType, menuType)
+                        .eq(showMenu != null, MenuEntity::getShowMenu, showMenu)
+                        .eq(StrUtil.isNotBlank(tenantCode), MenuEntity::getTenantCode, tenantCode)
+                        .isNull(StrUtil.isBlank(tenantCode), MenuEntity::getTenantCode)
+                        .in(MenuEntity::getId, menuIds)
+                        .orderByAsc(MenuEntity::getSort)
                         .list();
             }
         }
@@ -114,7 +116,10 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
         List<Long> menuIds = new ArrayList<>();
         while (ids.size() > 0) {
             menuIds.addAll(ids);
-            ids = listObjs(new QueryWrapper<MenuEntity>().select("id").in("pid", ids), o -> Long.valueOf(String.valueOf(o)));
+            ids = CollStreamUtil.toList(lambdaQuery()
+                    .select(MenuEntity::getId)
+                    .in(MenuEntity::getPid, ids)
+                    .list(), MenuEntity::getId);
         }
         return menuIds;
     }
@@ -141,7 +146,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
      * @param menuIds  菜单ID列表
      */
     @Transactional(rollbackFor = Exception.class)
-    public void saveOrUpdateByRoleIdAndMenuIds(Long roleId, List<Long> menuIds) {
+    public void saveOrUpdateByRoleIdAndMenuIds(String roleId, List<Long> menuIds) {
         // 先删除角色菜单关系
         menuScopeService.deleteByRoleIdList(Collections.singletonList(roleId));
 

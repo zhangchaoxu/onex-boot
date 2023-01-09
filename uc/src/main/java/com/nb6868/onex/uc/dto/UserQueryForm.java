@@ -59,6 +59,6 @@ public class UserQueryForm extends BasePageForm {
     private String search;
 
     @ApiModelProperty("角色id数组")
-    private List<Long> roleIds;
+    private List<String> roleIds;
 
 }

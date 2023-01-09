@@ -111,23 +111,19 @@ public class ShiroJwtRealm extends AuthorizingRealm {
         ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         // 根据配置中的role和permission设置SimpleAuthorizationInfo
-        Set<String> permissionSet = new HashSet<>();
         if (null != shiroUser.getLoginConfig() && shiroUser.getLoginConfig().getBool("permissionBase", true)) {
             // 塞入角色列表,超级管理员全部
             List<String> permissionsList = shiroUser.isFullPermissions() ? shiroDao.getAllPermissionsList(shiroUser.getTenantCode()) : shiroDao.getPermissionsListByUserId(shiroUser.getId());
-            permissionsList.forEach(permissions -> permissionSet.addAll(StrUtil.splitTrim(permissions, ",")));
+            permissionsList.forEach(permissions -> info.addStringPermissions(StrUtil.splitTrim(permissions, ",")));
         }
         // 超级管理员，加入角色权限
         if (shiroUser.isFullRoles()) {
-            permissionSet.add("admin:super");
+            info.addStringPermission("admin:super");
         }
-        info.setStringPermissions(permissionSet);
         if (null != shiroUser.getLoginConfig() && shiroUser.getLoginConfig().getBool("roleBase", false)) {
             // 塞入权限列表,超级管理员全部
             List<Long> roleList = shiroUser.isFullRoles() ? shiroDao.getAllRoleIdList(shiroUser.getTenantCode()) : shiroDao.getRoleIdListByUserId(shiroUser.getId());
-            Set<String> set = new HashSet<>();
-            roleList.forEach(aLong -> set.add(String.valueOf(aLong)));
-            info.setRoles(set);
+            roleList.forEach(aLong -> info.addRole(String.valueOf(aLong)));
         }
         return info;
     }

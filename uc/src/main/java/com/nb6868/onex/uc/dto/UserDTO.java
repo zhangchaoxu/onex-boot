@@ -92,7 +92,7 @@ public class UserDTO extends BaseDTO {
 	private String roleNames;
 
 	@ApiModelProperty(value = "角色ID列表")
-	private List<Long> roleIds;
+	private List<String> roleIds;
 
 	@ApiModelProperty(value = "额外信息")
 	private JSONObject extInfo;

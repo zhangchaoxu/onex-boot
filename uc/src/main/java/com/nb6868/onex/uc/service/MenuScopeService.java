@@ -1,6 +1,9 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.toolkit.SimpleQuery;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.MenuScopeDao;
@@ -25,10 +28,11 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      *
      * @param roleId 角色ID
      */
-    public List<Long> getMenuIdListByRoleId(@NotNull Long roleId) {
-        return listObjs(new QueryWrapper<MenuScopeEntity>()
-                .select("menu_id")
-                .eq("role_id", roleId), o -> Long.valueOf(String.valueOf(o)));
+    public List<Long> getMenuIdListByRoleId(@NotNull String roleId) {
+        return CollStreamUtil.toList(lambdaQuery()
+                .select(MenuScopeEntity::getMenuId)
+                .eq(MenuScopeEntity::getRoleId, roleId)
+                .list(), MenuScopeEntity::getMenuId);
     }
 
     /**
@@ -38,11 +42,10 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByUserIdList(List<Long> userIds) {
-        if (CollectionUtils.isEmpty(userIds)) {
+        if (CollUtil.isEmpty(userIds)) {
             return true;
-        } else {
-            return logicDeleteByWrapper(update().in("user_id", userIds).eq("type", UcConst.MenuScopeTypeEnum.USER.value()));
         }
+        return logicDeleteByWrapper(update().in("user_id", userIds).eq("type", UcConst.MenuScopeTypeEnum.USER.value()));
     }
 
     /**
@@ -51,12 +54,11 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      * @param roleIds 角色ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByRoleIdList(List<Long> roleIds) {
-        if (CollectionUtils.isEmpty(roleIds)) {
+    public boolean deleteByRoleIdList(List<String> roleIds) {
+        if (CollUtil.isEmpty(roleIds)) {
             return true;
-        } else {
-            return logicDeleteByWrapper(update().in("role_id", roleIds).eq("type", UcConst.MenuScopeTypeEnum.ROLE.value()));
         }
+        return logicDeleteByWrapper(update().in("role_id", roleIds).eq("type", UcConst.MenuScopeTypeEnum.ROLE.value()));
     }
 
     /**
@@ -66,11 +68,10 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByMenuIds(List<Long> menuIds) {
-        if (CollectionUtils.isEmpty(menuIds)) {
+        if (CollUtil.isEmpty(menuIds)) {
             return true;
-        } else {
-            return logicDeleteByWrapper(update().in("menu_id", menuIds));
         }
+        return logicDeleteByWrapper(update().in("menu_id", menuIds));
     }
 
 }

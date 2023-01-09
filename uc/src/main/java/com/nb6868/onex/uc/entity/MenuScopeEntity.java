@@ -24,7 +24,7 @@ public class MenuScopeEntity extends BaseEntity {
     /**
      * 角色ID
      */
-	private Long roleId;
+	private String roleId;
     /**
      * 用户ID
      */
