@@ -3,7 +3,6 @@ package com.nb6868.onex.uc.controller;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
@@ -270,7 +269,7 @@ public class AuthController {
                 urlList.add(ConvertUtils.sourceToTarget(menu, MenuResult.class));
             }
             if (form.isPermissions() && StrUtil.isNotBlank(menu.getPermissions())) {
-                permissions.addAll(StrSplitter.splitTrim(menu.getPermissions(), ',', true));
+                permissions.addAll(StrUtil.splitTrim(menu.getPermissions(), ','));
             }
         });
         // 将菜单列表转成菜单树

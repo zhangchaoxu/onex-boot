@@ -1,9 +1,8 @@
 package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -16,7 +15,6 @@ import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,17 +73,16 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
             // 其它用户
             // 获得scope内菜单id,再获取范围角色对应
             List<Long> menuIds = shiroDao.getMenuIdListByUserId(userId);
-            if (ObjectUtils.isEmpty(menuIds)) {
-                return new ArrayList<>();
-            } else {
-                return lambdaQuery().eq(menuType != null, MenuEntity::getType, menuType)
-                        .eq(showMenu != null, MenuEntity::getShowMenu, showMenu)
-                        .eq(StrUtil.isNotBlank(tenantCode), MenuEntity::getTenantCode, tenantCode)
-                        .isNull(StrUtil.isBlank(tenantCode), MenuEntity::getTenantCode)
-                        .in(MenuEntity::getId, menuIds)
-                        .orderByAsc(MenuEntity::getSort)
-                        .list();
+            if (CollUtil.isEmpty(menuIds)) {
+                return CollUtil.newArrayList();
             }
+            return lambdaQuery().eq(menuType != null, MenuEntity::getType, menuType)
+                    .eq(showMenu != null, MenuEntity::getShowMenu, showMenu)
+                    .eq(StrUtil.isNotBlank(tenantCode), MenuEntity::getTenantCode, tenantCode)
+                    .isNull(StrUtil.isBlank(tenantCode), MenuEntity::getTenantCode)
+                    .in(MenuEntity::getId, menuIds)
+                    .orderByAsc(MenuEntity::getSort)
+                    .list();
         }
     }
 
@@ -150,7 +147,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
         // 先删除角色菜单关系
         menuScopeService.deleteByRoleIdList(Collections.singletonList(roleId));
 
-        if (ObjectUtil.isNotEmpty(menuIds)) {
+        if (CollUtil.isNotEmpty(menuIds)) {
             listByIds(menuIds).forEach(menu -> {
                 //保存角色菜单关系
                 MenuScopeEntity menuScope = new MenuScopeEntity();
@@ -174,7 +171,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
         // 先删除用户菜单关系
         menuScopeService.deleteByUserIdList(Collections.singletonList(userId));
 
-        if (ObjectUtil.isNotEmpty(menuIds)) {
+        if (CollUtil.isNotEmpty(menuIds)) {
             //保存用户菜单关系
             listByIds(menuIds).forEach(menu -> {
                 MenuScopeEntity menuScope = new MenuScopeEntity();
