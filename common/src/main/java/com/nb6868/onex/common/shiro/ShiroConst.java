@@ -31,5 +31,4 @@ public interface ShiroConst {
 
     // 用户状态 有效
     int USER_STATE_ENABLED = 1;
-
 }

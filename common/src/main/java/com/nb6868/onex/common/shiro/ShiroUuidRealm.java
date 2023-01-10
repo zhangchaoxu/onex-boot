@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -19,6 +20,8 @@ import java.util.Map;
 
 /**
  * ShiroUuidRealm
+ *
+ * 表示token是uuid(随机生成的无含义数据，不一定uuid)，需要通过持久化存储(数据库/缓存)来验证
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -40,7 +43,7 @@ public class ShiroUuidRealm extends BaseShiroRealm {
         // AuthenticationToken包含身份信息和认证信息，在Filter中塞入
         AssertUtils.isNull(authenticationToken.getCredentials(), ErrorCode.UNAUTHORIZED);
         String token = authenticationToken.getCredentials().toString();
-        // token存在数据库中
+        // token存在数据库/缓存中
         Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
         AssertUtils.isNull(tokenEntity, ErrorCode.UNAUTHORIZED);
         Long userId = MapUtil.getLong(tokenEntity, "user_id");
@@ -59,9 +62,9 @@ public class ShiroUuidRealm extends BaseShiroRealm {
         // 转换成UserDetail对象
         ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
         shiroUser.setLoginType(loginType);
-        if (loginConfig.getBool("tokenRenewal", false)) {
-            // 更新token
-            shiroDao.updateTokenExpireTime(token, loginConfig.getInt("tokenExpire", 604800));
+        // token续期
+        if (loginConfig.getInt(AuthConst.TOKEN_RENEWAL_EXPIRE_KEY, AuthConst.TOKEN_RENEWAL_EXPIRE_VALUE) > 0) {
+            shiroDao.updateTokenExpireTime(token, loginConfig.getInt(AuthConst.TOKEN_RENEWAL_EXPIRE_KEY, AuthConst.TOKEN_RENEWAL_EXPIRE_VALUE));
         }
         return new SimpleAuthenticationInfo(shiroUser, token, getName());
     }

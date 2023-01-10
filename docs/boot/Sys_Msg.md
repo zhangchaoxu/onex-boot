@@ -36,7 +36,7 @@
 | ---- |----------------|----------------------------------|
 |verifyUserExist| boolean,默认false | 发送短信之前是否先检查用户是否存在                |
 |sendTimeLimit| int,默认0,单位秒    | 该限制时间内该模板同一个收件人的发送时间限制,<=0表示不限制  |
-|validTimeLimit| int,默认0,单位秒    | 消息本身的有效期,<=0表示不限制(99年)           |
+|validTimeLimit| int,默认0,单位秒    | 消息本身的有效期,<=0表示不限制(1个世纪)         |
 |codeKey| String,默认code  | 只对验证码类型模板有效,表示验证码在发送内容中的json key |
 |codeBaseString| String,默认0123456789 | 只对验证码类型模板有效,表示验证码的允许范围           |
 |codeLength| int,默认4        | 只对验证码类型模板有效,表示验证码的长度             |

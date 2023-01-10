@@ -143,12 +143,17 @@ public class AuthController {
         }
 
         // 创建token
-        String token = tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), form.getType(), loginParams.getStr("tokenKey", Const.TOKEN_KEY), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true));
+        String token = tokenService.createToken(user,
+                loginParams.getStr(AuthConst.TOKEN_STORE_TYPE_KEY, AuthConst.TOKEN_STORE_TYPE_VALUE),
+                form.getType(),
+                loginParams.getStr(AuthConst.TOKEN_JWT_KEY_KEY, AuthConst.TOKEN_JWT_KEY_VALUE),
+                loginParams.getInt(AuthConst.TOKEN_EXPIRE_KEY, AuthConst.TOKEN_EXPIRE_VALUE),
+                loginParams.getInt(AuthConst.TOKEN_LIMIT_KEY, AuthConst.TOKEN_LIMIT_VALUE));
         // 登录成功
         LoginResult loginResult = new LoginResult()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
                 .setToken(token)
-                .setTokenKey(loginParams.getStr("tokenHeaderKey", "auth-token"));
+                .setTokenKey(authProps.getTokenHeaderKey());
         return new Result<>().success(loginResult);
     }
 
@@ -366,10 +371,18 @@ public class AuthController {
                 AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
                 // 判断用户状态
                 AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.value(), ErrorCode.ACCOUNT_DISABLE);
+                // 创建token
+                String token = tokenService.createToken(user,
+                        loginParams.getStr(AuthConst.TOKEN_STORE_TYPE_KEY, AuthConst.TOKEN_STORE_TYPE_VALUE),
+                        form.getType(),
+                        loginParams.getStr(AuthConst.TOKEN_JWT_KEY_KEY, AuthConst.TOKEN_JWT_KEY_VALUE),
+                        loginParams.getInt(AuthConst.TOKEN_EXPIRE_KEY, AuthConst.TOKEN_EXPIRE_VALUE),
+                        loginParams.getInt(AuthConst.TOKEN_LIMIT_KEY, AuthConst.TOKEN_LIMIT_VALUE));
+                // 登录成功
                 LoginResult loginResult = new LoginResult()
                         .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
-                        .setToken(tokenService.createToken(user, loginParams.getStr("tokenStoreType", "db"), loginParams.getStr("type"), loginParams.getStr("tokenKey", "onex@2021"), loginParams.getInt("tokenExpire", 604800), loginParams.getBool("multiLogin", true)))
-                        .setTokenKey(loginParams.getStr("tokenHeaderKey", "auth-token"));
+                        .setToken(token)
+                        .setTokenKey(authProps.getTokenHeaderKey());
                 return new Result<>().success(loginResult);
             } else {
                 return new Result<>().error(userIdResponse.getErrcode() + ":" + userIdResponse.getErrmsg());

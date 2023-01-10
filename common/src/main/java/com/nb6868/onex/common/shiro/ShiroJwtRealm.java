@@ -5,6 +5,7 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
+import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.params.BaseParamsService;
@@ -56,14 +57,14 @@ public class ShiroJwtRealm extends BaseShiroRealm {
 
         // 获取用户id
         Long userId;
-        if ("db".equalsIgnoreCase(loginConfig.getStr("tokenStoreType"))) {
+        if ("db".equalsIgnoreCase(loginConfig.getStr(AuthConst.TOKEN_STORE_TYPE_KEY, AuthConst.TOKEN_STORE_TYPE_VALUE))) {
             // token存在数据库中
             Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
             AssertUtils.isNull(tokenEntity, ErrorCode.UNAUTHORIZED);
             userId = MapUtil.getLong(tokenEntity, "user_id");
         } else {
             // token没有持久化，直接用jwt验证
-            AssertUtils.isFalse(jwt.setKey(loginConfig.getStr("tokenKey", Const.TOKEN_KEY).getBytes()).validate(0), ErrorCode.UNAUTHORIZED);
+            AssertUtils.isFalse(JwtUtils.verifyKeyAndExp(jwt, loginConfig.getStr(AuthConst.TOKEN_JWT_KEY_KEY, AuthConst.TOKEN_JWT_KEY_VALUE)), ErrorCode.UNAUTHORIZED);
             userId = jwt.getPayload().getClaimsJson().getLong("id");
         }
         AssertUtils.isNull(userId, ErrorCode.UNAUTHORIZED);
@@ -77,10 +78,9 @@ public class ShiroJwtRealm extends BaseShiroRealm {
         ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
         shiroUser.setLoginType(loginType);
         shiroUser.setLoginConfig(loginConfig);
-
-        if ("db".equalsIgnoreCase(loginConfig.getStr("tokenStoreType")) && loginConfig.getBool("tokenRenewal", false)) {
-            // 更新token
-            shiroDao.updateTokenExpireTime(token, loginConfig.getInt("tokenExpire", 604800));
+        // token续期
+        if ("db".equalsIgnoreCase(loginConfig.getStr(AuthConst.TOKEN_STORE_TYPE_KEY, AuthConst.TOKEN_STORE_TYPE_VALUE)) && loginConfig.getInt(AuthConst.TOKEN_RENEWAL_EXPIRE_KEY, AuthConst.TOKEN_RENEWAL_EXPIRE_VALUE) > 0) {
+            shiroDao.updateTokenExpireTime(token, loginConfig.getInt(AuthConst.TOKEN_RENEWAL_EXPIRE_KEY, AuthConst.TOKEN_RENEWAL_EXPIRE_VALUE));
         }
         return new SimpleAuthenticationInfo(shiroUser, token, getName());
     }

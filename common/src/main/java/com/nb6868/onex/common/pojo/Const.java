@@ -14,10 +14,6 @@ public interface Const {
 
     String AES_KEY = "1234567890adbcde";
     /**
-     * token密钥
-     */
-    String TOKEN_KEY = "onex@2021";
-    /**
      * 部门根节点标识
      */
     Long DEPT_ROOT = 0L;
