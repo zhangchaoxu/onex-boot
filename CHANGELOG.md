@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.4] 2023.01.10
+- change: change login params define
+
 ## [3.7.3] 2023.01.09
 - change: change role id from Long to String
 
