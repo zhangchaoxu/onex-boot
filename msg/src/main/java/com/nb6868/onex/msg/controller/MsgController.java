@@ -132,7 +132,7 @@ public class MsgController {
     @ApiOperationSupport(order = 110)
     public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
         boolean flag = msgService.sendMail(form);
-        return new Result<>().boolResult(flag);
+        return new Result<>().bool(flag);
     }
 
     @PostMapping("logDeleteBatch")

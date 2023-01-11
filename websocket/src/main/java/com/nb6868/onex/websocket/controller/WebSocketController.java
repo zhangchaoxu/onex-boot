@@ -38,7 +38,7 @@ public class WebSocketController {
     @ApiOperationSupport(order = 20)
     public Result<?> sendOneMessage(@Validated(value = {DefaultGroup.class, WebSocketSendForm.SendOneGroup.class}) @RequestBody WebSocketSendForm form) {
         boolean result = webSocketServer.sendOneMessage(form.getSid(), form.getContent());
-        return new Result<>().boolResult(result);
+        return new Result<>().bool(result);
     }
 
     @PostMapping("sendMultiMessage")

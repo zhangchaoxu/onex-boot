@@ -4,11 +4,11 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.nb6868.onex.common.oss.OssLocalUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.validation.Validation;
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,11 +62,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
     }
 
-    @Value("${onex.oss.file-request-path}")
-    private String ossFileRequestPath;
-    @Value("${onex.oss.file-storage-path}")
-    private String ossFileStoragePath;
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         /**
@@ -91,10 +87,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // registry.addResourceHandler("/easypoi-preview.html").addResourceLocations("classpath:/META-INF/resources/");
         // registry.addResourceHandler("/easypoijs/**").addResourceLocations("classpath:/META-INF/resources/easypoijs/");
         // 文件读取映射
-        if (StrUtil.isAllNotBlank(ossFileRequestPath, ossFileStoragePath)) {
-            // 先创建目录
-            FileUtil.mkdir(ossFileStoragePath);
-            registry.addResourceHandler(ossFileRequestPath).addResourceLocations("file:" + ossFileStoragePath);
+        if (StrUtil.isAllNotBlank(OssLocalUtils.getOssFileStoragePath(), OssLocalUtils.getOssFileRequestPath())) {
+            // 先创建目录，若直接使用./xxx会在api.jar!/BOOT-INF/classes!/下创建文件夹,而不是在jar包下
+            // System.getProperty("user.dir")可以获得jar路径，不带斜杠
+            File file = FileUtil.mkdir(OssLocalUtils.getOssFileStorageAbsolutePath());
+            // 当ossFileStoragePath为相对路径的时候，需要做获得绝对路径 file:/a/b/c
+            registry.addResourceHandler(OssLocalUtils.getOssFileRequestPath()).addResourceLocations(file.toURI().toString());
         }
     }
 

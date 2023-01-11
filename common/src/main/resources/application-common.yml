@@ -1,7 +1,7 @@
 # Tomcat
 server:
   tomcat:
-    # 配置tomcat的临时目录
+    # 配置tomcat的临时目录,jar当前目录
     basedir: ./onex-temp
     uri-encoding: UTF-8
     threads:
@@ -196,5 +196,5 @@ onex:
     token-header-key: auth-token
     # token在jwt中的key
     token-jwt-key: sub
-    # 访问白名单
+    # 访问白名单,若有需要将file-request-path也加入
     white-list: /favicon.ico,/static/**,/webjars/**,/ws/**,/druid/**,/doc.html,/swagger-resources,/v2/api-docs,/oss/**

@@ -147,9 +147,6 @@ public class WrapperUtils<T> {
 
     /**
      * mysql only
-     *
-     * @param key
-     * @return
      */
     public WrapperUtils<T> limit(String key) {
         if (isKeyNotEmpty(key)) {

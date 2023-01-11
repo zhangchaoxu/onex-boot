@@ -17,13 +17,12 @@ public class GpsCoordinateUtils {
     private static final double PK = 180 / PI;
 
     /**
-     * 点偏移
-     * 从指定的原点出发，偏移输入角度后，向此方向延伸输入距离，返回此时的位置
+     * 点偏移,从指定的原点出发，偏移输入角度后，向此方向延伸输入距离，返回此时的位置
      *
-     * @param originLng：原点经度
-     * @param originLat：原点纬度
-     * @param azimuth：偏移角度(0-359), 正北方：0/360 正东方：90 正南方：180 正西方：270
-     * @param distance：延伸距离(单位米)
+     * @param originLng 原点经度
+     * @param originLat 原点纬度
+     * @param azimuth 偏移角度(0-359), 正北方：0/360 正东方：90 正南方：180 正西方：270
+     * @param distance 延伸距离(单位米)
      *
      * @return 返回位置的经度纬度
      */

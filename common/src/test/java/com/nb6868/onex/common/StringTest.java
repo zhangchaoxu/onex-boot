@@ -1,6 +1,7 @@
 package com.nb6868.onex.common;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrJoiner;
@@ -272,6 +273,15 @@ public class StringTest {
         log.error("raw={}", raw);
         log.error("txt={}", txt);
         log.error("txt2={}", txt2);
+    }
+
+    @Test
+    @DisplayName("路径测试")
+    void pathTest() {
+        String ossFileStoragePath = "/oss/";
+        log.error("normalize={}", FileUtil.normalize(ossFileStoragePath));
+        log.error("isAbsolutePath={}", FileUtil.isAbsolutePath(FileUtil.normalize(ossFileStoragePath)));
+
     }
 
 }
