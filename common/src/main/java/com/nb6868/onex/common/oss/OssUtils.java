@@ -6,23 +6,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class OssUtils {
 
-    @Value("${onex.api-path}")
-    private String apiPath;
     @Value("${onex.oss.file-storage-path}")
     private String ossFileStoragePath;
     @Value("${onex.oss.file-request-path}")
     private String ossFileRequestPath;
 
     public String getOssPath() {
-        return apiPath + ossFileRequestPath.replace("**", "");
+        return ossFileRequestPath.replaceAll("\\*", "");
     }
 
     public String getOssFileStoragePath() {
         return ossFileStoragePath;
-    }
-
-    public String getApiPath() {
-        return apiPath;
     }
 
 }

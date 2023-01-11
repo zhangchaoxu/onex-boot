@@ -25,7 +25,7 @@ import java.util.Map;
  * 微信小程序配置
  *
  * @author Charles zhangchaoxu@gmail.com
- * @see {https://gitee.com/binary/weixin-java-miniapp-demo/blob/master/src/main/java/com/github/binarywang/demo/wx/miniapp/config/WxMaConfiguration.java}
+ * @see <a href="https://gitee.com/binary/weixin-java-miniapp-demo/blob/master/src/main/java/com/github/binarywang/demo/wx/miniapp/config/WxMaConfiguration.java">WxMaConfiguration</a>
  */
 @Slf4j
 @Configuration

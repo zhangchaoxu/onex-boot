@@ -42,40 +42,6 @@ public class JacksonUtils {
     private JacksonUtils() {
     }
 
-    /**
-     * 获取 ObjectMapper 实例。
-     *
-     * @return ObjectMapper实例
-     */
-    /*@SuppressWarnings("deprecation")
-    public static ObjectMapper getMapper() {
-        if (JacksonUtils.mapper != null) {
-            return JacksonUtils.mapper;
-        }
-        synchronized (JacksonUtils.class) {
-            if (JacksonUtils.mapper != null) {
-                return JacksonUtils.mapper;
-            }
-            JacksonUtils.mapper = new ObjectMapper();
-            // 设置忽略属性
-            JacksonUtils.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            // 设置允许转义字符,比如CTRL-CHAR
-            JacksonUtils.mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
-            // 设置时间格式
-            JacksonUtils.mapper.setDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
-            JacksonUtils.mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-            // Long类型转String类型
-            // 解决js中Long型数据精度丢失的问题 {https://mybatis.plus/guide/faq.html#id-worker-生成主键太长导致-js-精度丢失}
-            SimpleModule simpleModule = new SimpleModule();
-            simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
-            simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
-            JacksonUtils.mapper.registerModule(simpleModule);
-            // 设置
-            JacksonUtils.mapper.disable(MapperFeature.USE_ANNOTATIONS);
-            return JacksonUtils.mapper;
-        }
-    }*/
-
     public static JsonMapper.Builder getMapperBuilder() {
         if (JacksonUtils.mapperBuilder != null) {
             return JacksonUtils.mapperBuilder;
@@ -364,10 +330,6 @@ public class JacksonUtils {
 
     /**
      * 合并两个json,注意source会覆盖target中同名字段
-     *
-     * @param source
-     * @param target
-     * @return
      */
     public static Map<String, Object> combineJson(String source, String target) {
         if (ObjectUtils.isEmpty(source)) {
@@ -384,9 +346,6 @@ public class JacksonUtils {
 
     /**
      * 合并两个json,注意source会覆盖target中同名字段
-     * @param source
-     * @param target
-     * @return
      */
     public static <T> T combineJsonToPojo(String source, String target, Class<T> pojoClass) {
         if (ObjectUtils.isEmpty(source)) {

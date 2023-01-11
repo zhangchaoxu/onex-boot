@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.5] 2023.01.10
+- change: remove api-path define, add default oss path
+
 ## [3.7.4] 2023.01.10
 - change: change login params define
 

@@ -269,7 +269,7 @@ public abstract class BaseExceptionHandler {
      * @param request 请求
      * @param code    错误码
      * @param msg     错误消息
-     * @return
+     * @return result
      */
     protected Object handleExceptionResult(HttpServletRequest request, int code, String msg) {
         if (StrUtil.isEmpty(msg)) {

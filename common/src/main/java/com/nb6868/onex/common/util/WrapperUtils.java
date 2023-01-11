@@ -33,7 +33,7 @@ public class WrapperUtils<T> {
      * key是否存在
      *
      * @param key
-     * @return
+     * @return 判断结果
      */
     private boolean isKeyEmpty(String key) {
         if (null == params || StrUtil.isBlank(key)) {
@@ -168,9 +168,6 @@ public class WrapperUtils<T> {
     /**
      * 查询条件封装
      * see {com.baomidou.mybatisplus.core.conditions.interfaces.Nested}
-     * @param key key
-     * @param consumer consumer
-     * @return
      */
     public WrapperUtils<T> and(String key, Consumer<QueryWrapper<T>> consumer) {
         if (isKeyNotEmpty(key)) {

@@ -64,7 +64,8 @@ public class WebSocketServer {
     /**
      * 收到客户端消息后调用的方法
      *
-     * @ Param message 客户端发送过来的消息
+     * @param sid sid
+     * @param message 客户端发送过来的消息
      */
     @OnMessage
     public void onMessage(@PathParam(value = "sid") String sid, String message) {

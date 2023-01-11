@@ -191,8 +191,7 @@ public class DingCallbackCrypto {
      * @param timestamp 时间戳
      * @param nonce     随机串
      * @param encrypt   加密文本
-     * @return
-     * @throws DingTalkEncryptException
+     * @return 签名
      */
     public String getSignature(String token, String timestamp, String nonce, String encrypt)
             throws DingTalkEncryptException {

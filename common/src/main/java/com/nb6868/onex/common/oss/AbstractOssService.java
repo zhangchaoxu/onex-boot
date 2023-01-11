@@ -146,9 +146,9 @@ public abstract class AbstractOssService {
     /**
      * base64 上传文件
      *
-     * @param prefix
-     * @param base64
-     * @return
+     * @param prefix 前缀
+     * @param base64 文件base64
+     * @return 上传结果
      */
     public String uploadBase64(String prefix, String base64, String fileName) {
         InputStream inputStream;
@@ -165,9 +165,10 @@ public abstract class AbstractOssService {
 
     /**
      * base64 上传文件
-     * @param base64
-     * @param fileName
-     * @return
+     *
+     * @param base64 文件base64
+     * @param fileName 文件名
+     * @return 上传结果
      */
     public String uploadBase64(String base64, String fileName) {
         return uploadBase64(null, base64, fileName);

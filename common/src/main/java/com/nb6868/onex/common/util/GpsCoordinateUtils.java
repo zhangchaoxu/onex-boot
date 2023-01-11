@@ -170,8 +170,8 @@ public class GpsCoordinateUtils {
     /**
      * 判断坐标是否在国内
      *
-     * @param latitude
-     * @param longitude
+     * @param latitude 纬度
+     * @param longitude 经度
      * @param precision 是否精确判断范围
      * @return true 在国外，false 在国内
      */

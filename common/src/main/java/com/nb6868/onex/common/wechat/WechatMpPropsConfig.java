@@ -18,7 +18,7 @@ import java.util.Map;
  * 微信公众号服务配置
  *
  * @author Charles zhangchaoxu@gmail.com
- * @see {https://gitee.com/binary/weixin-java-mp-demo-springboot/blob/master/src/main/java/com/github/binarywang/demo/wx/mp/config/WxMpConfiguration.java}
+ * @see <a href="https://gitee.com/binary/weixin-java-mp-demo-springboot/blob/master/src/main/java/com/github/binarywang/demo/wx/mp/config/WxMpConfiguration.java">WxMpConfiguration</a>
  */
 @Slf4j
 @Configuration

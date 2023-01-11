@@ -37,10 +37,9 @@ public class MultipartFileUtils {
     @PostConstruct
     public void init() {
         // 若定义了upload-path,则获取上传路径
-        // 若无定义,则获取server.tomcat.basedir同路径下创建upload路径
         String path = SpringUtil.getProperty("onex.upload-path");
         if (StrUtil.isBlank(path)) {
-            path = new File(SpringUtil.getProperty("server.tomcat.basedir")).getParentFile().getPath() + File.separator + "upload";
+            path = "./onex-upload";
         }
         uploadPath = path;
     }

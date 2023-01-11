@@ -185,11 +185,6 @@ public class ExcelUtils {
     // [导入相关]
     /**
      * Excel 导入 数据源IO流,不返回校验结果 导入 字段类型 Integer,Long,Double,Date,String,Boolean
-     *
-     * @param multipartFile
-     * @param pojoClass
-     * @param params
-     * @return
      */
     public static <T> List<T> importExcel(MultipartFile multipartFile, Class<?> pojoClass, ImportParams params) {
         try {
