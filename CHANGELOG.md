@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [3.7.7] 2023.01.28
+- upgrade: upgrade springboot to 2.7.7
+
+## [3.7.6] 2023.01.16
+- upgrade: upgrade shiro to 1.11.0
+
 ## [3.7.5] 2023.01.10
 - change: remove api-path define, add default oss path
 
