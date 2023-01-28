@@ -27,7 +27,6 @@
   * [国际化i18n](boot/i18n.md)
   * [数据传输加密](boot/ApiEncrypt.md)
   * [支付](boot/Pay.md)
-  * [POI操作](boot/Poi.md)
   * [多数据源](boot/DynamicDatasource.md)
   * [Test](boot/Test.md)
   * [ActiveMQ](boot/ActiveMQ.md)
@@ -36,6 +35,7 @@
   * [文档在线预览](boot/OfficePreview.md)
   * [ElasticSearch](boot/ElasticSearch.md)
   * [MongDB](boot/MongoDB.md)
+  * [Office支持](boot/Office.md)
 
 * 前端
   * [前端](ui/portal.md)
