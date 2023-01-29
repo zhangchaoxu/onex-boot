@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.8] 2023.01.29
+- upgrade: change cache define
+
 ## [3.7.7] 2023.01.28
 - upgrade: upgrade springboot to 2.7.7
 
