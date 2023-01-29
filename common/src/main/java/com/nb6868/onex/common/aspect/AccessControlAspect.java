@@ -82,10 +82,8 @@ public class AccessControlAspect {
         if (ObjectUtil.isNotEmpty(annotation.allowTokenName())) {
             for (String allowTokenName : annotation.allowTokenName()) {
                 String token = HttpContextUtils.getRequestParameter(allowTokenName);
-                if (StrUtil.isNotBlank(token)) {
-                    if (token.equalsIgnoreCase(env.getProperty("onex.auth.access-control." + allowTokenName))) {
-                        return true;
-                    }
+                if (StrUtil.isNotBlank(token) && token.equalsIgnoreCase(env.getProperty("onex.auth.access-control." + allowTokenName))) {
+                    return true;
                 }
             }
             return false;

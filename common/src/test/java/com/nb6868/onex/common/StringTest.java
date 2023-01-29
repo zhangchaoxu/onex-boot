@@ -1,5 +1,7 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
@@ -281,6 +283,15 @@ public class StringTest {
         String ossFileStoragePath = "/oss/";
         log.error("normalize={}", FileUtil.normalize(ossFileStoragePath));
         log.error("isAbsolutePath={}", FileUtil.isAbsolutePath(FileUtil.normalize(ossFileStoragePath)));
+
+    }
+
+    @Test
+    @DisplayName("缓存测试")
+    void cacheTest() {
+        //创建缓存，默认4毫秒过期
+        TimedCache<String, String> timedCache = CacheUtil.newTimedCache(4);
+
 
     }
 

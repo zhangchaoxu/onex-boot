@@ -54,7 +54,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Api(tags = "用户授权", position = 1)
+@Api(tags = "用户授权", position = 10)
 @Slf4j
 public class AuthController {
 
@@ -86,7 +86,7 @@ public class AuthController {
         // 随机arithmetic/spec
         Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(new String[]{"spec"}));
         // 将uuid和图片base64返回给前端
-        Dict result = Dict.create().set("uuid", uuid).set("image", captcha.toBase64());
+        JSONObject result = new JSONObject().set("uuid", uuid).set("image", captcha.toBase64());
         return new Result<>().success(result);
     }
 

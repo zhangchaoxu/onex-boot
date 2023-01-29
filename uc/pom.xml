@@ -15,7 +15,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <easy-captcha.version>2.2.2</easy-captcha.version>
+        <captcha.version>2.2.2</captcha.version>
     </properties>
 
     <dependencies>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.pig4cloud.plugin</groupId>
             <artifactId>captcha-core</artifactId>
-            <version>${easy-captcha.version}</version>
+            <version>${captcha.version}</version>
         </dependency>
         <!-- dynamic datasource -->
         <dependency>

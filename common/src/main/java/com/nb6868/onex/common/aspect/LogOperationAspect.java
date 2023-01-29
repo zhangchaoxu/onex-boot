@@ -165,12 +165,13 @@ public class LogOperationAspect {
         for (Object arg : args) {
             // 只处理能处理的
             if (arg instanceof MultipartFile) {
-                actualParam.add(Dict.create().set("type", "file").set("name", ((MultipartFile) arg).getOriginalFilename()));
+                MultipartFile file = (MultipartFile) arg;
+                actualParam.add(Dict.create().set("type", "file").set("name", file.getOriginalFilename()).set("size", file.getSize()));
             } else if (arg instanceof MultipartFile[]) {
                 MultipartFile[] files = (MultipartFile[]) arg;
                 List<Dict> list = new ArrayList<>();
                 for (MultipartFile file : files) {
-                    list.add(Dict.create().set("type", "file").set("name", file.getOriginalFilename()));
+                    list.add(Dict.create().set("type", "file").set("name", file.getOriginalFilename()).set("size", file.getSize()));
                 }
                 actualParam.add(list);
             } else if (arg instanceof Serializable || arg instanceof Map) {

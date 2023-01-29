@@ -39,11 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 用户管理
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @RestController
 @RequestMapping("/uc/user")
 @Validated
