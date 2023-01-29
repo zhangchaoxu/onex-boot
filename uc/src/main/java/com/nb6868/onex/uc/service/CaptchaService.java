@@ -10,13 +10,14 @@ import org.springframework.stereotype.Service;
 
 /**
  * 验证码服务
+ * 图形验证码是一个非常低频的功能，缓存部分直接使用hutool的缓存实现
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Service
 public class CaptchaService {
 
-    // 有效期默认10分钟
+    // 定时缓存,有效期默认15分钟
     TimedCache<String, String> captchaCache = CacheUtil.newTimedCache(15 * 60 * 1000);
 
     /**

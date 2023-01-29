@@ -184,6 +184,7 @@ public class AuthController {
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
 
         UserDTO data = ConvertUtils.sourceToTarget(user, UserDTO.class);
+        // 补上用户的其他信息
         return new Result<>().success(data);
     }
 
