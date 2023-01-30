@@ -7,6 +7,7 @@
 * 功能模块
 
   * [用户中心-权限管理](boot/Uc_RBAC.md)
+  * [用户中心-第三方登录](boot/Uc_3rd.md)
   * [系统-定时任务](boot/Sys_Job.md)
   * [系统-消息](boot/Sys_Msg.md)
   * [系统-日志](boot/Sys_Log.md)
