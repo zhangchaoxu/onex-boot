@@ -55,12 +55,12 @@ public class AuthDingtalkController {
     @Autowired
     private RoleUserService roleUserService;
 
-    @PostMapping("userLoginByDingtalkCode")
+    @PostMapping("userLoginByCode")
     @AccessControl
     @ApiOperation(value = "钉钉免密code登录", notes = "Anon")
     @LogOperation(value = "钉钉免密code登录", type = "login")
     @ApiOperationSupport(order = 300)
-    public Result<?> userDingtalkCodeLogin(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginForm form) {
+    public Result<?> userLoginByCode(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginForm form) {
         // 获得对应登录类型的登录参数
         JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
