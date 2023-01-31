@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.9] 2023.01.30
+- upgrade: add qrcode login
+
 ## [3.7.8] 2023.01.29
 - upgrade: change cache define
 

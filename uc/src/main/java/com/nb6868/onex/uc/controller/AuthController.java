@@ -43,6 +43,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,6 +77,11 @@ public class AuthController {
     private BaseMsgService msgService;
     @Autowired
     private RoleUserService roleUserService;
+    /**
+     * 验证码类型
+     */
+    @Value("${onex.auth.captcha-type:spec}")
+    private String captchaType;
 
     @PostMapping("captcha")
     @AccessControl
@@ -83,8 +89,7 @@ public class AuthController {
     @ApiOperationSupport(order = 10)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
         String uuid = IdUtil.fastSimpleUUID();
-        // 随机arithmetic/spec
-        Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(new String[]{"spec"}));
+        Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(StrUtil.splitToArray(captchaType, ",")));
         // 将uuid和图片base64返回给前端
         JSONObject result = new JSONObject().set("uuid", uuid).set("image", captcha.toBase64());
         return new Result<>().success(result);

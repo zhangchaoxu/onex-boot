@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.OnexException;
 import com.pig4cloud.captcha.*;
 import com.pig4cloud.captcha.base.Captcha;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,8 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class CaptchaService {
 
+    @Value("${onex.auth.captcha-timeout:900000}")
+    private long captchaTimeout;
+
     // 定时缓存,有效期默认15分钟
-    TimedCache<String, String> captchaCache = CacheUtil.newTimedCache(15 * 60 * 1000);
+    TimedCache<String, String> captchaCache = CacheUtil.newTimedCache(captchaTimeout);
 
     /**
      * 生成图片验证码
@@ -34,7 +38,6 @@ public class CaptchaService {
     public Captcha createCaptcha(String uuid, int width, int height, String type) {
         return createCaptcha(uuid, width, height, type, 4, Captcha.TYPE_ONLY_NUMBER);
     }
-
 
     public Captcha createCaptcha(String uuid, int width, int height, String type, int len, int charType) {
         Captcha captcha;
