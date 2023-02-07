@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.8.0] 2023.02.03
+## [3.7.10] 2023.02.03
 - upgrade: upgrade huaweicloud obs to 3.22.12
 
 ## [3.7.9] 2023.01.30
