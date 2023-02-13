@@ -13,7 +13,7 @@ public class PasswordUtils {
 
     // 8-20个字符，至少包含数字、字母和特殊字符中的两种
     public static String PATTERN_RULE_0 = "^(?![A-Za-z]+$)(?!\\d+$)(?![\\W_]+$)\\S{8,20}$";
-    //
+    // 至少八个字符，至少一个字母，一个数字
     public static String PATTERN_RULE_1 = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
     // 至少八个字符，至少一个字母，一个数字和一个特殊字符
     public static String PATTERN_RULE_2 = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$";

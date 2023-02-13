@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.11] 2023.02.13
+- upgrade: upgrade hutool to 5.8.12
+
 ## [3.7.10] 2023.02.03
 - upgrade: upgrade huaweicloud obs to 3.22.12
 
