@@ -43,7 +43,7 @@ public class LogController {
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:query"}, logical = Logical.OR)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody LogQueryForm form) {
         QueryWrapper<LogEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        PageData<LogDTO> page = logService.pageDto(form.getPage(), queryWrapper);
+        PageData<LogDTO> page = logService.pageDto(form, queryWrapper);
 
         return new Result<>().success(page);
     }

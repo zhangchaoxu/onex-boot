@@ -120,16 +120,6 @@ public class StringTest {
     }
 
     @Test
-    @DisplayName("streamTest")
-    void streamTest() {
-        PageForm pageForm = new PageForm();
-        pageForm.setSortItems(null);
-        //pageForm.setSortItems(CollUtil.newArrayList(new SortItem(null), new SortItem("sss")));
-        List<OrderItem> list = pageForm.toOrderItems();
-        log.error("list={}", list);
-    }
-
-    @Test
     @DisplayName("ase")
     void aes() {
         String str = "0PxiZS8Xb8MO97iRQMsNIiQ6CE%2F4NMntbkGWexgySMVZSgUTvcIgynxMomNQE4vsxnEAL7cLcGPRm96NA1cR%2Bbek19dIl37P6M%2FTSeOogABXI70GxODX9WfiKrWEyU%2BE28apfsgyL0VHoMtzHH30SkpjhQ0upDMUDIo9WyxNpbieEsQ17RamHhWeDdQEK7Jsot0vxj%2F2F8sPUYdoyuz%2BCw%3D%3D";

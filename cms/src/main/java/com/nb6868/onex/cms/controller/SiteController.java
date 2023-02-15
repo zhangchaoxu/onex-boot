@@ -56,7 +56,7 @@ public class SiteController {
     @RequiresPermissions("cms:site:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody SiteQueryForm form) {
-        PageData<?> page = siteService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = siteService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

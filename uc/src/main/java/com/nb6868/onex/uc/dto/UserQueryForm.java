@@ -1,7 +1,7 @@
 package com.nb6868.onex.uc.dto;
 
 import com.nb6868.onex.common.jpa.Query;
-import com.nb6868.onex.common.pojo.BasePageForm;
+import com.nb6868.onex.common.pojo.PageForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "用户查询")
-public class UserQueryForm extends BasePageForm {
+public class UserQueryForm extends PageForm {
 
     @Query
     @ApiModelProperty("用户名")

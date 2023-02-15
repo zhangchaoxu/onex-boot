@@ -59,7 +59,7 @@ public class ArticleCategoryController {
     @RequiresPermissions("cms:articleCategory:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody ArticleCategoryQueryForm form) {
-        PageData<?> page = articleCategoryService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = articleCategoryService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

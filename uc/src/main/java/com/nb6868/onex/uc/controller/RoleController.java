@@ -5,8 +5,9 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.*;
-import com.nb6868.onex.common.pojo.IdForm;
+import com.nb6868.onex.common.pojo.PageData;
+import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.pojo.StringIdForm;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
@@ -14,7 +15,6 @@ import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.RoleDTO;
 import com.nb6868.onex.uc.dto.RoleQueryForm;
-import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.RoleService;
 import io.swagger.annotations.Api;
@@ -23,7 +23,10 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class RoleController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody RoleQueryForm form) {
-        PageData<?> page = roleService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = roleService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

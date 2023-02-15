@@ -63,7 +63,7 @@ public class AliyunOssService extends AbstractOssService {
 
     @Override
     public String upload(String prefix, InputStream inputStream, String fileName) {
-        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
+        String prefixTotal = StrUtil.nullToEmpty(config.getPrefix());
         if (StrUtil.isNotEmpty(prefix)) {
             if (StrUtil.isNotEmpty(prefixTotal)) {
                 prefixTotal += "/" + prefix;

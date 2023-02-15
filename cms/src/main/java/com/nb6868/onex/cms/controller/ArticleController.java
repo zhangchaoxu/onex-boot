@@ -56,7 +56,7 @@ public class ArticleController {
     @ApiOperation("分页")
     @RequiresPermissions("cms:article:query")
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody ArticleQueryForm form) {
-        PageData<?> page = articleService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = articleService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

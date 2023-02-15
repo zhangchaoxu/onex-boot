@@ -84,6 +84,14 @@ public interface Const {
      * 消息推送配置KEY
      */
     String PUSH_CONFIG_KEY = "PUSH_CONFIG_KEY";
+    /**
+     * 默认页码
+     */
+    Long DEFAULT_PAGE_NO = 1L;
+    /**
+     * 默认页数
+     */
+    Long DEFAULT_PAGE_SIZE = 10L;
 
     /**
      * 结果枚举

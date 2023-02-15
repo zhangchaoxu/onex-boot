@@ -73,7 +73,7 @@ public class ParamsController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody ParamsQueryForm form) {
-        PageData<?> page = paramsService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = paramsService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

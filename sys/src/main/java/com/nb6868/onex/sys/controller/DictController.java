@@ -38,7 +38,7 @@ public class DictController {
     @ApiOperation("字典分类")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody DictQueryForm form) {
-        PageData<?> page = dictService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = dictService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

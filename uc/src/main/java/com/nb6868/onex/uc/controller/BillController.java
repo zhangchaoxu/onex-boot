@@ -50,7 +50,7 @@ public class BillController {
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody BillQueryForm form) {
         QueryWrapper<BillEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
 
-        PageData<?> page = billService.pageDto(form.getPage(), queryWrapper);
+        PageData<?> page = billService.pageDto(form, queryWrapper);
 
         return new Result<>().success(page);
     }

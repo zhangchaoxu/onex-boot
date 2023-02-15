@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Deprecated
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "基础分页查询")

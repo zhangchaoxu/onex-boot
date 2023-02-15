@@ -2,20 +2,15 @@ package com.nb6868.onex.common.config;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.nb6868.onex.common.jpa.injector.MySqlInjector;
-import com.nb6868.onex.common.shiro.ShiroUtils;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * mybatis-plus 基础 配置
@@ -88,10 +83,7 @@ public abstract class BaseMybatisPlusConfig {
             @Override
             public boolean ignoreTable(String tableName) {
                 String tenantCode = DynamicTableParamHelper.getParamData("tenantCode", String.class);
-                if (StrUtil.isBlank(tenantCode)) {
-                    return true;
-                }
-                return "uc_tenant".equalsIgnoreCase(tableName);
+                return StrUtil.isBlank(tenantCode) && "uc_tenant".equalsIgnoreCase(tableName);
             }
         });
     }

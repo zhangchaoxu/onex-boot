@@ -44,7 +44,7 @@ public class TenantController {
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody TenantQueryForm form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        PageData<?> page = tenantService.pageDto(form.getPage(), queryWrapper);
+        PageData<?> page = tenantService.pageDto(form, queryWrapper);
 
         return new Result<>().success(page);
     }

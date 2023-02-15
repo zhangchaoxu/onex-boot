@@ -66,7 +66,7 @@ public class DeptController {
     @ApiOperation("分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody DeptQueryForm form) {
-        PageData<?> page = deptService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = deptService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

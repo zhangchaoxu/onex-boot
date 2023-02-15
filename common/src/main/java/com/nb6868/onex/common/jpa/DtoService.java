@@ -16,8 +16,6 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +53,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      * @return 分页数据
      */
     public PageData<D> pageDto(PageForm pageForm) {
-        return pageDto(getPage(pageForm), getWrapper("page", pageForm));
+        return pageDto(PageUtils.getPageByForm(pageForm), getWrapper("page", pageForm));
     }
 
     /**
@@ -65,7 +63,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      * @return 分页数据
      */
     public PageData<D> pageDto(PageForm pageForm, Wrapper<T> queryWrapper) {
-        return pageDto(getPage(pageForm), queryWrapper);
+        return pageDto(PageUtils.getPageByForm(pageForm), queryWrapper);
     }
 
     /**
@@ -75,7 +73,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      * @return 分页数据
      */
     public PageData<D> pageDto(Map<String, Object> params) {
-        return pageDto(getPage(params, null, false), getWrapper("page", params));
+        return pageDto(PageUtils.getPageByMap(params, null, false), getWrapper("page", params));
     }
 
     /**
@@ -87,11 +85,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
     public PageData<D> pageDto(IPage<T> page, Wrapper<T> queryWrapper) {
         IPage<T> iPage = page(page, queryWrapper);
 
-        PageData<D> pageData = getPageData(iPage, currentDtoClass());
-        pageData.setPageSize(page.getSize());
-        pageData.setPageNo(page.getCurrent());
-        pageData.setLastPage(page.getSize() * page.getCurrent() >= page.getTotal());
-        return pageData;
+        return getPageData(iPage, currentDtoClass());
     }
 
     /**

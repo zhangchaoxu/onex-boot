@@ -2,6 +2,7 @@ package com.nb6868.onex.msg.service;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -130,7 +131,7 @@ public class MsgService implements BaseMsgService {
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {
             // 编码关键词
-            JSONObject contentParams = sendForm.getContentParams() == null ? new JSONObject() : sendForm.getContentParams();
+            JSONObject contentParams = Opt.ofNullable(sendForm.getContentParams()).orElse(new JSONObject());
             contentParams.set(tplParams.getStr("codeKey", "code"), RandomUtil.randomString(tplParams.getStr("codeBaseString", RandomUtil.BASE_NUMBER), tplParams.getInt("codeLength", 4)));
             sendForm.setContentParams(contentParams);
         }

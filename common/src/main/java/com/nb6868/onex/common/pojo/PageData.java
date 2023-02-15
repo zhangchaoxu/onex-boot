@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.pojo;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,13 +34,22 @@ public class PageData<T> implements Serializable {
     private List<T> list;
 
     /**
-     * 分页
-     * @param list  列表数据
-     * @param total 总记录数
+     * 构造方法
      */
     public PageData(List<T> list, long total) {
         this.list = list;
         this.total = total;
+    }
+
+    /**
+     * 构造方法
+     */
+    public PageData(IPage<T> iPage) {
+        this.list = iPage.getRecords();
+        this.total = iPage.getTotal();
+        this.pageNo = iPage.getCurrent();
+        this.pageSize = iPage.getSize();
+        this.lastPage = iPage.getSize() * iPage.getCurrent() >= iPage.getTotal();
     }
 
 }

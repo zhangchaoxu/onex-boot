@@ -46,7 +46,7 @@ public class CalendarController {
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody CalenderQueryForm form) {
         QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        PageData<CalendarDTO> page = calendarService.pageDto(form.getPage(), queryWrapper);
+        PageData<CalendarDTO> page = calendarService.pageDto(form, queryWrapper);
 
         return new Result<>().success(page);
     }

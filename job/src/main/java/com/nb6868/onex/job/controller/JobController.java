@@ -49,7 +49,7 @@ public class JobController {
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody JobQueryForm form) {
-        PageData<?> page = jobService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = jobService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
@@ -121,7 +121,7 @@ public class JobController {
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
     public Result<?> logPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryForm form) {
-        PageData<?> page = jobLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = jobLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

@@ -1,7 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -66,7 +65,7 @@ public class UserController {
             }
             queryWrapper.in("id", userIds);
         }
-        PageData<?> page = userService.pageDto(form.getPage(), queryWrapper);
+        PageData<?> page = userService.pageDto(form, queryWrapper);
 
         return new Result<>().success(page);
     }

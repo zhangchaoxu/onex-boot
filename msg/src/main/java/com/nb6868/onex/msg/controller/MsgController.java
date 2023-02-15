@@ -53,7 +53,7 @@ public class MsgController {
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
     public Result<?> tplPage(@Validated({PageGroup.class}) @RequestBody MsgTplQueryForm form) {
-        PageData<?> page = msgTplService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = msgTplService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
@@ -120,7 +120,7 @@ public class MsgController {
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody MsgLogQueryForm form) {
-        PageData<?> page = msgLogService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = msgLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

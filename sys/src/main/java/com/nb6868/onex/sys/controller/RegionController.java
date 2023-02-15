@@ -69,7 +69,7 @@ public class RegionController {
     @ApiOperation("分页")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody RegionQueryForm form) {
-        PageData<?> page = regionService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = regionService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

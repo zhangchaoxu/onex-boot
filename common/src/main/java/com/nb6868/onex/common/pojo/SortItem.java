@@ -1,7 +1,5 @@
 package com.nb6868.onex.common.pojo;
 
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -29,15 +27,5 @@ public class SortItem implements Serializable {
 
     @ApiModelProperty(value = "升序true/倒序false")
     private Boolean asc = true;
-
-    /**
-     * 转换成OrderItem
-     */
-    public OrderItem toOrderItem() {
-        if (StrUtil.isBlank(column)) {
-            return null;
-        }
-        return new OrderItem(StrUtil.toUnderlineCase(column), asc);
-    }
 
 }

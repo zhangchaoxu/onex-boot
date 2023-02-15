@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.7.11] 2023.02.13
+## [3.7.12] 2023.02.14
 - upgrade: upgrade hutool to 5.8.12
+- enhance: enhance page method
 
 ## [3.7.10] 2023.02.03
 - upgrade: upgrade huaweicloud obs to 3.22.12
@@ -13,7 +14,7 @@
 - upgrade: change cache define
 
 ## [3.7.7] 2023.01.28
-- upgrade: upgrade springboot to 2.7.7
+- upgrade: upgrade springboot to 2.7.8
 
 ## [3.7.6] 2023.01.16
 - upgrade: upgrade shiro to 1.11.0

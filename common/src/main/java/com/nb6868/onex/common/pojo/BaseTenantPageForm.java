@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "基础租户分页查询")
-public class BaseTenantPageForm extends BasePageForm {
+public class BaseTenantPageForm extends PageForm {
 
     @Query
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

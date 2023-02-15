@@ -56,7 +56,7 @@ public class AxdController {
     @RequiresPermissions("cms:axd:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody AxdQueryForm form) {
-        PageData<?> page = axdService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = axdService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

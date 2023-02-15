@@ -45,7 +45,7 @@ public class PostController {
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody PostQueryForm form) {
-        PageData<?> page = postService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = postService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }

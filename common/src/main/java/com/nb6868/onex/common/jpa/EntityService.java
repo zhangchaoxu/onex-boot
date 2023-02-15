@@ -1,25 +1,18 @@
 package com.nb6868.onex.common.jpa;
 
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
-import com.baomidou.mybatisplus.extension.conditions.update.ChainUpdate;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.PageData;
-import com.nb6868.onex.common.pojo.PageForm;
 import com.nb6868.onex.common.util.ConvertUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.logging.Log;
@@ -32,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -178,69 +170,12 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     }
 
     /**
-     * 获取分页对象
-     *
-     * @param pageForm 分页请求
-     */
-    protected IPage<T> getPage(PageForm pageForm) {
-        // 分页对象 参数,当前页和每页数
-        Page<T> page = new Page<>(pageForm.getPageNo(), pageForm.getPageSize());
-        List<OrderItem> orderItems = pageForm.toOrderItems();
-        if (CollectionUtils.isNotEmpty(orderItems)) {
-            page.addOrder(orderItems);
-        }
-        return page;
-    }
-
-    /**
-     * 获取分页对象
-     *
-     * @param params            分页查询参数
-     * @param defaultOrderField 默认排序字段
-     * @param isAsc             排序方式
-     */
-    protected IPage<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
-        // 分页对象 参数,当前页和每页数
-        Page<T> page = new Page<>(MapUtil.getLong(params, Const.PAGE, 1L), MapUtil.getLong(params, Const.LIMIT, 10L));
-
-        // 分页参数?
-        // params.put(Constant.PAGE, page);
-
-        // 排序字段
-        String orderField = (String) params.get(Const.ORDER_FIELD);
-        String order = (String) params.get(Const.ORDER);
-
-        // 前端字段排序
-        if (StringUtils.isNotBlank(orderField) && StringUtils.isNotBlank(order)) {
-            return page.addOrder(new OrderItem(orderField, Const.ASC.equalsIgnoreCase(order)));
-        }
-
-        // 没有排序字段，则不排序
-        if (StringUtils.isBlank(defaultOrderField)) {
-            return page;
-        }
-
-        // 默认排序
-        page.addOrder(new OrderItem(orderField, isAsc));
-
-        return page;
-    }
-
-    /**
-     * 列表转分页
-     */
-    protected <T> PageData<T> getPageData(List<?> list, long total, Class<T> target) {
-        List<T> targetList = ConvertUtils.sourceToTarget(list, target);
-
-        return new PageData<>(targetList, total);
-    }
-
-    /**
      * 转换分页
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected <T> PageData<T> getPageData(IPage page, Class<T> target) {
-        return getPageData(page.getRecords(), page.getTotal(), target);
+        IPage<T> pageT = page.convert(source -> ConvertUtils.sourceToTarget(source, target));
+        return new PageData<>(pageT);
     }
 
     // [+] ServiceImpl

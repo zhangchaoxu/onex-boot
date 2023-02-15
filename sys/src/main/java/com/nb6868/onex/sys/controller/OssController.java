@@ -254,7 +254,7 @@ public class OssController {
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss", "sys:oss:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody OssQueryForm form) {
-        PageData<?> page = ossService.pageDto(form.getPage(), QueryWrapperHelper.getPredicate(form, "page"));
+        PageData<?> page = ossService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
         return new Result<>().success(page);
     }
