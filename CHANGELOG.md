@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.13] 2023.02.16
+- upgrade: upgrade file-upload to 1.5
+
 ## [3.7.12] 2023.02.14
 - upgrade: upgrade hutool to 5.8.12
 - enhance: enhance page method
