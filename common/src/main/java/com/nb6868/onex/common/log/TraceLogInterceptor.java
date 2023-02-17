@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 链路日志拦截器
+ *
+ * @author Charles zhangchaoxu@gmail.com
  */
 public class TraceLogInterceptor implements HandlerInterceptor {
 
