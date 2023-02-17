@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.nb6868.onex.common.log.TraceLogInterceptor;
 import com.nb6868.onex.common.oss.OssLocalUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
@@ -44,12 +45,21 @@ import java.util.Locale;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
+     * 链路日志拦截器
+     */
+    @Bean
+    public TraceLogInterceptor traceLogInterceptor() {
+        return new TraceLogInterceptor();
+    }
+
+    /**
      * 拦截器
      *
      * @param registry 拦截器
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(traceLogInterceptor()).addPathPatterns("/**");
         // registry.addInterceptor(wxWebAuthInterceptor).addPathPatterns("/**");
     }
 
