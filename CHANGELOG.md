@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.7.15] 2023.02.16
+- upgrade: upgrade aliyun-sdk-oss to 3.16.1
+- upgrade: upgrade jsoup to 1.15.4
+
 ## [3.7.14] 2023.02.16
 - upgrade: upgrade file-upload to 1.5
 - upgrade: add log trace
