@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.7.13] 2023.02.16
+## [3.7.14] 2023.02.16
 - upgrade: upgrade file-upload to 1.5
+- upgrade: add log trace
 
 ## [3.7.12] 2023.02.14
 - upgrade: upgrade hutool to 5.8.12
