@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.7.16] 2023.02.20
+## [3.7.17] 2023.02.20
 - upgrade: upgrade aliyun-sdk-oss to 3.16.1
 - upgrade: upgrade jsoup to 1.15.4
 - upgrade: upgrade druid to 1.2.16

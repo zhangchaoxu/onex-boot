@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.7.16</version>
+        <version>3.7.17</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -17,7 +17,7 @@
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
-        <druid.version>1.2.15</druid.version>
+        <druid.version>1.2.16</druid.version>
         <commons.fileupload.version>1.5</commons.fileupload.version>
         <mybatisplus.version>3.5.3.1</mybatisplus.version>
         <hutool.version>5.8.12</hutool.version>
