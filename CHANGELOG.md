@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.18] 2023.02.27
+- upgrade: upgrade springboot to 2.7.9
+
 ## [3.7.17] 2023.02.20
 - upgrade: upgrade aliyun-sdk-oss to 3.16.1
 - upgrade: upgrade jsoup to 1.15.4
