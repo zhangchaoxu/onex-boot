@@ -53,5 +53,6 @@
 * Cheat Sheet
   * [Linux Cheat Sheet](cheat-sheet/Linux.md)
   * [MySQL Cheat Sheet](cheat-sheet/MySQL.md)
+  * [Nginx Cheat Sheet](cheat-sheet/Nginx.md)
 
 * [Issues](Issues.md)
