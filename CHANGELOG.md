@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.19] 2023.03.06
+- upgrade: upgrade hutool to 5.8.14
+
 ## [3.7.18] 2023.02.27
 - upgrade: upgrade springboot to 2.7.9
 
