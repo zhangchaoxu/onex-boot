@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.20] 2023.03.10
+- upgrade: upgrade hutool to 5.8.15
+
 ## [3.7.19] 2023.03.06
 - upgrade: upgrade hutool to 5.8.14
 
