@@ -1,8 +1,8 @@
 package com.nb6868.onex.common.controller;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.pojo.Result;
 import com.sun.management.OperatingSystemMXBean;
@@ -27,13 +27,13 @@ public class IndexController {
     @ApiOperation("index")
     @AccessControl("")
     public Result<?> index() {
-        Dict result = Dict.create()
-                .set("onex", Dict.create()
+        JSONObject result = new JSONObject()
+                .set("onex", new JSONObject()
                         .set("parent-artifact-id", SpringUtil.getProperty("onex.parent-artifact-id"))
                         .set("artifact-id", SpringUtil.getProperty("onex.artifact-id"))
                         .set("version", SpringUtil.getProperty("onex.version"))
                         .set("build-time", SpringUtil.getProperty("onex.build-time")))
-                .set("app", Dict.create()
+                .set("app", new JSONObject()
                         .set("parent-artifact-id", SpringUtil.getProperty("onex.app.parent-artifact-id"))
                         .set("artifact-id", SpringUtil.getProperty("onex.app.artifact-id"))
                         .set("version", SpringUtil.getProperty("onex.app.version"))
@@ -48,28 +48,27 @@ public class IndexController {
     public Result<?> sysInfo() {
         OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
-        Dict data = Dict.create();
-        data.set("sysTime", DateUtil.now());
-        data.set("osName", System.getProperty("os.name"));
-        data.set("osArch", System.getProperty("os.arch"));
-        data.set("osVersion", System.getProperty("os.version"));
-        data.set("userLanguage", System.getProperty("user.language"));
-        data.set("userDir", System.getProperty("user.dir"));
-        data.set("totalPhysical", osmx.getTotalPhysicalMemorySize() / 1024 / 1024);
-        data.set("freePhysical", osmx.getFreePhysicalMemorySize() / 1024 / 1024);
+        JSONObject result = new JSONObject()
+                .set("sysTime", DateUtil.now())
+                .set("osName", System.getProperty("os.name"))
+                .set("osArch", System.getProperty("os.arch"))
+                .set("osVersion", System.getProperty("os.version"))
+                .set("userLanguage", System.getProperty("user.language"))
+                .set("userDir", System.getProperty("user.dir"))
+                .set("totalPhysical", osmx.getTotalPhysicalMemorySize() / 1024 / 1024)
+                .set("freePhysical", osmx.getFreePhysicalMemorySize() / 1024 / 1024)
+                .set("memoryRate", BigDecimal.valueOf((1 - osmx.getFreePhysicalMemorySize() * 1.0 / osmx.getTotalPhysicalMemorySize()) * 100).setScale(2, RoundingMode.HALF_UP))
+                .set("processors", osmx.getAvailableProcessors())
+                .set("jvmName", System.getProperty("java.vm.name"))
+                .set("javaVersion", System.getProperty("java.version"))
+                .set("javaHome", System.getProperty("java.home"))
+                .set("javaTotalMemory", Runtime.getRuntime().totalMemory() / 1024 / 1024)
+                .set("javaFreeMemory", Runtime.getRuntime().freeMemory() / 1024 / 1024)
+                .set("javaMaxMemory", Runtime.getRuntime().maxMemory() / 1024 / 1024)
+                .set("userName", System.getProperty("user.name"))
+                .set("systemCpuLoad", BigDecimal.valueOf(osmx.getSystemCpuLoad() * 100).setScale(2, RoundingMode.HALF_UP))
+                .set("userTimezone", System.getProperty("user.timezone"));
 
-        data.set("memoryRate", BigDecimal.valueOf((1 - osmx.getFreePhysicalMemorySize() * 1.0 / osmx.getTotalPhysicalMemorySize()) * 100).setScale(2, RoundingMode.HALF_UP));
-        data.set("processors", osmx.getAvailableProcessors());
-        data.set("jvmName", System.getProperty("java.vm.name"));
-        data.set("javaVersion", System.getProperty("java.version"));
-        data.set("javaHome", System.getProperty("java.home"));
-        data.set("javaTotalMemory", Runtime.getRuntime().totalMemory() / 1024 / 1024);
-        data.set("javaFreeMemory", Runtime.getRuntime().freeMemory() / 1024 / 1024);
-        data.set("javaMaxMemory", Runtime.getRuntime().maxMemory() / 1024 / 1024);
-        data.set("userName", System.getProperty("user.name"));
-        data.set("systemCpuLoad", BigDecimal.valueOf(osmx.getSystemCpuLoad() * 100).setScale(2, RoundingMode.HALF_UP));
-        data.set("userTimezone", System.getProperty("user.timezone"));
-
-        return new Result<>().success(data);
+        return new Result<>().success(result);
     }
 }
