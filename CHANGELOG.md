@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.7.22] 2023.03.14
+- new: add saveOrUpdateById in EntityService 
+- new: add sse  
+
 ## [3.7.20] 2023.03.10
 - upgrade: upgrade hutool to 5.8.15
 

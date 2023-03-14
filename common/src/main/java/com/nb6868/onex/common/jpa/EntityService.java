@@ -297,6 +297,26 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         return false;
     }
 
+    /**
+     * TableId 注解存在更新记录，否插入一条记录
+     * 与saveOrUpdate区别在于，插入之前不做存在检查
+     *
+     * @param entity 实体对象
+     * @return boolean
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveOrUpdateById(T entity) {
+        if (null != entity) {
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(this.entityClass);
+            Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
+            String keyProperty = tableInfo.getKeyProperty();
+            Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
+            Object idVal = tableInfo.getPropertyValue(entity, tableInfo.getKeyProperty());
+            return StringUtils.checkValNull(idVal) ? save(entity) : updateById(entity);
+        }
+        return false;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize) {
