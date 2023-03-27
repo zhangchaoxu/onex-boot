@@ -1,10 +1,13 @@
 # CHANGELOG
 
+## [3.7.24] 2023.03.27
+- fix: fix jwt token verify issue
+
 ## [3.7.23] 2023.03.27
 - upgrade: upgrade hutool to 5.8.16
 - upgrade: upgrade springboot to 2.7.10
 
-## [3.7.23] 2023.03.14
+## [3.7.22] 2023.03.1
 - new: add saveOrUpdateById in EntityService 
 - new: add sse  
 

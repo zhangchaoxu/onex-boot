@@ -1,9 +1,9 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTException;
 
 import java.util.Date;
 
@@ -36,10 +36,17 @@ public class JwtUtils {
             return false;
         }
         if (!jwt.setKey(key.getBytes()).verify()) {
+            // 先验证一下
             return false;
-        } else {
-            JSONObject claimsJson = jwt.getPayload().getClaimsJson();
-            return claimsJson != null && claimsJson.getLong("exp") != null && new Date(claimsJson.getLong("exp") * 1000).after(new Date());
+        }
+        JSONObject claimsJson = jwt.getPayload().getClaimsJson();
+        if (claimsJson == null || claimsJson.get("exp") == null) {
+            return false;
+        }
+        try {
+            return  new Date(NumberUtil.parseLong(claimsJson.get("exp").toString()) * 1000).after(new Date());
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -51,12 +58,7 @@ public class JwtUtils {
             return false;
         }
         JWT jwt = parseToken(token);
-        if (null == jwt || !jwt.setKey(key.getBytes()).verify()) {
-            return false;
-        } else {
-            JSONObject claimsJson = jwt.getPayload().getClaimsJson();
-            return claimsJson != null && claimsJson.getLong("exp") != null && new Date(claimsJson.getLong("exp") * 1000).after(new Date());
-        }
+        return verifyKeyAndExp(jwt, key);
     }
 
     /**

@@ -3,16 +3,19 @@ package com.nb6868.onex.common.shiro;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.params.BaseParamsService;
-import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JwtUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -65,7 +68,7 @@ public class ShiroJwtRealm extends BaseShiroRealm {
         } else {
             // token没有持久化，直接用jwt验证
             AssertUtils.isFalse(JwtUtils.verifyKeyAndExp(jwt, loginConfig.getStr(AuthConst.TOKEN_JWT_KEY_KEY, AuthConst.TOKEN_JWT_KEY_VALUE)), ErrorCode.UNAUTHORIZED);
-            userId = jwt.getPayload().getClaimsJson().getLong("id");
+            userId = NumberUtil.parseLong(jwt.getPayload().getClaimsJson().getStr("id"));
         }
         AssertUtils.isNull(userId, ErrorCode.UNAUTHORIZED);
         // 验证用户是否还存在
