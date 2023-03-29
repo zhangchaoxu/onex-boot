@@ -5,6 +5,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
+import com.nb6868.onex.common.pojo.IdForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.pojo.StringIdForm;
@@ -107,7 +108,7 @@ public class RoleController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody StringIdForm form) {
+    public Result<?> delete(@Validated @RequestBody IdForm form) {
         // 判断数据是否存在
         AssertUtils.isFalse(roleService.hasIdRecord(form.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
         // 删除
