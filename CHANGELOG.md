@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## [3.7.24] 2023.03.27
+## [3.7.26] 2023.03.28
+- fix: change role id to Long
+
+## [3.7.25] 2023.03.27
 - fix: fix jwt token verify issue
 
 ## [3.7.23] 2023.03.27

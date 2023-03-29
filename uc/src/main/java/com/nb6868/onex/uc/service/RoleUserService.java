@@ -1,18 +1,12 @@
 package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.dao.RoleUserDao;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,7 +43,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      *
      * @param roleIds 角色ids
      */
-    public boolean deleteByRoleIdList(List<String> roleIds) {
+    public boolean deleteByRoleIdList(List<Long> roleIds) {
         if (CollUtil.isEmpty(roleIds)) {
             return true;
         }

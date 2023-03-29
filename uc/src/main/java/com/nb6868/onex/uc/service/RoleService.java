@@ -2,14 +2,10 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.dao.RoleDao;
 import com.nb6868.onex.uc.dto.RoleDTO;
-import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * 角色
@@ -73,7 +67,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
      *
      * @param roleIds 角色id
      */
-    public List<Long> getUserIdListByRoleIdList(List<String> roleIds) {
+    public List<Long> getUserIdListByRoleIdList(List<Long> roleIds) {
         if (CollUtil.isEmpty(roleIds)) {
             return CollUtil.newArrayList();
         }
@@ -85,11 +79,41 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     }
 
     /**
+     * 根据角色编码查询角色id数组
+     *
+     * @param roleCodes 角色编码
+     */
+    public List<Long> getRoleIdListByRoleCodeList(List<String> roleCodes) {
+        if (CollUtil.isEmpty(roleCodes)) {
+            return CollUtil.newArrayList();
+        }
+        return CollStreamUtil.toList(lambdaQuery()
+                .select(RoleEntity::getId)
+                .in(RoleEntity::getCode, roleCodes)
+                .list(), RoleEntity::getId);
+    }
+
+    /**
+     * 根据角色编码查询用户列表
+     *
+     * @param roleCodes 角色编码
+     */
+    public List<Long> getUserIdListByRoleCodeList(List<String> roleCodes) {
+        if (CollUtil.isEmpty(roleCodes)) {
+            return CollUtil.newArrayList();
+        }
+        // 先找到角色id
+        List<Long> roleIds = getRoleIdListByRoleCodeList(roleCodes);
+        // 在用角色id找到用户id
+        return getUserIdListByRoleIdList(roleIds);
+    }
+
+    /**
      * 删除数据本身及关联关系
      *
      * @param id 角色id
      */
-    public void deleteAllById(@NotNull String id) {
+    public void deleteAllById(@NotNull Long id) {
         // 删除角色
         removeById(id);
         // 删除角色菜单关联关系

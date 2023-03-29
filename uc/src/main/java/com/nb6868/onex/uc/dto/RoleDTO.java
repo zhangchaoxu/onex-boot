@@ -1,6 +1,6 @@
 package com.nb6868.onex.uc.dto;
 
-import com.nb6868.onex.common.pojo.BaseStringDTO;
+import com.nb6868.onex.common.pojo.BaseDTO;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,13 +20,12 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "角色")
-public class RoleDTO extends BaseStringDTO {
+public class RoleDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "角色编码")
-	@NotBlank(message = "请输入角色编码", groups = DefaultGroup.class)
-	@Length(min = 1, max = 50, message = "请限制编码1-50字", groups = DefaultGroup.class)
-	private String id;
+	@Length(max = 50, message = "请限制编码50字以内", groups = DefaultGroup.class)
+	private String code;
 
 	@ApiModelProperty(value = "名称")
 	@NotBlank(message = "{name.require}", groups = DefaultGroup.class)

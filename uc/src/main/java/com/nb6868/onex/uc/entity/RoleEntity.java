@@ -1,7 +1,7 @@
 package com.nb6868.onex.uc.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.nb6868.onex.common.pojo.BaseStringEntity;
+import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.Alias;
@@ -15,11 +15,15 @@ import org.apache.ibatis.type.Alias;
 @EqualsAndHashCode(callSuper = false)
 @TableName("uc_role")
 @Alias("uc_role")
-public class RoleEntity extends BaseStringEntity {
+public class RoleEntity extends BaseEntity {
     /**
      * 名称
      */
 	private String name;
+    /**
+     * 编码
+     */
+    private String code;
     /**
      * 备注
      */

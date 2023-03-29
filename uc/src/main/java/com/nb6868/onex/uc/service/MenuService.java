@@ -143,7 +143,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
      * @param menuIds  菜单ID列表
      */
     @Transactional(rollbackFor = Exception.class)
-    public void saveOrUpdateByRoleIdAndMenuIds(String roleId, List<Long> menuIds) {
+    public void saveOrUpdateByRoleIdAndMenuIds(Long roleId, List<Long> menuIds) {
         // 先删除角色菜单关系
         menuScopeService.deleteByRoleIdList(Collections.singletonList(roleId));
 

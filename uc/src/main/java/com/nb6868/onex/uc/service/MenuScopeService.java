@@ -2,15 +2,12 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.toolkit.SimpleQuery;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.MenuScopeDao;
 import com.nb6868.onex.uc.entity.MenuScopeEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -28,7 +25,7 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      *
      * @param roleId 角色ID
      */
-    public List<Long> getMenuIdListByRoleId(@NotNull String roleId) {
+    public List<Long> getMenuIdListByRoleId(@NotNull Long roleId) {
         return CollStreamUtil.toList(lambdaQuery()
                 .select(MenuScopeEntity::getMenuId)
                 .eq(MenuScopeEntity::getRoleId, roleId)
@@ -54,7 +51,7 @@ public class MenuScopeService extends EntityService<MenuScopeDao, MenuScopeEntit
      * @param roleIds 角色ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByRoleIdList(List<String> roleIds) {
+    public boolean deleteByRoleIdList(List<Long> roleIds) {
         if (CollUtil.isEmpty(roleIds)) {
             return true;
         }

@@ -26,10 +26,6 @@ public class UserQueryForm extends PageForm {
     @ApiModelProperty("手机号")
     private String mobile;
 
-    @Query
-    @ApiModelProperty("身份证号")
-    private String idNo;
-
     @Query(type = Query.Type.LIKE_LEFT)
     @ApiModelProperty("部门编码")
     private String deptCode;
@@ -59,6 +55,9 @@ public class UserQueryForm extends PageForm {
     private String search;
 
     @ApiModelProperty("角色id数组")
-    private List<String> roleIds;
+    private List<Long> roleIds;
+
+    @ApiModelProperty("角色编码数组")
+    private List<String> roleCodes;
 
 }
