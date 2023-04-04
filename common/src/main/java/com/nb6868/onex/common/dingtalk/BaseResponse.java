@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.dingtalk;
 
+import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,5 +31,10 @@ public class BaseResponse implements Serializable {
         this.errcode = errcode;
         this.errmsg = errmsg;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJsonStr(this);
     }
 }

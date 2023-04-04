@@ -1,9 +1,6 @@
 package com.nb6868.onex.sys.dao;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -76,5 +73,13 @@ public interface TableSchemaDao {
      */
     @Update("${sql}")
     int executeUpdate(@Param("sql") String sql);
+
+    @Insert("${sql}")
+    int executeInsert(@Param("sql") String sql);
+
+    @Delete("${sql}")
+    int executeDelete(@Param("sql") String sql);
+
+
 
 }

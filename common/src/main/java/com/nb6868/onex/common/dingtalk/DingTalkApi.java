@@ -108,6 +108,35 @@ public class DingTalkApi {
     private final static String REGISTER_CALLBACK = "https://oapi.dingtalk.com/call_back/register_call_back?access_token={1}";
 
     /**
+     * 获取部门ID列表
+     * https://open.dingtalk.com/document/isvapp/obtain-a-sub-department-id-list-v2
+     */
+    private final static String DEPARTMENT_ID_LIST = "https://oapi.dingtalk.com/topapi/v2/department/listsubid?access_token={1}";
+
+    /**
+     * 通过部门id获得用户详情列表
+     * https://open.dingtalk.com/document/isvapp/queries-the-simple-information-of-a-department-user
+     */
+    private final static String USER_DETAIL_LIST = "https://oapi.dingtalk.com/topapi/v2/user/list?access_token={1}";
+
+
+    /**
+     * 清空token缓存
+     *
+     * @param appKey
+     */
+    public static void removeTokenCache(String appKey) {
+        tokenCache.remove(appKey);
+    }
+
+    /**
+     * 清空token缓存
+     */
+    public static void clearTokenCache() {
+        tokenCache.clear();
+    }
+
+    /**
      * 通过临时授权码获取授权用户的个人信息
      */
     public static GetUserInfoByCodeResponse getUserInfoByCode(String appId, String appSecret, String code) {
@@ -356,7 +385,6 @@ public class DingTalkApi {
             response.setErrmsg("media.upload接口调用失败," + e.getMessage());
             return response;
         }
-
     }
 
     /**
@@ -389,6 +417,52 @@ public class DingTalkApi {
             ResultResponse<String> response = new ResultResponse<>();
             response.setErrcode(1000);
             response.setErrmsg("ocr.structured.recognize接口调用失败," + e.getMessage());
+            return response;
+        }
+    }
+
+    /**
+     * 根据部门id获得子部门id数组
+     */
+    public static DeptIdListResponse getDeptIdList(String accessKey, String appSecret, String deptId) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("dept_id", deptId);
+            try {
+                return new RestTemplate().postForObject(DEPARTMENT_ID_LIST, requestBody, DeptIdListResponse.class, tokenResponse.getAccess_token());
+            } catch (Exception e) {
+                DeptIdListResponse response = new DeptIdListResponse();
+                response.setErrcode(1000);
+                response.setErrmsg("topapi/v2/department/listsubid" + e.getMessage());
+                return response;
+            }
+        } else {
+            DeptIdListResponse response = new DeptIdListResponse();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
+            return response;
+        }
+    }
+
+    /**
+     * 根据部门id获得子部门id数组
+     */
+    public static UserListResponse getUserListByDeptId(String accessKey, String appSecret, Map<String, String> params) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            try {
+                return new RestTemplate().postForObject(USER_DETAIL_LIST, params, UserListResponse.class, tokenResponse.getAccess_token());
+            } catch (Exception e) {
+                UserListResponse response = new UserListResponse();
+                response.setErrcode(1000);
+                response.setErrmsg("topapi/v2/user/list" + e.getMessage());
+                return response;
+            }
+        } else {
+            UserListResponse response = new UserListResponse();
+            response.setErrcode(tokenResponse.getErrcode());
+            response.setErrmsg(tokenResponse.getErrmsg());
             return response;
         }
     }
