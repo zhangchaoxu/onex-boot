@@ -2,8 +2,12 @@ package com.nb6868.onex.common.dingtalk;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.util.SignUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
@@ -15,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -464,6 +469,91 @@ public class DingTalkApi {
             response.setErrcode(tokenResponse.getErrcode());
             response.setErrmsg(tokenResponse.getErrmsg());
             return response;
+        }
+    }
+
+    /**
+     * 获得所有的部门id,会将所有异常都吞掉
+     * @param accessKey
+     * @param appSecret
+     * @return
+     */
+    public static List<String> getAllDeptIdList(String accessKey, String appSecret) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            List<String> departmemtIdList = CollUtil.newArrayList();
+            // 根部门dept_id传1
+            List<String> dept_id_list = CollUtil.newArrayList("1");
+            // 逐级遍历
+            while (dept_id_list.size() > 0) {
+                // 初始化一个新的数组存储结果
+                List<String> dept_sub_id_list = CollUtil.newArrayList();
+                dept_id_list.forEach(deptId -> {
+                    try {
+                        JSONObject result = JSONUtil.parseObj(cn.hutool.http.HttpRequest.post("https://oapi.dingtalk.com/topapi/v2/department/listsubid?access_token=" + tokenResponse.getAccess_token())
+                                .body(new JSONObject().set("dept_id", deptId).toString())
+                                .execute().body());
+                        if (result.getInt("errcode", -1) == 0 && result.getJSONObject("result") != null) {
+                            dept_sub_id_list.addAll(result.getJSONObject("result").getBeanList("dept_id_list", String.class));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                // 反馈给循环条件
+                dept_id_list = dept_sub_id_list;
+                // 塞入结果数组
+                departmemtIdList.addAll(dept_sub_id_list);
+            }
+            return departmemtIdList;
+        } else {
+            return CollUtil.newArrayList();
+        }
+    }
+
+    /**
+     * 获得部门下所有用户列表，会将异常吞掉
+     */
+    public static JSONArray getUserListByDeptIds(String accessKey, String appSecret, List<String> deptIds) {
+        AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
+        if (tokenResponse.isSuccess()) {
+            int size = 10;
+            Map<String, JSONObject> userIdMap = new HashMap<>();
+            deptIds.forEach(deptId -> {
+                int cursor = 0;
+                while (cursor >= 0) {
+                    try {
+                        JSONObject result = JSONUtil.parseObj(HttpRequest.post("https://oapi.dingtalk.com/topapi/v2/user/list?access_token=" + tokenResponse.getAccess_token())
+                                .body(new JSONObject()
+                                        .set("dept_id", deptId)
+                                        .set("cursor", cursor)
+                                        .set("size", size)
+                                        .toString())
+                                .execute().body());
+                        if (result.getInt("errcode", -1) == 0 && result.getJSONObject("result") != null) {
+                            if (result.getJSONObject("result").getBool("has_more")) {
+                                cursor = result.getJSONObject("result").getInt("next_cursor");
+                            } else {
+                                cursor = -1;
+                            }
+                            for (int i = 0; i < result.getJSONObject("result").getJSONArray("list").size(); i++) {
+                                JSONObject user = result.getJSONObject("result").getJSONArray("list").getJSONObject(i);
+                                userIdMap.put(user.getStr("userid"), user);
+                            }
+                        } else {
+                            cursor = -1;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        cursor = -1;
+                    }
+                }
+            });
+            JSONArray userList = new JSONArray();
+            userIdMap.forEach((s, entries) -> userList.add(entries));
+            return userList;
+        } else {
+            return new JSONArray();
         }
     }
 
