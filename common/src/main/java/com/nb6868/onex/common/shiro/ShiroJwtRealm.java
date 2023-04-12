@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import com.nb6868.onex.common.auth.AuthConst;
@@ -48,6 +49,8 @@ public class ShiroJwtRealm extends BaseShiroRealm {
         // AuthenticationToken包含身份信息和认证信息，在Filter中塞入
         AssertUtils.isNull(authenticationToken.getCredentials(), ErrorCode.UNAUTHORIZED);
         String token = authenticationToken.getCredentials().toString();
+        // 适配token中带有Bearer的情况
+        token = StrUtil.removePrefix(StrUtil.removePrefix(token, "Bearer "), "bearer ");
         // 尝试解析为jwt
         JWT jwt = JwtUtils.parseToken(token);
         AssertUtils.isTrue(jwt == null || jwt.getPayload() == null || jwt.getPayload().getClaimsJson() == null, ErrorCode.UNAUTHORIZED);

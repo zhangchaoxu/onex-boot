@@ -3,6 +3,7 @@ package com.nb6868.onex.common.shiro;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -43,6 +44,8 @@ public class ShiroUuidRealm extends BaseShiroRealm {
         // AuthenticationToken包含身份信息和认证信息，在Filter中塞入
         AssertUtils.isNull(authenticationToken.getCredentials(), ErrorCode.UNAUTHORIZED);
         String token = authenticationToken.getCredentials().toString();
+        // 适配token中带有Bearer的情况
+        token = StrUtil.removePrefix(StrUtil.removePrefix(token, "Bearer "), "bearer ");
         // token存在数据库/缓存中
         Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
         AssertUtils.isNull(tokenEntity, ErrorCode.UNAUTHORIZED);
