@@ -474,9 +474,9 @@ public class DingTalkApi {
 
     /**
      * 获得所有的部门id,会将所有异常都吞掉
-     * @param accessKey
-     * @param appSecret
-     * @return
+     * @param accessKey key
+     * @param appSecret 密钥
+     * @return 部门id数组
      */
     public static List<String> getAllDeptIdList(String accessKey, String appSecret) {
         AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);

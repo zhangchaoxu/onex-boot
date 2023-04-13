@@ -29,18 +29,19 @@ public class SimpleShiroFilter extends BaseShiroFilter {
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
         // 请求token
         String token = HttpContextUtils.getRequestParameter((HttpServletRequest) request, tokenHeaderKey);
+        final String finalToken = StrUtil.removePrefix(StrUtil.removePrefix(token, "Bearer "), "bearer ");
         if (StrUtil.isNotBlank(token)) {
             return new AuthenticationToken() {
                 @Override
                 public String getPrincipal() {
                     // 身份
-                    return token;
+                    return finalToken;
                 }
 
                 @Override
                 public String getCredentials() {
                     // 证明
-                    return token;
+                    return finalToken;
                 }
             };
         }
