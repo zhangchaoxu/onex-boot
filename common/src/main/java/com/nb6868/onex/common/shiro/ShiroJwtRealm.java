@@ -4,8 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.auth.AuthProps;
@@ -80,8 +82,15 @@ public class ShiroJwtRealm extends BaseShiroRealm {
         AssertUtils.isNull(userEntity, ErrorCode.ACCOUNT_NOT_EXIST);
         // 账号锁定
         AssertUtils.isFalse(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ErrorCode.ACCOUNT_LOCK);
-        // 转换成UserDetail对象
-        ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
+        // 转换成UserDetail对象,setIgnoreError保证过程不出错，但可能会吞掉异常问题
+        ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true).setIgnoreError(true));
+        if (ObjectUtil.isNotEmpty(userEntity.get("ext_info"))) {
+            shiroUser.setExtInfo(JSONUtil.parseObj(userEntity.get("ext_info").toString()));
+        }
+        // 不要让ext_info为空
+        if (shiroUser.getExtInfo() == null) {
+            shiroUser.setExtInfo(new JSONObject());
+        }
         shiroUser.setLoginType(loginType);
         shiroUser.setLoginConfig(loginConfig);
         // token续期
