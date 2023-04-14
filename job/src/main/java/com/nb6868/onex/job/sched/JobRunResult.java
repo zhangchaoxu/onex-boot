@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class JobRunResult implements Serializable {
 
     @ApiModelProperty("将结果保存到数据库")
-    private Boolean logToDb;
+    private Boolean logToDb = false;
 
     @ApiModelProperty("结果")
     private JSONObject result;
