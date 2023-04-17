@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## [3.7.34] 2023.04.13
+## [3.7.36] 2023.04.13
 - upgrade: upgrade hutool to 5.8.17
 - fix: add header Bearer prefix
+- fix: JobRunResult add default storetype
 
 - ## [3.7.28] 2023.03.28
 - upgrade: upgrade aliyun-sdk-oss to 3.16.2
