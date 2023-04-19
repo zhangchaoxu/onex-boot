@@ -29,7 +29,7 @@ public abstract class BaseSwaggerConfig {
     private String description;
     @Value("${knife4j.version:1.0.0}")
     private String version;
-    @Value("${onex.auth.token-key:auth-token}")
+    @Value("${onex.auth.token-header-key:auth-token}")
     private String authTokenKey;
 
     @Bean("portal")
