@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.7.37] 2023.04.19
+- upgrade: upgrade hutool to 5.8.18
+- upgrade: upgrade bcprov-jdk15to18 to 1.73
+- fix: fix swagger token header key issue
+
 ## [3.7.36] 2023.04.13
 - upgrade: upgrade hutool to 5.8.17
 - fix: add header Bearer prefix
