@@ -4,6 +4,15 @@
 mysql设置为大小写不敏感 
 方法：修改/etc/my.cnf文件,在[mysqld]节点加入配置`lower_case_table_names = 1`,然后重启mysql(`service mysqld restart`)
 
+### 数据导出
+```shell
+# 导出，高版本连低版本会Unknown table ‘COLUMN_STATISTICS‘ in information_schema, 需要加--column-statistics=0 
+mysqldump -h{ip} -u{username} -p{password} --databases {dbname} >/data/sql/{filename}.sql
+
+# 压缩
+tar -zcvf {filename}.tar.gz {filename}.sql
+```
+
 ### 复制表结构
 ```mysql
 CREATE TABLE IF NOT EXISTS db1.a LIKE db2.a
