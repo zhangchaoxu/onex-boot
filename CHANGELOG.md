@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.7.39] 2023.04.24
+## [3.7.41] 2023.04.24
 - upgrade: upgrade springboot to 2.7.11
 - change: change GpsUtils
 

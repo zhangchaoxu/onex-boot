@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * 高德 Web服务 API
+ * https://lbs.amap.com/api/webservice/gettingstarted
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -46,6 +47,86 @@ public class AmapClient {
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
             log.error("Amap.geocodeRegeo error", e);
+            return new JSONObject().set("status", -1).set("msg", "接口调用异常");
+        }
+    }
+
+    /**
+     * 距离测量
+     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     */
+    public JSONObject distance(JSONObject paramMap) {
+        try {
+            TimeInterval timeInterval = DateUtil.timer();
+            String result = HttpUtil.get("https://restapi.amap.com/v3/distance", paramMap);
+            log.info("Amap.distance=>{}ms", timeInterval.interval());
+            return JSONUtil.parseObj(result);
+        } catch (Exception e) {
+            log.error("Amap.distance error", e);
+            return new JSONObject().set("status", -1).set("msg", "接口调用异常");
+        }
+    }
+
+    /**
+     * 步行路径规划
+     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     */
+    public JSONObject directionWalking(JSONObject paramMap) {
+        try {
+            TimeInterval timeInterval = DateUtil.timer();
+            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/walking", paramMap);
+            log.info("Amap.directionWalking=>{}ms", timeInterval.interval());
+            return JSONUtil.parseObj(result);
+        } catch (Exception e) {
+            log.error("Amap.directionWalking error", e);
+            return new JSONObject().set("status", -1).set("msg", "接口调用异常");
+        }
+    }
+
+    /**
+     * 驾车路径规划
+     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     */
+    public JSONObject directionDriving(JSONObject paramMap) {
+        try {
+            TimeInterval timeInterval = DateUtil.timer();
+            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/driving", paramMap);
+            log.info("Amap.directionDriving=>{}ms", timeInterval.interval());
+            return JSONUtil.parseObj(result);
+        } catch (Exception e) {
+            log.error("Amap.directionDriving error", e);
+            return new JSONObject().set("status", -1).set("msg", "接口调用异常");
+        }
+    }
+
+    /**
+     * 骑行路径规划
+     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     */
+    public JSONObject directionBicycling(JSONObject paramMap) {
+        try {
+            TimeInterval timeInterval = DateUtil.timer();
+            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/bicycling", paramMap);
+            log.info("Amap.directionBicycling=>{}ms", timeInterval.interval());
+            return JSONUtil.parseObj(result);
+        } catch (Exception e) {
+            log.error("Amap.directionBicycling error", e);
+            return new JSONObject().set("status", -1).set("msg", "接口调用异常");
+        }
+    }
+
+    /**
+     * 公交路径规划
+     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     */
+    public JSONObject directionTransit(JSONObject paramMap) {
+        try {
+            TimeInterval timeInterval = DateUtil.timer();
+            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/transit/integrated", paramMap);
+            log.info("Amap.directionTransit=>{}ms", timeInterval.interval());
+            return JSONUtil.parseObj(result);
+        } catch (Exception e) {
+            log.error("Amap.directionTransit error", e);
             return new JSONObject().set("status", -1).set("msg", "接口调用异常");
         }
     }

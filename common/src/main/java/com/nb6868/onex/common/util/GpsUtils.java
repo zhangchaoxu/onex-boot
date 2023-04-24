@@ -110,35 +110,31 @@ public class GpsUtils {
     /**
      * 判断坐标是否在国内
      *
-     * @param latitude  纬度
-     * @param longitude 经度
+     * @param lngLat    经纬度
      * @param precision 是否精确判断范围
      * @return true 在国外，false 在国内
      */
-    public static boolean isOutOfChina(double latitude, double longitude, boolean precision) {
+    public static boolean isOutOfChina(LngLat lngLat, boolean precision) {
         if (precision) {
-            return CHINA_POLYGON.stream().noneMatch(point -> pointInPolygon(point, latitude, longitude));
+            return CHINA_POLYGON.stream().noneMatch(point -> pointInPolygon(point, lngLat));
         } else {
-            if (longitude < 72.004 || longitude > 137.8347) {
-                return true;
-            }
-            return latitude < 0.8293 || latitude > 55.8271;
+            return lngLat.getLng() < 72.004 || lngLat.getLng() > 137.8347 || lngLat.getLat() < 0.8293 || lngLat.getLat() > 55.8271;
         }
     }
 
     private static LngLat calDev(LngLat point) {
-        if (isOutOfChina(point.getLat(), point.getLng(), false)) {
-            return new LngLat(point.getLat(), point.getLat());
+        if (isOutOfChina(point, false)) {
+            return point;
         }
         double dLat = calLat(point.getLng() - 105.0, point.getLat() - 35.0);
-        double dLon = calLon(point.getLng() - 105.0, point.getLat() - 35.0);
+        double dLng = calLon(point.getLng() - 105.0, point.getLat() - 35.0);
         double radLat = point.getLat() / 180.0 * PI;
         double magic = Math.sin(radLat);
         magic = 1 - EE * magic * magic;
         double sqrtMagic = Math.sqrt(magic);
         dLat = (dLat * 180.0) / ((A * (1 - EE)) / (magic * sqrtMagic) * PI);
-        dLon = (dLon * 180.0) / (A / sqrtMagic * Math.cos(radLat) * PI);
-        return new LngLat(dLat, dLon);
+        dLng = (dLng * 180.0) / (A / sqrtMagic * Math.cos(radLat) * PI);
+        return new LngLat(dLng, dLat);
     }
 
     private static double calLat(double x, double y) {
@@ -160,45 +156,27 @@ public class GpsUtils {
     /**
      * 检查坐标点是否在多边形区域内
      *
-     * @param polygon   多边形
-     * @param latitude  纬度
-     * @param longitude 经度
+     * @param polygon 多边形
+     * @param lngLat  经纬度
      * @return true 在多边形区域内，false 在多边形区域外
      */
-    private static boolean pointInPolygon(LngLat[] polygon, double latitude, double longitude) {
+    private static boolean pointInPolygon(LngLat[] polygon, LngLat lngLat) {
         int i, j = polygon.length - 1;
         boolean oddNodes = false;
         for (i = 0; i < polygon.length; i++) {
-            if ((polygon[i].getLat() < latitude && polygon[j].getLat() >= latitude
-                    || polygon[j].getLat() < latitude && polygon[i].getLat() >= latitude)
-                    && (polygon[i].getLng() <= longitude || polygon[j].getLng() <= longitude)) {
+            if ((polygon[i].getLat() < lngLat.getLat() && polygon[j].getLat() >= lngLat.getLat()
+                    || polygon[j].getLat() < lngLat.getLat() && polygon[i].getLat() >= lngLat.getLat())
+                    && (polygon[i].getLng() <= lngLat.getLng() || polygon[j].getLng() <= lngLat.getLng())) {
                 if (polygon[i].getLng()
-                        + (latitude - polygon[i].getLat()) / (polygon[j].getLat() - polygon[i].getLat())
+                        + (lngLat.getLat() - polygon[i].getLat()) / (polygon[j].getLat() - polygon[i].getLat())
                         * (polygon[j].getLng() - polygon[i].getLng())
-                        < longitude) {
+                        < lngLat.getLng()) {
                     oddNodes = !oddNodes;
                 }
             }
             j = i;
         }
         return oddNodes;
-    }
-
-    /**
-     * 经纬度点
-     */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class LngLat {
-        private double lng;
-        private double lat;
-
-        @Override
-        public String toString() {
-            return lng + "," + lat;
-        }
     }
 
     //region 中国行政边界的WGS84坐标数据
@@ -793,5 +771,22 @@ public class GpsUtils {
         CHINA_POLYGON.add(TAIWAN);
         CHINA_POLYGON.add(HAINAN);
         CHINA_POLYGON.add(CHONGMING);
+    }
+
+    /**
+     * 经纬度点
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class LngLat {
+        private double lng;
+        private double lat;
+
+        @Override
+        public String toString() {
+            return lng + "," + lat;
+        }
     }
 }
