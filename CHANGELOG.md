@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.38] 2023.04.23
+- upgrade: upgrade springboot to 2.7.11
+
 ## [3.7.37] 2023.04.19
 - upgrade: upgrade hutool to 5.8.18
 - upgrade: upgrade bcprov-jdk15to18 to 1.73
