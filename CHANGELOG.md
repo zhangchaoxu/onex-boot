@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.7.38] 2023.04.23
+## [3.7.39] 2023.04.24
 - upgrade: upgrade springboot to 2.7.11
+- change: change GpsUtils
 
 ## [3.7.37] 2023.04.19
 - upgrade: upgrade hutool to 5.8.18
