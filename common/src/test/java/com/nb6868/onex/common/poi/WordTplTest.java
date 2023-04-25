@@ -9,14 +9,12 @@ import cn.hutool.core.img.Img;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.util.WordTplUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFPictureData;
-import org.apache.xmlbeans.XmlOptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -119,35 +117,29 @@ public class WordTplTest {
         List<Map<String, Object>> paramsList = initListParams();
         params.put("shopList", paramsList);
 
+        XWPFDocument doc  = null;
         FileOutputStream fos = null;
         // 页码
         String filePath = "测试报告-" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".docx";
         try {
-            ParseWord07 parseWord07 = new ParseWord07();
+            List<WordTplUtils.ExportParams> exportParamsList = new ArrayList<>();
             // 头部
-            MyXWPFDocument doc = WordCache.getXWPFDocument(tplPath1);
-            parseWord07.parseWord(doc, params);
-            doc.createParagraph().setPageBreak(false);
-            // 中间循环
-            for (int i = 0; i < paramsList.size(); i++) {
-                MyXWPFDocument tempDoc = WordCache.getXWPFDocument(tplPath2);
-                parseWord07.parseWord(tempDoc, paramsList.get(i));
-                tempDoc.createParagraph().setPageBreak(false);
-                //doc.getDocument().addNewBody().set(tempDoc.getDocument().getBody());
-                docMerge(doc, tempDoc, Document.PICTURE_TYPE_PNG);
-            }
+            exportParamsList.add(new WordTplUtils.ExportParams(tplPath1, params, false, Document.PICTURE_TYPE_PNG));
+            // 中间
+            paramsList.forEach(stringObjectMap -> {
+                // 循环
+                exportParamsList.add(new WordTplUtils.ExportParams(tplPath2, stringObjectMap, false, Document.PICTURE_TYPE_PNG));
+            });
             // 尾部
-            MyXWPFDocument doc3 = WordCache.getXWPFDocument(tplPath3);
-            parseWord07.parseWord(doc3, params);
-            doc3.createParagraph().setPageBreak(false);
-            // doc.getDocument().addNewBody().set(doc3.getDocument().getBody());
-            docMerge(doc, doc3, Document.PICTURE_TYPE_PNG);
+            exportParamsList.add(new WordTplUtils.ExportParams(tplPath3, params, false, Document.PICTURE_TYPE_PNG));
 
+            doc = WordTplUtils.exportWord07Merge(exportParamsList);
             fos = new FileOutputStream("C:\\Workspaces\\coderTest\\" + filePath);
             doc.write(fos);
         } catch (Exception e) {
             log.error("报告文件生成失败", e);
         } finally {
+            IoUtil.close(doc);
             IoUtil.close(fos);
         }
     }
@@ -177,7 +169,7 @@ public class WordTplTest {
                 parseWord07.parseWord(tempDoc, paramsList.get(i));
                 tempDoc.createParagraph().setPageBreak(false);
                 // doc.getDocument().addNewBody().set(tempDoc.getDocument().getBody());
-                docMerge(doc, tempDoc, Document.PICTURE_TYPE_PNG);
+                WordTplUtils.docMerge(doc, tempDoc, Document.PICTURE_TYPE_PNG);
             }
             fos = new FileOutputStream("C:\\Workspaces\\coderTest\\" + filePath);
             doc.write(fos);
@@ -188,46 +180,4 @@ public class WordTplTest {
         }
     }
 
-    /**
-     * 文档拼接
-     * see https://gitee.com/lemur/easypoi/issues/I41WMF
-     * @param src    被添加的文档
-     * @param append 添加的文档
-     * @param pictureFormat 图片格式，Document.PICTURE_TYPE_PNG/Document.PICTURE_TYPE_JPG
-     */
-    public static void docMerge(XWPFDocument src, XWPFDocument append, int pictureFormat) throws Exception {
-        CTBody src1Body = src.getDocument().getBody();
-        CTBody src2Body = append.getDocument().getBody();
-        List<XWPFPictureData> allPictures = append.getAllPictures();
-        // 记录图片合并前及合并后的ID
-        Map<String, String> map = new HashMap<>();
-        for (XWPFPictureData picture : allPictures) {
-            String before = append.getRelationId(picture);
-            // 将原文档中的图片加入到目标文档中
-            String after = src.addPictureData(picture.getData(), pictureFormat);
-            map.put(before, after);
-        }
-        bodyMerge(src1Body, src2Body, map);
-    }
-
-    private static void bodyMerge(CTBody src, CTBody append, Map<String, String> map) throws Exception {
-        XmlOptions optionsOuter = new XmlOptions();
-        optionsOuter.setSaveOuter();
-        String appendString = append.xmlText(optionsOuter);
-
-        String srcString = src.xmlText();
-        String prefix = srcString.substring(0, srcString.indexOf(">") + 1);
-        String mainPart = srcString.substring(srcString.indexOf(">") + 1, srcString.lastIndexOf("<"));
-        String sufix = srcString.substring(srcString.lastIndexOf("<"));
-        String addPart = appendString.substring(appendString.indexOf(">") + 1, appendString.lastIndexOf("<"));
-        if (map != null && !map.isEmpty()) {
-            // 对xml字符串中图片ID进行替换
-            for (Map.Entry<String, String> set : map.entrySet()) {
-                addPart = addPart.replace(set.getKey(), set.getValue());
-            }
-        }
-        // 将两个文档的xml内容进行拼接
-        CTBody makeBody = CTBody.Factory.parse(prefix + mainPart + addPart + sufix);
-        src.set(makeBody);
-    }
 }
