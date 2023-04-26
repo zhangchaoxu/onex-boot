@@ -11,10 +11,10 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.util.WordTplUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.xwpf.usermodel.Document;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFonts;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -177,6 +177,39 @@ public class WordTplTest {
             log.error("报告文件生成失败", e);
         } finally {
             IoUtil.close(fos);
+        }
+    }
+
+    /**
+     * 修改表格的字体
+     *
+     * XWPFTable 从XWPFDocument.getTables获取
+     * 需要添加依赖org.apache.poi:ooxml-schemas:1.4
+     *
+     * see {https://blog.csdn.net/LaneDu/article/details/108637439}
+     */
+    public static void changeTableFont(XWPFTable sourceTable, String fontName) {
+        //获取所有的行数
+        int size = sourceTable.getRows().size();
+        for (int i = 1; i < size; i++) {
+            //获取每一行
+            XWPFTableRow row = sourceTable.getRow(i);
+            List<XWPFTableCell> cellList = row.getTableCells();
+            //获取每一行空格的总个数
+            final int cellSize = cellList.size();
+            //进行循环遍历修改每一个空格的样式,标题行不修改样式
+            for (int j = 0; j < cellSize && cellSize > 1; j++) {
+                //全网独一份，根据模板的样式设置总的样式
+                CTFonts tmpFonts = row.getCell(j).getParagraphs().get(0).getRuns().get(0).getCTR().getRPr().getRFonts();
+                // tmpFonts.setHint(tmpFonts0.getHint());
+                tmpFonts.setAscii(fontName);
+                tmpFonts.setEastAsia(fontName);
+                tmpFonts.setHAnsi(fontName);
+                tmpFonts.setCs("Arial");
+                tmpFonts.unsetAsciiTheme();
+                tmpFonts.unsetEastAsiaTheme();
+                tmpFonts.unsetHAnsiTheme();
+            }
         }
     }
 
