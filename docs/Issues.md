@@ -120,6 +120,14 @@ mv /www/server/panel/data/bind.pl /www/server/panel/data/bind.pl.bak
 2. 本地代码与远程代码需要保持一致
 3. console不会打印出信息,只能在断点寻找需要的信息
 
-## 12. 在DAO中使用<script>报错org.xml.sax.SAXParseException; lineNumber: 1; columnNumbe
+## 12. 在DAO中使用<script>报错org.xml.sax.SAXParseException; lineNumber: 1; columnNumber
 - 原因：这是由于在sql中含有< >等符号，编译出现错误
 - 解决：`<`替换为`&lt;` `>`替换为`&gt;`  
+
+## 13. 在RequestBody接收参数时，部分参数明明传参了，但接收到的是null
+- 原因：部分参数命名由于不符合Java规范，使用了首字母大写(如PID)或者第二个字母大写(pId)，导致注入失败
+- 解决：使用ApiModelProperty声明传参名
+```java
+@JsonProperty("PID")
+private String pId;
+``` 
