@@ -110,7 +110,7 @@ mv /www/server/panel/data/bind.pl /www/server/panel/data/bind.pl.bak
 在部分开发时候,需要使用服务器的环境,然后服务器上无法debug,可以使用使用Intellij IDEA的远程调试功能
 
 1. 在IDEA中添加一个远程调试
-   ![img](../_media/remote_debug.png)
+   ![img](./_media/remote_debug.png)
 2. 在服务端开启运行的参数加入
 `-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8890`
 3. 开启debug,加入断点即可
@@ -120,7 +120,8 @@ mv /www/server/panel/data/bind.pl /www/server/panel/data/bind.pl.bak
 2. 本地代码与远程代码需要保持一致
 3. console不会打印出信息,只能在断点寻找需要的信息
 
-## 12. 在DAO中使用<script>报错org.xml.sax.SAXParseException; lineNumber: 1; columnNumber
+## 12. 在DAO中使用script报错
+提示错误org.xml.sax.SAXParseException; lineNumber: 1; columnNumber
 - 原因：这是由于在sql中含有< >等符号，编译出现错误
 - 解决：`<`替换为`&lt;` `>`替换为`&gt;`  
 
