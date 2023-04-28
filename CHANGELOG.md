@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.7.42] 2023.04.28
+## [3.7.43] 2023.04.28
 - fix: change AmapClient to AmapUtils, and change method to static
 
 ## [3.7.41] 2023.04.24

@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>3.7.42</version>
+    <version>3.7.43</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -67,6 +67,7 @@
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <!-- libs -->
         <shiro.version>1.11.0</shiro.version>
+        <onex.version>3.7.43</onex.version>
     </properties>
 
     <dependencies>
@@ -205,6 +206,15 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <!-- 统一子模块版本号 -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                        <version>2.15.0</version>
+                        <configuration>
+                            <generateBackupPoms>false</generateBackupPoms>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
