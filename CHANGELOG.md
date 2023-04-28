@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.42] 2023.04.28
+- fix: change AmapClient to AmapUtils, and change method to static
+
 ## [3.7.41] 2023.04.24
 - upgrade: upgrade springboot to 2.7.11
 - change: change GpsUtils

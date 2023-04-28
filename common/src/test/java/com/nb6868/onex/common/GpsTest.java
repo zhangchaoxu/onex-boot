@@ -1,7 +1,7 @@
 package com.nb6868.onex.common;
 
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.util.AmapClient;
+import com.nb6868.onex.common.util.AmapUtils;
 import com.nb6868.onex.common.util.GpsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ public class GpsTest {
     @DisplayName("高德测试")
     @Test
     void testAmap() {
-        AmapClient amapClient = new AmapClient();
+        AmapUtils amapClient = new AmapUtils();
 
         GpsUtils.LngLat lngLat = new GpsUtils.LngLat(121.570626, 29.90893);
         JSONObject geocodeRegeoForm = new JSONObject()
