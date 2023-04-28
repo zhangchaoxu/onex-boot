@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 /**
  * 高德 Web服务 API
- * https://lbs.amap.com/api/webservice/gettingstarted
+ * 高德有应该隐藏参数s=rsv3,可以将webApi的接口当前端接口用,避免USERKEY_PLAT_NOMATCH的问题
+ *
+ * <a href="https://lbs.amap.com/api/webservice/gettingstarted">...</a>
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -19,14 +21,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AmapClient {
 
+    private static final String BASE_URL = "https://restapi.amap.com";
+
     /**
      * 地理编码
-     * see https://lbs.amap.com/api/webservice/guide/api/georegeo
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/georegeo">...</a>
      */
     public JSONObject geocodeGeo(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/geocode/geo", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/geocode/geo", paramMap);
             log.info("Amap.geocodeGeo=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -37,12 +41,12 @@ public class AmapClient {
 
     /**
      * 逆地理编码
-     * see https://lbs.amap.com/api/webservice/guide/api/georegeo
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/georegeo">...</a>
      */
     public JSONObject geocodeRegeo(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/geocode/regeo", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/geocode/regeo", paramMap);
             log.info("Amap.geocodeRegeo=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -53,12 +57,12 @@ public class AmapClient {
 
     /**
      * 距离测量
-     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public JSONObject distance(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/distance", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/distance", paramMap);
             log.info("Amap.distance=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -69,12 +73,12 @@ public class AmapClient {
 
     /**
      * 步行路径规划
-     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public JSONObject directionWalking(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/walking", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/direction/walking", paramMap);
             log.info("Amap.directionWalking=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -85,12 +89,12 @@ public class AmapClient {
 
     /**
      * 驾车路径规划
-     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public JSONObject directionDriving(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/driving", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/direction/driving", paramMap);
             log.info("Amap.directionDriving=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -101,12 +105,12 @@ public class AmapClient {
 
     /**
      * 骑行路径规划
-     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public JSONObject directionBicycling(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/bicycling", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/direction/bicycling", paramMap);
             log.info("Amap.directionBicycling=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -117,12 +121,12 @@ public class AmapClient {
 
     /**
      * 公交路径规划
-     * see https://lbs.amap.com/api/webservice/guide/api/direction
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public JSONObject directionTransit(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/direction/transit/integrated", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/direction/transit/integrated", paramMap);
             log.info("Amap.directionTransit=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -133,20 +137,20 @@ public class AmapClient {
 
     /**
      * 静态地图
-     * see https://lbs.amap.com/api/webservice/guide/api/staticmaps
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/staticmaps">...</a>
      */
     public String staticmap(JSONObject paramMap) {
-        return StrUtil.format("https://restapi.amap.com/v3/staticmap?{}", HttpUtil.toParams(paramMap));
+        return StrUtil.format(BASE_URL + "/v3/staticmap?{}", HttpUtil.toParams(paramMap));
     }
 
     /**
      * 天气查询
-     * see https://lbs.amap.com/api/webservice/guide/api/weatherinfo
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/weatherinfo">...</a>
      */
     public JSONObject weatherInfo(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/weather/weatherInfo", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/weather/weatherInfo", paramMap);
             log.info("Amap.weatherInfo=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -157,12 +161,12 @@ public class AmapClient {
 
     /**
      * IP定位
-     * see https://lbs.amap.com/api/webservice/guide/api/ipconfig
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/ipconfig">...</a>
      */
     public JSONObject ip(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/ip", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/ip", paramMap);
             log.info("Amap.ip=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -173,12 +177,12 @@ public class AmapClient {
 
     /**
      * 坐标转换
-     * see https://lbs.amap.com/api/webservice/guide/api/convert
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/convert">...</a>
      */
     public JSONObject coordinateConvert(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/assistant/coordinate/convert", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/assistant/coordinate/convert", paramMap);
             log.info("Amap.coordinateConvert=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -187,15 +191,46 @@ public class AmapClient {
         }
     }
 
+    /**
+     * 行政区域查询
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/district">...</a>
+     */
+    public JSONObject district(JSONObject paramMap) {
+        try {
+            TimeInterval timeInterval = DateUtil.timer();
+            String result = HttpUtil.get(BASE_URL + "/v3/config/district", paramMap);
+            log.info("Amap.district=>{}ms", timeInterval.interval());
+            return JSONUtil.parseObj(result);
+        } catch (Exception e) {
+            log.error("Amap.district error", e);
+            return new JSONObject().set("status", -1).set("msg", "接口调用异常");
+        }
+    }
+
+    /**
+     * 输入提示
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/inputtips">...</a>
+     */
+    public JSONObject inputtips(JSONObject paramMap) {
+        try {
+            TimeInterval timeInterval = DateUtil.timer();
+            String result = HttpUtil.get(BASE_URL + "/v3/assistant/inputtips", paramMap);
+            log.info("Amap.inputtips=>{}ms", timeInterval.interval());
+            return JSONUtil.parseObj(result);
+        } catch (Exception e) {
+            log.error("Amap.inputtips error", e);
+            return new JSONObject().set("status", -1).set("msg", "接口调用异常");
+        }
+    }
 
     /**
      * 搜索POI
-     * see https://lbs.amap.com/api/webservice/guide/api/search
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/search">...</a>
      */
     public JSONObject poi(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v3/place/text", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v3/place/text", paramMap);
             log.info("Amap.poi=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
@@ -206,12 +241,12 @@ public class AmapClient {
 
     /**
      * 搜索POI 2.0
-     * see https://lbs.amap.com/api/webservice/guide/api/newpoisearch
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/newpoisearch">...</a>
      */
     public JSONObject poiV2(JSONObject paramMap) {
         try {
             TimeInterval timeInterval = DateUtil.timer();
-            String result = HttpUtil.get("https://restapi.amap.com/v5/place/text", paramMap);
+            String result = HttpUtil.get(BASE_URL + "/v5/place/text", paramMap);
             log.info("Amap.poiV2=>{}ms", timeInterval.interval());
             return JSONUtil.parseObj(result);
         } catch (Exception e) {
