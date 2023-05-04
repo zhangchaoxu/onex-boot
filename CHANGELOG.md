@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.44] 2023.05.04
+- upgrade: upgrade jsoup to 1.16.1
+
 ## [3.7.43] 2023.04.28
 - fix: change AmapClient to AmapUtils, and change method to static
 

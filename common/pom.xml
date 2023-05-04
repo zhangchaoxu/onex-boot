@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.7.43</version>
+        <version>3.7.44</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -22,7 +22,7 @@
         <mybatisplus.version>3.5.3.1</mybatisplus.version>
         <hutool.version>5.8.18</hutool.version>
         <bcprov.version>1.73</bcprov.version>
-        <jsoup.version>1.15.4</jsoup.version>
+        <jsoup.version>1.16.1</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.5.0</weixin.version>
         <aliyun.oss.version>3.16.2</aliyun.oss.version>

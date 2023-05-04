@@ -1,1 +1,1 @@
-mvn versions:set -DnewVersion:
+mvn versions:set -DnewVersion:3.7.44
