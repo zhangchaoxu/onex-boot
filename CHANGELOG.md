@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.7.45] 2023.05.08
+- upgrade: upgrade esdk-obs-java-bundle 3.23.3
+- upgrade: upgrade aliyun-sdk-oss 3.16.3
+
 ## [3.7.44] 2023.05.04
 - upgrade: upgrade jsoup to 1.16.1
 
