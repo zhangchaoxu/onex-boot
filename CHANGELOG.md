@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [3.7.45] 2023.05.08
+## [3.7.46] 2023.05.08
 - upgrade: upgrade esdk-obs-java-bundle 3.23.3
 - upgrade: upgrade aliyun-sdk-oss 3.16.3
 
