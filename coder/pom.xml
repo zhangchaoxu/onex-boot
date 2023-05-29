@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.7.48</version>
+        <version>3.7.49</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>coder</artifactId>
@@ -16,9 +16,9 @@
         <skipTests>true</skipTests>
         <!-- version -->
         <mybatisplus.version>3.5.3.1</mybatisplus.version>
-        <druid.version>1.2.16</druid.version>
+        <druid.version>1.2.18</druid.version>
         <commons.configuration.version>1.10</commons.configuration.version>
-        <hutool.version>5.8.18</hutool.version>
+        <hutool.version>5.8.19</hutool.version>
         <velocity.version>1.7</velocity.version>
         <commons.collections.version>3.2.2</commons.collections.version>
         <screw.version>1.0.5</screw.version>
