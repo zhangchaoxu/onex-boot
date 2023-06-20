@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.7.50] 2023.06.20
+- upgrade: upgrade druid to 1.2.18
+- upgrade: upgrade hutool to 5.8.20
+- upgrade: upgrade bcprov to 1.74
+
 ## [3.7.46] 2023.05.08
 - upgrade: upgrade esdk-obs-java-bundle 3.23.3
 - upgrade: upgrade aliyun-sdk-oss 3.16.3
