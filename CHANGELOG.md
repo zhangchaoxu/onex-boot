@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.7.51] 2023.06.25
+- upgrade: upgrade springboot to 2.7.13
+- upgrade: upgrade aliyun oss to 3.17.0
+- upgrade: upgrade bcprov to 1.75
+
 ## [3.7.50] 2023.06.20
 - upgrade: upgrade druid to 1.2.18
 - upgrade: upgrade hutool to 5.8.20
