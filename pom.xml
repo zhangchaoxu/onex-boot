@@ -67,7 +67,7 @@
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <!-- libs -->
         <shiro.version>1.11.0</shiro.version>
-        <onex.version>3.7.5</onex.version>
+        <onex.version>3.7.51</onex.version>
     </properties>
 
     <dependencies>
