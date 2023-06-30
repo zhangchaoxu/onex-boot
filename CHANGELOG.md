@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.52] 2023.06.30
+- enhance: enhance querywrapper
+
 ## [3.7.51] 2023.06.25
 - upgrade: upgrade springboot to 2.7.13
 - upgrade: upgrade aliyun oss to 3.17.0
