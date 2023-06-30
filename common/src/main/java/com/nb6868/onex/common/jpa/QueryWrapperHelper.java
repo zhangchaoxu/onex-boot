@@ -150,7 +150,7 @@ public class QueryWrapperHelper {
                                 queryWrapper.ge(ObjectUtil.isNotEmpty(val), column, val);
                                 break;
                             case GT:
-                                queryWrapper.gt( ObjectUtil.isNotEmpty(val), column, val);
+                                queryWrapper.gt(ObjectUtil.isNotEmpty(val), column, val);
                                 break;
                             case LE:
                                 queryWrapper.le(ObjectUtil.isNotEmpty(val), column, val);
@@ -177,13 +177,48 @@ public class QueryWrapperHelper {
                                 queryWrapper.apply(ObjectUtil.isNotEmpty(val), columnFinal, val);
                                 break;
                             case IN:
-                                if (ObjectUtil.isNotEmpty(val) && val instanceof Collection) {
-                                    queryWrapper.in(column, (Collection<?>) val);
+                                // 对于IN和NOT_IN做了优化
+                                // 优化点1: 支持String分割符，支持List
+                                // 优化点2：对于只有1个长度的，直接用EQ或NE,多个的才IN或NOT_IN
+                                if (ObjectUtil.isNotEmpty(val)) {
+                                    if (val instanceof String) {
+                                        // 字符串，做分割
+                                        List<String> inSplitList = StrUtil.splitTrim(val.toString(), q.inSeparator());
+                                        if (CollUtil.isNotEmpty(inSplitList)) {
+                                            if (inSplitList.size() == 1) {
+                                                queryWrapper.eq(column, inSplitList.get(0));
+                                            } else {
+                                                queryWrapper.in(column, inSplitList);
+                                            }
+                                        }
+                                    } else if (val instanceof Collection) {
+                                        if (val instanceof List && ((List<?>) val).size() == 1) {
+                                            queryWrapper.eq(column, ((List<?>) val).get(0));
+                                        } else {
+                                            queryWrapper.in(column, (Collection<?>) val);
+                                        }
+                                    }
                                 }
                                 break;
                             case NOT_IN:
-                                if (ObjectUtil.isNotEmpty(val) && val instanceof Collection) {
-                                    queryWrapper.notIn(column, (Collection<?>) val);
+                                if (ObjectUtil.isNotEmpty(val)) {
+                                    if (val instanceof String) {
+                                        // 字符串，做分割
+                                        List<String> inSplitList = StrUtil.splitTrim(val.toString(), q.inSeparator());
+                                        if (CollUtil.isNotEmpty(inSplitList)) {
+                                            if (inSplitList.size() == 1) {
+                                                queryWrapper.ne(column, inSplitList.get(0));
+                                            } else {
+                                                queryWrapper.notIn(column, inSplitList);
+                                            }
+                                        }
+                                    } else if (val instanceof Collection) {
+                                        if (val instanceof List && ((List<?>) val).size() == 1) {
+                                            queryWrapper.ne(column, ((List<?>) val).get(0));
+                                        } else {
+                                            queryWrapper.notIn(column, (Collection<?>) val);
+                                        }
+                                    }
                                 }
                                 break;
                             case NULL:

@@ -17,6 +17,9 @@ public @interface Query {
     // 基本对象的属性名
     String column() default "";
 
+    // IN或者NOT_IN，若是字符串的拼接字符
+    String inSeparator() default ",";
+
     // 排查查询方法
     String[] exclude() default {};
 
@@ -29,6 +32,7 @@ public @interface Query {
     // 多字段匹配方式
     BlurryType blurryType() default BlurryType.NULL;
 
+    // 多字段匹配方式枚举
     enum BlurryType {
         // null
         NULL,
@@ -38,6 +42,7 @@ public @interface Query {
         , OR
     }
 
+    // 匹配方式枚举
     enum Type {
         // 相等
         EQ
@@ -61,9 +66,9 @@ public @interface Query {
         , LIKE_RIGHT
         // 小于
         , LT
-        // 包含
+        // 包含,支持数组或者拼接字符串
         , IN
-        // 不包含
+        // 不包含,支持数组或者拼接字符串
         , NOT_IN
         // 不等于
         , NE
