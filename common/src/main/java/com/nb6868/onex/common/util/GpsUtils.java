@@ -1,12 +1,14 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 地理位置工具
@@ -177,6 +179,114 @@ public class GpsUtils {
             j = i;
         }
         return oddNodes;
+    }
+
+
+    /**
+     * kmeans聚合
+     *
+     * @param clusterNum 聚类的数目
+     */
+    public static JSONArray kmeansClusterResult(List<GpsUtils.LngLat> dataset, int clusterNum) {
+        Map<LngLat, List<LngLat>> cluster = kmeansCluster(dataset, clusterNum);
+        JSONArray result = new JSONArray();
+        cluster.forEach((lngLat, lngLats) -> {
+            if (CollUtil.isNotEmpty(lngLats) && null != lngLat && lngLat.getLat() > 0 && lngLat.getLng() > 0) {
+                result.put(new JSONObject().set("lat", lngLat.getLat()).set("lng", lngLat.getLng()).set("count", lngLats.size()));
+            }
+        });
+        return result;
+    }
+
+    /**
+     * kmeans聚合
+     *
+     * @param clusterNum 聚类的数目
+     */
+    public static Map<LngLat, List<LngLat>> kmeansCluster(List<GpsUtils.LngLat> dataset, int clusterNum) {
+        // 随机从样本集合中选取k个样本点作为聚簇中心
+        // 每个聚簇中心有哪些点
+        Map<GpsUtils.LngLat, List<GpsUtils.LngLat>> nowClusterCenterMap = new HashMap<>();
+        for (int i = 0; i < clusterNum; i++) {
+            Random random = new Random();
+            int num = random.nextInt(dataset.size());
+            GpsUtils.LngLat point = dataset.get(num);
+            if (!nowClusterCenterMap.containsKey(point)) {
+                nowClusterCenterMap.put(dataset.get(num), new ArrayList<>());
+            } else {
+                boolean flag = true;
+                while (flag) {
+                    Random random2 = new Random();
+                    int num2 = random2.nextInt(dataset.size());
+                    GpsUtils.LngLat point2 = dataset.get(num2);
+                    if (!nowClusterCenterMap.containsKey(point2)) {
+                        nowClusterCenterMap.put(dataset.get(num2), new ArrayList<>());
+                        flag = false;
+                    }
+                }
+            }
+        }
+
+        // 上一次的聚簇中心
+        Map<GpsUtils.LngLat, List<GpsUtils.LngLat>> lastClusterCenterMap = null;
+        // 找到离中心最近的点,然后加入以该中心为map键的list中
+        while (true) {
+            for (GpsUtils.LngLat point : dataset) {
+                double shortest = Double.MAX_VALUE;
+                GpsUtils.LngLat key = null;
+                for (Map.Entry<GpsUtils.LngLat, List<GpsUtils.LngLat>> entry : nowClusterCenterMap.entrySet()) {
+                    double distance = getDistance(point, entry.getKey());
+                    if (distance < shortest) {
+                        shortest = distance;
+                        key = entry.getKey();
+                    }
+                }
+                nowClusterCenterMap.get(key).add(point);
+            }
+            // 如果结果与上一次相同，则整个过程结束
+            if (isEqualCenter(lastClusterCenterMap, nowClusterCenterMap)) {
+                break;
+            }
+            lastClusterCenterMap = nowClusterCenterMap;
+            nowClusterCenterMap = new HashMap<>();
+            // 把中心点移到其所有成员的平均位置处,并构建新的聚簇中心
+            for (Map.Entry<GpsUtils.LngLat, List<GpsUtils.LngLat>> entry : lastClusterCenterMap.entrySet()) {
+                nowClusterCenterMap.put(getNewCenterPoint(entry.getValue()), new ArrayList<>());
+            }
+
+        }
+        return nowClusterCenterMap;
+    }
+
+    /**
+     * 判断前后两次是否是相同的聚簇中心，若是则程序结束，否则继续,直到相同
+     */
+    private static boolean isEqualCenter(Map<GpsUtils.LngLat, List<GpsUtils.LngLat>> lastClusterCenterMap, Map<GpsUtils.LngLat, List<GpsUtils.LngLat>> nowClusterCenterMap) {
+        if (lastClusterCenterMap == null) {
+            return false;
+        } else {
+            for (Map.Entry<GpsUtils.LngLat, List<GpsUtils.LngLat>> entry : lastClusterCenterMap.entrySet()) {
+                if (!nowClusterCenterMap.containsKey(entry.getKey())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 计算新的中心
+     */
+    private static GpsUtils.LngLat getNewCenterPoint(List<GpsUtils.LngLat> value) {
+        double sumX = 0.0, sumY = 0.0;
+        for (GpsUtils.LngLat point : value) {
+            sumX += point.getLng();
+            sumY += point.getLat();
+        }
+        GpsUtils.LngLat point = new GpsUtils.LngLat();
+        point.setLng(sumX / value.size());
+        point.setLat(sumY / value.size());
+        return point;
     }
 
     //region 中国行政边界的WGS84坐标数据
@@ -787,6 +897,17 @@ public class GpsUtils {
         @Override
         public String toString() {
             return lng + "," + lat;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            LngLat point = (LngLat) obj;
+            return this.getLng() == point.getLng() && this.getLat() == point.getLat();
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) (lng + lat);
         }
     }
 }

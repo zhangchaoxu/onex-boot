@@ -1,11 +1,19 @@
 package com.nb6868.onex.common;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.nb6868.onex.common.util.AmapUtils;
 import com.nb6868.onex.common.util.GpsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @DisplayName("Gps测试")
 @Slf4j
@@ -52,6 +60,25 @@ public class GpsTest {
                 .set("location", gcj02.toString());
         JSONObject resp2 = amapClient.geocodeRegeo(geocodeRegeoForm2);
         log.error("geocodeRegeo={}", resp2);
+    }
+
+    @DisplayName("kmeans聚合")
+    @Test
+    void testGpsKmeans() {
+        List<GpsUtils.LngLat> dataset = new ArrayList<>();
+        List<Map<String, Object>> list = ExcelUtil.getReader("C:\\Users\\Charles\\Documents\\WeChat Files\\goooodbye\\FileStorage\\File\\2023-07\\基本信息-桐庐-补充信息-20230704(1).xlsx").readAll();
+        for (Map<String, Object> map : list) {
+            Double lng = MapUtil.getDouble(map, "_经度");
+            Double lat = MapUtil.getDouble(map, "_纬度");
+            if (ObjectUtil.isNotEmpty(lat) && ObjectUtil.isNotEmpty(lng)) {
+                GpsUtils.LngLat point = new GpsUtils.LngLat();
+                point.setLng(lng);
+                point.setLat(lat);
+                dataset.add(point);
+            }
+        }
+        JSONArray result = GpsUtils.kmeansClusterResult(dataset, 200);
+        log.error("result=" + result);
     }
 
 }

@@ -1,5 +1,5 @@
 ## Office支持
-在系统中不可避免的会遇到各种Office类文件支持的内容，包括Excel的导入、
+在系统中不可避免的会遇到各种Office类文件支持的内容，包括Excel导入、Excel导出、
 系统集成[EasyPoi](https://gitee.com/lemur/easypoi)实现Excel导入导出等相关功能。
 
 ## Word模板导出
