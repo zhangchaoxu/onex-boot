@@ -66,7 +66,7 @@ public class GpsTest {
     @Test
     void testGpsKmeans() {
         List<GpsUtils.LngLat> dataset = new ArrayList<>();
-        List<Map<String, Object>> list = ExcelUtil.getReader("C:\\Users\\Charles\\Documents\\WeChat Files\\goooodbye\\FileStorage\\File\\2023-07\\基本信息-桐庐-补充信息-20230704(1).xlsx").readAll();
+        List<Map<String, Object>> list = ExcelUtil.getReader("20230704(1).xlsx").readAll();
         for (Map<String, Object> map : list) {
             Double lng = MapUtil.getDouble(map, "_经度");
             Double lat = MapUtil.getDouble(map, "_纬度");
