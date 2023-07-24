@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [3.7.53] 2023.07.24
+- upgrade: upgrade springboot to 2.7.14
+- upgrade: upgrade shiro to 1.12.0
+- change: change easypoi maven scope to provided 
+- change: change druid connect and socket timout to 10000000ms    
+
 ## [3.7.52] 2023.06.30
 - enhance: enhance querywrapper
 

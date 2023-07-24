@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.7.52</version>
+        <version>3.7.53</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -112,6 +112,7 @@
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-spring-boot-starter</artifactId>
             <version>${easypoi.version}</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>cn.afterturn</groupId>

@@ -66,8 +66,8 @@ spring:
     dynamic:
       druid:
         # 设置timeout毫秒
-        connect-timeout: 1000000
-        socket-timeout: 1000000
+        connect-timeout: 10000000
+        socket-timeout: 10000000
         filters: stat
     druid:
       # 管理面板
