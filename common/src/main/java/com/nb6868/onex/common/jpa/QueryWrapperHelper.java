@@ -266,8 +266,8 @@ public class QueryWrapperHelper {
                             // 分页接口中,需要过滤掉order和limit
                             case ORDER_BY:
                                 if (val instanceof List) {
-                                    CollUtil.emptyIfNull((List<SortItem>) val)
-                                            .forEach(sortItem -> queryWrapper.orderByAsc(sortItem.getAsc(), sortItem.getColumn()).orderByDesc(!sortItem.getAsc(), sortItem.getColumn()));
+                                    // 注意要将参数驼峰转下划线
+                                    CollUtil.emptyIfNull((List<SortItem>) val).forEach(sortItem -> queryWrapper.orderByAsc(StrUtil.isNotBlank(sortItem.getColumn()) && sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())).orderByDesc(StrUtil.isNotBlank(sortItem.getColumn()) && !sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())));
                                 }
                                 break;
                             case LIMIT:

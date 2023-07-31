@@ -1,8 +1,15 @@
 # CHANGELOG
 
+## [3.7.55] 2023.07.31
+- upgrade: upgrade hutool to 5.8.21
+
+## [3.7.54] 2023.07.27
+- enhance: enhance querywrapper, fix sort item camel case issue
+
 ## [3.7.53] 2023.07.24
 - upgrade: upgrade springboot to 2.7.14
 - upgrade: upgrade shiro to 1.12.0
+- upgrade: upgrade aliyun-oss to 3.17.1
 - change: change easypoi maven scope to provided 
 - change: change druid connect and socket timout to 10000000ms    
 

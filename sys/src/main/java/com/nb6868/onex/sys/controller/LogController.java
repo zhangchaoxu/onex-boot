@@ -12,7 +12,6 @@ import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.dto.LogDTO;
 import com.nb6868.onex.sys.dto.LogQueryForm;
 import com.nb6868.onex.sys.entity.LogEntity;
-import com.nb6868.onex.sys.excel.LogExcel;
 import com.nb6868.onex.sys.service.LogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +34,7 @@ import java.util.List;
 public class LogController {
 
     @Autowired
-    private LogService logService;
+    LogService logService;
 
     @PostMapping("page")
     @ApiOperation("分页")
@@ -46,18 +45,6 @@ public class LogController {
         PageData<LogDTO> page = logService.pageDto(form, queryWrapper);
 
         return new Result<>().success(page);
-    }
-
-    @PostMapping("export")
-    @ApiOperation("导出")
-    @LogOperation("导出")
-    @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:query"}, logical = Logical.OR)
-    public void export(@Validated @RequestBody LogQueryForm form, HttpServletResponse response) {
-        QueryWrapper<LogEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
-        List<LogDTO> list = logService.listDto(queryWrapper);
-
-        ExcelUtils.exportExcelToTarget(response, "日志", list, LogExcel.class);
     }
 
     @PostMapping("deleteBatch")
