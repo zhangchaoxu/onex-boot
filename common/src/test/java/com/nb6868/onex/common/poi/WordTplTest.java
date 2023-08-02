@@ -200,7 +200,7 @@ public class WordTplTest {
             //进行循环遍历修改每一个空格的样式,标题行不修改样式
             for (int j = 0; j < cellSize && cellSize > 1; j++) {
                 //全网独一份，根据模板的样式设置总的样式
-                CTFonts tmpFonts = row.getCell(j).getParagraphs().get(0).getRuns().get(0).getCTR().getRPr().getRFonts();
+                CTFonts tmpFonts = row.getCell(j).getParagraphs().get(0).getRuns().get(0).getCTR().getRPr().getRFontsArray(0);
                 // tmpFonts.setHint(tmpFonts0.getHint());
                 tmpFonts.setAscii(fontName);
                 tmpFonts.setEastAsia(fontName);

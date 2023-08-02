@@ -27,6 +27,7 @@
         <weixin.version>4.5.0</weixin.version>
         <aliyun.oss.version>3.17.1</aliyun.oss.version>
         <huaweicloud.obs.version>3.23.3</huaweicloud.obs.version>
+        <poi.version>5.2.3</poi.version>
         <easypoi.version>4.4.0</easypoi.version>
     </properties>
 
@@ -106,6 +107,13 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
+        </dependency>
+        <!-- poi -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- easypoi -->
         <dependency>

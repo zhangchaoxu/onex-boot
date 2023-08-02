@@ -45,9 +45,9 @@ import java.util.List;
 public class OssController {
 
     @Autowired
-    private OssService ossService;
+    OssService ossService;
     @Autowired
-    private BaseParamsService paramsService;
+    BaseParamsService paramsService;
 
     @PostMapping("uploadAnon")
     @ApiOperation(value = "匿名上传文件(文件形式)", notes = "@Anon")
