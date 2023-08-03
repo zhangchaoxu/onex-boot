@@ -13,6 +13,7 @@ import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.oss.OssLocalUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +35,7 @@ import java.util.List;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@ConditionalOnProperty(name = "onex.poi.easypoi", havingValue = "true", matchIfMissing = false)
 @Component
 public class ExcelUtils {
 
