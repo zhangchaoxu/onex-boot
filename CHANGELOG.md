@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.7.55] 2023.07.31
+## [3.7.57] 2023.08.04
 - upgrade: upgrade hutool to 5.8.21
+- upgrade: upgrade bcprov to 1.76
 
 ## [3.7.54] 2023.07.27
 - enhance: enhance querywrapper, fix sort item camel case issue
