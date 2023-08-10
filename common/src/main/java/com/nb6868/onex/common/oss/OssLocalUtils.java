@@ -4,6 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,9 @@ public class OssLocalUtils {
     public final static String FILENAME_XLSX_SUFFIX = ".xlsx";
 
     // 文件存储路径
+    @Getter
     private static String ossFileStoragePath;
+    @Getter
     private static String ossFileRequestPath;
 
     @Value("${onex.oss.file-storage-path}")
@@ -41,14 +44,6 @@ public class OssLocalUtils {
 
     public static String getOssRequestPrefix() {
         return ossFileRequestPath.replaceAll("\\*", "");
-    }
-
-    public static String getOssFileRequestPath() {
-        return ossFileRequestPath;
-    }
-
-    public static String getOssFileStoragePath() {
-        return ossFileStoragePath;
     }
 
     /**

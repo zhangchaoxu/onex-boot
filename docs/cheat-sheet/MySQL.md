@@ -38,3 +38,14 @@ SELECT id FROM {tabaleName} WHERE id NOT IN (SELECT  t.id FROM ( SELECT MIN( id 
 ```mysql
 DELETE FROM {tabaleName} WHERE id NOT IN (SELECT  t.id FROM ( SELECT MIN( id ) AS id FROM {tabaleName} GROUP BY `name` ) t)
 ```
+
+### 创建用户授权
+```mysql
+# v8.0
+# 创建用户
+create user '{username}'@'{授权ip, %为所有}' identified  by '${password}';
+# 授权
+grant select,create on {databaseName}.{tableName} to '{username}'@'{授权ip, %为所有}';
+# 刷新授权
+flush privileges;
+```

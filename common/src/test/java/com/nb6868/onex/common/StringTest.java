@@ -237,7 +237,7 @@ public class StringTest {
         LoginForm loginForm = new LoginForm();
         loginForm.setType("sss");
         loginForm.setSms("sms2232");
-        final Object eval = engine.eval("#a-(#b-#c)", dict);
+        final Object eval = engine.eval("#a-(#b-#c)", dict, null);
         final Object eval2 = BeanUtil.getProperty(loginForm, "sms");
         log.error("eval={}", eval);
         log.error("eval2={}", eval2);

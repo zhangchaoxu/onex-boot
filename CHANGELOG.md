@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.58] 2023.08.08
+- enhance: add ExcelExportParams
+
 ## [3.7.57] 2023.08.04
 - upgrade: upgrade hutool to 5.8.21
 - upgrade: upgrade bcprov to 1.76
