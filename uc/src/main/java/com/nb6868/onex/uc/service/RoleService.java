@@ -25,11 +25,11 @@ import java.util.List;
 public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
 
     @Autowired
-    private MenuScopeService menuScopeService;
+    MenuScopeService menuScopeService;
     @Autowired
-    private MenuService menuService;
+    MenuService menuService;
     @Autowired
-    private RoleUserService roleUserService;
+    RoleUserService roleUserService;
 
     @Override
     protected void beforeSaveOrUpdateDto(RoleDTO dto, int type) {

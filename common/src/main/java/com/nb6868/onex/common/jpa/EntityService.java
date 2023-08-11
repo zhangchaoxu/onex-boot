@@ -189,7 +189,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     @Autowired
     protected SqlSessionFactory sqlSessionFactory;
 
-    protected final Class<?>[] typeArguments = GenericTypeUtils.resolveTypeArguments(getClass(), ServiceImpl.class);
+    protected final Class<?>[] typeArguments = GenericTypeUtils.resolveTypeArguments(getClass(), EntityService.class);
 
     @Override
     public M getBaseMapper() {
