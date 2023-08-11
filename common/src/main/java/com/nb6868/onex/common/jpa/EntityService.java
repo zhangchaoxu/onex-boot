@@ -8,8 +8,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
+import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.PageData;
@@ -18,6 +20,7 @@ import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -182,6 +186,11 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     @Autowired
     protected M baseMapper;
 
+    @Autowired
+    protected SqlSessionFactory sqlSessionFactory;
+
+    protected final Class<?>[] typeArguments = GenericTypeUtils.resolveTypeArguments(getClass(), ServiceImpl.class);
+
     @Override
     public M getBaseMapper() {
         return baseMapper;
@@ -208,15 +217,14 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         return SqlHelper.retBool(result);
     }
 
-    @SuppressWarnings("unchecked")
     protected Class<M> currentMapperClass() {
-        return (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), EntityService.class, 0);
+        return (Class<M>) this.typeArguments[0];
     }
 
-    @SuppressWarnings("unchecked")
     protected Class<T> currentModelClass() {
-        return (Class<T>) ReflectionKit.getSuperClassGenericType(this.getClass(), EntityService.class, 1);
+        return (Class<T>) this.typeArguments[1];
     }
+
 
     /**
      * 批量操作 SqlSession
@@ -236,7 +244,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      */
     @Deprecated
     protected void closeSqlSession(SqlSession sqlSession) {
-        SqlSessionUtils.closeSqlSession(sqlSession, GlobalConfigUtils.currentSessionFactory(entityClass));
+        SqlSessionUtils.closeSqlSession(sqlSession, this.sqlSessionFactory);
     }
 
     /**
@@ -348,10 +356,12 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
 
     @Override
     public T getOne(Wrapper<T> queryWrapper, boolean throwEx) {
-        if (throwEx) {
-            return baseMapper.selectOne(queryWrapper);
-        }
-        return SqlHelper.getObject(log, baseMapper.selectList(queryWrapper));
+        return baseMapper.selectOne(queryWrapper, throwEx);
+    }
+
+    @Override
+    public Optional<T> getOneOpt(Wrapper<T> queryWrapper, boolean throwEx) {
+        return Optional.ofNullable(baseMapper.selectOne(queryWrapper, throwEx));
     }
 
     @Override
@@ -373,7 +383,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      */
     @Deprecated
     protected boolean executeBatch(Consumer<SqlSession> consumer) {
-        return SqlHelper.executeBatch(this.entityClass, this.log, consumer);
+        return SqlHelper.executeBatch(this.sqlSessionFactory, this.log, consumer);
     }
 
     /**
@@ -387,7 +397,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      * @since 3.3.1
      */
     protected <E> boolean executeBatch(Collection<E> list, int batchSize, BiConsumer<SqlSession, E> consumer) {
-        return SqlHelper.executeBatch(this.entityClass, this.log, list, batchSize, consumer);
+        return SqlHelper.executeBatch(this.sqlSessionFactory, this.log, list, batchSize, consumer);
     }
 
     /**

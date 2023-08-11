@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.7.58</version>
+        <version>3.7.59</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>coder</artifactId>
@@ -15,7 +15,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <mybatisplus.version>3.5.3.1</mybatisplus.version>
+        <mybatisplus.version>3.5.3.2</mybatisplus.version>
         <druid.version>1.2.18</druid.version>
         <commons.configuration.version>1.10</commons.configuration.version>
         <hutool.version>5.8.21</hutool.version>
