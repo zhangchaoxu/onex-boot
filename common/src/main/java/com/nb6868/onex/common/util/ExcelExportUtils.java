@@ -66,9 +66,10 @@ public class ExcelExportUtils {
      * @param bean   实体bean
      * @param column 列定义
      */
-    public static String formatColumnValue(Object bean, ExcelExportParams.ColumnParams column, Function<Dict, String> function) {
+    public static Object formatColumnValue(Object bean, ExcelExportParams.ColumnParams column, Function<Dict, String> function) {
         String fmt = column.getFmt();
         if (StrUtil.isBlank(fmt)) {
+            // 非String类型，转String会ClassCastException
             return BeanUtil.getProperty(bean, column.getProperty());
         } else {
             String pValue = "";
@@ -95,7 +96,7 @@ public class ExcelExportUtils {
      */
     public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams, Function<Dict, String> function, Function<BigExcelWriter, BigExcelWriter> writerFunction) {
         String fileName = OssLocalUtils.fmtXlsxFileName(excelExportParams.getFolderName(), excelExportParams.getFileName());
-        BigExcelWriter writer = ExcelUtil.getBigWriter(OssLocalUtils.getOssFileStorageAbsolutePath() + fileName);
+        BigExcelWriter writer = ExcelUtil.getBigWriter(fileStoragePath(fileName));
         // 处理数据
         List<Map<String, Object>> mapList = new ArrayList<>();
         beanList.forEach(bean -> {
@@ -120,5 +121,22 @@ public class ExcelExportUtils {
         writer.close();
         return fileName;
     }
+
+    /**
+     * 获得文件存储路径
+     * @param fileName 文件名称
+     */
+    public static String fileStoragePath(String fileName) {
+        return OssLocalUtils.getOssFileStorageAbsolutePath() + fileName;
+    }
+
+    /**
+     * 获得文件请求路径
+     * @param fileName 文件名称
+     */
+    public static String getFileRequestPath(String fileName) {
+        return OssLocalUtils.getOssRequestPrefix() + fileName;
+    }
+
 
 }
