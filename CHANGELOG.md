@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.7.60] 2023.08.11
+## [3.7.62] 2023.08.14
 - upgrade: upgrade mybatisplus to 3.5.3.2
+- enhance: enhance ExcelExportParams
 
 ## [3.7.58] 2023.08.08
 - enhance: add ExcelExportParams

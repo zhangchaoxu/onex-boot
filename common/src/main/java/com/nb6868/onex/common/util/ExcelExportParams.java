@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Execl导出定义
+ * Excel导出定义
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -35,6 +35,9 @@ public class ExcelExportParams {
         @ApiModelProperty("属性")
         private String property;
 
+        @ApiModelProperty("反射方法")
+        private String invokeMethod;
+
         @ApiModelProperty("是否链接")
         private boolean link;
 
@@ -47,7 +50,6 @@ public class ExcelExportParams {
         @ApiModelProperty("文件夹名")
         private int width;
 
-        // todo
         @ApiModelProperty("枚举变量定义")
         private Map<String, Object> enmuMap;
 

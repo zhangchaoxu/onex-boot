@@ -7,6 +7,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -14,6 +15,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.oss.OssLocalUtils;
+import org.jsoup.internal.StringUtil;
 import org.springframework.http.HttpHeaders;
 
 import javax.servlet.ServletOutputStream;
@@ -84,6 +86,14 @@ public class ExcelExportUtils {
                 } else if (pObject instanceof LocalDateTime) {
                     pValue = DateUtil.format((LocalDateTime) pObject, column.getTimeFormat());
                 }
+            } else if ("invoke".equalsIgnoreCase(fmt)) {
+                // 反射,执行invokeMethod 若空，则执行getProperty
+                String invokeMethod = StrUtil.emptyToDefault(column.getInvokeMethod(), "get" + StrUtil.upperFirst(column.getProperty()));
+                pValue = ReflectUtil.invoke(bean, invokeMethod);
+            } else if ("enum".equalsIgnoreCase(fmt)) {
+                // 枚举
+                Object pObject = BeanUtil.getProperty(bean, column.getProperty());
+                return column.getEnmuMap().get(pObject.toString());
             } else if (function != null) {
                 pValue = function.apply(Dict.create().set("bean", bean).set("column", column));
             }
