@@ -53,6 +53,8 @@ public class ExcelExportParams {
         @ApiModelProperty("枚举变量定义")
         private Map<String, Object> enmuMap;
 
+        @ApiModelProperty("发生错误时候的默认值")
+        private String errorDefaultMsg;
     }
 
 }

@@ -70,34 +70,39 @@ public class ExcelExportUtils {
      */
     public static Object formatColumnValue(Object bean, ExcelExportParams.ColumnParams column, Function<Dict, String> function) {
         String fmt = column.getFmt();
-        if (StrUtil.isBlank(fmt)) {
-            // 非String类型，转String会ClassCastException
-            return BeanUtil.getProperty(bean, column.getProperty());
-        } else {
-            String pValue = "";
-            if ("time".equalsIgnoreCase(fmt)) {
-                // 时间格式化
-                Object pObject = BeanUtil.getProperty(bean, column.getProperty());
-                if (pObject instanceof Long) {
-                    long timestamp = (long) pObject;
-                    pValue = DateUtil.format(DateUtil.date((timestamp < 1000000000000L ? 1000 : 1) * timestamp), column.getTimeFormat());
-                } else if (pObject instanceof Date) {
-                    pValue = DateUtil.format((Date) pObject, column.getTimeFormat());
-                } else if (pObject instanceof LocalDateTime) {
-                    pValue = DateUtil.format((LocalDateTime) pObject, column.getTimeFormat());
+        try {
+            if (StrUtil.isBlank(fmt)) {
+                // 非String类型，转String会ClassCastException
+                return BeanUtil.getProperty(bean, column.getProperty());
+            } else {
+                String pValue = "";
+                if ("time".equalsIgnoreCase(fmt)) {
+                    // 时间格式化
+                    Object pObject = BeanUtil.getProperty(bean, column.getProperty());
+                    if (pObject instanceof Long) {
+                        long timestamp = (long) pObject;
+                        pValue = DateUtil.format(DateUtil.date((timestamp < 1000000000000L ? 1000 : 1) * timestamp), column.getTimeFormat());
+                    } else if (pObject instanceof Date) {
+                        pValue = DateUtil.format((Date) pObject, column.getTimeFormat());
+                    } else if (pObject instanceof LocalDateTime) {
+                        pValue = DateUtil.format((LocalDateTime) pObject, column.getTimeFormat());
+                    }
+                } else if ("invoke".equalsIgnoreCase(fmt)) {
+                    // 反射,执行invokeMethod 若空，则执行getProperty
+                    String invokeMethod = StrUtil.emptyToDefault(column.getInvokeMethod(), "get" + StrUtil.upperFirst(column.getProperty()));
+                    pValue = ReflectUtil.invoke(bean, invokeMethod);
+                } else if ("enum".equalsIgnoreCase(fmt)) {
+                    // 枚举
+                    Object pObject = BeanUtil.getProperty(bean, column.getProperty());
+                    return column.getEnmuMap().get(pObject.toString());
+                } else if (function != null) {
+                    pValue = function.apply(Dict.create().set("bean", bean).set("column", column));
                 }
-            } else if ("invoke".equalsIgnoreCase(fmt)) {
-                // 反射,执行invokeMethod 若空，则执行getProperty
-                String invokeMethod = StrUtil.emptyToDefault(column.getInvokeMethod(), "get" + StrUtil.upperFirst(column.getProperty()));
-                pValue = ReflectUtil.invoke(bean, invokeMethod);
-            } else if ("enum".equalsIgnoreCase(fmt)) {
-                // 枚举
-                Object pObject = BeanUtil.getProperty(bean, column.getProperty());
-                return column.getEnmuMap().get(pObject.toString());
-            } else if (function != null) {
-                pValue = function.apply(Dict.create().set("bean", bean).set("column", column));
+                return pValue;
             }
-            return pValue;
+        } catch (Exception e) {
+            // 遇到问题返回异常,便于从结果中发现问题
+            return StrUtil.nullToDefault(column.getErrorDefaultMsg(), e.getMessage());
         }
     }
 
