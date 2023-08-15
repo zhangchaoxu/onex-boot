@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## [3.7.62] 2023.08.14
+## [3.7.64] 2023.08.15
+- enhance: add mobile to shiro user
+
+## [3.7.63] 2023.08.14
 - upgrade: upgrade mybatisplus to 3.5.3.2
 - enhance: enhance ExcelExportParams
 
