@@ -47,6 +47,7 @@ import java.util.function.Function;
  * @author hubin
  * @author Charles zhangchaoxu@gmail.com
  */
+@SuppressWarnings("unchecked")
 public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
 
     protected Log log = LogFactory.getLog(getClass());

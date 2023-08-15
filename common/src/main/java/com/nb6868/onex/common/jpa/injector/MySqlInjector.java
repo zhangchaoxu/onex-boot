@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.jpa.injector;
 
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.nb6868.onex.common.jpa.injector.methods.LogicDeleteByWrapperWithFill;
 import com.nb6868.onex.common.jpa.injector.methods.SelectCountById;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
