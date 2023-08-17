@@ -53,8 +53,8 @@ public class OssController {
     @ApiOperation(value = "匿名上传文件(文件形式)", notes = "@Anon")
     @AccessControl
     @ApiOperationSupport(order = 10)
-    public Result<?> uploadAnon(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
-                                @RequestParam(required = false, name = "路径前缀") String prefix,
+    public Result<?> uploadAnon(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
+                                @RequestParam(required = false) String prefix,
                                 @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
@@ -80,8 +80,8 @@ public class OssController {
     @PostMapping("upload")
     @ApiOperation(value = "上传文件(文件形式)")
     @ApiOperationSupport(order = 20)
-    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
-                            @RequestParam(required = false, name = "路径前缀") String prefix,
+    public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
+                            @RequestParam(required = false) String prefix,
                             @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
@@ -162,8 +162,8 @@ public class OssController {
     @PostMapping("anonUploadMulti")
     @ApiOperation(value = "匿名上传多文件", notes = "@Anon")
     @ApiOperationSupport(order = 50)
-    public Result<?> anonUploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
-                                     @RequestParam(required = false, name = "路径前缀") String prefix,
+    public Result<?> anonUploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
+                                     @RequestParam(required = false) String prefix,
                                      @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
@@ -193,8 +193,8 @@ public class OssController {
     @PostMapping("uploadMulti")
     @ApiOperation(value = "上传多文件")
     @ApiOperationSupport(order = 60)
-    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC", name = "OSS配置参数") String paramsCode,
-                                 @RequestParam(required = false, name = "路径前缀") String prefix,
+    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
+                                 @RequestParam(required = false) String prefix,
                                  @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
