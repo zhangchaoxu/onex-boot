@@ -3,6 +3,8 @@ package com.nb6868.onex.sys.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.json.JSONObject;
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -27,6 +29,7 @@ import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +46,7 @@ import java.util.List;
 @RequestMapping("/sys/oss/")
 @Validated
 @Api(tags = "存储管理", position = 40)
+@Slf4j
 public class OssController {
 
     @Autowired
@@ -101,6 +106,37 @@ public class OssController {
             ossService.save(oss);
             result.set("oss", oss);
         }
+        return new Result<>().success(result);
+    }
+
+    @PostMapping("uploadToTemp")
+    @ApiOperation(value = "上传到临时文件(文件形式)")
+    @ApiOperationSupport(order = 20)
+    public Result<?> uploadTemp(@RequestParam("file") MultipartFile file) {
+        AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        File localFile = MultipartFileUtils.multipartFileToFile(file);
+        AssertUtils.isNull(localFile, ErrorCode.OSS_UPLOAD_FILE_ERROR);
+
+        JSONObject result = new JSONObject().set("filePath", localFile.getAbsolutePath());
+        return new Result<>().success(result);
+    }
+
+    @PostMapping("uploadExcelToTemp")
+    @ApiOperation(value = "上传Excel到临时文件(文件形式)")
+    @ApiOperationSupport(order = 20)
+    public Result<?> uploadExcelToTemp(@RequestParam("file") MultipartFile file) {
+        AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        File localFile = MultipartFileUtils.multipartFileToFile(file);
+        AssertUtils.isFalse(localFile != null && localFile.exists(), ErrorCode.OSS_UPLOAD_FILE_ERROR);
+
+        List<Object> titles = new ArrayList<>();
+        try {
+            ExcelReader reader = ExcelUtil.getReader(localFile);
+            titles = reader.readRow(0);
+        } catch (Exception e) {
+            log.error("Excel文件读取失败", e);
+        }
+        JSONObject result = new JSONObject().set("filePath", localFile.getAbsolutePath()).set("columns", titles);
         return new Result<>().success(result);
     }
 

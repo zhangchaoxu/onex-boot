@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [3.7.65] 2023.08.17
+## [3.7.66] 2023.08.17
 - fix: fix oss upload issue 
+- enhance: add uploadTemp method 
 
 ## [3.7.64] 2023.08.15
 - enhance: add mobile to shiro user

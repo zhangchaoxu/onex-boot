@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.util;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
@@ -111,7 +112,7 @@ public class ExcelExportUtils {
      */
     public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams, Function<Dict, String> function, Function<BigExcelWriter, BigExcelWriter> writerFunction) {
         String fileName = OssLocalUtils.fmtXlsxFileName(excelExportParams.getFolderName(), excelExportParams.getFileName());
-        BigExcelWriter writer = ExcelUtil.getBigWriter(fileStoragePath(fileName));
+        BigExcelWriter writer = ExcelUtil.getBigWriter(getFileStoragePath(fileName));
         // 处理数据
         List<Map<String, Object>> mapList = new ArrayList<>();
         beanList.forEach(bean -> {
@@ -141,7 +142,7 @@ public class ExcelExportUtils {
      * 获得文件存储路径
      * @param fileName 文件名称
      */
-    public static String fileStoragePath(String fileName) {
+    public static String getFileStoragePath(String fileName) {
         return OssLocalUtils.getOssFileStorageAbsolutePath() + fileName;
     }
 
