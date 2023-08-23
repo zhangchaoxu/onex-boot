@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.67] 2023.08.21
+- upgrade: upgrade esdk-obs-java-bundle 3.23.5
+
 ## [3.7.66] 2023.08.17
 - fix: fix oss upload issue 
 - enhance: add uploadTemp method 
