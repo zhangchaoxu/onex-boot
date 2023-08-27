@@ -45,9 +45,4 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
         });
     }
 
-    @PostConstruct
-    public void init() {
-        log.info("job enable run");
-    }
-
 }

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [3.7.69] 2023.08.25
+- upgrade: upgrade springboot to 3.7.68
+- upgrade: upgrade maven build jar to latest version
+- enhance: add job config code prefix 
+
 ## [3.7.67] 2023.08.21
 - upgrade: upgrade esdk-obs-java-bundle 3.23.5
 

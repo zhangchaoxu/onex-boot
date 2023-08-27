@@ -18,8 +18,8 @@ spring:
     basename: i18n/messages
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
+      max-file-size: 512MB
+      max-request-size: 512MB
       enabled: true
   mvc:
     # 404时,不跳error页面, 直接抛出异常
@@ -40,7 +40,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
     # 允许循环依赖,springboot2.6.0开始默认禁止循环依赖
-    # allow-circular-references: true
+    allow-circular-references: true
   # quartz 定时任务
   quartz:
     ## 任务存储方式
@@ -80,7 +80,7 @@ spring:
       filter:
         stat:
           log-slow-sql: true
-          slow-sql-millis: 1000
+          slow-sql-millis: 3000
           merge-sql: false
         wall:
           config:
@@ -152,6 +152,8 @@ onex:
   # 定时任务
   job:
     enable: false
+    # 任务名称前缀
+    code-prefix:
   # swagger
   swagger:
     enable: false
