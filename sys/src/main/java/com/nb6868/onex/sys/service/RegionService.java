@@ -35,7 +35,9 @@ public class RegionService extends DtoService<RegionDao, RegionEntity, RegionDTO
      * 通过id获得pcdt
      */
     public RegionPcdt getPcdtById(Long id) {
-        if (id > 100000000) {
+        if (null == id || 0 == id) {
+            return null;
+        } else if (id > 100000000) {
             // 街道
             Map<String, Object> map = getBaseMapper().getPcdtByT(id);
             return BeanUtil.toBean(map, RegionPcdt.class);
