@@ -9,6 +9,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.util.SignUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -27,6 +28,7 @@ import java.util.Map;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
 public class DingTalkApi {
 
     // token 缓存,有效时间2小时
@@ -176,7 +178,11 @@ public class DingTalkApi {
         if (refresh || StrUtil.isBlank(token)) {
             // 强制刷新,或者缓存为空
             try {
-                return new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
+                AccessTokenResponse response = new RestTemplate().getForObject(GET_TOKEN, AccessTokenResponse.class, appKey, appSecret);
+                if (response != null && response.isSuccess()) {
+                    tokenCache.put(appKey, response.getAccess_token());
+                }
+                return response;
             } catch (Exception e) {
                 AccessTokenResponse response = new AccessTokenResponse();
                 response.setErrcode(1000);
@@ -474,6 +480,7 @@ public class DingTalkApi {
 
     /**
      * 获得所有的部门id,会将所有异常都吞掉
+     *
      * @param accessKey key
      * @param appSecret 密钥
      * @return 部门id数组
@@ -481,11 +488,12 @@ public class DingTalkApi {
     public static List<String> getAllDeptIdList(String accessKey, String appSecret) {
         AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
         if (tokenResponse.isSuccess()) {
-            List<String> departmemtIdList = CollUtil.newArrayList();
+            // 初始化的时候把根id放进去，用户可能会挂载根上
+            List<String> departmemtIdList = CollUtil.newArrayList("1");
             // 根部门dept_id传1
             List<String> dept_id_list = CollUtil.newArrayList("1");
             // 逐级遍历
-            while (dept_id_list.size() > 0) {
+            while (!dept_id_list.isEmpty()) {
                 // 初始化一个新的数组存储结果
                 List<String> dept_sub_id_list = CollUtil.newArrayList();
                 dept_id_list.forEach(deptId -> {
@@ -497,7 +505,7 @@ public class DingTalkApi {
                             dept_sub_id_list.addAll(result.getJSONObject("result").getBeanList("dept_id_list", String.class));
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("获取子部门列表失败", e);
                     }
                 });
                 // 反馈给循环条件
@@ -507,6 +515,7 @@ public class DingTalkApi {
             }
             return departmemtIdList;
         } else {
+            log.error("获得token失败:{}", tokenResponse.getErrmsg());
             return CollUtil.newArrayList();
         }
     }
@@ -544,7 +553,7 @@ public class DingTalkApi {
                             cursor = -1;
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("获得用户列表失败", e);
                         cursor = -1;
                     }
                 }

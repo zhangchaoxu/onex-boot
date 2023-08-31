@@ -117,7 +117,7 @@ public class OssController {
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isNull(localFile, ErrorCode.OSS_UPLOAD_FILE_ERROR);
 
-        JSONObject result = new JSONObject().set("filePath", localFile.getAbsolutePath());
+        Dict result = Dict.create().set("filePath", localFile.getAbsolutePath());
         return new Result<>().success(result);
     }
 
@@ -136,7 +136,7 @@ public class OssController {
         } catch (Exception e) {
             log.error("Excel文件读取失败", e);
         }
-        JSONObject result = new JSONObject().set("filePath", localFile.getAbsolutePath()).set("columns", titles);
+        Dict result = Dict.create().set("filePath", localFile.getAbsolutePath()).set("columns", titles);
         return new Result<>().success(result);
     }
 

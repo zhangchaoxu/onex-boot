@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.annotation.AccessControl;
@@ -27,7 +28,7 @@ public class IndexController {
     @ApiOperation("index")
     @AccessControl("")
     public Result<?> index() {
-        JSONObject result = new JSONObject()
+        Dict result = Dict.create()
                 .set("onex", new JSONObject()
                         .set("parent-artifact-id", SpringUtil.getProperty("onex.parent-artifact-id"))
                         .set("artifact-id", SpringUtil.getProperty("onex.artifact-id"))
@@ -48,7 +49,7 @@ public class IndexController {
     public Result<?> sysInfo() {
         OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
-        JSONObject result = new JSONObject()
+        Dict result = Dict.create()
                 .set("sysTime", DateUtil.now())
                 .set("osName", System.getProperty("os.name"))
                 .set("osArch", System.getProperty("os.arch"))
