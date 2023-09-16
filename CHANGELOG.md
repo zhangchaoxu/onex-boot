@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.73] 2023.09.16
+- upgrade: upgrade hutool to 5.8.22
+
 ## [3.7.72] 2023.09.06
 - upgrade: upgrade druid to 1.2.19
 

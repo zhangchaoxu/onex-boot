@@ -60,21 +60,21 @@ import java.util.*;
 public class AuthController {
 
     @Autowired
-    private AuthProps authProps;
+    AuthProps authProps;
     @Autowired
-    private UserService userService;
+    UserService userService;
     @Autowired
-    private CaptchaService captchaService;
+    CaptchaService captchaService;
     @Autowired
-    private TokenService tokenService;
+    TokenService tokenService;
     @Autowired
-    private MenuService menuService;
+    MenuService menuService;
     @Autowired
-    private ParamsService paramsService;
+    ParamsService paramsService;
     @Autowired
-    private AuthService authService;
+    AuthService authService;
     @Autowired
-    private BaseMsgService msgService;
+    BaseMsgService msgService;
     /**
      * 验证码类型
      */
