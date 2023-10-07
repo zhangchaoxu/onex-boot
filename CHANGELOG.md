@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [3.7.76] 2023.10.07
+- upgrade: upgrade poi-ooxml to 5.2.4
+- upgrade: upgrade esdk-obs-java-bundle to 3.23.9
+
+## [3.7.75] 2023.09.16
+- upgrade: upgrade springboot to 2.7.16
+
 ## [3.7.73] 2023.09.16
 - upgrade: upgrade hutool to 5.8.22
 
@@ -7,7 +14,6 @@
 - upgrade: upgrade druid to 1.2.19
 
 ## [3.7.69] 2023.08.25
-- upgrade: upgrade springboot to 3.7.68
 - upgrade: upgrade maven build jar to latest version
 - enhance: add job config code prefix 
 
