@@ -17,7 +17,7 @@
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
-        <druid.version>1.2.19</druid.version>
+        <druid.version>1.2.20</druid.version>
         <commons.fileupload.version>1.5</commons.fileupload.version>
         <mybatisplus.version>3.5.3.2</mybatisplus.version>
         <hutool.version>5.8.22</hutool.version>

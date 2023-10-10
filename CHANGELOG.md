@@ -2,6 +2,7 @@
 
 ## [3.7.77] 2023.10.10
 - fix: remove useless code
+- upgrade: upgrade druid to 1.2.20
 
 ## [3.7.76] 2023.10.07
 - upgrade: upgrade poi-ooxml to 5.2.4

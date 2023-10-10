@@ -16,7 +16,7 @@
         <skipTests>true</skipTests>
         <!-- version -->
         <mybatisplus.version>3.5.3.2</mybatisplus.version>
-        <druid.version>1.2.19</druid.version>
+        <druid.version>1.2.20</druid.version>
         <commons.configuration.version>1.10</commons.configuration.version>
         <hutool.version>5.8.22</hutool.version>
         <velocity.version>1.7</velocity.version>
