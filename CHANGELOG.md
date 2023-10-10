@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.77] 2023.10.10
+- fix: remove useless code
+
 ## [3.7.76] 2023.10.07
 - upgrade: upgrade poi-ooxml to 5.2.4
 - upgrade: upgrade esdk-obs-java-bundle to 3.23.9
