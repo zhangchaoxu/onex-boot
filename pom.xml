@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>3.7.77</version>
+    <version>3.7.80</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -67,7 +67,7 @@
         <maven.gpg.plugin.version>3.1.0</maven.gpg.plugin.version>
         <!-- libs -->
         <shiro.version>1.12.0</shiro.version>
-        <onex.version>3.7.77</onex.version>
+        <onex.version>3.7.80</onex.version>
     </properties>
 
     <dependencies>

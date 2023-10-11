@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.80] 2023.10.10
+- enhance: replace pig4cloud captcha with hutool
+
 ## [3.7.77] 2023.10.10
 - fix: remove useless code
 - upgrade: upgrade druid to 1.2.20

@@ -4,8 +4,10 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -50,8 +52,11 @@ public class OssLocalUtils {
      */
     public static String getOssFileStorageAbsolutePath() {
         // 若直接使用./xxx会在api.jar!/BOOT-INF/classes!/下创建文件夹,而不是在jar包下
-        // System.getProperty("user.dir")可以获得jar路径，不带斜杠
-        return FileUtil.isAbsolutePath(ossFileStoragePath) ? ossFileStoragePath : (System.getProperty("user.dir") + StrUtil.removePrefix(ossFileStoragePath, "."));
+        // System.getProperty("user.dir")可以获得jar路径，不带斜杠,但是会出现路径问题
+        // System.getProperty("user.dir")
+        // new ApplicationHome().getSource().getParent()
+        // https://mp.weixin.qq.com/s?__biz=Mzk0OTUxNjY2Ng==&mid=2247487629&idx=1&sn=203cfcc479f30823e6851e006bc60960
+        return FileUtil.isAbsolutePath(ossFileStoragePath) ? ossFileStoragePath : (new ApplicationHome().getDir() + StrUtil.removePrefix(ossFileStoragePath, "."));
     }
 
     /**

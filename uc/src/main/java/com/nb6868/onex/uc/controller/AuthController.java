@@ -4,20 +4,13 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.*;
-import com.nb6868.onex.common.dingtalk.DingTalkApi;
-import com.nb6868.onex.common.dingtalk.GetUserIdByUnionidResponse;
-import com.nb6868.onex.common.dingtalk.ResultResponse;
-import com.nb6868.onex.common.dingtalk.UserContactResponse;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.msg.BaseMsgService;
@@ -43,7 +36,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,11 +67,6 @@ public class AuthController {
     AuthService authService;
     @Autowired
     BaseMsgService msgService;
-    /**
-     * 验证码类型
-     */
-    @Value("${onex.auth.captcha-type:spec}")
-    private String captchaType;
 
     @PostMapping("captcha")
     @AccessControl
@@ -87,9 +74,9 @@ public class AuthController {
     @ApiOperationSupport(order = 10)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
         String uuid = IdUtil.fastSimpleUUID();
-        Captcha captcha = captchaService.createCaptcha(uuid, form.getWidth(), form.getHeight(), RandomUtil.randomEle(StrUtil.splitToArray(captchaType, ",")));
+        String captchaBase64 = captchaService.createCaptchaBase64(uuid, form.getWidth(), form.getHeight());
         // 将uuid和图片base64返回给前端
-        Dict result = Dict.create().set("uuid", uuid).set("image", captcha.toBase64());
+        Dict result = Dict.create().set("uuid", uuid).set("image", captchaBase64);
         return new Result<>().success(result);
     }
 

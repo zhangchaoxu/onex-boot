@@ -2,10 +2,10 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.CircleCaptcha;
+import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.StrUtil;
-import com.nb6868.onex.common.exception.OnexException;
-import com.pig4cloud.captcha.*;
-import com.pig4cloud.captcha.base.Captcha;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,11 +32,30 @@ public class CaptchaService {
      * @param uuid   uuid
      * @param width  宽度
      * @param height 高度
-     * @param type   类型
      * @return 生成的图片
      */
-    public Captcha createCaptcha(String uuid, int width, int height, String type) {
-        return createCaptcha(uuid, width, height, type, 4, Captcha.TYPE_ONLY_NUMBER);
+    public String createCaptchaBase64(String uuid, int width, int height) {
+        CircleCaptcha captcha = CaptchaUtil.createCircleCaptcha(width, height);
+        captcha.setGenerator(new RandomGenerator("0123456789", 4));
+        captcha.getCode();
+
+        // 保存到缓存
+        captchaCache.put(uuid, captcha.getCode().toLowerCase());
+        return captcha.getImageBase64Data();
+    }
+
+    /**
+     * 生成图片验证码
+     * 验证码机制是将验证码的内容和对应的uuid的对应关系存入缓存,然后验证的时候从缓存中去匹配
+     * uuid不应该由前端生成,否则容易伪造和被攻击
+     *
+     * @param uuid   uuid
+     * @param width  宽度
+     * @param height 高度
+     * @return 生成的图片
+     */
+    /*public Captcha createCaptcha(String uuid, int width, int height) {
+        return createCaptcha(uuid, width, height, "spec", 4, Captcha.TYPE_ONLY_NUMBER);
     }
 
     public Captcha createCaptcha(String uuid, int width, int height, String type, int len, int charType) {
@@ -65,7 +84,7 @@ public class CaptchaService {
         // 保存到缓存
         captchaCache.put(uuid, captcha.text().toLowerCase());
         return captcha;
-    }
+    }*/
 
     /**
      * 校验验证码
