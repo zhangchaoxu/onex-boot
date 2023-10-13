@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
@@ -92,6 +93,12 @@ public class MsgService implements BaseMsgService {
         // 获得模板
         MsgTplBody msgTpl = getTplByCode(tenantCode, tplCode);
         AssertUtils.isNull(msgTpl, "消息模板不存在");
+        // 看配置中是否存在白名单
+        String mailToWhiteList = msgTpl.getParams().getStr("mailToWhiteList");
+        String codeWhiteList = msgTpl.getParams().getStr("codeWhiteList");
+        if (StrUtil.isAllNotBlank(mailToWhiteList, codeWhiteList) && ReUtil.isMatch(mailToWhiteList, mailTo) && ReUtil.isMatch(codeWhiteList, mailCode)) {
+            return true;
+        }
         // 获取最后一次短信记录
         MsgLogEntity lastSmsLog = msgLogService.query()
                 .eq("tpl_code", tplCode)

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.81] 2023.10.13
+- enhance: add sms code white list
+
 ## [3.7.80] 2023.10.10
 - enhance: replace pig4cloud captcha with hutool
 

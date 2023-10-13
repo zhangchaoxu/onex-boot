@@ -94,6 +94,9 @@ public class StringTest {
         log.error("p4=" + ReUtil.isMatch(reg, p4));
         log.error("p5=" + ReUtil.isMatch(reg, p5));
         log.error("p6=" + ReUtil.isMatch(reg, p6));
+        log.error("1=" + ReUtil.isMatch("^1325242198", "13252421988"));
+        log.error("2=" + ReUtil.isMatch("\\d{4}$", "123456"));
+        log.error("3=" + ReUtil.isMatch("\\d{4}$", "1234"));
     }
 
     @Test
