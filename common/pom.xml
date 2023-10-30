@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.7.81</version>
+        <version>3.7.83</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -19,15 +19,17 @@
         <!-- version -->
         <druid.version>1.2.20</druid.version>
         <commons.fileupload.version>1.5</commons.fileupload.version>
-        <mybatisplus.version>3.5.3.2</mybatisplus.version>
+        <commons-io.version>2.15.0</commons-io.version>
+        <mybatisplus.version>3.5.4</mybatisplus.version>
         <hutool.version>5.8.22</hutool.version>
         <bcprov.version>1.76</bcprov.version>
-        <jsoup.version>1.16.1</jsoup.version>
+        <jsoup.version>1.16.2</jsoup.version>
         <knife4j.version>2.0.9</knife4j.version>
         <weixin.version>4.5.0</weixin.version>
         <aliyun.oss.version>3.17.1</aliyun.oss.version>
-        <huaweicloud.obs.version>3.23.9</huaweicloud.obs.version>
+        <huaweicloud.obs.version>3.23.9.1</huaweicloud.obs.version>
         <poi.version>5.2.4</poi.version>
+        <poi-tl.version>1.12.1</poi-tl.version>
         <easypoi.version>4.4.0</easypoi.version>
     </properties>
 
@@ -61,6 +63,12 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>${commons.fileupload.version}</version>
+        </dependency>
+        <!-- commons io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
         <!-- druid -->
         <dependency>
@@ -114,6 +122,12 @@
             <artifactId>poi-ooxml</artifactId>
             <version>${poi.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.deepoove</groupId>
+            <artifactId>poi-tl</artifactId>
+            <version>${poi-tl.version}</version>
+            <scope>test</scope>
         </dependency>
         <!-- easypoi -->
         <dependency>

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [3.7.83] 2023.10.30
+- upgrade: upgrade springboot to 2.7.17
+- new: add commons-io into common
+- upgrade: upgrade mybatisplus to 3.5.4
+- upgrade: upgrade jsoup to 1.16.2
+- upgrade: upgrade huaweicloud.obs to 3.23.9.1
+
+## [3.7.82] 2023.10.13
+- fix: remove useless code
+
 ## [3.7.81] 2023.10.13
 - enhance: add sms code white list
 
