@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## [3.7.83] 2023.10.30
+## [3.7.84] 2023.11.01
+- upgrade: upgrade aliyun-oss to 3.17.2
+
+- ## [3.7.83] 2023.10.30
 - upgrade: upgrade springboot to 2.7.17
 - new: add commons-io into common
 - upgrade: upgrade mybatisplus to 3.5.4
