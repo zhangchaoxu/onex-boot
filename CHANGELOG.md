@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.85] 2023.11.06
+- upgrade: upgrade shiro to 1.13.0
+
 ## [3.7.84] 2023.11.01
 - upgrade: upgrade aliyun-oss to 3.17.2
 
