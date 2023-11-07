@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [3.7.86] 2023.11.07
+- upgrade: upgrade mybatisplus to 3.5.4.1
+
 ## [3.7.85] 2023.11.06
 - upgrade: upgrade shiro to 1.13.0
 
