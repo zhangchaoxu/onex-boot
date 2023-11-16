@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [3.7.88] 2023.11.16
+- upgrade: upgrade bcprov-jdk15to18 to 1.77
+
+## [3.7.87] 2023.11.15
+- upgrade: upgrade hutool to 5.8.23
+
 ## [3.7.86] 2023.11.07
 - upgrade: upgrade mybatisplus to 3.5.4.1
 
