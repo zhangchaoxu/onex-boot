@@ -299,6 +299,91 @@ server {
    }
 }
 ```
+## 高危端口
+序号	端口号	端口涉及到的服务
+1	111	NFS
+2	389	LDAP
+3	445	SMB
+4	873	Rsync
+5	1099	rmi
+6	1433	SQL Server
+7	1521	Oracle
+8	2049	NFS
+9	2181	Zookeeper
+10	2222	DA虚拟主机管理系统登陆
+11	2375	docker
+12	2379	etcd
+13	2888	zookeeper
+14	3128	Squid
+15	3306	mysql
+16	3389	RDP
+17	3690	SVN
+18	3888	Zookeeper
+19	4000	spark historyserver
+20	4040	spark webUI
+21	4440	Spark
+22	4848	GlassFish控制台
+23	4899	Radmin
+24	5000	sybase/DB2数据库
+25	5005	JDWP
+26	5432	PostgreSQL
+27	5601	Kibana
+28	5631	symantecpcanywhere
+29	5632	Pcanywhere
+30	5900	VNC
+31	5984	CouchDB
+32	6123	flink
+33	6379	redis
+34	7001	weblogic
+35	7051	Kudu
+36	7077	Spark
+37	7180	CDH
+38	7182	CDH
+39	7848	Nacos JRAFT
+40	8019	Hadoop
+41	8020	Hadoop
+42	8042	Hadoop Yarn
+43	8048	kafka-eagle
+44	8051	kudu
+45	8069	zabbix服务
+46	8080	GlassFish
+47	8081	flink
+48	8088	Hadoop
+49	8161	Apache Group ActiveMQ 
+50	8443	azkaban
+51	8649	ganglia
+52	8848	nacos
+53	8880	Websphere SOAP
+54	8888	HUE
+55	9000	Hadoop HDFS
+56	9001	Supervisor
+57	9042	Cassandra
+58	9043	Websphere
+59	9083	Hive
+60	9092	Kafka
+61	9100	elasticSearch-head
+62	9200	Elasticsearch
+63	9300	Elasticsearch
+64	9990	jboss
+65	10000	hive client
+66	11000	oozie
+67	11111	canal
+68	11211	memcached
+69	18080	Spark
+70	19888	Hadoop、historyserver
+71	20880	Dubbo
+72	25000	impala
+73	25010	impala
+74	27017	MongoDB
+75	50000	DB2
+76	50030	hadoop
+77	50070	hadoop
+78	50090	Hadoop
+79	60000	Hbase
+80	60010	Hbase
+81	60030	Hbase
+82	27017/27018	Mongodb
+83	8083/8086	influxDB
 
 ## 运维实践
 以下为一种比较推荐的[实践方式](DevOpsCase.md)
