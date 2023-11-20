@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>3.7.88</version>
+        <version>3.8.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -24,7 +24,7 @@
         <hutool.version>5.8.23</hutool.version>
         <bcprov.version>1.77</bcprov.version>
         <jsoup.version>1.16.2</jsoup.version>
-        <knife4j.version>2.0.9</knife4j.version>
+        <knife4j.version>4.3.0</knife4j.version>
         <weixin.version>4.5.0</weixin.version>
         <aliyun.oss.version>3.17.2</aliyun.oss.version>
         <huaweicloud.obs.version>3.23.9.1</huaweicloud.obs.version>
@@ -110,10 +110,10 @@
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
-        <!-- knife4j -->
+        <!-- knife4j4+ -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
         </dependency>
         <!-- poi -->
