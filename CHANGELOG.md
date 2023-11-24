@@ -1,8 +1,11 @@
 # CHANGELOG
 
+## [3.8.1] 2023.11.24
+- upgrade: upgrade springboot to 2.7.18
+
 ## [3.8.0] 2023.11.20
 - upgrade: upgrade knife4j to 4.3.0
-- 
+
 ## [3.7.88] 2023.11.16
 - upgrade: upgrade bcprov-jdk15to18 to 1.77
 
