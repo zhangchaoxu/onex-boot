@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.0] 2023.11.29
+- upgrade: upgrade springboot to 3.2.0
+
 ## [3.8.3] 2023.11.29
 - upgrade: upgrade jsoup to 2.17.1
 - upgrade: upgrade poi to 5.2.5
