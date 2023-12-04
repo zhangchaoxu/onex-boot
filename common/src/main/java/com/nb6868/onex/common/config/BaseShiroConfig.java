@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.filter.SimpleShiroFilter;
+import jakarta.servlet.Filter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -18,7 +19,6 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

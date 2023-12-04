@@ -12,10 +12,10 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.oss.OssLocalUtils;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -45,7 +45,7 @@ public class ExcelExportUtils {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(CONTENT_TYPE_XLSX);
         try {
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(FILENAME_XLSX_FMT, URLEncoder.encode(fileName, StandardCharsets.UTF_8.name())));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(FILENAME_XLSX_FMT, URLEncoder.encode(fileName, StandardCharsets.UTF_8)));
             ServletOutputStream out = response.getOutputStream();
             writer.flush(out, true);
             // 关闭writer，释放内存

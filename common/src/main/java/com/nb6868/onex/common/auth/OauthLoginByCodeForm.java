@@ -2,10 +2,10 @@ package com.nb6868.onex.common.auth;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -21,11 +21,11 @@ import java.io.Serializable;
 public class OauthLoginByCodeForm implements Serializable {
 
     @ApiModelProperty(value = "配置信息编码", required = true)
-    @NotBlank(message = "配置信息编码")
+    @NotEmpty(message = "配置信息编码")
     private String type = "WX_MA";
 
     @ApiModelProperty(value = "用户登录凭证", required = true)
-    @NotBlank(message = "code")
+    @NotEmpty(message = "code")
     private String code;
 
 }

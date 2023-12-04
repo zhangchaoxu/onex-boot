@@ -8,16 +8,12 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -89,15 +85,16 @@ public class MultipartFileUtils {
         if (file == null || !file.exists()) {
             return null;
         }
-        FileItem fileItem = new DiskFileItemFactory(16, null)
-                .createItem("textField", "text/plain", true, file.getName());
+        /*FileItem fileItem = new DiskFileItemFactory(16, null)
+                .createItem("textField", "text/plain", true, file.getName());*/
         try {
-            IoUtil.copy(new FileInputStream(file), fileItem.getOutputStream());
+            // IoUtil.copy(new FileInputStream(file), fileItem.getOutputStream());
+            return new MockMultipartFile(file.getName(), file.getName(), "text/plain", FileUtil.getInputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return new CommonsMultipartFile(fileItem);
+
     }
 
     /**

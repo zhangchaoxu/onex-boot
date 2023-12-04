@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.validator;
 
-
 import com.nb6868.onex.common.pojo.PageForm;
 import org.hibernate.validator.HibernateValidator;
 

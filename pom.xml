@@ -52,14 +52,13 @@
         <module>websocket</module>
         <module>cms</module>
 		<module>coder</module>
-        <!--<module>sched</module>-->
     </modules>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <!-- maven build libs -->
         <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
         <nexus.staging.maven.plugin.version>1.6.13</nexus.staging.maven.plugin.version>
@@ -119,8 +118,14 @@
         <profile>
             <id>default</id>
             <activation>
+                <jdk>17</jdk>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <maven.compiler.source>17</maven.compiler.source>
+                <maven.compiler.target>17</maven.compiler.target>
+                <maven.compiler.compilerVersion>17</maven.compiler.compilerVersion>
+            </properties>
             <distributionManagement>
                 <snapshotRepository>
                     <id>ossrh</id>

@@ -14,8 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import javax.validation.constraints.NotEmpty;
-
 @RestController("SysSseController")
 @RequestMapping("/sys/sse/")
 @Validated
@@ -28,7 +26,7 @@ public class SseController {
     @GetMapping("connect")
     @AccessControl
     @ApiOperation(value = "创建连接")
-    public SseEmitter connect(@NotEmpty @RequestParam String sid) {
+    public SseEmitter connect(@RequestParam String sid) {
         return sseEmitterService.createSseConnect(sid);
     }
 

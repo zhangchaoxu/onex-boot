@@ -1,9 +1,9 @@
 package com.nb6868.onex.common.filter;
 
 import com.nb6868.onex.common.filter.xss.XssHttpServletRequestWrapper;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**

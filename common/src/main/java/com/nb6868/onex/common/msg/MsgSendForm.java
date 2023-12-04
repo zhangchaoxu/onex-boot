@@ -7,11 +7,10 @@ import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.TenantGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -24,11 +23,11 @@ public class MsgSendForm extends BaseForm {
     private String tenantCode;
 
     @ApiModelProperty(value = "模板编码", required = true, example = "CODE_LOGIN")
-    @NotBlank(message = "模板编码不能为空", groups = DefaultGroup.class)
+    @NotEmpty(message = "模板编码不能为空", groups = DefaultGroup.class)
     private String tplCode;
 
     @ApiModelProperty(value = "收件人", required = true)
-    @NotBlank(message = "收件人不能为空", groups = DefaultGroup.class)
+    @NotEmpty(message = "收件人不能为空", groups = DefaultGroup.class)
     private String mailTo;
 
     @ApiModelProperty(value = "抄送人")

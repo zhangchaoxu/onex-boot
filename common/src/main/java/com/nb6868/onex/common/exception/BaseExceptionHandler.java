@@ -9,6 +9,8 @@ import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.MessageUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -31,8 +33,6 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
@@ -76,7 +76,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(DuplicateKeyException.class)
     public Object handleDuplicateKeyException(HttpServletRequest request, DuplicateKeyException e) {
-        e.printStackTrace();
+        log.error("DuplicateKeyException", e);
         saveLog(request, new OnexException(ErrorCode.DB_RECORD_EXISTS, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.DB_RECORD_EXISTS);
     }
@@ -89,7 +89,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Object handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
-        e.printStackTrace();
+        log.error("DataIntegrityViolationException", e);
         saveLog(request, new OnexException(ErrorCode.DB_VIOLATION_ERROR, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.DB_VIOLATION_ERROR, detailMsg ? e.getMessage() : null);
     }
@@ -114,7 +114,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Object handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException e) {
-        e.printStackTrace();
+        log.error("MissingServletRequestParameterException", e);
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
@@ -128,7 +128,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestPartException.class)
     public Object handleMissingServletRequestPartException(HttpServletRequest request, MissingServletRequestPartException e) {
-        e.printStackTrace();
+        log.error("MissingServletRequestPartException", e);
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
@@ -178,7 +178,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Object handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
-        e.printStackTrace();
+        log.error("ConstraintViolationException", e);
         Locale.setDefault(LocaleContextHolder.getLocale());
         // 参考ValidatorUtils
         // 需要在Controller中加上Validated注解,需要在接口方法参数中加上NotNull NotEmpty等校验注解
@@ -196,7 +196,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
-        e.printStackTrace();
+        log.error("MethodArgumentNotValidException", e);
         Locale.setDefault(LocaleContextHolder.getLocale());
         String errorMsg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
         // 保存日志
@@ -212,7 +212,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Object handleMaxUploadSizeExceededException(HttpServletRequest request, MaxUploadSizeExceededException e) {
-        e.printStackTrace();
+        log.error("MaxUploadSizeExceededException", e);
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.FILE_EXCEED_MAX_FILE_SIZE, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.FILE_EXCEED_MAX_FILE_SIZE);
@@ -228,7 +228,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Object handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
-        e.printStackTrace();
+        log.error("HttpMessageNotReadableException", e);
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, detailMsg ? e.getMessage() : MessageUtils.getMessage("data.fmt.error"));
@@ -243,7 +243,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Object handleMethodArgumentTypeMismatchException(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
-        e.printStackTrace();
+        log.error("MethodArgumentTypeMismatchException", e);
         // 保存日志
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
@@ -257,7 +257,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Object handleException(HttpServletRequest request, Exception e) {
-        e.printStackTrace();
+        log.error("Exception", e);
         // 保存日志
         saveLog(request, e);
         return handleExceptionResult(request, ErrorCode.INTERNAL_SERVER_ERROR);
@@ -340,7 +340,7 @@ public abstract class BaseExceptionHandler {
         try {
             logService.saveLog(logEntity);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception saveLog Error", e);
         }
     }
 

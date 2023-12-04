@@ -2,11 +2,10 @@ package com.nb6868.onex.common.filter;
 
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.util.HttpContextUtils;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.shiro.authc.AuthenticationToken;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Shiro过滤器

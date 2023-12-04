@@ -3,14 +3,13 @@ package com.nb6868.onex.common.config;
 import com.nb6868.onex.common.filter.CrosFilter;
 import com.nb6868.onex.common.filter.HttpServletRequestReplaceFilter;
 import com.nb6868.onex.common.filter.XssFilter;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
 
 /**
  * Filter配置

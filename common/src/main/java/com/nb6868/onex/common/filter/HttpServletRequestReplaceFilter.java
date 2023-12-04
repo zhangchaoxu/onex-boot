@@ -1,7 +1,8 @@
 package com.nb6868.onex.common.filter;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 public class HttpServletRequestReplaceFilter implements Filter {

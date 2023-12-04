@@ -3,10 +3,9 @@ package com.nb6868.onex.common.auth;
 import com.nb6868.onex.common.pojo.BaseForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -14,11 +13,11 @@ import javax.validation.constraints.NotBlank;
 public class ChangePasswordForm extends BaseForm {
 
     @ApiModelProperty(value = "原密码", required = true)
-    @NotBlank(message = "原密码不能为空")
+    @NotEmpty(message = "原密码不能为空")
     private String password;
 
     @ApiModelProperty(value = "新密码", required = true)
-    @NotBlank(message = "新密码不能为空")
+    @NotEmpty(message = "新密码不能为空")
     private String newPassword;
 
 }
