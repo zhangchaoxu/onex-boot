@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.2] 2023.12.06
+- upgrade: upgrade knife4j, and upgrade opanapi2 to openapi3
+- upgrade: upgrade mybatis-spring to 3.0.3
+
 ## [4.0.0] 2023.11.29
 - upgrade: upgrade springboot to 3.2.0, require Java 17 at least
 - remove: remove easypoi

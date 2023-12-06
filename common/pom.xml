@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.0.1</version>
+        <version>4.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -85,7 +85,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- MybatisPlus -->
+        <!-- MybatisPlus, mybatis-spring因为版本问题会冲突 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -95,7 +95,16 @@
                     <groupId>com.baomidou</groupId>
                     <artifactId>mybatis-plus-generator</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis-spring</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>3.0.3</version>
         </dependency>
         <!-- shiro -->
         <dependency>

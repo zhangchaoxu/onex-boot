@@ -6,9 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * @deprecated
- */
+@Deprecated
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "ID租户请求")

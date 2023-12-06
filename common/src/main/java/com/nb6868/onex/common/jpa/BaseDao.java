@@ -29,6 +29,7 @@ public interface BaseDao<T> extends BaseMapper<T> {
      * @param wrapper wrapper
      * @return result 删除结果
      */
+    @Deprecated
     Integer deleteByWrapperWithFill(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> wrapper);
 
     /**
