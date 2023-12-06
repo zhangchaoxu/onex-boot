@@ -16,6 +16,7 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.filter.InvalidRequestFilter;
 import org.apache.shiro.web.filter.mgt.DefaultFilter;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +43,8 @@ public class BaseShiroConfig {
         return sessionManager;
     }
 
-    @Bean("shiroFilter")
-    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager, AuthProps authProps) {
+    @Bean
+    public ShiroFilterFactoryBean shirFilter(@Qualifier("securityManager") SecurityManager securityManager, AuthProps authProps) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         // 设置securityManager
         shiroFilter.setSecurityManager(securityManager);
@@ -169,13 +170,20 @@ public class BaseShiroConfig {
         return filterMap;
     }
 
+    /**
+     * 解决@RequiresAuthentication注解不生效的配置
+     */
     @Bean("lifecycleBeanPostProcessor")
     public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
 
+    /**
+     * 为Spring-Bean开启对Shiro注解的支持
+     * 启用shrio授权注解拦截方式，AOP式方法级权限检查
+     */
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(@Qualifier("securityManager") SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
         advisor.setSecurityManager(securityManager);
         return advisor;

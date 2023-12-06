@@ -1,0 +1,11 @@
+# springdoc-openapi see https://springdoc.org/
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'UC-用户中心'
+      packages-to-scan: com.nb6868.onex.uc.controller
+    - group: 'SYS-系统管理'
+      packages-to-scan: com.nb6868.onex.sys.controller,com.nb6868.onex.websocket.controller,com.nb6868.onex.msg.controller,com.nb6868.onex.job.controller
+    - group: 'Default-所有'
+      paths-to-match: '/**'

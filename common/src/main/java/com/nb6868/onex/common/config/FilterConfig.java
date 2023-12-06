@@ -36,7 +36,7 @@ public class FilterConfig {
         registration.setDispatcherTypes(DispatcherType.REQUEST);
         registration.setFilter(new HttpServletRequestReplaceFilter());
         registration.addUrlPatterns("/*");
-        registration.setName("httpRequestReplaceFilter");
+        //registration.setName("httpRequestReplaceFilter");
         registration.setOrder(Integer.MAX_VALUE - 100);
         return registration;
     }
@@ -48,7 +48,7 @@ public class FilterConfig {
         registration.setDispatcherTypes(DispatcherType.REQUEST);
         registration.setFilter(crosFilter());
         registration.addUrlPatterns("/*");
-        registration.setName("crosFilter");
+        //registration.setName("crosFilter");
         registration.setOrder(Integer.MAX_VALUE - 90);
         return registration;
     }
@@ -60,13 +60,14 @@ public class FilterConfig {
     @ConditionalOnProperty(name = "onex.filter.shiroFilter", havingValue = "true")
     public FilterRegistrationBean<?> shiroFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
-        // 这里代理的shiroFilter值得是ShiroConfig中的shirFilter,而不是shirFilter类本身
+        // 这里代理的shiroFilter指的是ShiroConfig中的shirFilter,而不是shirFilter类本身
         registration.setFilter(new DelegatingFilterProxy("shiroFilter"));
         // 该值缺省为false，表示生命周期由SpringApplicationContext管理，设置为true则表示由ServletContainer管理
         registration.addInitParameter("targetFilterLifecycle", "true");
         registration.setEnabled(true);
         registration.addUrlPatterns("/*");
-        registration.setName("shiroFilter");
+        // 这里如果shiroFilter会导致和ShiroConfig中的shiroFilter冲突
+        //registration.setName("shiroFilterRegistration");
         registration.setOrder(Integer.MAX_VALUE - 80);
         return registration;
     }
@@ -78,7 +79,7 @@ public class FilterConfig {
         registration.setDispatcherTypes(DispatcherType.REQUEST);
         registration.setFilter(new XssFilter());
         registration.addUrlPatterns("/*");
-        registration.setName("xssFilter");
+        //registration.setName("xssFilter");
         registration.setOrder(Integer.MAX_VALUE);
         return registration;
     }

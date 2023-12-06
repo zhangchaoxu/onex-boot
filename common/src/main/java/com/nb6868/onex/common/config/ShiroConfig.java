@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class ShiroConfig extends BaseShiroConfig {
 
     @Bean("securityManager")
-    @ConditionalOnProperty(name = "onex.shiro.type", havingValue = "jwt")
+    @ConditionalOnProperty(name = "onex.shiro.type", havingValue = "jwt", matchIfMissing = true)
     public SecurityManager securityManager(ShiroJwtRealm shiroJwtRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(shiroJwtRealm);
@@ -31,7 +31,7 @@ public class ShiroConfig extends BaseShiroConfig {
     }
 
     @Bean("securityManager")
-    @ConditionalOnProperty(name = "onex.shiro.type", havingValue = "uuid")
+    @ConditionalOnProperty(name = "onex.shiro.type", havingValue = "uuid", matchIfMissing = false)
     public SecurityManager securityUuidManager(ShiroUuidRealm shiroUuidRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(shiroUuidRealm);

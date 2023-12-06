@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Component
-@ConditionalOnProperty(name = "onex.shiro.type", havingValue = "jwt")
+@ConditionalOnProperty(name = "onex.shiro.type", havingValue = "jwt", matchIfMissing = true)
 public class ShiroJwtRealm extends BaseShiroRealm {
 
     @Autowired

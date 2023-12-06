@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Component
-@ConditionalOnProperty(name = "onex.shiro.type", havingValue = "uuid")
+@ConditionalOnProperty(name = "onex.shiro.type", havingValue = "uuid", matchIfMissing = false)
 public class ShiroUuidRealm extends BaseShiroRealm {
 
     @Autowired

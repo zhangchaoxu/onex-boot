@@ -22,6 +22,8 @@ spring:
       max-request-size: 512MB
       enabled: true
   mvc:
+    favicon:
+      enabled: true
     # 404时,不跳error页面, 直接抛出异常
     throw-exception-if-no-handler-found: true
     # 默认路径匹配策略
@@ -200,7 +202,7 @@ onex:
     # token在jwt中的key
     token-jwt-key: sub
     # 访问白名单,若有需要将file-request-path也加入
-    white-list: /favicon.ico,/static/**,/webjars/**,/ws/**,/druid/**,/doc.html,/swagger-resources,/v2/api-docs,/oss/**
+    white-list: /favicon.ico,/static/**,/webjars/**,/ws/**,/druid/**,/doc.html,/swagger-resources,/v3/api-docs/**,/v2/api-docs/**,/oss/**
     # 验证码有效期
     captcha-timeout: 900000
     # 验证码类型
