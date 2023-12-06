@@ -1,7 +1,11 @@
 # CHANGELOG
 
 ## [4.0.0] 2023.11.29
-- upgrade: upgrade springboot to 3.2.0
+- upgrade: upgrade springboot to 3.2.0, require Java 17 at least
+- remove: remove easypoi
+- remove: remove sched module
+- change: replace javax with jakarta
+- new: add poi into pom
 
 ## [3.8.3] 2023.11.29
 - upgrade: upgrade jsoup to 2.17.1
