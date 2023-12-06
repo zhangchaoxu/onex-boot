@@ -113,15 +113,15 @@ mybatis-plus:
 knife4j:
   enable: true
   setting:
-    enableGroup: true
-    enableSwaggerModels: true
+    enable-group: true
+    enable-swagger-models: true
     ## 自定义footer
-    enableFooter: false
-    enableFooterCustom: true
-    footerCustomContent: Copyright 2021-current[nb6868] (https://onex.nb6868.com/)
+    enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: Copyright 2021-current[nb6868] (https://onex.nb6868.com/)
     ## 自定义首页
-    enableHomeCustom: true
-    homeCustomLocation: classpath:README.md
+    enable-home-custom: true
+    home-custom-path: classpath:README.md
 
 ## onex
 onex:
@@ -157,11 +157,6 @@ onex:
   # swagger
   swagger:
     enable: false
-    portal: true
-    client: true
-    uc: true
-    sys: true
-    default: true
   # WebMVC
   webmvc:
     enable: false

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -18,7 +18,7 @@
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
         <druid.version>1.2.20</druid.version>
-        <commons.fileupload.version>1.5</commons.fileupload.version>
+        <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-io.version>2.15.1</commons-io.version>
         <mybatisplus.version>3.5.4.1</mybatisplus.version>
         <hutool.version>5.8.23</hutool.version>
@@ -26,8 +26,8 @@
         <jsoup.version>1.17.1</jsoup.version>
         <knife4j.version>4.3.0</knife4j.version>
         <weixin.version>4.5.0</weixin.version>
-        <aliyun.oss.version>3.17.2</aliyun.oss.version>
-        <huaweicloud.obs.version>3.23.9.1</huaweicloud.obs.version>
+        <aliyun-oss.version>3.17.2</aliyun-oss.version>
+        <huaweicloud-obs.version>3.23.9.1</huaweicloud-obs.version>
         <poi.version>5.2.5</poi.version>
         <poi-tl.version>1.12.1</poi-tl.version>
     </properties>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>${commons.fileupload.version}</version>
+            <version>${commons-fileupload.version}</version>
         </dependency>
         <!-- commons io -->
         <dependency>
@@ -143,7 +143,7 @@
         <!-- knife4j4+ -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
         </dependency>
         <!-- poi -->
@@ -190,14 +190,14 @@
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
-            <version>${aliyun.oss.version}</version>
+            <version>${aliyun-oss.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- huaweicloud obs -->
         <dependency>
             <groupId>com.huaweicloud</groupId>
             <artifactId>esdk-obs-java-bundle</artifactId>
-            <version>${huaweicloud.obs.version}</version>
+            <version>${huaweicloud-obs.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

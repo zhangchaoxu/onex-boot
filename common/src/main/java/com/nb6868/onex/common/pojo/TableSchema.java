@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.pojo;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.apache.poi.ss.formula.functions.T;
 
@@ -13,25 +12,25 @@ import org.apache.poi.ss.formula.functions.T;
 @Data
 public class TableSchema {
 
-    @ApiModelProperty(value = "列类型,selection/index/expand")
+     @Schema(description = "列类型,selection/index/expand")
     private String type;
 
-    @ApiModelProperty(value = "显示的标题")
+     @Schema(description = "显示的标题")
     private String label;
 
-    @ApiModelProperty(value = "列内容字段名")
+     @Schema(description = "列内容字段名")
     private String prop;
 
-    @ApiModelProperty(value = "链接对应字段名")
+     @Schema(description = "链接对应字段名")
     private String linkProp;
 
-    @ApiModelProperty(value = "列宽度")
+     @Schema(description = "列宽度")
     private String width;
 
-    @ApiModelProperty(value = "列最小宽度")
+     @Schema(description = "列最小宽度")
     private String minWidth;
 
-    @ApiModelProperty(value = "当内容过长被隐藏时显示 tooltip")
+     @Schema(description = "当内容过长被隐藏时显示 tooltip")
     private boolean showOverflowTooltip = true;
 
 }

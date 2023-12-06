@@ -21,8 +21,8 @@ import com.nb6868.onex.msg.dto.MsgTplQueryForm;
 import com.nb6868.onex.msg.service.MsgLogService;
 import com.nb6868.onex.msg.service.MsgService;
 import com.nb6868.onex.msg.service.MsgTplService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys/msg/")
 @Validated
-@Api(tags = "消息管理", position = 10)
+@Tag(name = "消息管理")
 public class MsgController {
 
     @Autowired
@@ -48,7 +48,7 @@ public class MsgController {
     MsgLogService msgLogService;
 
     @PostMapping("tplPage")
-    @ApiOperation("模板分页")
+    @Operation(summary = "模板分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
@@ -59,7 +59,7 @@ public class MsgController {
     }
 
     @PostMapping("tplList")
-    @ApiOperation("模板列表")
+    @Operation(summary = "模板列表")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
@@ -69,7 +69,7 @@ public class MsgController {
     }
 
     @PostMapping("tplInfo")
-    @ApiOperation("模板详情")
+    @Operation(summary = "模板详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
@@ -81,7 +81,7 @@ public class MsgController {
     }
 
     @PostMapping("tplSave")
-    @ApiOperation("模板保存")
+    @Operation(summary = "模板保存")
     @LogOperation("模板保存")
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
@@ -92,7 +92,7 @@ public class MsgController {
     }
 
     @PostMapping("tplUpdate")
-    @ApiOperation("模板修改")
+    @Operation(summary = "模板修改")
     @LogOperation("模板修改")
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
@@ -103,7 +103,7 @@ public class MsgController {
     }
 
     @PostMapping("tplDelete")
-    @ApiOperation("模板删除")
+    @Operation(summary = "模板删除")
     @LogOperation("模板删除")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:delete"}, logical = Logical.OR)
@@ -115,7 +115,7 @@ public class MsgController {
     }
 
     @PostMapping("logPage")
-    @ApiOperation("日志分页")
+    @Operation(summary = "日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
@@ -126,7 +126,7 @@ public class MsgController {
     }
 
     @PostMapping("/send")
-    @ApiOperation("发送消息")
+    @Operation(summary = "发送消息")
     @LogOperation("发送消息")
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msg:send"}, logical = Logical.OR)
     @ApiOperationSupport(order = 110)
@@ -136,7 +136,7 @@ public class MsgController {
     }
 
     @PostMapping("logDeleteBatch")
-    @ApiOperation("记录批量删除")
+    @Operation(summary = "记录批量删除")
     @LogOperation("记录批量删除")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgLog:delete"}, logical = Logical.OR)

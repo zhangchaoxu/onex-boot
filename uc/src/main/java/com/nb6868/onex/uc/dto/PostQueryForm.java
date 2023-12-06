@@ -2,26 +2,25 @@ package com.nb6868.onex.uc.dto;
 
 import com.nb6868.onex.common.jpa.Query;
 import com.nb6868.onex.common.pojo.PageForm;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "岗位查询")
+@Schema(name = "岗位查询")
 public class PostQueryForm extends PageForm {
 
     @Query
-    @ApiModelProperty("编码")
+    @Schema(description = "编码")
     private String code;
 
     @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,remark")
-    @ApiModelProperty("搜索关键词")
+    @Schema(description = "搜索关键词")
     private String search;
 
     @Query
-    @ApiModelProperty("租户编码,对租户无效")
+    @Schema(description = "租户编码,对租户无效")
     private String tenantCode;
 
 }

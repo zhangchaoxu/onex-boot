@@ -16,15 +16,13 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -35,14 +33,14 @@ import java.util.List;
 @RestController
 @RequestMapping( "/cms/axd")
 @Validated
-@Api(tags="广告位")
+@Tag(name="广告位")
 public class AxdController {
 
     @Autowired
     private AxdService axdService;
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions("cms:axd:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody AxdQueryForm form) {
@@ -52,7 +50,7 @@ public class AxdController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions("cms:axd:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody AxdQueryForm form) {
@@ -62,7 +60,7 @@ public class AxdController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions("cms:axd:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> info(@Validated @RequestBody IdForm form) {
@@ -73,7 +71,7 @@ public class AxdController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions("cms:axd:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -84,7 +82,7 @@ public class AxdController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions("cms:axd:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -95,7 +93,7 @@ public class AxdController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions("cms:axd:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -106,7 +104,7 @@ public class AxdController {
     }
 
     @PostMapping("deleteBatch")
-    @ApiOperation("批量删除")
+    @Operation(summary = "批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("cms:axd:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)

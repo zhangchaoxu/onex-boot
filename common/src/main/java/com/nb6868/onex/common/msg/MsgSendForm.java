@@ -5,8 +5,7 @@ import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.pojo.FileBase64Form;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.TenantGroup;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,31 +14,31 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "消息发送请求")
+@Schema(name = "消息发送请求")
 public class MsgSendForm extends BaseForm {
 
-    @ApiModelProperty(value = "租户编码", required = true)
+     @Schema(description = "租户编码", required = true)
     @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
     private String tenantCode;
 
-    @ApiModelProperty(value = "模板编码", required = true, example = "CODE_LOGIN")
+     @Schema(description = "模板编码", required = true, example = "CODE_LOGIN")
     @NotEmpty(message = "模板编码不能为空", groups = DefaultGroup.class)
     private String tplCode;
 
-    @ApiModelProperty(value = "收件人", required = true)
+     @Schema(description = "收件人", required = true)
     @NotEmpty(message = "收件人不能为空", groups = DefaultGroup.class)
     private String mailTo;
 
-    @ApiModelProperty(value = "抄送人")
+     @Schema(description = "抄送人")
     private String mailCc;
 
-    @ApiModelProperty(value = "标题参数")
+     @Schema(description = "标题参数")
     private JSONObject titleParams;
 
-    @ApiModelProperty(value = "内容参数")
+     @Schema(description = "内容参数")
     private JSONObject contentParams;
 
-    @ApiModelProperty(value = "附件")
+     @Schema(description = "附件")
     List<FileBase64Form> attachments;
 
 }

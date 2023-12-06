@@ -30,9 +30,8 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
-import com.pig4cloud.captcha.base.Captcha;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Api(tags = "用户授权", position = 10)
+@Tag(name = "用户授权", description = "用户登录基本信息等相关接口")
 @Slf4j
 public class AuthController {
 
@@ -70,7 +69,7 @@ public class AuthController {
 
     @PostMapping("captcha")
     @AccessControl
-    @ApiOperation(value = "图形验证码(base64)", notes = "Anon")
+    @Operation(summary = "图形验证码(base64)", description = "Anon")
     @ApiOperationSupport(order = 10)
     public Result<?> captcha(@Validated @RequestBody CaptchaForm form) {
         String uuid = IdUtil.fastSimpleUUID();
@@ -82,7 +81,7 @@ public class AuthController {
 
     @PostMapping("sendMsgCode")
     @AccessControl
-    @ApiOperation(value = "发送验证码消息", notes = "Anon")
+    @Operation(summary = "发送验证码消息", description = "Anon")
     @LogOperation("发送验证码消息")
     @ApiOperationSupport(order = 20)
     public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
@@ -105,7 +104,7 @@ public class AuthController {
 
     @PostMapping("userLogin")
     @AccessControl
-    @ApiOperation(value = "用户登录", notes = "Anon")
+    @Operation(summary = "用户登录", description = "Anon")
     @LogOperation(value = "用户登录", type = "login")
     @ApiOperationSupport(order = 100)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody LoginForm form) {
@@ -148,7 +147,7 @@ public class AuthController {
 
     @PostMapping("userLoginEncrypt")
     @AccessControl
-    @ApiOperation(value = "用户登录(加密)", notes = "Anon@将userLogin接口数据,做AES加密作为body的值")
+    @Operation(summary = "用户登录(加密)", description = "Anon@将userLogin接口数据,做AES加密作为body的值")
     @LogOperation(value = "用户登录(加密)", type = "login")
     @ApiOperationSupport(order = 110)
     public Result<?> userLoginEncrypt(@Validated @RequestBody EncryptForm encryptForm) {
@@ -157,7 +156,7 @@ public class AuthController {
     }
 
     @PostMapping("userLogout")
-    @ApiOperation(value = "用户登出")
+    @Operation(summary = "用户登出")
     @LogOperation(value = "用户登出", type = "logout")
     @ApiOperationSupport(order = 120)
     public Result<?> userLogout() {
@@ -167,7 +166,7 @@ public class AuthController {
     }
 
     @PostMapping("userInfo")
-    @ApiOperation("用户信息")
+    @Operation(summary = "用户信息")
     @ApiOperationSupport(order = 150)
     public Result<?> userInfo() {
         UserEntity user = userService.getById(ShiroUtils.getUserId());
@@ -179,7 +178,7 @@ public class AuthController {
     }
 
     @PostMapping("userChangePassword")
-    @ApiOperation("用户修改密码")
+    @Operation(summary = "用户修改密码")
     @LogOperation("用户修改密码")
     @ApiOperationSupport(order = 160)
     public Result<?> userChangePassword(@Validated @RequestBody ChangePasswordForm form) {
@@ -203,7 +202,7 @@ public class AuthController {
 
     @PostMapping("userResetPassword")
     @AccessControl
-    @ApiOperation("用户重置密码(帐号找回)")
+    @Operation(summary = "用户重置密码(帐号找回)")
     @LogOperation("用户重置密码(帐号找回)")
     @ApiOperationSupport(order = 164)
     public Result<?> userResetPassword(@Validated @RequestBody ChangePasswordByMailCodeForm form) {
@@ -231,7 +230,7 @@ public class AuthController {
     }
 
     @PostMapping("userChangePasswordEncrypt")
-    @ApiOperation("用户修改密码(加密)")
+    @Operation(summary = "用户修改密码(加密)")
     @LogOperation("用户修改密码(加密)")
     @ApiOperationSupport(order = 170)
     public Result<?> userChangePasswordEncrypt(@Validated @RequestBody EncryptForm encryptForm) {
@@ -240,7 +239,7 @@ public class AuthController {
     }
 
     @PostMapping("userMenuScope")
-    @ApiOperation(value = "用户权限范围", notes = "返回包括菜单、路由、权限、角色等所有内容")
+    @Operation(summary = "用户权限范围", description = "返回包括菜单、路由、权限、角色等所有内容")
     @ApiOperationSupport(order = 200)
     public Result<MenuScopeResult> userMenuScope(@Validated @RequestBody MenuScopeForm form) {
         ShiroUser user = ShiroUtils.getUser();
@@ -280,7 +279,7 @@ public class AuthController {
     }
 
     @PostMapping("userMenuTree")
-    @ApiOperation(value = "用户菜单树", notes = "用户左侧显示菜单")
+    @Operation(summary = "用户菜单树", description = "用户左侧显示菜单")
     @ApiOperationSupport(order = 230)
     public Result<?> userMenuTree() {
         ShiroUser user = ShiroUtils.getUser();
@@ -293,7 +292,7 @@ public class AuthController {
     }
 
     @PostMapping("userPermissions")
-    @ApiOperation(value = "用户授权编码", notes = "用户具备的权限,可用于按钮等的控制")
+    @Operation(summary = "用户授权编码", description = "用户具备的权限,可用于按钮等的控制")
     @ApiOperationSupport(order = 240)
     public Result<?> userPermissions() {
         ShiroUser user = ShiroUtils.getUser();
@@ -303,7 +302,7 @@ public class AuthController {
     }
 
     @PostMapping("userRoles")
-    @ApiOperation(value = "用户角色编码", notes = "用户具备的角色,可用于按钮等的控制")
+    @Operation(summary = "用户角色编码", description = "用户具备的角色,可用于按钮等的控制")
     @ApiOperationSupport(order = 250)
     public Result<?> userRoles() {
         ShiroUser user = ShiroUtils.getUser();

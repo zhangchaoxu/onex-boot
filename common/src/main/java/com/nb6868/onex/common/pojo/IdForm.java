@@ -2,8 +2,7 @@ package com.nb6868.onex.common.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.jpa.Query;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,11 +16,11 @@ import jakarta.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "ID请求")
+@Schema(name = "ID请求")
 public class IdForm extends BaseForm {
 
     @Query
-    @ApiModelProperty(value = "id", required = true)
+     @Schema(description = "id", required = true)
     @NotNull(message = "{id.require}")
     private Long id;
 

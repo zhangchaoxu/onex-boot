@@ -18,8 +18,8 @@ import com.nb6868.onex.uc.dto.RoleDTO;
 import com.nb6868.onex.uc.dto.RoleQueryForm;
 import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.RoleService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/uc/role")
 @Validated
-@Api(tags = "角色管理", position = 30)
+@Tag(name = "角色管理")
 public class RoleController {
 
     @Autowired
@@ -43,7 +43,7 @@ public class RoleController {
     private MenuScopeService menuScopeService;
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
@@ -54,7 +54,7 @@ public class RoleController {
     }
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 20)
@@ -65,7 +65,7 @@ public class RoleController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -81,7 +81,7 @@ public class RoleController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
@@ -92,7 +92,7 @@ public class RoleController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
@@ -103,7 +103,7 @@ public class RoleController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)

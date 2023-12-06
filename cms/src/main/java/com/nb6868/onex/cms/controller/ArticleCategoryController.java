@@ -17,8 +17,8 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -37,7 +37,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/cms/articleCategory")
 @Validated
-@Api(tags = "文章类目")
+@Tag(name = "文章类目")
 public class ArticleCategoryController {
     @Autowired
     private ArticleCategoryService articleCategoryService;
@@ -45,7 +45,7 @@ public class ArticleCategoryController {
     private ArticleService articleService;
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions("cms:articleCategory:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody ArticleCategoryQueryForm form) {
@@ -55,7 +55,7 @@ public class ArticleCategoryController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions("cms:articleCategory:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody ArticleCategoryQueryForm form) {
@@ -65,7 +65,7 @@ public class ArticleCategoryController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions("cms:articleCategory:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> info(@Validated @RequestBody IdForm form) {
@@ -76,7 +76,7 @@ public class ArticleCategoryController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions("cms:articleCategory:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -87,7 +87,7 @@ public class ArticleCategoryController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions("cms:articleCategory:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -98,7 +98,7 @@ public class ArticleCategoryController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions("cms:articleCategory:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)

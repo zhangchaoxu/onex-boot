@@ -1,23 +1,22 @@
 package com.nb6868.onex.common.dingtalk;
 
 import cn.hutool.json.JSONUtil;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-@ApiModel(value = "钉钉基础,返回体")
+@Schema(name = "钉钉基础,返回体")
 public class BaseResponse implements Serializable {
 
-    @ApiModelProperty(value = "请求ID")
+     @Schema(description = "请求ID")
     private String request_id;
 
-    @ApiModelProperty(value = "返回码")
+     @Schema(description = "返回码")
     private int errcode = 0;
 
-    @ApiModelProperty(value = "返回描述")
+     @Schema(description = "返回描述")
     private String errmsg = "ok";
 
     /**

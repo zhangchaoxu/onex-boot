@@ -2,8 +2,7 @@ package com.nb6868.onex.uc.dto;
 
 import com.nb6868.onex.common.jpa.Query;
 import com.nb6868.onex.common.pojo.PageForm;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,53 +10,53 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "用户查询")
+@Schema(name = "用户查询")
 public class UserQueryForm extends PageForm {
 
     @Query
-    @ApiModelProperty("用户名")
+    @Schema(description = "用户名")
     private String username;
 
     @Query
-    @ApiModelProperty("姓名")
+    @Schema(description = "姓名")
     private String realName;
 
     @Query
-    @ApiModelProperty("手机号")
+    @Schema(description = "手机号")
     private String mobile;
 
     @Query(type = Query.Type.LIKE_LEFT)
-    @ApiModelProperty("部门编码")
+    @Schema(description = "部门编码")
     private String deptCode;
 
     @Query(type = Query.Type.LIKE_LEFT)
-    @ApiModelProperty("区域编码")
+    @Schema(description = "区域编码")
     private String areaCode;
 
     @Query(type = Query.Type.LIKE_LEFT)
-    @ApiModelProperty("岗位编码")
+    @Schema(description = "岗位编码")
     private String postCode;
 
     @Query
-    @ApiModelProperty("租户编码")
+    @Schema(description = "租户编码")
     private String tenantCode;
 
     @Query
-    @ApiModelProperty("状态")
+    @Schema(description = "状态")
     private Integer state;
 
     @Query
-    @ApiModelProperty("类型")
+    @Schema(description = "类型")
     private Integer type;
 
     @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,username,real_name,nickname,mobile,remark")
-    @ApiModelProperty("搜索关键词")
+    @Schema(description = "搜索关键词")
     private String search;
 
-    @ApiModelProperty("角色id数组")
+    @Schema(description = "角色id数组")
     private List<Long> roleIds;
 
-    @ApiModelProperty("角色编码数组")
+    @Schema(description = "角色编码数组")
     private List<String> roleCodes;
 
 }

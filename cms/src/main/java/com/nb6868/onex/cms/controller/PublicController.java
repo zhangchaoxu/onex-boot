@@ -9,8 +9,8 @@ import com.nb6868.onex.cms.service.SiteService;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.ConvertUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +31,7 @@ import java.util.List;
 @RequestMapping("/cms/public")
 @AccessControl("/cms/public/**")
 @Validated
-@Api(tags="CMS开放接口")
+@Tag(name="CMS开放接口")
 public class PublicController {
 
     @Autowired
@@ -40,7 +40,7 @@ public class PublicController {
     private AxdService axdService;
 
     @GetMapping("getAxdListByPosition")
-    @ApiOperation("获取指定位置的广告列表")
+    @Operation(summary = "获取指定位置的广告列表")
     public Result<?> getAxdListByPosition(@NotEmpty(message = "位置参数不能为空") @RequestParam String position) {
         List<AxdEntity> entityList = axdService.listByPosition(position);
         List<AxdDTO> list = ConvertUtils.sourceToTarget(entityList, AxdDTO.class);
@@ -49,7 +49,7 @@ public class PublicController {
     }
 
     @GetMapping("getAxdByPosition")
-    @ApiOperation("获取指定位置的广告")
+    @Operation(summary = "获取指定位置的广告")
     public Result<?> getAxdByPosition(@NotEmpty(message = "位置参数不能为空") @RequestParam String position) {
         AxdEntity entity = axdService.getByPosition(position);
         AxdDTO dto = ConvertUtils.sourceToTarget(entity, AxdDTO.class);
@@ -58,7 +58,7 @@ public class PublicController {
     }
 
     @GetMapping("getSiteInfoByCode")
-    @ApiOperation("通过code获取站点详情")
+    @Operation(summary = "通过code获取站点详情")
     public Result<?> getSiteInfoByCode(@NotNull(message = "{code.require}") @RequestParam String code) {
         SiteEntity entity = siteService.getOneByColumn("code", code);
         SiteDTO dto = ConvertUtils.sourceToTarget(entity, SiteDTO.class);

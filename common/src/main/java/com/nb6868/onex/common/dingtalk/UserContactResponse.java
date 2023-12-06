@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.dingtalk;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,25 +9,25 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 public class UserContactResponse implements Serializable {
 
-    @ApiModelProperty(value = "nick")
+     @Schema(description = "nick")
     private String nick;
 
-    @ApiModelProperty(value = "avatarUrl")
+     @Schema(description = "avatarUrl")
     private String avatarUrl;
 
-    @ApiModelProperty(value = "mobile")
+     @Schema(description = "mobile")
     private String mobile;
 
-    @ApiModelProperty(value = "openId")
+     @Schema(description = "openId")
     private String openId;
 
-    @ApiModelProperty(value = "unionId")
+     @Schema(description = "unionId")
     private String unionId;
 
-    @ApiModelProperty(value = "email")
+     @Schema(description = "email")
     private String email;
 
-    @ApiModelProperty(value = "stateCode")
+     @Schema(description = "stateCode")
     private String stateCode;
 
 }

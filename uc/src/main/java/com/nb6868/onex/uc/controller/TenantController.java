@@ -17,8 +17,8 @@ import com.nb6868.onex.uc.dto.TenantDTO;
 import com.nb6868.onex.uc.dto.TenantQueryForm;
 import com.nb6868.onex.uc.entity.TenantEntity;
 import com.nb6868.onex.uc.service.TenantService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +33,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/uc/tenant")
 @Validated
-@Api(tags = "租户管理", position = 10)
+@Tag(name = "租户管理")
 public class TenantController {
     @Autowired
     private TenantService tenantService;
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody TenantQueryForm form) {
@@ -50,7 +50,7 @@ public class TenantController {
     }
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
     public Result<?> list(@Validated @RequestBody TenantQueryForm form) {
@@ -61,7 +61,7 @@ public class TenantController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     public Result<?> info(@Validated @RequestBody IdForm form) {
@@ -72,7 +72,7 @@ public class TenantController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
@@ -83,7 +83,7 @@ public class TenantController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
@@ -94,7 +94,7 @@ public class TenantController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)

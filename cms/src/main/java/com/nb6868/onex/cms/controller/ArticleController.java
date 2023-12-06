@@ -16,8 +16,8 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -36,14 +36,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/cms/article")
 @Validated
-@Api(tags = "文章")
+@Tag(name = "文章")
 public class ArticleController {
 
     @Autowired
     private ArticleService articleService;
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions("cms:article:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody ArticleQueryForm form) {
@@ -53,7 +53,7 @@ public class ArticleController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions("cms:article:query")
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody ArticleQueryForm form) {
         PageData<?> page = articleService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
@@ -62,7 +62,7 @@ public class ArticleController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions("cms:article:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> info(@Validated @RequestBody IdForm form) {
@@ -73,7 +73,7 @@ public class ArticleController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions("cms:article:edit")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody ArticleDTO dto) {
@@ -83,7 +83,7 @@ public class ArticleController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions("cms:article:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -94,7 +94,7 @@ public class ArticleController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions("cms:article:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -105,7 +105,7 @@ public class ArticleController {
     }
 
     @PostMapping("deleteBatch")
-    @ApiOperation("批量删除")
+    @Operation(summary = "批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("cms:article:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)

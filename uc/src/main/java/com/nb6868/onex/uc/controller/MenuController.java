@@ -19,8 +19,8 @@ import com.nb6868.onex.uc.dto.MenuDTO;
 import com.nb6868.onex.uc.dto.MenuQueryForm;
 import com.nb6868.onex.uc.entity.MenuEntity;
 import com.nb6868.onex.uc.service.MenuService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +39,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/uc/menu")
 @Validated
-@Api(tags = "菜单权限", position = 50)
+@Tag(name = "菜单权限")
 public class MenuController {
 
     @Autowired
     private MenuService menuService;
 
     @PostMapping("tree")
-    @ApiOperation(value = "树列表", notes = "按租户来,不做用户的权限区分")
+    @Operation(summary = "树列表", description = "按租户来,不做用户的权限区分")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:query"}, logical = Logical.OR)
     public Result<?> tree(@Validated @RequestBody MenuQueryForm form) {
@@ -58,7 +58,7 @@ public class MenuController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> info(@Validated @RequestBody IdForm form) {
@@ -71,7 +71,7 @@ public class MenuController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:edit"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -82,7 +82,7 @@ public class MenuController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:edit"}, logical = Logical.OR)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody MenuDTO dto) {
@@ -92,7 +92,7 @@ public class MenuController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:delete"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)

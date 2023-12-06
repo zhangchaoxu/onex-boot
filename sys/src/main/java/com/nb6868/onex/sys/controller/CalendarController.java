@@ -12,8 +12,8 @@ import com.nb6868.onex.sys.dto.CalenderDayDateForm;
 import com.nb6868.onex.sys.dto.CalenderQueryForm;
 import com.nb6868.onex.sys.entity.CalendarEntity;
 import com.nb6868.onex.sys.service.CalendarService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +25,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys/calendar")
 @Validated
-@Api(tags = "万年历", position = 110)
+@Tag(name = "万年历")
 public class CalendarController {
 
     @Autowired
     private CalendarService calendarService;
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
     public Result<?> list(@Validated @RequestBody CalenderQueryForm form) {
         QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
@@ -42,7 +42,7 @@ public class CalendarController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody CalenderQueryForm form) {
         QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
@@ -52,7 +52,7 @@ public class CalendarController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
     public Result<?> info(@Validated @RequestBody CalenderDayDateForm form) {
         CalendarDTO data = calendarService.oneDto(QueryWrapperHelper.getPredicate(form));

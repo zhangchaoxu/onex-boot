@@ -2,8 +2,7 @@ package com.nb6868.onex.common.auth;
 
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.TenantGroup;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +11,7 @@ import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "登录请求")
+@Schema(name = "登录请求")
 public class LoginForm implements Serializable {
     /**
      * 验证码校验
@@ -32,38 +31,38 @@ public class LoginForm implements Serializable {
     public interface MobileSmsGroup {
     }
 
-    @ApiModelProperty(value = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
+     @Schema(description = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
     @NotEmpty(message = "请指定登录类型", groups = {DefaultGroup.class})
     private String type;
 
-    @ApiModelProperty(value = "用户名")
+     @Schema(description = "用户名")
     @NotEmpty(message = "用户名不能为空", groups = {UsernamePasswordGroup.class})
     private String username;
 
-    @ApiModelProperty(value = "密码")
+     @Schema(description = "密码")
     @NotEmpty(message = "密码不能为空", groups = {UsernamePasswordGroup.class})
     private String password;
 
-    @ApiModelProperty(value = "手机号区域")
+     @Schema(description = "手机号区域")
     private String mobileArea = "86";
 
-    @ApiModelProperty(value = "手机号")
+     @Schema(description = "手机号")
     @NotEmpty(message = "手机号不能为空", groups = {MobileSmsGroup.class})
     private String mobile;
 
-    @ApiModelProperty(value = "短信验证码")
+     @Schema(description = "短信验证码")
     @NotEmpty(message = "短信验证码不能为空", groups = {MobileSmsGroup.class})
     private String sms;
 
-    @ApiModelProperty(value = "租户编码", required = true)
+     @Schema(description = "租户编码", required = true)
     @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
     private String tenantCode;
 
-    @ApiModelProperty(value = "验证码")
+     @Schema(description = "验证码")
     @NotEmpty(message = "验证码不能为空", groups = {CaptchaGroup.class})
     private String captchaValue;
 
-    @ApiModelProperty(value = "验证码标识")
+     @Schema(description = "验证码标识")
     @NotEmpty(message = "验证码标识不能为空", groups = {CaptchaGroup.class})
     private String captchaUuid;
 

@@ -17,8 +17,8 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/uc/auth/qrcode/")
 @AccessControl
 @Validated
-@Api(tags = "用户二维码登录", position = 20)
+@Tag(name = "用户二维码登录")
 @Slf4j
 public class AuthQrcodeController {
 
@@ -47,7 +47,7 @@ public class AuthQrcodeController {
     private ParamsService paramsService;
 
     @PostMapping("create")
-    @ApiOperation(value = "生成二维码", notes = "Anon")
+    @Operation(summary = "生成二维码", description = "Anon")
     @ApiOperationSupport(order = 10)
     public Result<?> create() {
         // 生成随机码
@@ -58,7 +58,7 @@ public class AuthQrcodeController {
     }
 
     @PostMapping("userLogin")
-    @ApiOperation(value = "通过二维码登录", notes = "Anon")
+    @Operation(summary = "通过二维码登录", description = "Anon")
     @ApiOperationSupport(order = 20)
     public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginForm form) {
         // 获得对应登录类型的登录参数
@@ -106,7 +106,7 @@ public class AuthQrcodeController {
 
     @PostMapping("scan")
     @AccessControl
-    @ApiOperation(value = "移动端扫描二维码", notes = "Anon")
+    @Operation(summary = "移动端扫描二维码", description = "Anon")
     @ApiOperationSupport(order = 30)
     public Result<?> scan(@Validated(value = {DefaultGroup.class}) @RequestBody CodeForm form) {
         // 从缓存中，通过qrcode获得用户id

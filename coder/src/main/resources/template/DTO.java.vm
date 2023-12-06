@@ -1,8 +1,7 @@
 package ${package}.modules.${moduleName}.dto;
 
 import com.nb6868.onex.common.pojo.BaseDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,7 +20,7 @@ import cn.hutool.json.JSONObject;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "${comments}")
+@Schema(name = "${comments}")
 public class ${className}DTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +30,7 @@ public class ${className}DTO extends BaseDTO {
 && $column.columnName != 'updater' && $column.columnName != 'update_id'
 && $column.columnName != 'update_date' && $column.columnName != 'update_time'
 && $column.columnName != 'del_flag' && $column.columnName != 'deleted')
-	@ApiModelProperty("$column.comments")
+	@Schema(description = "$column.comments")
 	private $column.attrType $column.attrname;
 
 #end

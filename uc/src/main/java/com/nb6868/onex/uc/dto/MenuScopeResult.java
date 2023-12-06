@@ -1,8 +1,7 @@
 package com.nb6868.onex.uc.dto;
 
 import cn.hutool.core.lang.tree.Tree;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,19 +19,19 @@ import java.util.Set;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "权限范围")
+@Schema(name = "权限范围")
 public class MenuScopeResult implements Serializable {
 
-    @ApiModelProperty(value = "菜单树")
+     @Schema(description = "菜单树")
     private List<Tree<Long>> menuTree = new ArrayList<>();
 
-    @ApiModelProperty(value = "路由地址")
+     @Schema(description = "路由地址")
     private List<MenuResult> urlList = new ArrayList<>();
 
-    @ApiModelProperty(value = "权限列表")
+     @Schema(description = "权限列表")
     private Set<String> permissions = new HashSet<>();
 
-    @ApiModelProperty(value = "角色列表")
+     @Schema(description = "角色列表")
     private Set<String> roles = new HashSet<>();
 
 }

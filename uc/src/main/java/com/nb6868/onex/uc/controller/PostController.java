@@ -17,8 +17,8 @@ import com.nb6868.onex.uc.dto.PostDTO;
 import com.nb6868.onex.uc.dto.PostQueryForm;
 import com.nb6868.onex.uc.entity.PostEntity;
 import com.nb6868.onex.uc.service.PostService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +33,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/uc/post")
 @Validated
-@Api(tags = "岗位管理", position = 35)
+@Tag(name = "岗位管理")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
@@ -51,7 +51,7 @@ public class PostController {
     }
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 20)
@@ -62,7 +62,7 @@ public class PostController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 30)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -74,7 +74,7 @@ public class PostController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
@@ -85,7 +85,7 @@ public class PostController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
@@ -96,7 +96,7 @@ public class PostController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)

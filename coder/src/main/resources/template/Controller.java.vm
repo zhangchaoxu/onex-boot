@@ -42,13 +42,13 @@ import java.util.Map;
 @RestController("${moduleName}${className}")
 @RequestMapping("/${moduleName}/${pathName}/")
 @Validated
-@Api(tags = "${comments}")
+@Tag(name = "${comments}")
 public class ${className}Controller {
     @Autowired
     private ${className}Service ${classname}Service;
 
     @GetMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions("${moduleName}:${pathName}:list")
     public Result<?> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         List<${className}DTO> list = ${classname}Service.listDto(params);
@@ -57,7 +57,7 @@ public class ${className}Controller {
     }
 
     @GetMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions("${moduleName}:${pathName}:page")
     public Result<?> page(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageData<${className}DTO> page = ${classname}Service.pageDto(params);
@@ -66,7 +66,7 @@ public class ${className}Controller {
     }
 
     @GetMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions("${moduleName}:${pathName}:info")
     public Result<?> info(@RequestParam @NotNull(message = "{id.require}") Long id) {
         ${className}DTO data = ${classname}Service.getDtoById(id);
@@ -76,7 +76,7 @@ public class ${className}Controller {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions("${moduleName}:${pathName}:save")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody ${className}DTO dto) {
@@ -86,7 +86,7 @@ public class ${className}Controller {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions("${moduleName}:${pathName}:update")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody ${className}DTO dto) {
@@ -96,7 +96,7 @@ public class ${className}Controller {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions("${moduleName}:${pathName}:delete")
     public Result<?> delete(@NotNull(message = "{id.require}") @RequestParam Long id) {
@@ -106,7 +106,7 @@ public class ${className}Controller {
     }
 
     @DeleteMapping("deleteBatch")
-    @ApiOperation("批量删除")
+    @Operation(summary = "批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions("${moduleName}:${pathName}:deleteBatch")
     public Result<?> deleteBatch(@NotEmpty(message = "{ids.require}")@RequestBody List<Long> ids) {
@@ -116,7 +116,7 @@ public class ${className}Controller {
     }
 
     @GetMapping("export")
-    @ApiOperation("导出")
+    @Operation(summary = "导出")
     @LogOperation("导出")
     @RequiresPermissions("${moduleName}:${pathName}:export")
     public void export(@ApiIgnore @RequestParam Map<String, Object> params, HttpServletResponse response) {
@@ -126,7 +126,7 @@ public class ${className}Controller {
     }
 
     @PostMapping("import")
-    @ApiOperation("导入")
+    @Operation(summary = "导入")
     @LogOperation("导入")
     @RequiresPermissions("${moduleName}:${pathName}:import")
     public Result<?> importExcel(@RequestParam("file") MultipartFile file) {

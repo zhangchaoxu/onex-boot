@@ -22,8 +22,8 @@ import com.nb6868.onex.uc.dto.ParamsInfoQueryForm;
 import com.nb6868.onex.uc.dto.ParamsQueryForm;
 import com.nb6868.onex.uc.entity.ParamsEntity;
 import com.nb6868.onex.uc.service.ParamsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/uc/params/")
 @Validated
-@Api(tags = "参数管理", position = 25)
+@Tag(name = "参数管理")
 public class ParamsController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class ParamsController {
 
     @PostMapping("infoByCode")
     @AccessControl
-    @ApiOperation(value = "通过编码获取配置信息")
+    @Operation(summary = "通过编码获取配置信息")
     @ApiOperationSupport(order = 5)
     public Result<?> infoByCode(@Validated @RequestBody ParamsInfoQueryForm form) {
         QueryWrapper<ParamsEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
@@ -57,7 +57,7 @@ public class ParamsController {
     }
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 8)
@@ -68,7 +68,7 @@ public class ParamsController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 10)
@@ -79,7 +79,7 @@ public class ParamsController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @ApiOperationSupport(order = 20)
@@ -91,7 +91,7 @@ public class ParamsController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 40)
@@ -102,7 +102,7 @@ public class ParamsController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:edit"}, logical = Logical.OR)
     @ApiOperationSupport(order = 50)
@@ -113,7 +113,7 @@ public class ParamsController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 60)

@@ -28,7 +28,7 @@ onex:
 4. 在需要记录日志的接口中添加LogOperation注解
 ```java
 @PostMapping("logDeleteBatch")
-@ApiOperation("记录批量删除")
+@Operation(summary = "记录批量删除")
 @LogOperation("记录批量删除")
 @QueryDataScope(tenantFilter = true, tenantValidate = false)
 @RequiresPermissions("sys:msgLog:delete")

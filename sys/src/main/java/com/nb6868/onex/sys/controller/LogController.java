@@ -12,8 +12,8 @@ import com.nb6868.onex.sys.dto.LogDTO;
 import com.nb6868.onex.sys.dto.LogQueryForm;
 import com.nb6868.onex.sys.entity.LogEntity;
 import com.nb6868.onex.sys.service.LogService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sys/log/")
 @Validated
-@Api(tags = "日志管理", position = 30)
+@Tag(name = "日志管理")
 public class LogController {
 
     @Autowired
     LogService logService;
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:query"}, logical = Logical.OR)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody LogQueryForm form) {
@@ -44,7 +44,7 @@ public class LogController {
     }
 
     @PostMapping("deleteBatch")
-    @ApiOperation("批量删除")
+    @Operation(summary = "批量删除")
     @LogOperation("批量删除")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:delete"}, logical = Logical.OR)
     public Result<?> deleteBatch(@Validated @RequestBody IdsForm form) {

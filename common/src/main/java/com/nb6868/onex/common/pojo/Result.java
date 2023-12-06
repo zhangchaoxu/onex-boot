@@ -2,7 +2,6 @@ package com.nb6868.onex.common.pojo;
 
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.MessageUtils;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,16 +24,16 @@ public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "消息码:0表示成功,其他值表示失败")
+     @Schema(description = "消息码:0表示成功,其他值表示失败")
     private int code = ErrorCode.SUCCESS;
 
-    @ApiModelProperty(value = "消息内容")
+     @Schema(description = "消息内容")
     private String msg = "success";
 
-    @ApiModelProperty(value = "消息数据")
+     @Schema(description = "消息数据")
     private T data;
 
-    @ApiModelProperty(value = "消息Unix时间戳")
+     @Schema(description = "消息Unix时间戳")
     private Long time = Instant.now().toEpochMilli();
 
     public boolean isSuccess(){

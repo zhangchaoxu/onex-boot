@@ -36,7 +36,7 @@ QkNOJMWRfP+DQ0whS6zmXmYW0HkLLbeSzAEypciCpOVr+aoleWoKR2AGwJIF9htskXlPZvlvNiwvqYtJ
 * 支持帐号登录、短信登录
 */
 @PostMapping("loginEncrypt")
-@ApiOperation(value = "帐号登录AES加密")
+@Operation(summary = "帐号登录AES加密")
 public Result<?> loginEncrypt(HttpServletRequest request, @RequestBody String loginEncrypted) throws UnsupportedEncodingException {
  // 密文转json明文
  String loginRaw = AESUtils.decrypt(URLDecoder.decode(loginEncrypted, "utf-8"));

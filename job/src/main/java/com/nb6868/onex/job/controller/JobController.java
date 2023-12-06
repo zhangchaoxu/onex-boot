@@ -21,8 +21,8 @@ import com.nb6868.onex.job.dto.JobQueryForm;
 import com.nb6868.onex.job.dto.JobRunWithParamsForm;
 import com.nb6868.onex.job.service.JobLogService;
 import com.nb6868.onex.job.service.JobService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sys/job/")
 @Validated
-@Api(tags = "定时任务", position = 20)
+@Tag(name = "定时任务")
 public class JobController {
 
     @Autowired
@@ -44,7 +44,7 @@ public class JobController {
     private JobLogService jobLogService;
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 10)
@@ -55,7 +55,7 @@ public class JobController {
     }
 
     @PostMapping("info")
-    @ApiOperation("详情")
+    @Operation(summary = "详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 20)
@@ -67,7 +67,7 @@ public class JobController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:edit"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -79,7 +79,7 @@ public class JobController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @ApiOperationSupport(order = 40)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:edit"}, logical = Logical.OR)
@@ -90,7 +90,7 @@ public class JobController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @ApiOperationSupport(order = 50)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -105,7 +105,7 @@ public class JobController {
     }
 
     @PostMapping("/runWithParams")
-    @ApiOperation("指定参数立即执行")
+    @Operation(summary = "指定参数立即执行")
     @LogOperation("指定参数立即执行")
     @ApiOperationSupport(order = 60)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:run"}, logical = Logical.OR)
@@ -116,7 +116,7 @@ public class JobController {
     }
 
     @PostMapping("logPage")
-    @ApiOperation("日志分页")
+    @Operation(summary = "日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 100)
@@ -127,7 +127,7 @@ public class JobController {
     }
 
     @PostMapping("logInfo")
-    @ApiOperation("日志详情")
+    @Operation(summary = "日志详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
     @ApiOperationSupport(order = 110)
@@ -139,7 +139,7 @@ public class JobController {
     }
 
     @PostMapping("logDeleteBatch")
-    @ApiOperation("日志批量删除")
+    @Operation(summary = "日志批量删除")
     @LogOperation("日志批量删除")
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:delete"}, logical = Logical.OR)
     @ApiOperationSupport(order = 120)

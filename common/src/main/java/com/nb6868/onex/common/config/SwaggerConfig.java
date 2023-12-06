@@ -1,24 +1,16 @@
 package com.nb6868.onex.common.config;
 
-import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.hutool.core.util.RandomUtil;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.*;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Swagger配置
@@ -26,23 +18,47 @@ import java.util.List;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Configuration
-@EnableSwagger2WebMvc
 @ConditionalOnProperty(name = "onex.swagger.enable", havingValue = "true")
-public class SwaggerConfig extends BaseSwaggerConfig {
-
-    protected final OpenApiExtensionResolver openApiExtensionResolver;
+public class SwaggerConfig {
 
     /**
-     * 注意需要knife4j.enable: true
-     * 否则会提示注入失败
+     * 根据@Tag 上的排序，写入x-order
+     *
+     * @return the global open api customizer
      */
-    @Autowired
-    public SwaggerConfig(OpenApiExtensionResolver openApiExtensionResolver) {
-        this.openApiExtensionResolver = openApiExtensionResolver;
+    @Bean
+    public GlobalOpenApiCustomizer orderGlobalOpenApiCustomizer() {
+        return openApi -> {
+            if (openApi.getTags() != null) {
+                openApi.getTags().forEach(tag -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("x-order", RandomUtil.randomInt(0, 100));
+                    tag.setExtensions(map);
+                });
+            }
+            /*if(openApi.getPaths()!=null){
+                openApi.addExtension("x-test123","333");
+                openApi.getPaths().addExtension("x-abb", RandomUtil.randomInt(1,100));
+            }*/
+        };
     }
 
-    protected List<VendorExtension> getExtensions() {
-        return openApiExtensionResolver.buildSettingExtensions();
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title(title)
+                        .version(version)
+                        .description(description));
     }
+
+    @Value("${knife4j.title:OneX-API}")
+    private String title;
+    @Value("${knife4j.description:API}")
+    private String description;
+    @Value("${knife4j.version:1.0.0}")
+    private String version;
+    @Value("${onex.auth.token-header-key:auth-token}")
+    private String authTokenKey;
 
 }

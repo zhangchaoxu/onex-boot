@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.pojo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,19 +17,19 @@ import java.util.List;
 public class PageData<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "当前页码")
+     @Schema(description = "当前页码")
     private long pageNo;
 
-    @ApiModelProperty(value = "每页显示记录数")
+     @Schema(description = "每页显示记录数")
     private long pageSize;
 
-    @ApiModelProperty(value = "是否最后页")
+     @Schema(description = "是否最后页")
     private boolean lastPage = true;
 
-    @ApiModelProperty(value = "总记录数")
+     @Schema(description = "总记录数")
     private long total;
 
-    @ApiModelProperty(value = "列表数据")
+     @Schema(description = "列表数据")
     private List<T> list;
 
     /**

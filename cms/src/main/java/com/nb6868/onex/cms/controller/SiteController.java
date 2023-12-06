@@ -15,8 +15,8 @@ import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.common.validator.group.UpdateGroup;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -35,14 +35,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/cms/site")
 @Validated
-@Api(tags="站点")
+@Tag(name="站点")
 public class SiteController {
 
     @Autowired
     private SiteService siteService;
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions("cms:site:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> list(@Validated @RequestBody SiteQueryForm form) {
@@ -52,7 +52,7 @@ public class SiteController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions("cms:site:query")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody SiteQueryForm form) {
@@ -62,7 +62,7 @@ public class SiteController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @LogOperation("信息")
     @RequiresPermissions("cms:site:query")
     public Result<?> info(@Validated @RequestBody IdForm form) {
@@ -73,7 +73,7 @@ public class SiteController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions("cms:site:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -84,7 +84,7 @@ public class SiteController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions("cms:site:edit")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
@@ -95,7 +95,7 @@ public class SiteController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions("cms:site:delete")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)

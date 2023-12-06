@@ -1,7 +1,6 @@
 package com.nb6868.onex.sys.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,26 +13,26 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "行政区域")
+@Schema(name = "行政区域")
 public class RegionPcdt implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "行政区编码")
+	 @Schema(description = "行政区编码")
 	private Long adcode;
 
-	@ApiModelProperty(value = "层级深度")
+	 @Schema(description = "层级深度")
 	private Integer deep;
 
-	@ApiModelProperty(value = "省份")
+	 @Schema(description = "省份")
 	private String province;
 
-	@ApiModelProperty(value = "城市")
+	 @Schema(description = "城市")
 	private String city;
 
-	@ApiModelProperty(value = "区县")
+	 @Schema(description = "区县")
 	private String district;
 
-	@ApiModelProperty(value = "乡镇/街道")
+	 @Schema(description = "乡镇/街道")
 	private String township;
 
 }

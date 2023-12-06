@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.pojo;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Range;
@@ -13,7 +12,7 @@ import org.hibernate.validator.constraints.Range;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "修改状态请求")
+@Schema(name = "修改状态请求")
 public class ChangeStateForm extends IdForm {
 
     /**
@@ -21,11 +20,11 @@ public class ChangeStateForm extends IdForm {
      */
     public interface BoolStateGroup { }
 
-    @ApiModelProperty(value = "状态")
+     @Schema(description = "状态")
     @Range(min = 0, max = 1, message = "状态值取值0-1", groups = BoolStateGroup.class)
     private Integer state;
 
-    @ApiModelProperty(value = "备注")
+     @Schema(description = "备注")
     private String remark;
 
 }

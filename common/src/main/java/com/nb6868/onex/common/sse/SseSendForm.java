@@ -2,8 +2,7 @@ package com.nb6868.onex.common.sse;
 
 import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "sse发送请求")
+@Schema(name = "sse发送请求")
 public class SseSendForm extends BaseForm {
 
     /**
@@ -28,15 +27,15 @@ public class SseSendForm extends BaseForm {
     public interface SendMultiGroup {
     }
 
-    @ApiModelProperty(value = "发送对象")
+     @Schema(description = "发送对象")
     @NotEmpty(message = "发送对象不能为空", groups = SendMultiGroup.class)
     private List<String> sidList;
 
-    @ApiModelProperty(value = "发送对象")
+     @Schema(description = "发送对象")
     @NotEmpty(message = "发送对象不能为空", groups = SendOneGroup.class)
     private String sid;
 
-    @ApiModelProperty(value = "发送内容", required = true)
+     @Schema(description = "发送内容", required = true)
     @NotNull(message = "发送内容不能为空", groups = DefaultGroup.class)
     private String content;
 

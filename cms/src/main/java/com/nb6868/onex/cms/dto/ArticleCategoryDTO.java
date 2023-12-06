@@ -1,8 +1,7 @@
 package com.nb6868.onex.cms.dto;
 
 import com.nb6868.onex.common.pojo.BaseDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,34 +12,34 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "文章类目")
+@Schema(name = "文章类目")
 public class ArticleCategoryDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
-    @ApiModelProperty(value = "站点id")
+     @Schema(description = "站点id")
     private Long siteId;
 
-    @ApiModelProperty(value = "站点编码")
+     @Schema(description = "站点编码")
     private String siteCode;
 
-    @ApiModelProperty(value = "编码")
+     @Schema(description = "编码")
     private String code;
 
-    @ApiModelProperty(value = "名称")
+     @Schema(description = "名称")
     private String name;
 
-    @ApiModelProperty(value = "图片")
+     @Schema(description = "图片")
     private String imgs;
 
-    @ApiModelProperty(value = "排序")
+     @Schema(description = "排序")
     private Integer sort;
 
-    @ApiModelProperty(value = "状态")
+     @Schema(description = "状态")
     private Integer state;
 
-    @ApiModelProperty(value = "类型")
+     @Schema(description = "类型")
     private Integer type;
 
-    @ApiModelProperty(value = "备注")
+     @Schema(description = "备注")
     private String remark;
 
 }

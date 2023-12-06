@@ -20,8 +20,8 @@ import com.nb6868.onex.sys.dto.RegionDTO;
 import com.nb6868.onex.sys.dto.RegionQueryForm;
 import com.nb6868.onex.sys.entity.RegionEntity;
 import com.nb6868.onex.sys.service.RegionService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +39,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys/region")
 @Validated
-@Api(tags = "行政区域", position = 100)
+@Tag(name = "行政区域")
 public class RegionController {
     @Autowired
     private RegionService regionService;
 
     @PostMapping("tree")
-    @ApiOperation("树表")
+    @Operation(summary = "树表")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
     public Result<?> tree(@Validated @RequestBody RegionQueryForm form) {
         QueryWrapper<RegionEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
@@ -57,7 +57,7 @@ public class RegionController {
     }
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
     public Result<?> list(@Validated @RequestBody RegionQueryForm form) {
         List<?> list = regionService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
@@ -66,7 +66,7 @@ public class RegionController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
     public Result<?> page(@Validated(PageGroup.class) @RequestBody RegionQueryForm form) {
         PageData<?> page = regionService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
@@ -75,7 +75,7 @@ public class RegionController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
     public Result<?>info(@Validated @RequestBody IdForm form) {
         RegionDTO data = regionService.oneDto(QueryWrapperHelper.getPredicate(form));
@@ -85,7 +85,7 @@ public class RegionController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:edit"}, logical = Logical.OR)
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RegionDTO dto) {
@@ -95,7 +95,7 @@ public class RegionController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:edit"}, logical = Logical.OR)
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody RegionDTO dto) {
@@ -105,7 +105,7 @@ public class RegionController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:delete"}, logical = Logical.OR)
     public Result<?> delete(@Validated @RequestBody IdForm form) {

@@ -5,7 +5,7 @@
 ## RequestBody校验
 ```java
 @PostMapping("/logPostTest")
-@ApiOperation("日志测试Post")
+@Operation(summary = "日志测试Post")
 @LogOperation("日志测试Post")
 public Result<?> logPostTest(@RequestBody @Validated TestForm form) {
     // ValidatorUtils.validateEntity(form, CommonForm.OneGroup.class);
@@ -20,7 +20,7 @@ public Result<?> logPostTest(@RequestBody @Validated TestForm form) {
 ## RequestParam校验
 ```java
 @GetMapping("/logGetTest")
-@ApiOperation("日志测试Get")
+@Operation(summary = "日志测试Get")
 @LogOperation("日志测试Get")
 public Result<?> logGetTest(@ApiParam(value = "xx的id", required = false) @Max(value = 10, message = "不允许超过10") @RequestParam Long id1,
                          @ApiParam(value = "xx的id2", required = true) @NotNull(message = "{pid.require}") @RequestParam(required = false) Long id2) {

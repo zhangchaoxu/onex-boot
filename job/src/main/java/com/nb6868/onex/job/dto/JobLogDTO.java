@@ -2,8 +2,7 @@ package com.nb6868.onex.job.dto;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,31 +13,31 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "定时任务日志")
+@Schema(name = "定时任务日志")
 public class JobLogDTO extends BaseDTO {
 
-	@ApiModelProperty(value = "任务ID")
+	 @Schema(description = "任务ID")
 	private Long jobId;
 
-	@ApiModelProperty(value = "任务名称")
+	 @Schema(description = "任务名称")
 	private String jobCode;
 
-	@ApiModelProperty(value = "参数")
+	 @Schema(description = "参数")
 	private JSONObject params;
 
-	@ApiModelProperty(value = "日志状态")
+	 @Schema(description = "日志状态")
 	private Integer state;
 
-	@ApiModelProperty(value = "结果")
+	 @Schema(description = "结果")
 	private String result;
 
-	@ApiModelProperty(value = "错误信息")
+	 @Schema(description = "错误信息")
 	private String error;
 
-	@ApiModelProperty(value = "耗时(毫秒)")
+	 @Schema(description = "耗时(毫秒)")
 	private Integer timeInterval;
 
-	@ApiModelProperty(value = "租户编码")
+	 @Schema(description = "租户编码")
 	private String tenantCode;
 
 }

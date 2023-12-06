@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>coder</artifactId>
@@ -17,10 +17,10 @@
         <!-- version -->
         <mybatisplus.version>3.5.3.2</mybatisplus.version>
         <druid.version>1.2.20</druid.version>
-        <commons.configuration.version>1.10</commons.configuration.version>
+        <commons-configuration.version>1.10</commons-configuration.version>
         <hutool.version>5.8.23</hutool.version>
         <velocity.version>1.7</velocity.version>
-        <commons.collections.version>3.2.2</commons.collections.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <screw.version>1.0.5</screw.version>
     </properties>
 
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
-            <version>${commons.configuration.version}</version>
+            <version>${commons-configuration.version}</version>
         </dependency>
         <!-- velocity -->
         <dependency>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>${commons.collections.version}</version>
+            <version>${commons-collections.version}</version>
         </dependency>
         <!-- hutool -->
         <dependency>

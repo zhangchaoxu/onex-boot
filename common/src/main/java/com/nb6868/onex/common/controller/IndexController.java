@@ -7,8 +7,8 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.pojo.Result;
 import com.sun.management.OperatingSystemMXBean;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +21,11 @@ import java.math.RoundingMode;
 @RestController
 @RequestMapping("/")
 @Validated
-@Api(tags = "首页")
+@Tag(name = "首页")
 public class IndexController {
 
     @GetMapping("/")
-    @ApiOperation("index")
+    @Operation(summary = "index")
     @AccessControl("")
     public Result<?> index() {
         Dict result = Dict.create()
@@ -43,7 +43,7 @@ public class IndexController {
     }
 
     @GetMapping("sysInfo")
-    @ApiOperation("系统信息")
+    @Operation(summary = "系统信息")
     @AccessControl("sysInfo")
     @SuppressWarnings("deprecation")
     public Result<?> sysInfo() {

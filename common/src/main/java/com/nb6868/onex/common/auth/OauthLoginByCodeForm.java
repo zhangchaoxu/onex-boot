@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.auth;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,14 +16,14 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "通过code第三方登录请求")
+@Schema(name = "通过code第三方登录请求")
 public class OauthLoginByCodeForm implements Serializable {
 
-    @ApiModelProperty(value = "配置信息编码", required = true)
+     @Schema(description = "配置信息编码", required = true)
     @NotEmpty(message = "配置信息编码")
     private String type = "WX_MA";
 
-    @ApiModelProperty(value = "用户登录凭证", required = true)
+     @Schema(description = "用户登录凭证", required = true)
     @NotEmpty(message = "code")
     private String code;
 

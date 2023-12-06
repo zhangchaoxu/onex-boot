@@ -26,8 +26,8 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/uc/auth/dingtalk/")
 @AccessControl
 @Validated
-@Api(tags = "用户钉钉登录", position = 30)
+@Tag(name = "用户钉钉登录")
 @Slf4j
 public class AuthDingtalkController {
 
@@ -57,7 +57,7 @@ public class AuthDingtalkController {
 
     @PostMapping("userLoginByCode")
     @AccessControl
-    @ApiOperation(value = "钉钉免密code登录", notes = "Anon")
+    @Operation(summary = "钉钉免密code登录", description = "Anon")
     @LogOperation(value = "钉钉免密code登录", type = "login")
     @ApiOperationSupport(order = 300)
     public Result<?> userLoginByCode(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginForm form) {

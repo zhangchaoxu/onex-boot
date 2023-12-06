@@ -5,8 +5,8 @@ import com.nb6868.onex.cms.service.ArticleService;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.validator.AssertUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -24,13 +24,13 @@ import java.util.Map;
  */
 @Controller("CmsHtml")
 @RequestMapping("/cms/html")
-@Api(tags = "cms html")
+@Tag(name = "cms html")
 public class HtmlController {
 
     @Autowired
     ArticleService articleService;
 
-    @ApiOperation("文章详情页面")
+    @Operation(summary = "文章详情页面")
     @GetMapping("article/info")
     public String articleInfo(ModelMap map, @NotNull(message = "{id.require}") @RequestParam Long id) {
         ArticleDTO data = articleService.getDtoById(id);

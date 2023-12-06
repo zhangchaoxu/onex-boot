@@ -14,8 +14,8 @@ import com.nb6868.onex.uc.dto.BillDTO;
 import com.nb6868.onex.uc.dto.BillQueryForm;
 import com.nb6868.onex.uc.entity.BillEntity;
 import com.nb6868.onex.uc.service.BillService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -29,13 +29,13 @@ import java.util.List;
 @RestController("ucBill")
 @RequestMapping("/uc/bill/")
 @Validated
-@Api(tags = "用户中心-账单流水", position = 100)
+@Tag(name = "用户中心-账单流水")
 public class BillController {
     @Autowired
     private BillService billService;
 
     @PostMapping("list")
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @RequiresPermissions("uc:bill:list")
     public Result<?> list(@Validated @RequestBody BillQueryForm form) {
         QueryWrapper<BillEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
@@ -45,7 +45,7 @@ public class BillController {
     }
 
     @PostMapping("page")
-    @ApiOperation("分页")
+    @Operation(summary = "分页")
     @RequiresPermissions("uc:bill:page")
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody BillQueryForm form) {
         QueryWrapper<BillEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
@@ -56,7 +56,7 @@ public class BillController {
     }
 
     @PostMapping("info")
-    @ApiOperation("信息")
+    @Operation(summary = "信息")
     @RequiresPermissions("uc:bill:info")
     public Result<?> info(@Validated @RequestBody IdForm form) {
         BillDTO data = billService.oneDto(QueryWrapperHelper.getPredicate(form));
@@ -66,7 +66,7 @@ public class BillController {
     }
 
     @PostMapping("save")
-    @ApiOperation("保存")
+    @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions("uc:bill:save")
     public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody BillDTO dto) {
@@ -76,7 +76,7 @@ public class BillController {
     }
 
     @PostMapping("update")
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @LogOperation("修改")
     @RequiresPermissions("uc:bill:update")
     public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody BillDTO dto) {
@@ -86,7 +86,7 @@ public class BillController {
     }
 
     @PostMapping("delete")
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @LogOperation("删除")
     @RequiresPermissions("uc:bill:delete")
     public Result<?> delete(@Validated @RequestBody IdForm form) {

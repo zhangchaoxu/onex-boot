@@ -2,8 +2,7 @@ package com.nb6868.onex.common.pojo;
 
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.MessageUtils;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,13 +19,13 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "消息结果")
+@Schema(name = "消息结果")
 public class MsgResult implements Serializable {
 
-    @ApiModelProperty(value = "编码: 0表示成功,其他值表示失败")
+     @Schema(description = "编码: 0表示成功,其他值表示失败")
     private int code = ErrorCode.SUCCESS;
 
-    @ApiModelProperty(value = "消息内容")
+     @Schema(description = "消息内容")
     private String msg = "success";
 
     public boolean isSuccess(){
