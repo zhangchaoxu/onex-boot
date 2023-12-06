@@ -15,13 +15,13 @@ import java.io.Serializable;
 @Schema(name = "登录结果")
 public class LoginResult implements Serializable {
 
-     @Schema(description = "token")
+    @Schema(description = "token")
     private String token;
 
-     @Schema(description = "token的header key")
+    @Schema(description = "token的header key")
     private String tokenKey;
 
-     @Schema(description = "用户信息")
+    @Schema(description = "用户信息")
     private Object user;
 
 }

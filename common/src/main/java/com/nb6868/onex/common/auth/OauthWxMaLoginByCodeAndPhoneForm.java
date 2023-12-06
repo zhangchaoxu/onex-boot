@@ -18,21 +18,21 @@ import java.io.Serializable;
 @Schema(name = "微信小程序通过code和用户手机号登录请求")
 public class OauthWxMaLoginByCodeAndPhoneForm implements Serializable {
 
-     @Schema(description = "登录配置编码", example = "WX_MA")
+    @Schema(description = "登录配置编码", example = "WX_MA")
     private String authConfigType = "WX_MA";
 
-     @Schema(description = "登录配置编码", example = "WX_MA")
+    @Schema(description = "登录配置编码", example = "WX_MA")
     private String wechatMaConfigType = "WX_MA";
 
-     @Schema(description = "登录凭证wx.login获取", required = true)
+    @Schema(description = "登录凭证wx.login获取", required = true)
     @NotBlank(message = "code不能为空")
     private String code;
 
-     @Schema(description = "用户信息encryptedData,wx.getPhoneNumber获取", required = true)
+    @Schema(description = "用户信息encryptedData,wx.getPhoneNumber获取", required = true)
     @NotBlank(message = "encryptedData不能为空")
     private String encryptedData;
 
-     @Schema(description = "用户信息iv,wx.getPhoneNumber获取", required = true)
+    @Schema(description = "用户信息iv,wx.getPhoneNumber获取", required = true)
     @NotBlank(message = "iv不能为空")
     private String iv;
 

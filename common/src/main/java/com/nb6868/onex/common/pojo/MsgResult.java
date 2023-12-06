@@ -22,13 +22,13 @@ import java.io.Serializable;
 @Schema(name = "消息结果")
 public class MsgResult implements Serializable {
 
-     @Schema(description = "编码: 0表示成功,其他值表示失败")
+    @Schema(description = "编码: 0表示成功,其他值表示失败")
     private int code = ErrorCode.SUCCESS;
 
-     @Schema(description = "消息内容")
+    @Schema(description = "消息内容")
     private String msg = "success";
 
-    public boolean isSuccess(){
+    public boolean isSuccess() {
         return code == ErrorCode.SUCCESS;
     }
 
@@ -61,7 +61,6 @@ public class MsgResult implements Serializable {
         this.msg = msg;
         return this;
     }
-
 
 
 }

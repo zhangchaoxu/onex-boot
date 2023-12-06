@@ -12,10 +12,10 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public class AccessTokenResponse extends BaseResponse {
 
-     @Schema(description = "access_token的过期时间，单位秒")
+    @Schema(description = "access_token的过期时间，单位秒")
     private int expires_in;
 
-     @Schema(description = "access_token")
+    @Schema(description = "access_token")
     private String access_token;
 
 }

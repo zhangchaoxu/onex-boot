@@ -20,29 +20,29 @@ import jakarta.validation.constraints.NotBlank;
 @Schema(name = "定时任务")
 public class JobDTO extends BaseDTO {
 
-	 @Schema(description = "名称")
-	@NotBlank(message = "{name.require}", groups = DefaultGroup.class)
-	private String code;
+    @Schema(description = "名称")
+    @NotBlank(message = "{name.require}", groups = DefaultGroup.class)
+    private String code;
 
-	 @Schema(description = "状态")
-	@EnumValue(intValues = {0, 1}, message = "状态值错误", groups = DefaultGroup.class)
-	private Integer state;
+    @Schema(description = "状态")
+    @EnumValue(intValues = {0, 1}, message = "状态值错误", groups = DefaultGroup.class)
+    private Integer state;
 
-	 @Schema(description = "cron表达式")
-	@NotBlank(message = "cron表达式不能为空", groups = DefaultGroup.class)
-	private String cron;
+    @Schema(description = "cron表达式")
+    @NotBlank(message = "cron表达式不能为空", groups = DefaultGroup.class)
+    private String cron;
 
-	 @Schema(description = "日志类型")
-	@NotBlank(message = "日志类型不能为空", groups = DefaultGroup.class)
-	private String logType = "db";
+    @Schema(description = "日志类型")
+    @NotBlank(message = "日志类型不能为空", groups = DefaultGroup.class)
+    private String logType = "db";
 
-	 @Schema(description = "参数")
-	private JSONObject params;
+    @Schema(description = "参数")
+    private JSONObject params;
 
-	 @Schema(description = "备注")
-	private String remark;
+    @Schema(description = "备注")
+    private String remark;
 
-	 @Schema(description = "租户编码")
-	private String tenantCode;
+    @Schema(description = "租户编码")
+    private String tenantCode;
 
 }

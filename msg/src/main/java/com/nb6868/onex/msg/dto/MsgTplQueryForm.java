@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "消息模板查询")
 public class MsgTplQueryForm extends PageForm {
 
-    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column="name,title,content")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,title,content")
     @Schema(description = "关键词搜索")
     private String search;
 

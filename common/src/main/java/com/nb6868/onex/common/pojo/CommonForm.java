@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 @Data
@@ -16,22 +17,24 @@ public class CommonForm extends BaseForm {
     /**
      * 单个校验
      */
-    public interface OneGroup {}
+    public interface OneGroup {
+    }
 
     /**
      * 多个校验
      */
-    public interface ListGroup { }
+    public interface ListGroup {
+    }
 
-     @Schema(description = "ids")
+    @Schema(description = "ids")
     @NotEmpty(message = "{ids.require}", groups = ListGroup.class)
     private List<Long> ids;
 
-     @Schema(description = "id")
+    @Schema(description = "id")
     @NotNull(message = "{id.require}", groups = OneGroup.class)
     private Long id;
 
-     @Schema(description = "备注")
+    @Schema(description = "备注")
     private String remark;
 
 }

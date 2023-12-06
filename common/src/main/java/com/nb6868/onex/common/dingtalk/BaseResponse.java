@@ -10,13 +10,13 @@ import java.io.Serializable;
 @Schema(name = "钉钉基础,返回体")
 public class BaseResponse implements Serializable {
 
-     @Schema(description = "请求ID")
+    @Schema(description = "请求ID")
     private String request_id;
 
-     @Schema(description = "返回码")
+    @Schema(description = "返回码")
     private int errcode = 0;
 
-     @Schema(description = "返回描述")
+    @Schema(description = "返回描述")
     private String errmsg = "ok";
 
     /**

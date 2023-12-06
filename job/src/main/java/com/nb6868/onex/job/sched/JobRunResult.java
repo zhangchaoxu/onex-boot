@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-@ApiModel("定时任务执行结果")
+@Schema(name = "定时任务执行结果")
 public class JobRunResult implements Serializable {
 
     @Schema(description = "将结果保存到数据库")

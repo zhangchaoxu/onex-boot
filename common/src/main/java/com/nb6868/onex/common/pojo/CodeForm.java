@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 public class CodeForm extends BaseForm {
 
     @Query
-     @Schema(description = "code", required = true)
+    @Schema(description = "code", required = true)
     @NotEmpty(message = "code不能为空", groups = DefaultGroup.class)
     private String code;
 

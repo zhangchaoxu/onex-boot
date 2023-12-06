@@ -12,7 +12,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public class ResultResponse<T> extends BaseResponse {
 
-     @Schema(description = "结果")
+    @Schema(description = "结果")
     private T result;
 
 }

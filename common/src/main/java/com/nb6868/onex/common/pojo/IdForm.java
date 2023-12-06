@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 public class IdForm extends BaseForm {
 
     @Query
-     @Schema(description = "id", required = true)
+    @Schema(description = "id", required = true)
     @NotNull(message = "{id.require}")
     private Long id;
 

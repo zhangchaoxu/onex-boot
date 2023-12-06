@@ -19,11 +19,11 @@ import java.io.Serializable;
 @Schema(name = "通过code第三方登录请求")
 public class OauthLoginByCodeForm implements Serializable {
 
-     @Schema(description = "配置信息编码", required = true)
+    @Schema(description = "配置信息编码", required = true)
     @NotEmpty(message = "配置信息编码")
     private String type = "WX_MA";
 
-     @Schema(description = "用户登录凭证", required = true)
+    @Schema(description = "用户登录凭证", required = true)
     @NotEmpty(message = "code")
     private String code;
 

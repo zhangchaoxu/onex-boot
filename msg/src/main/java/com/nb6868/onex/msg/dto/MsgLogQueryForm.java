@@ -19,7 +19,7 @@ public class MsgLogQueryForm extends PageForm {
     @Schema(description = "类型")
     private Integer type;
 
-    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column="name,title,content")
+    @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "name,title,content")
     @Schema(description = "关键词搜索")
     private String search;
 

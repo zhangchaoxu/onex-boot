@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import jakarta.validation.constraints.NotBlank;
+
 import java.util.Date;
 
 @Data
@@ -22,7 +23,7 @@ import java.util.Date;
 public class CalenderDayDateForm extends BaseForm {
 
     @Query
-     @Schema(description = "dayDate", required = true)
+    @Schema(description = "dayDate", required = true)
     @NotBlank(message = "查询日期不能为空")
     private Date dayDate;
 

@@ -16,25 +16,25 @@ import lombok.EqualsAndHashCode;
 public class AxdDTO extends BaseTenantDTO {
     private static final long serialVersionUID = 1L;
 
-     @Schema(description = "标题")
+    @Schema(description = "标题")
     private String name;
 
-     @Schema(description = "位置")
+    @Schema(description = "位置")
     private String position;
 
-     @Schema(description = "链接")
+    @Schema(description = "链接")
     private String link;
 
-     @Schema(description = "备注")
+    @Schema(description = "备注")
     private String remark;
 
-     @Schema(description = "图片")
+    @Schema(description = "图片")
     private String imgs;
 
-     @Schema(description = "排序")
+    @Schema(description = "排序")
     private Integer sort;
 
-     @Schema(description = "是否需要登录 0 不需要 1需要")
+    @Schema(description = "是否需要登录 0 不需要 1需要")
     private Integer needLogin;
 
 }

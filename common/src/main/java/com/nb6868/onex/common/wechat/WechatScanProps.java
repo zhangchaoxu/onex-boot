@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.wechat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -12,17 +13,17 @@ import lombok.Data;
 public class WechatScanProps {
 
     @JsonIgnore
-     @Schema(description = "secret")
+    @Schema(description = "secret")
     private String secret;
 
     @JsonIgnore
-     @Schema(description = "cropId")
+    @Schema(description = "cropId")
     private String cropId;
 
-     @Schema(description = "appid")
+    @Schema(description = "appid")
     private String appid;
 
-     @Schema(description = "callback")
+    @Schema(description = "callback")
     private String callback;
 
 }

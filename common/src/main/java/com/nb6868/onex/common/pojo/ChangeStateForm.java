@@ -18,13 +18,14 @@ public class ChangeStateForm extends IdForm {
     /**
      * 状态只能取值0-1
      */
-    public interface BoolStateGroup { }
+    public interface BoolStateGroup {
+    }
 
-     @Schema(description = "状态")
+    @Schema(description = "状态")
     @Range(min = 0, max = 1, message = "状态值取值0-1", groups = BoolStateGroup.class)
     private Integer state;
 
-     @Schema(description = "备注")
+    @Schema(description = "备注")
     private String remark;
 
 }

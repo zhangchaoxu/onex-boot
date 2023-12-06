@@ -14,7 +14,7 @@ import java.util.List;
 public class IdsForm extends BaseForm {
 
     @Query(type = Query.Type.IN, column = "id")
-     @Schema(description = "ids", required = true)
+    @Schema(description = "ids")
     @NotEmpty(message = "{ids.require}")
     private List<Long> ids;
 

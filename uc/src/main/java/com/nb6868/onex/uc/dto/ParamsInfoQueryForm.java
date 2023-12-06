@@ -14,16 +14,16 @@ import jakarta.validation.constraints.NotEmpty;
 @Schema(name = "参数查询")
 public class ParamsInfoQueryForm extends BaseForm {
 
-     @Schema(description = "参数编码")
-    @NotEmpty(message="编码不能为空")
+    @Schema(description = "参数编码")
+    @NotEmpty(message = "编码不能为空")
     @Query
     private String code;
 
-     @Schema(description = "租户编码")
+    @Schema(description = "租户编码")
     @Query
     private String tenantCode;
 
-     @Schema(description = "URL地址")
+    @Schema(description = "URL地址")
     @Query(column = "content->'$.url'")
     private String contentUrl;
 

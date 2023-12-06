@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.wechat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -18,28 +19,28 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "onex.wechat.ma")
 public class WechatMaProps implements Serializable {
 
-     @Schema(description = "配置项")
+    @Schema(description = "配置项")
     private Map<String, Config> configs = new HashMap<>();
 
     @Data
     public static class Config {
 
-         @Schema(description = "appId")
+        @Schema(description = "appId")
         private String appid;
 
-         @Schema(description = "secret")
+        @Schema(description = "secret")
         private String secret;
 
-         @Schema(description = "token")
+        @Schema(description = "token")
         private String token;
 
-         @Schema(description = "EncodingAESKey")
+        @Schema(description = "EncodingAESKey")
         private String aesKey;
 
-         @Schema(description = "模板消息id")
+        @Schema(description = "模板消息id")
         private String templateId;
 
-         @Schema(description = "消息格式，XML或者JSON")
+        @Schema(description = "消息格式，XML或者JSON")
         private String msgDataFormat;
 
     }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 @Data
@@ -27,15 +28,15 @@ public class SseSendForm extends BaseForm {
     public interface SendMultiGroup {
     }
 
-     @Schema(description = "发送对象")
+    @Schema(description = "发送对象")
     @NotEmpty(message = "发送对象不能为空", groups = SendMultiGroup.class)
     private List<String> sidList;
 
-     @Schema(description = "发送对象")
+    @Schema(description = "发送对象")
     @NotEmpty(message = "发送对象不能为空", groups = SendOneGroup.class)
     private String sid;
 
-     @Schema(description = "发送内容", required = true)
+    @Schema(description = "发送内容", required = true)
     @NotNull(message = "发送内容不能为空", groups = DefaultGroup.class)
     private String content;
 

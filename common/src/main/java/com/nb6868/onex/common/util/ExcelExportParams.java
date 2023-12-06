@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.util;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;

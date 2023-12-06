@@ -27,7 +27,7 @@ public class RoleQueryForm extends PageForm {
     @Schema(description = "租户编码")
     private String tenantCode;
 
-     @Schema(description = "排序规则")
+    @Schema(description = "排序规则")
     @Query(exclude = "page", type = Query.Type.ORDER_BY)
     private List<SortItem> sortItems = CollUtil.newArrayList(new SortItem("sort"));
 

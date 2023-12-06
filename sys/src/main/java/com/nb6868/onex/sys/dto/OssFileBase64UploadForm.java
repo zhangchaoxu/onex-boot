@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "文件base64上传")
 public class OssFileBase64UploadForm extends BaseForm {
 
-     @Schema(description = "配置参数名")
+    @Schema(description = "配置参数名")
     private String paramsCode = "OSS_PUBLIC";
 
-     @Schema(description = "文件前缀")
+    @Schema(description = "文件前缀")
     private String prefix;
 
-     @Schema(description = "文件上传表单")
+    @Schema(description = "文件上传表单")
     private FileBase64Form fileBase64;
 
 }

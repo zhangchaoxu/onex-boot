@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.dingtalk;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -18,24 +19,24 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "onex.dingtalk")
 public class DingtalkProps implements Serializable {
 
-     @Schema(description = "配置项")
+    @Schema(description = "配置项")
     private Map<String, Config> configs;
 
     @Data
     public static class Config {
 
         @JsonIgnore
-         @Schema(description = "secret")
+        @Schema(description = "secret")
         private String secret;
 
         @JsonIgnore
-         @Schema(description = "cropId")
+        @Schema(description = "cropId")
         private String cropId;
 
-         @Schema(description = "appid")
+        @Schema(description = "appid")
         private String appid;
 
-         @Schema(description = "callback")
+        @Schema(description = "callback")
         private String callback;
 
     }

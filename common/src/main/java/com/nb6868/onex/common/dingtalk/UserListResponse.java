@@ -15,20 +15,20 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 public class UserListResponse extends BaseResponse {
 
-     @Schema(description = "信息")
+    @Schema(description = "信息")
     private Result result;
 
     @Data
     @EqualsAndHashCode(callSuper = false)
     public static class Result implements Serializable {
 
-         @Schema(description = "下一个游标")
+        @Schema(description = "下一个游标")
         private Integer next_cursor;
 
-         @Schema(description = "是否还有下一页")
+        @Schema(description = "是否还有下一页")
         private Boolean has_more;
 
-         @Schema(description = "实际数据数组")
+        @Schema(description = "实际数据数组")
         private JSONArray list;
 
     }

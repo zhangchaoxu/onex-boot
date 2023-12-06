@@ -17,28 +17,28 @@ import java.util.List;
 @Schema(name = "消息发送请求")
 public class MsgSendForm extends BaseForm {
 
-     @Schema(description = "租户编码", required = true)
+    @Schema(description = "租户编码", required = true)
     @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
     private String tenantCode;
 
-     @Schema(description = "模板编码", required = true, example = "CODE_LOGIN")
+    @Schema(description = "模板编码", required = true, example = "CODE_LOGIN")
     @NotEmpty(message = "模板编码不能为空", groups = DefaultGroup.class)
     private String tplCode;
 
-     @Schema(description = "收件人", required = true)
+    @Schema(description = "收件人", required = true)
     @NotEmpty(message = "收件人不能为空", groups = DefaultGroup.class)
     private String mailTo;
 
-     @Schema(description = "抄送人")
+    @Schema(description = "抄送人")
     private String mailCc;
 
-     @Schema(description = "标题参数")
+    @Schema(description = "标题参数")
     private JSONObject titleParams;
 
-     @Schema(description = "内容参数")
+    @Schema(description = "内容参数")
     private JSONObject contentParams;
 
-     @Schema(description = "附件")
+    @Schema(description = "附件")
     List<FileBase64Form> attachments;
 
 }

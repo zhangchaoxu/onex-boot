@@ -14,15 +14,15 @@ import java.io.Serializable;
 @Schema(name = "Code登录请求")
 public class CodeLoginForm implements Serializable {
 
-     @Schema(description = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
+    @Schema(description = "登录配置编码", example = "ADMIN_USERNAME_PASSWORD")
     @NotEmpty(message = "登录类型不能为空", groups = {DefaultGroup.class})
     private String type;
 
-     @Schema(description = "登录编码")
+    @Schema(description = "登录编码")
     @NotEmpty(message = "登录编码不能为空", groups = {DefaultGroup.class})
     private String code;
 
-     @Schema(description = "租户编码", required = true)
+    @Schema(description = "租户编码", required = true)
     @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
     private String tenantCode;
 

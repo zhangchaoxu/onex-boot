@@ -2,11 +2,13 @@ package com.nb6868.onex.common.pojo;
 
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.MessageUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -24,19 +26,19 @@ public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-     @Schema(description = "消息码:0表示成功,其他值表示失败")
+    @Schema(description = "消息码:0表示成功,其他值表示失败")
     private int code = ErrorCode.SUCCESS;
 
-     @Schema(description = "消息内容")
+    @Schema(description = "消息内容")
     private String msg = "success";
 
-     @Schema(description = "消息数据")
+    @Schema(description = "消息数据")
     private T data;
 
-     @Schema(description = "消息Unix时间戳")
+    @Schema(description = "消息Unix时间戳")
     private Long time = Instant.now().toEpochMilli();
 
-    public boolean isSuccess(){
+    public boolean isSuccess() {
         return code == ErrorCode.SUCCESS;
     }
 
@@ -83,7 +85,7 @@ public class Result<T> implements Serializable {
         return bool ? success() : error();
     }
 
-    public Result<T> bool(boolean bool, int code,  String msg) {
+    public Result<T> bool(boolean bool, int code, String msg) {
         return bool ? success() : error(code, msg);
     }
 

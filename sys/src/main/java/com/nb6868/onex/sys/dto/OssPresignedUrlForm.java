@@ -12,14 +12,14 @@ import jakarta.validation.constraints.NotEmpty;
 @Schema(name = "获得授权访问地址请求")
 public class OssPresignedUrlForm extends BaseForm {
 
-     @Schema(description = "配置参数名")
+    @Schema(description = "配置参数名")
     private String paramsCode = "OSS_PRIVATE";
 
-     @Schema(description = "文件key")
+    @Schema(description = "文件key")
     @NotEmpty(message = "objectName不能为空")
     private String objectName;
 
-     @Schema(description = "过期描述")
+    @Schema(description = "过期描述")
     private Long expiration = 36000L;
 
 }

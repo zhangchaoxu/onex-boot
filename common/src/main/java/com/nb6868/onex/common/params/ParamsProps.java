@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.params;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "onex.params")
 public class ParamsProps {
 
-     @Schema(description = "配置项")
+    @Schema(description = "配置项")
     private Map<String, String> configs;
 
 }

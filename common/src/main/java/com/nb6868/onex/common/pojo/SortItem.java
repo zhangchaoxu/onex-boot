@@ -21,10 +21,10 @@ public class SortItem implements Serializable {
         this.column = column;
     }
 
-     @Schema(description = "排序字段")
+    @Schema(description = "排序字段")
     private String column;
 
-     @Schema(description = "升序true/倒序false")
+    @Schema(description = "升序true/倒序false")
     private Boolean asc = true;
 
 }

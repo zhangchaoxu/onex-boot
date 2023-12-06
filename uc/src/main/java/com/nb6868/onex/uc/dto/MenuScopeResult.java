@@ -22,16 +22,16 @@ import java.util.Set;
 @Schema(name = "权限范围")
 public class MenuScopeResult implements Serializable {
 
-     @Schema(description = "菜单树")
+    @Schema(description = "菜单树")
     private List<Tree<Long>> menuTree = new ArrayList<>();
 
-     @Schema(description = "路由地址")
+    @Schema(description = "路由地址")
     private List<MenuResult> urlList = new ArrayList<>();
 
-     @Schema(description = "权限列表")
+    @Schema(description = "权限列表")
     private Set<String> permissions = new HashSet<>();
 
-     @Schema(description = "角色列表")
+    @Schema(description = "角色列表")
     private Set<String> roles = new HashSet<>();
 
 }

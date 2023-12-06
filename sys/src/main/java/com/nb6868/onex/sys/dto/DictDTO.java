@@ -21,26 +21,26 @@ import jakarta.validation.constraints.NotNull;
 public class DictDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
-	 @Schema(description = "上级ID，一级为0")
-	@NotNull(message="{pid.require}", groups = DefaultGroup.class)
-	private Long pid;
+    @Schema(description = "上级ID，一级为0")
+    @NotNull(message = "{pid.require}", groups = DefaultGroup.class)
+    private Long pid;
 
-	 @Schema(description = "字典类型")
-	@NotBlank(message="{sysdict.type.require}", groups = DefaultGroup.class)
-	private String type;
+    @Schema(description = "字典类型")
+    @NotBlank(message = "{sysdict.type.require}", groups = DefaultGroup.class)
+    private String type;
 
-	 @Schema(description = "字典名称")
-	@NotBlank(message="{sysdict.name.require}", groups = DefaultGroup.class)
-	private String name;
+    @Schema(description = "字典名称")
+    @NotBlank(message = "{sysdict.name.require}", groups = DefaultGroup.class)
+    private String name;
 
-	 @Schema(description = "字典值")
-	private String value;
+    @Schema(description = "字典值")
+    private String value;
 
-	 @Schema(description = "备注")
-	private String remark;
+    @Schema(description = "备注")
+    private String remark;
 
-	 @Schema(description = "排序")
-	@Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
-	private Integer sort;
+    @Schema(description = "排序")
+    @Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
+    private Integer sort;
 
 }

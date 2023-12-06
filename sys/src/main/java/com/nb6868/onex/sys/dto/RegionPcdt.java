@@ -17,22 +17,22 @@ import java.io.Serializable;
 public class RegionPcdt implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	 @Schema(description = "行政区编码")
-	private Long adcode;
+    @Schema(description = "行政区编码")
+    private Long adcode;
 
-	 @Schema(description = "层级深度")
-	private Integer deep;
+    @Schema(description = "层级深度")
+    private Integer deep;
 
-	 @Schema(description = "省份")
-	private String province;
+    @Schema(description = "省份")
+    private String province;
 
-	 @Schema(description = "城市")
-	private String city;
+    @Schema(description = "城市")
+    private String city;
 
-	 @Schema(description = "区县")
-	private String district;
+    @Schema(description = "区县")
+    private String district;
 
-	 @Schema(description = "乡镇/街道")
-	private String township;
+    @Schema(description = "乡镇/街道")
+    private String township;
 
 }

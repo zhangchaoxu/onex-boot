@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public abstract class BaseTenantDTO extends BaseDTO {
 
-     @Schema(description = "租户编码")
+    @Schema(description = "租户编码")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String tenantCode;
 

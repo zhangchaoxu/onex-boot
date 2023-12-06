@@ -16,14 +16,14 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 public class DeptIdListResponse extends BaseResponse {
 
-     @Schema(description = "信息")
+    @Schema(description = "信息")
     private Result result;
 
     @Data
     @EqualsAndHashCode(callSuper = false)
     public static class Result implements Serializable {
 
-         @Schema(description = "部门id列表")
+        @Schema(description = "部门id列表")
         private List<String> dept_id_list;
 
     }

@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 public class StringIdForm extends BaseForm {
 
     @Query
-     @Schema(description = "id", required = true)
+    @Schema(description = "id", required = true)
     @NotBlank(message = "{id.require}")
     private String id;
 

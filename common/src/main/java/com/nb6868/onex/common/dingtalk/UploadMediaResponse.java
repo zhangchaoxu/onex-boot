@@ -12,13 +12,13 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public class UploadMediaResponse extends BaseResponse {
 
-     @Schema(description = "媒体文件类型")
+    @Schema(description = "媒体文件类型")
     private String type;
 
-     @Schema(description = "媒体文件上传后获取的唯一标识")
+    @Schema(description = "媒体文件上传后获取的唯一标识")
     private String media_id;
 
-     @Schema(description = "媒体文件上传时间戳")
+    @Schema(description = "媒体文件上传时间戳")
     private Long created_at;
 
 }
