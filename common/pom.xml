@@ -30,7 +30,6 @@
         <huaweicloud.obs.version>3.23.9.1</huaweicloud.obs.version>
         <poi.version>5.2.5</poi.version>
         <poi-tl.version>1.12.1</poi-tl.version>
-        <easypoi.version>4.4.0</easypoi.version>
     </properties>
 
     <dependencies>
@@ -152,26 +151,12 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${poi.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.deepoove</groupId>
             <artifactId>poi-tl</artifactId>
             <version>${poi-tl.version}</version>
             <scope>test</scope>
-        </dependency>
-        <!-- easypoi -->
-        <dependency>
-            <groupId>cn.afterturn</groupId>
-            <artifactId>easypoi-spring-boot-starter</artifactId>
-            <version>${easypoi.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>cn.afterturn</groupId>
-                    <artifactId>easypoi-wps</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- bcprov -->
         <dependency>

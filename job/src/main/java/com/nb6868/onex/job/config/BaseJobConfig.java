@@ -11,8 +11,9 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 
-import javax.annotation.PostConstruct;
-
+/**
+ * 基础job配置
+ */
 @Slf4j
 public abstract class BaseJobConfig implements SchedulingConfigurer {
 
@@ -38,7 +39,7 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
             // 配置参数要再从数据库读一遍，否则不会变更
             JobEntity job = jobService.getById(jobId);
             if (ObjectUtil.isNotNull(job) && StrUtil.isNotBlank(job.getCron())) {
-                return new CronTrigger(job.getCron()).nextExecutionTime(triggerContext);
+                return new CronTrigger(job.getCron()).nextExecution(triggerContext);
             } else {
                 return null;
             }

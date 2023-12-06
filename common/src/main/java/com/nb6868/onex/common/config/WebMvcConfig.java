@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.validation.Validation;
+import jakarta.validation.Validation;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;

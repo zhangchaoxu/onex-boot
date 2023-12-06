@@ -3,20 +3,19 @@ package com.nb6868.onex.common.validator;
 import com.nb6868.onex.common.pojo.MsgResult;
 import com.nb6868.onex.common.util.MessageUtils;
 import com.nb6868.onex.common.exception.ErrorCode;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import java.util.Locale;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
  * hibernate-validator校验工具类
- * 参考文档：http://docs.jboss.org/hibernate/validator/6.0/reference/en-US/html_single/
+ * 参考文档：https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/
  *
  * @author Charles zhangchaoxu@gmail.com
  */

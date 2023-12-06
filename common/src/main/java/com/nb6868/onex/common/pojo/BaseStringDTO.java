@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
-import javax.validation.constraints.Null;
+import jakarta.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Date;
 

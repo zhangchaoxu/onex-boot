@@ -3,9 +3,9 @@ package com.nb6868.onex.common.validator;
 import com.nb6868.onex.common.pojo.PageForm;
 import org.hibernate.validator.HibernateValidator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Validation;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.Validation;
 
 /**
  * 分页校验
