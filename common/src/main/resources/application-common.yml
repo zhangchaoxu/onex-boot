@@ -111,20 +111,6 @@ mybatis-plus:
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
 
-## swagger
-knife4j:
-  enable: true
-  setting:
-    enable-group: true
-    enable-swagger-models: true
-    ## 自定义footer
-    enable-footer: false
-    enable-footer-custom: true
-    footer-custom-content: Copyright 2021-current[nb6868] (https://onex.nb6868.com/)
-    ## 自定义首页
-    enable-home-custom: true
-    home-custom-path: classpath:README.md
-
 ## onex
 onex:
   # 应用父ID

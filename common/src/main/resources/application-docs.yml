@@ -1,5 +1,10 @@
 # springdoc-openapi see https://springdoc.org/
 springdoc:
+  swagger-ui:
+    # tags排序
+    tags-sorter: alpha
+    # 类内按方法顺序method, 按字母alpha，Knife4j的增强排序扩展规则`x-order
+    operations-sorter: method
   api-docs:
     path: /v3/api-docs
   group-configs:
@@ -9,3 +14,18 @@ springdoc:
       packages-to-scan: com.nb6868.onex.sys.controller,com.nb6868.onex.websocket.controller,com.nb6868.onex.msg.controller,com.nb6868.onex.job.controller
     - group: 'Default-所有'
       paths-to-match: '/**'
+  default-flat-param-object: true
+
+## swagger
+knife4j:
+  enable: true
+  setting:
+    enable-group: true
+    enable-swagger-models: true
+    ## 自定义footer
+    enable-footer: false
+    enable-footer-custom: true
+    footer-custom-content: Copyright 2021-current[nb6868] (https://onex.nb6868.com/)
+    ## 自定义首页
+    enable-home-custom: true
+    home-custom-path: classpath:README.md

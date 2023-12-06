@@ -46,7 +46,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/uc/auth/")
 @Validated
-@Tag(name = "用户授权", description = "用户登录基本信息等相关接口")
+@Tag(name = "用户授权")
 @Slf4j
 public class AuthController {
 

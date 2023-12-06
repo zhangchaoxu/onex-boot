@@ -44,7 +44,7 @@ public class BaseShiroConfig {
     }
 
     @Bean
-    public ShiroFilterFactoryBean shirFilter(@Qualifier("securityManager") SecurityManager securityManager, AuthProps authProps) {
+    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager securityManager, AuthProps authProps) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         // 设置securityManager
         shiroFilter.setSecurityManager(securityManager);
