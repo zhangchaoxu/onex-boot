@@ -22,8 +22,6 @@ spring:
       max-request-size: 512MB
       enabled: true
   mvc:
-    favicon:
-      enabled: true
     # 404时,不跳error页面, 直接抛出异常
     throw-exception-if-no-handler-found: true
     # 默认路径匹配策略
