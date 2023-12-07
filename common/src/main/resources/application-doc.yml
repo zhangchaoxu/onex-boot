@@ -13,7 +13,7 @@ springdoc:
       packages-to-scan: com.nb6868.onex.uc.controller
     - group: 'sys'
       display-name: '系统管理'
-      packages-to-scan: com.nb6868.onex.sys.controller,com.nb6868.onex.websocket.controller,com.nb6868.onex.msg.controller,com.nb6868.onex.job.controller
+      packages-to-scan: com.nb6868.onex.sys.controller,com.nb6868.onex.websocket.controller,com.nb6868.onex.common.controller,com.nb6868.onex.common.sse.controller,com.nb6868.onex.msg.controller,com.nb6868.onex.job.controller
     - group: 'Default'
       display-name: '默认'
       paths-to-match: '/**'
