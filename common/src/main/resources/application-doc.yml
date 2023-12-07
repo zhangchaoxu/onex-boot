@@ -8,18 +8,29 @@ springdoc:
   api-docs:
     path: /v3/api-docs
   group-configs:
-    - group: 'UC-用户中心'
+    - group: 'uc'
+      display-name: '用户中心'
       packages-to-scan: com.nb6868.onex.uc.controller
-    - group: 'SYS-系统管理'
+    - group: 'sys'
+      display-name: '系统管理'
       packages-to-scan: com.nb6868.onex.sys.controller,com.nb6868.onex.websocket.controller,com.nb6868.onex.msg.controller,com.nb6868.onex.job.controller
-    - group: 'Default-所有'
+    - group: 'Default'
+      display-name: '默认'
       paths-to-match: '/**'
   default-flat-param-object: true
 
 ## swagger
 knife4j:
+  # 标题
+  title: 'OneX-API'
+  # 描述
+  description: 'API document'
+  # version
+  version: '1.0.0'
+  # 增强
   enable: true
   setting:
+    # 分组
     enable-group: true
     enable-swagger-models: true
     ## 自定义footer
