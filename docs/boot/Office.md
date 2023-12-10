@@ -1,6 +1,15 @@
 ## Office支持
-在系统中不可避免的会遇到各种Office类文件支持的内容，包括Excel导入、Excel导出、
-系统集成[EasyPoi](https://gitee.com/lemur/easypoi)实现Excel导入导出等相关功能。
+* 在管理系统中不可避免的会遇到各种Office类文件操作的需求，包括Excel导入、Excel导出、Word导出、PDF导出、文档预览等。
+* 下面针对上述需求分别做实现方式的讨论。
+
+## Excel的导入和导出
+* 目前Java对于Excel的导入导出等操作，比较常见的是以下三个类库基于[Apache POI](https://poi.apache.org/)的二次封装的类库。
+* [EasyPOI](https://gitee.com/lemur/easypoi): 更新不活跃，除了Excel,还支持Word等操作,功能接口丰富
+* [EasyExcel](https://github.com/alibaba/easyexcel)：更新活跃，宣传处理效率快，内存占用少，实际测试并无明显区别，只支持Excel，功能接口一般
+* [HutoolPOI](https://doc.hutool.cn/pages/poi/)：总体活跃度、功能完善度一般，但对于Excel的支持足够日常使用，并且接口封装简单，加上OneX大量使用Hutool，因此使用Hutool作为Excel的处理支持。
+
+### Excel的导出
+
 
 ## Word模板导出
 按照规定的模板内容格式，导出Word文件，比如一个订单信息，是业务中比较常见的一个需求。       

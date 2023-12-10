@@ -3,6 +3,7 @@
 * 入门
   
   * [Set Up](Setup.md)
+  * [v3升级v4](v3_to_v4.md)
 
 * 功能模块
 

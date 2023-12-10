@@ -5,14 +5,12 @@
 ## 技术准备
 * [SpringBoot](https://spring.io/projects/spring-boot/) 
 * [MyBatis-Plus](https://mybatis.plus/)    
-* [EasyPoi](https://gitee.com/lemur/easypoi)    
 * [Shiro](http://shiro.apache.org/)    
 * [Java Mail Sender](https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-email)
 
 ## 开发准备
-1. JDK需使用1.8以上版本,为兼容后续的Springboot3.0,建议使用JDK17
+1. v3版本要求JDKL1.8+，v4版本求JDL17+
 2. 建议使用[Intellij IDEA](https://www.jetbrains.com/idea/)开发
-3. 在IDEA中安装[Lombok](https://projectlombok.org/)插件
 
 ## 开发步骤
 1. 检出代码
