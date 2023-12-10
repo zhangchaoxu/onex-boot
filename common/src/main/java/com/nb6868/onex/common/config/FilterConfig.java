@@ -24,13 +24,13 @@ public class FilterConfig {
     // filter的初始化在bean之前，无法Autowired
     // 需要在这里用Bean初始化
     @Bean
-    @ConditionalOnProperty(name = "onex.filter.crosFilter", havingValue = "true")
+    @ConditionalOnProperty(name = "onex.filter.cros", havingValue = "true")
     public Filter crosFilter() {
         return new CrosFilter();
     }
 
     @Bean
-    @ConditionalOnProperty(name = "onex.filter.httpRequestReplaceFilter", havingValue = "true")
+    @ConditionalOnProperty(name = "onex.filter.http-request-replace", havingValue = "true")
     public FilterRegistrationBean<?> httpRequestReplaceFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setDispatcherTypes(DispatcherType.REQUEST);
@@ -42,7 +42,7 @@ public class FilterConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "onex.filter.crosFilter", havingValue = "true")
+    @ConditionalOnProperty(name = "onex.filter.cros", havingValue = "true")
     public FilterRegistrationBean<?> crosFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setDispatcherTypes(DispatcherType.REQUEST);
@@ -57,7 +57,7 @@ public class FilterConfig {
      * shiroFilter的bean注册在BaseShiroConfig
      */
     @Bean
-    @ConditionalOnProperty(name = "onex.filter.shiroFilter", havingValue = "true")
+    @ConditionalOnProperty(name = "onex.filter.shiro", havingValue = "true")
     public FilterRegistrationBean<?> shiroFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         // 这里代理的shiroFilter指的是ShiroConfig中的shirFilter,而不是shirFilter类本身
@@ -73,7 +73,7 @@ public class FilterConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "onex.filter.xssFilter", havingValue = "true")
+    @ConditionalOnProperty(name = "onex.filter.xss", havingValue = "true")
     public FilterRegistrationBean<?> xssFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setDispatcherTypes(DispatcherType.REQUEST);

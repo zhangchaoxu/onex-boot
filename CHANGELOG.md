@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.0.7] 2023.12.10
+- upgrade: upgrade aliyun-oss to 3.17.3
+- enhance: merge doc to common.yml
+- change: change filter config yml define 
+
 ## [4.0.2] 2023.12.06
 - upgrade: upgrade knife4j, and upgrade opanapi2 to openapi3
 - upgrade: upgrade mybatis-spring to 3.0.3
