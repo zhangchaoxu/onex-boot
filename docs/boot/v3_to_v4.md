@@ -30,3 +30,17 @@
 3. 检查代码中是否有javax的调用，替换成jakarta
 4. 检查Controller、DTO中中对于@API替换为@Tag，@ApiModel和@ApiModelProperty替换为@Schema
 5. onex.yml中可以删除onex.swagger中其它内容的配置，配置定义从SwaggerConfig迁移到yml配置文档中
+6. 推测由于@SpringBootApplication和@ComponentScan的策略调整，导致AppApplication所在包及其子包中的Component会被扫描两次，可以将ComponentScan内容合并到SpringBootApplication
+```java
+@SpringBootApplication(
+        exclude = {SecurityAutoConfiguration.class},
+        nameGenerator = SpringBeanNameGenerator.class,
+        scanBasePackages = {"com.nb6868.onex.**", "com.biz.**"}
+)
+@MapperScan(nameGenerator = SpringBeanNameGenerator.class, basePackages = {
+        "com.nb6868.onex.common.shiro",
+        "com.nb6868.onex.**.dao",
+        "com.biz.**.dao"
+})
+public class AppApplication {}
+```

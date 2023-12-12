@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## [4.0.8] 2023.12.11
-- upgrade: upgrade knif4j to 4.4.0
+- upgrade: upgrade knife4j to 4.4.0
 
 ## [4.0.7] 2023.12.10
 - upgrade: upgrade aliyun-oss to 3.17.3
