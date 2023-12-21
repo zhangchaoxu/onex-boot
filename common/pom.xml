@@ -20,7 +20,8 @@
         <druid.version>1.2.20</druid.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-io.version>2.15.1</commons-io.version>
-        <mybatisplus.version>3.5.4.1</mybatisplus.version>
+        <mybatis-plus.version>3.5.4.1</mybatis-plus.version>
+        <dynamic-datasource.version>4.2.0</dynamic-datasource.version>
         <hutool.version>5.8.23</hutool.version>
         <bcprov.version>1.77</bcprov.version>
         <jsoup.version>1.17.1</jsoup.version>
@@ -89,7 +90,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatisplus.version}</version>
+            <version>${mybatis-plus.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.baomidou</groupId>
@@ -105,6 +106,13 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
             <version>3.0.3</version>
+        </dependency>
+        <!-- dynamic.datasource -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+            <version>${dynamic-datasource.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- shiro -->
         <dependency>

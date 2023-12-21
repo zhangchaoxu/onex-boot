@@ -13,7 +13,7 @@ import java.util.Date;
 
 /**
  * 公共字段，自动填充值
- * see {https://mybatis.plus/guide/auto-fill-metainfo.html}
+ * see {<a href="https://mybatis.plus/guide/auto-fill-metainfo.html">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
