@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.9] 2023.12.25
+- upgrade: upgrade springboot to 3.2.1
+- upgrade: upgrade hutool to 5.8.24
+
 ## [4.0.8] 2023.12.11
 - upgrade: upgrade knife4j to 4.4.0
 
