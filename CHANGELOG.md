@@ -1,7 +1,7 @@
 # CHANGELOG
 
-## [4.0.10] 2023.12.26
-- upgrade: upgrade mybatis-plus to 3.5.5
+## [4.0.11] 2023.12.26
+- upgrade: upgrade mybatis-plus to 3.5.5, change maven repo to mybatis-plus-spring-boot3-starter
 - fix: change mybatis-plus order item params
 
 ## [4.0.9] 2023.12.25
