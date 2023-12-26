@@ -59,7 +59,8 @@ public class PageUtils {
 
         // 前端字段排序
         if (StringUtils.isNotBlank(orderField) && StringUtils.isNotBlank(order)) {
-            return page.addOrder(new OrderItem(orderField, Const.ASC.equalsIgnoreCase(order)));
+            OrderItem.asc(orderField);
+            return page.addOrder(Const.ASC.equalsIgnoreCase(order) ? OrderItem.asc(orderField) : OrderItem.desc(orderField));
         }
 
         // 没有排序字段，则不排序
@@ -68,7 +69,7 @@ public class PageUtils {
         }
 
         // 默认排序
-        page.addOrder(new OrderItem(orderField, isAsc));
+        page.addOrder(isAsc ? OrderItem.asc(orderField) : OrderItem.desc(orderField));
 
         return page;
     }
@@ -80,7 +81,7 @@ public class PageUtils {
         if (StrUtil.isBlank(sortItem.getColumn())) {
             return null;
         }
-        return new OrderItem(StrUtil.toUnderlineCase(sortItem.getColumn()), sortItem.getAsc());
+        return sortItem.getAsc() ? OrderItem.asc(StrUtil.toUnderlineCase(sortItem.getColumn())) : OrderItem.desc(StrUtil.toUnderlineCase(sortItem.getColumn()));
     }
 
 }

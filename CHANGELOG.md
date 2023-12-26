@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.10] 2023.12.26
+- upgrade: upgrade mybatis-plus to 3.5.5
+- fix: change mybatis-plus order item params
+
 ## [4.0.9] 2023.12.25
 - upgrade: upgrade springboot to 3.2.1
 - upgrade: upgrade hutool to 5.8.24

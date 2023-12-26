@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.0.9</version>
+        <version>4.0.10</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -20,7 +20,7 @@
         <druid.version>1.2.20</druid.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-io.version>2.15.1</commons-io.version>
-        <mybatis-plus.version>3.5.4.1</mybatis-plus.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <dynamic-datasource.version>4.2.0</dynamic-datasource.version>
         <hutool.version>5.8.24</hutool.version>
         <bcprov.version>1.77</bcprov.version>
@@ -86,26 +86,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- MybatisPlus, mybatis-spring因为版本问题会冲突 -->
+        <!-- MybatisPlus -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.baomidou</groupId>
-                    <artifactId>mybatis-plus-generator</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mybatis</groupId>
-                    <artifactId>mybatis-spring</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
-            <version>3.0.3</version>
         </dependency>
         <!-- dynamic.datasource -->
         <dependency>
