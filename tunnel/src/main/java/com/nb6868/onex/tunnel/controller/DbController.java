@@ -6,11 +6,10 @@ import cn.hutool.db.Entity;
 import cn.hutool.db.ds.DSFactory;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.exception.OnexException;
-import com.nb6868.onex.common.pojo.BaseForm;
-import com.nb6868.onex.common.pojo.form.DbForm;
-import com.nb6868.onex.common.pojo.form.DbQueryForm;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.tunnel.form.DbForm;
+import com.nb6868.onex.tunnel.form.DbQueryForm;
 import com.zaxxer.hikari.HikariDataSource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +26,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "数据操作")
 public class DbController {
+
     @PostMapping("query")
     @Operation(summary = "数据查询")
     @AccessControl(value = "/query", allowTokenName = "token-tunnel")

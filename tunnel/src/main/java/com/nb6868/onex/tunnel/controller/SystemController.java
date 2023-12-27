@@ -7,8 +7,8 @@ import cn.hutool.system.SystemUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.pojo.Result;
-import com.nb6868.onex.common.pojo.form.RuntimeExecCmdQuery;
-import com.nb6868.onex.tunnel.form.SystemQuery;
+import com.nb6868.onex.tunnel.form.SystemPropQuery;
+import com.nb6868.onex.tunnel.form.RuntimeExecCmdQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "系统信息")
 public class SystemController {
 
-    @PostMapping("systemInfo")
+    @PostMapping("info")
     @Operation(summary = "系统信息")
-    @AccessControl(value = "/systemInfo", allowTokenName = "token-tunnel")
-    public Result<?> systemInfo(@Validated @RequestBody BaseForm form) {
+    @AccessControl(value = "/info", allowTokenName = "token-tunnel")
+    public Result<?> info(@Validated @RequestBody BaseForm form) {
         Dict result = Dict.create()
                 .set("sysTime", DateUtil.now())
                 .set("currentPID", SystemUtil.getCurrentPID())
@@ -47,10 +47,10 @@ public class SystemController {
     }
 
 
-    @PostMapping("systemProp")
+    @PostMapping("prop")
     @Operation(summary = "系统参数属性")
-    @AccessControl(value = "/systemProp", allowTokenName = "token-tunnel")
-    public Result<?> systemProp(@Validated @RequestBody SystemQuery form) {
+    @AccessControl(value = "/prop", allowTokenName = "token-tunnel")
+    public Result<?> prop(@Validated @RequestBody SystemPropQuery form) {
         try {
             String propValue = SystemUtil.get(form.getName(), form.isQuiet());
             Dict result = Dict.create().set("quite", form.isQuiet()).set("name", form.getName()).set("value", propValue);

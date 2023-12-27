@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "系统参数查询")
-public class SystemQuery {
+public class SystemPropQuery {
 
     @Schema(description = "属性名")
     @NotBlank(message = "属性名不能为空")

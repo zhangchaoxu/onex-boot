@@ -1,4 +1,4 @@
-package com.nb6868.onex.common.pojo.form;
+package com.nb6868.onex.tunnel.form;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
