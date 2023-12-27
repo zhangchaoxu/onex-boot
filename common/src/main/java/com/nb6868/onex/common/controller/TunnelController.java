@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.controller;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -9,6 +10,7 @@ import cn.hutool.db.ds.DSFactory;
 import cn.hutool.system.SystemUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.pojo.BaseForm;
 import com.nb6868.onex.common.pojo.form.DbForm;
 import com.nb6868.onex.common.pojo.form.DbQueryForm;
 import com.nb6868.onex.common.pojo.Result;
@@ -20,12 +22,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.sql.DataSource;
+import java.lang.management.OperatingSystemMXBean;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @RestController("Tunnel")
@@ -115,6 +117,30 @@ public class TunnelController {
             log.error("执行命令[" + form.getCmd() + "]失败", e);
             return new Result<>().error(e.getMessage());
         }
+    }
+
+    @PostMapping("systemInfo")
+    @Operation(summary = "系统信息")
+    @AccessControl(value = "/systemInfo", allowTokenName = "token-tunnel")
+    public Result<?> systemInfo(@Validated @RequestBody BaseForm form) {
+        Dict result = Dict.create()
+                .set("sysTime", DateUtil.now())
+                .set("currentPID", SystemUtil.getCurrentPID())
+                .set("osName", System.getProperty("os.name"))
+                .set("osArch", System.getProperty("os.arch"))
+                .set("osVersion", System.getProperty("os.version"))
+                .set("userLanguage", System.getProperty("user.language"))
+                .set("userDir", System.getProperty("user.dir"))
+                .set("jvmName", System.getProperty("java.vm.name"))
+                .set("javaVersion", System.getProperty("java.version"))
+                .set("javaHome", System.getProperty("java.home"))
+                .set("javaTotalMemory", SystemUtil.getTotalMemory() / 1024 / 1024)
+                .set("javaFreeMemory", SystemUtil.getFreeMemory() / 1024 / 1024)
+                .set("javaMaxMemory", SystemUtil.getMaxMemory() / 1024 / 1024)
+                .set("userName", System.getProperty("user.name"))
+                .set("userTimezone", System.getProperty("user.timezone"));
+
+        return new Result<>().success(result);
     }
 
 }
