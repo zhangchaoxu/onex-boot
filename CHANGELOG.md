@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.12] 2023.12.27
+- fix: fix swagger header token issue
+- new: add tunnel
+
 ## [4.0.11] 2023.12.26
 - upgrade: upgrade mybatis-plus to 3.5.5, change maven repo to mybatis-plus-spring-boot3-starter
 - fix: change mybatis-plus order item params
