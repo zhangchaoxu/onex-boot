@@ -2,6 +2,7 @@ package com.nb6868.onex.job.config;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.cron.CronUtil;
 import com.nb6868.onex.job.JobConst;
 import com.nb6868.onex.job.entity.JobEntity;
 import com.nb6868.onex.job.service.JobService;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.scheduling.support.CronExpression;
 import org.springframework.scheduling.support.CronTrigger;
 
 /**
@@ -18,7 +20,7 @@ import org.springframework.scheduling.support.CronTrigger;
 public abstract class BaseJobConfig implements SchedulingConfigurer {
 
     @Autowired
-    private JobService jobService;
+    JobService jobService;
 
     /**
      * 添加trigger
@@ -38,7 +40,8 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
             log.info("TriggerTask next Trigger");
             // 配置参数要再从数据库读一遍，否则不会变更
             JobEntity job = jobService.getById(jobId);
-            if (ObjectUtil.isNotNull(job) && StrUtil.isNotBlank(job.getCron())) {
+            // 加入cron的校验
+            if (ObjectUtil.isNotNull(job) && StrUtil.isNotBlank(job.getCron()) && CronExpression.isValidExpression(job.getCron())) {
                 return new CronTrigger(job.getCron()).nextExecution(triggerContext);
             } else {
                 return null;
