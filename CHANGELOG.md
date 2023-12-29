@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## [4.0.16] 2023.12.27
+## [4.0.17] 2023.12.29
+- fix: fix job run issue
+
+## [4.0.16] 2023.12.29
 - upgrade: upgrade aliyun-oss to 3.17.4
 - upgrade: upgrade weixin sdk to 4.6.0
 

@@ -1,8 +1,6 @@
 package com.nb6868.onex.job.config;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.cron.CronUtil;
 import com.nb6868.onex.job.JobConst;
 import com.nb6868.onex.job.entity.JobEntity;
 import com.nb6868.onex.job.service.JobService;
@@ -27,25 +25,31 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
      */
     protected void initTrigger(ScheduledTaskRegistrar taskRegistrar, Long jobId) {
         taskRegistrar.addTriggerTask(() -> {
-            // 配置参数要再从数据库读一遍，否则不会变更
+            // 真正执行的时候,再从数据库判断一遍
             JobEntity job = jobService.getById(jobId);
             if (job == null) {
-                log.info("任务不存在，任务ID：{}", jobId);
+                log.error("job run Id=[{}], not found", jobId);
             } else if (job.getState() != JobConst.JobState.NORMAL.getValue()) {
-                log.info("任务状态异常，任务ID：{}，状态：{}", jobId, job.getState());
+                log.error("job run Id=[{}], state=[{}] abnormal", jobId, job.getState());
             } else {
+                log.error("job run Id=[{}], go start", jobId);
                 jobService.run(job, job.getParams());
             }
         }, triggerContext -> {
-            log.info("TriggerTask next Trigger");
             // 配置参数要再从数据库读一遍，否则不会变更
             JobEntity job = jobService.getById(jobId);
-            // 加入cron的校验
-            if (ObjectUtil.isNotNull(job) && StrUtil.isNotBlank(job.getCron()) && CronExpression.isValidExpression(job.getCron())) {
-                return new CronTrigger(job.getCron()).nextExecution(triggerContext);
+            if (job == null) {
+                log.error("job trigger Id=[{}], not found", jobId);
+            } else if (StrUtil.isNotBlank(job.getCron())) {
+                log.error("job trigger Id=[{}], cron is empty", jobId);
+            } else if (CronExpression.isValidExpression(job.getCron())) {
+                log.error("job trigger Id=[{}], cron=[{}] is not valid", jobId, job.getCron());
             } else {
-                return null;
+                // 不管是否有效，加入下一个trigger
+                log.error("job trigger Id=[{}], cron=[{}] add next execution", jobId, job.getCron());
+                return new CronTrigger(job.getCron()).nextExecution(triggerContext);
             }
+            return null;
         });
     }
 
