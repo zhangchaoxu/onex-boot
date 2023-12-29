@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.8.5] 2023.11.29
+- upgrade: upgrade hutool to 5.8.24
+- upgrade: upgrade mybatisplus to 3.5.5
+
 ## [3.8.3] 2023.11.29
 - upgrade: upgrade jsoup to 2.17.1
 - upgrade: upgrade poi to 5.2.5
