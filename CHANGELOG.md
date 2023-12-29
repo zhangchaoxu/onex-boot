@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.16] 2023.12.27
+- upgrade: upgrade aliyun-oss to 3.17.4
+- upgrade: upgrade weixin sdk to 4.6.0
+
 ## [4.0.15] 2023.12.27
 - fix: fix swagger header token issue
 - new: add tunnel
