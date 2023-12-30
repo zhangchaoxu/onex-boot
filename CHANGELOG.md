@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [4.0.17] 2023.12.29
+## [4.0.17] 2023.12.30
 - fix: fix job run issue
+- upgrade: upgrade jsoup to 1.17.2
 
 ## [4.0.16] 2023.12.29
 - upgrade: upgrade aliyun-oss to 3.17.4
