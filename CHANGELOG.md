@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.18] 2024.01.03
+- upgrade: upgrade druid to 1.2.21
+
 ## [4.0.17] 2023.12.30
 - fix: fix job run issue
 - upgrade: upgrade jsoup to 1.17.2
