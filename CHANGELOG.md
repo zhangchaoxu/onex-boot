@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.0.21] 2024.01.05
+- upgrade: upgrade dynamic-datasource to 4.3.0
+- enhance: enhance role code control in RBAC
+- enhance: add file name validate in file upload
+
 ## [4.0.18] 2024.01.03
 - upgrade: upgrade druid to 1.2.21
 
