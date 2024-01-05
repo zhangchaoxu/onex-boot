@@ -132,3 +132,6 @@ mv /www/server/panel/data/bind.pl /www/server/panel/data/bind.pl.bak
 @JsonProperty("PID")
 private String pId;
 ``` 
+
+## 11. 播放m3u8只有声音没有画面
+大概率是因为[H.265/HEVC in MPEG2-TS](https://github.com/video-dev/hls.js/issues/4943)引起，建议使用[西瓜播放器](https://v3.h5player.bytedance.com/)
