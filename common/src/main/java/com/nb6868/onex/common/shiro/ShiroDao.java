@@ -95,9 +95,31 @@ public interface ShiroDao {
     List<String> getAllRoleIdList(@Param("tenantCode") String tenantCode);
 
     /**
+     * 获得所有角色编码列表
+     */
+    @Select("<script>" +
+            "SELECT DISTINCT(code) FROM " + ShiroConst.TABLE_ROLE + " WHERE deleted = 0 AND code is not null" +
+            "<choose>" +
+            "<when test=\"tenantCode != null and tenantCode != ''\">" +
+            " AND tenant_code = #{tenantCode}" +
+            "</when>" +
+            "<otherwise>" +
+            " AND tenant_code IS NULL" +
+            "</otherwise>" +
+            "</choose>" +
+            "</script>")
+    List<String> getAllRoleCodeList(@Param("tenantCode") String tenantCode);
+
+    /**
      * 通过用户id，获得用户角色列表
      */
     @Select("SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE user_id = #{userId} AND deleted = 0")
     List<String> getRoleIdListByUserId(@Param("userId") Long userId);
+
+    /**
+     * 通过用户id，获得用户角色编码列表
+     */
+    @Select("SELECT DISTINCT(code) FROM " + ShiroConst.TABLE_ROLE + " WHERE id in (SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE user_id = #{userId} AND deleted = 0) AND code is not null AND deleted = 0")
+    List<String> getRoleCodeListByUserId(@Param("userId") Long userId);
 
 }

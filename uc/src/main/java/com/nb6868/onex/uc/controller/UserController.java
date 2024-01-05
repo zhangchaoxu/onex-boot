@@ -59,7 +59,7 @@ public class UserController {
     public Result<?> page(@Validated({PageGroup.class}) @RequestBody UserQueryForm form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
         if (CollUtil.isNotEmpty(form.getRoleCodes())) {
-            List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
+            List<Long> userIds = roleService.getUserIdListByRoleCodeList(form.getRoleCodes());
             if (CollUtil.isEmpty(userIds)) {
                 return new Result<>().success(new PageData<>());
             }
@@ -83,7 +83,7 @@ public class UserController {
     public Result<?> list(@Validated @RequestBody UserQueryForm form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
         if (CollUtil.isNotEmpty(form.getRoleCodes())) {
-            List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
+            List<Long> userIds = roleService.getUserIdListByRoleCodeList(form.getRoleCodes());
             if (CollUtil.isEmpty(userIds)) {
                 return new Result<>().success(CollUtil.newArrayList());
             }

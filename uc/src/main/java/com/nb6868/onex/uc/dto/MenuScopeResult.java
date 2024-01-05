@@ -34,4 +34,7 @@ public class MenuScopeResult implements Serializable {
     @Schema(description = "角色列表")
     private Set<String> roles = new HashSet<>();
 
+    @Schema(description = "角色编码列表")
+    private Set<String> roleCodes = new HashSet<>();
+
 }

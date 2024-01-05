@@ -10,6 +10,9 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "权限范围请求")
 public class MenuScopeForm extends BaseForm {
 
+    @Schema(description = "是否包含角色编码信息", example = "false")
+    private boolean roleCodes = false;
+
     @Schema(description = "是否包含角色信息", example = "false")
     private boolean roles = false;
 

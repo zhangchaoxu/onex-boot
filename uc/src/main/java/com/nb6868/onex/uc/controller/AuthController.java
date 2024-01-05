@@ -270,10 +270,10 @@ public class AuthController {
         if (form.isPermissions()) {
             result.setPermissions(permissions);
         }
-        if (form.isRoles()) {
+        if (form.isRoleCodes()) {
             // 获取角色列表
-            Set<String> roles = userService.getUserRoles(user);
-            result.setRoles(roles);
+            Set<String> roles = userService.getUserRoleCodes(user);
+            result.setRoleCodes(roles);
         }
         return new Result<MenuScopeResult>().success(result);
     }
@@ -302,11 +302,21 @@ public class AuthController {
     }
 
     @PostMapping("userRoles")
-    @Operation(summary = "用户角色编码", description = "用户具备的角色,可用于按钮等的控制")
+    @Operation(summary = "用户角色id", description = "用户具备的角色,可用于按钮等的控制")
     @ApiOperationSupport(order = 250)
     public Result<?> userRoles() {
         ShiroUser user = ShiroUtils.getUser();
         Set<String> set = userService.getUserRoles(user);
+
+        return new Result<>().success(set);
+    }
+
+    @PostMapping("userRoleCodes")
+    @Operation(summary = "用户角色编码", description = "用户具备的角色,可用于按钮等的控制")
+    @ApiOperationSupport(order = 250)
+    public Result<?> userRoleCodes() {
+        ShiroUser user = ShiroUtils.getUser();
+        Set<String> set = userService.getUserRoleCodes(user);
 
         return new Result<>().success(set);
     }

@@ -62,6 +62,14 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         return new HashSet<>(roleList);
     }
 
+    /**
+     * 获取用户角色编码列表
+     */
+    public Set<String> getUserRoleCodes(ShiroUser user) {
+        List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
+        return new HashSet<>(roleList);
+    }
+
     @Override
     protected void beforeSaveOrUpdateDto(UserDTO dto, UserEntity toSaveEntity, int type) {
         // 检查用户权限
