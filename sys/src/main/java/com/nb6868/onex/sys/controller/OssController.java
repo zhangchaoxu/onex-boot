@@ -2,6 +2,7 @@ package com.nb6868.onex.sys.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -55,13 +56,14 @@ public class OssController {
     BaseParamsService paramsService;
 
     @PostMapping("uploadAnon")
-    @Operation(summary = "匿名上传文件(文件形式)", description = "@Anon")
+    @Operation(summary = "匿名上传文件(文件形式)")
     @AccessControl
     @ApiOperationSupport(order = 10)
     public Result<?> uploadAnon(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
                                 @RequestParam(required = false) String prefix,
                                 @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
@@ -89,6 +91,7 @@ public class OssController {
                             @RequestParam(required = false) String prefix,
                             @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
@@ -114,6 +117,7 @@ public class OssController {
     @ApiOperationSupport(order = 20)
     public Result<?> uploadTemp(@RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isNull(localFile, ErrorCode.OSS_UPLOAD_FILE_ERROR);
 
@@ -126,6 +130,7 @@ public class OssController {
     @ApiOperationSupport(order = 20)
     public Result<?> uploadExcelToTemp(@RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isFalse(localFile != null && localFile.exists(), ErrorCode.OSS_UPLOAD_FILE_ERROR);
 
