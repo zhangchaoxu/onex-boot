@@ -50,6 +50,8 @@
 | TemplateId | 消息模板ID   |
 | RegionId | 区域，默认cn-hangzhou   |
 
+具体参数定义见[文档](https://help.aliyun.com/zh/sms/getting-started/use-sms-api-or-sdks)
+
 ### 华为云短信
 | 字段 | 描述         |
 | ---- |------------|
@@ -59,6 +61,8 @@
 | TemplateId | 消息模板ID     |
 | ChannelId | 渠道         |
 | RegionId | 区域，发送的地址前缀 |
+
+具体参数定义见[文档](https://support.huaweicloud.com/api-msgsms/sms_05_0001.html)
 
 ### 聚合短信
 | 字段 | 描述         |

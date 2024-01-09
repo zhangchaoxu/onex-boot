@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.22] 2024.01.09
+- upgrade: upgrade knife4j to 4.5.0
+
 ## [4.0.21] 2024.01.05
 - upgrade: upgrade dynamic-datasource to 4.3.0
 - enhance: enhance role code control in RBAC
