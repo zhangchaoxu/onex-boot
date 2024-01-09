@@ -1,1 +1,1 @@
-* [更新记录](https://github.com/zhangchaoxu/onex-boot/blob/master/docs/boot/CHANGELOG.md)
+* [更新记录](https://github.com/zhangchaoxu/onex-boot/blob/v4/docs/boot/CHANGELOG.md)
