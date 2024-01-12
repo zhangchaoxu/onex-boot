@@ -125,7 +125,7 @@ public class MsgController {
         return new Result<>().success(page);
     }
 
-    @PostMapping("/send")
+    @PostMapping("send")
     @Operation(summary = "发送消息")
     @LogOperation("发送消息")
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msg:send"}, logical = Logical.OR)

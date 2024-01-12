@@ -54,7 +54,7 @@ public interface Const {
     /**
      * JSON SQL key
      */
-    String SQL_JSON_KEY = "{}>'$.{}'";
+    String SQL_JSON_KEY = "{}->'$.{}'";
 
     /**
      * 当前页码

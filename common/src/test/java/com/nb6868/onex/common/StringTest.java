@@ -284,8 +284,18 @@ public class StringTest {
     void cacheTest() {
         //创建缓存，默认4毫秒过期
         TimedCache<String, String> timedCache = CacheUtil.newTimedCache(4);
+    }
 
-
+    @Test
+    @DisplayName("缓存测试")
+    void format() {
+        String tpl = "您的验证码为：{code}-{test}，请勿泄漏验证码。";
+        //创建缓存，默认4毫秒过期
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", "1234");
+        map.put("test", null);
+        log.error(StrUtil.format(tpl, map, true));
+        log.error(StrUtil.format(tpl, map, false));
     }
 
 }

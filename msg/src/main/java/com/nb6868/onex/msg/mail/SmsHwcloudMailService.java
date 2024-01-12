@@ -1,6 +1,7 @@
 package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 /**
  * 短信 华为云 消息服务
- * see {https://support.huaweicloud.com/devg-msgsms/sms_04_0002.html}
+ * see {<a href="https://support.huaweicloud.com/devg-msgsms/sms_04_0002.html">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -45,6 +46,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
     private static final String WSSE_HEADER_FORMAT = "UsernameToken Username=\"{}\",PasswordDigest=\"{}\",Nonce=\"{}\",Created=\"{}\"";
     // 无需修改,用于格式化鉴权头域,给"Authorization"参数赋值
     private static final String AUTH_HEADER_VALUE = "WSSE realm=\"SDP\",profile=\"UsernameToken\",type=\"Appkey\"";
+    //private static final String AUTH_HEADER_VALUE = "SDK-HMAC-SHA256 Access={Access}, SignedHeaders={SignedHeaders}, Signature={Signature}";
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
@@ -52,8 +54,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("AppKeyId"),
                 mailTpl.getParams().getStr("AppKeySecret"),
-                mailTpl.getParams().getStr("TemplateId"),
-                mailTpl.getParams().getStr("SignName")
+                mailTpl.getParams().getStr("TemplateId")
         ), MsgConst.MAIL_TPL_PARAMS_ERROR);
         // 参数变量允许为空字符串,但是不允许为null,否则提示isv.INVALID_JSON_PARAM
         // 参数变量长度限制1-20字符以内,实际允许为0-20字符,中文数字字符均占1个字符,否则提示isv.PARAM_LENGTH_LIMIT
@@ -70,10 +71,10 @@ public class SmsHwcloudMailService extends AbstractMailService {
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
         mailLog.setMailTo(request.getMailTo());
-        mailLog.setContent(mailTpl.getContent());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
+        // 存入塞入后的内容
+        mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams(), true));
         mailLog.setState(MsgConst.MailSendStateEnum.SENDING.value());
         // 设置有效时间
         int validTimeLimit = mailTpl.getParams().getInt("validTimeLimit", 0);
@@ -93,7 +94,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
         //必填,全局号码格式(包含国家码),示例:+8615123456789,多个号码之间用英文逗号分隔
         String receiver = request.getMailTo(); //短信接收人号码
         //选填,短信状态报告接收地址,推荐使用域名,为空或者不填表示不接收状态报告
-        String statusCallBack = "";
+        String statusCallBack = mailTpl.getParams().getStr("callbackUrl");
 
         /**
          * 选填,使用无变量模板时请赋空值 String templateParas = "";
@@ -106,8 +107,8 @@ public class SmsHwcloudMailService extends AbstractMailService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("Authorization", AUTH_HEADER_VALUE);
-        //请求Headers中的X-WSSE参数值
         headers.add("X-WSSE", buildWsseHeader(appKey, appSecret));
+
         MultiValueMap<String, Object> postParameters = new LinkedMultiValueMap<>();
         postParameters.add("from", sender);
         postParameters.add("to", receiver);
@@ -142,6 +143,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
 
     /**
      * 构造X-WSSE参数值
+     * 取值为UsernameToken Username="app_key的值", PasswordDigest="PasswordDigest的值", Nonce="随机数", Created="随机数生成时间"。
      */
     private static String buildWsseHeader(String appKey, String appSecret) {
         String time = DateUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");

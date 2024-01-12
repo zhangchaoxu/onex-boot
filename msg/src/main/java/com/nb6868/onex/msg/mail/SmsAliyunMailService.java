@@ -57,7 +57,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         mailLog.setMailTo(request.getMailTo());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
-        mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
+        mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams(), true));
         mailLog.setState(MsgConst.MailSendStateEnum.SENDING.value());
         // 设置有效时间
         int validTimeLimit = mailTpl.getParams().getInt("validTimeLimit", 0);
