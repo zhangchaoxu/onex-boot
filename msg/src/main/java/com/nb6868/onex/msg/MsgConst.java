@@ -90,8 +90,10 @@ public interface MsgConst {
          * 支持的消息类型定义
          */
         SENDING(0, "发送中"),
-        SUCCESS(1, "发送成功"),
-        FAIL(-1, "发送失败");
+        SUCCESS(1, "发送调用成功"),
+        FAIL(-1, "发送调用失败"),
+        CALLBACK_SUCCESS(10, "发送回调成功"),
+        CALLBACK_FAIL(-10, "发送回调失败");
 
         private Integer value;
         private String name;

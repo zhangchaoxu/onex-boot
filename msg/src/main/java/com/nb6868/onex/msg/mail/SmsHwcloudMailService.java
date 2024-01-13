@@ -46,7 +46,6 @@ public class SmsHwcloudMailService extends AbstractMailService {
     private static final String WSSE_HEADER_FORMAT = "UsernameToken Username=\"{}\",PasswordDigest=\"{}\",Nonce=\"{}\",Created=\"{}\"";
     // 无需修改,用于格式化鉴权头域,给"Authorization"参数赋值
     private static final String AUTH_HEADER_VALUE = "WSSE realm=\"SDP\",profile=\"UsernameToken\",type=\"Appkey\"";
-    //private static final String AUTH_HEADER_VALUE = "SDK-HMAC-SHA256 Access={Access}, SignedHeaders={SignedHeaders}, Signature={Signature}";
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
@@ -70,6 +69,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
         MsgLogEntity mailLog = new MsgLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
+        mailLog.setMailFrom("sms_hwcloud");
         mailLog.setMailTo(request.getMailTo());
         mailLog.setContentParams(request.getContentParams());
         mailLog.setConsumeState(Const.BooleanEnum.FALSE.value());
@@ -122,6 +122,8 @@ public class SmsHwcloudMailService extends AbstractMailService {
         if (StrUtil.isNotBlank(signature)) {
             postParameters.add("signature", signature);
         }
+        // 扩展码，原样返回
+        postParameters.add("extend", String.valueOf(mailLog.getId()));
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(postParameters, headers);
         try {
             // 设置链接超时

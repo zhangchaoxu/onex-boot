@@ -50,6 +50,7 @@ public class SmsJuheMailService extends AbstractMailService {
         MsgLogEntity mailLog = new MsgLogEntity();
         mailLog.setTenantCode(mailTpl.getTenantCode());
         mailLog.setTplCode(mailTpl.getCode());
+        mailLog.setMailFrom("sms_juhe");
         mailLog.setMailTo(request.getMailTo());
         mailLog.setContent(StrUtil.format(mailTpl.getContent(), request.getContentParams()));
         mailLog.setContentParams(request.getContentParams());
