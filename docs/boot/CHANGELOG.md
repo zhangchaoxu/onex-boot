@@ -2,7 +2,8 @@
 
 ## [4.0.24] 2024.01.12
 - fix: fix sql json join issue
-- fix: fix sql json join issue
+- enhance: add sms hwcloud and aliyun status callback
+- upgrade: upgrade hutool to 5.8.25
 
 ## [4.0.22] 2024.01.09
 - upgrade: upgrade knife4j to 4.5.0
