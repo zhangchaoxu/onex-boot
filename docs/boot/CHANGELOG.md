@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.25] 2024.01.15
+- new: add DateNoMillisecondTypeHandler to fix mysql data millisecond issue
+
 ## [4.0.24] 2024.01.12
 - fix: fix sql json join issue
 - enhance: add sms hwcloud and aliyun status callback
