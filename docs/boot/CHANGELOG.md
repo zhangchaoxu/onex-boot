@@ -83,7 +83,7 @@
 ## [3.7.84] 2023.11.01
 - upgrade: upgrade aliyun-oss to 3.17.2
 
-- ## [3.7.83] 2023.10.30
+## [3.7.83] 2023.10.30
 - upgrade: upgrade springboot to 2.7.17
 - new: add commons-io into common
 - upgrade: upgrade mybatisplus to 3.5.4
@@ -323,7 +323,7 @@
 
 ## [3.6.43] 2022.09.24
 - upgrade: upgrade springboot to 2.7.4
-- 
+
 ## [3.6.42] 2022.09.16
 - upgrade: upgrade hutool to 5.8.7
 - upgrade: upgrade druid to 1.2.12
@@ -352,7 +352,7 @@ datasource:
 - upgrade: upgrade shiro and jsoup
 - upgrade: upgrade hutool to 5.8.6
 
-- ## [3.6.36] 2022.08.26
+## [3.6.36] 2022.08.26
 - new: add dingtalk login
 
 ## [3.6.35] 2022.08.23
@@ -360,7 +360,7 @@ datasource:
  
 ## [3.6.34] 2022.08.18
 - upgrade: upgrade springboot 2.7.3
-- 
+
 ## [3.6.33] 2022.07.22
 - new: add user post
 - upgrade: upgrade springboot 2.7.2
