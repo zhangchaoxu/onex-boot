@@ -5,7 +5,7 @@ Onex使用SchedulingConfigurer封装了一套定时任务的管理工具。
 ## 设计思路
 提供定时任务(job)和任务日志(job_log)两张表    
 定时任务表中定义任务的状态、参数、cron等信息    
-任务日志中记录每次执行的状态、结果等信息
+任务日志中记录每次执行的状态、结果等信息。
 
 ## 使用
 1. 数据库中导入[sys_job.sql](https://onex.nb6868.com/sql/sys_job.sql)

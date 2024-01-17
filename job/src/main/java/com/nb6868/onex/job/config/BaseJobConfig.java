@@ -40,9 +40,9 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
             JobEntity job = jobService.getById(jobId);
             if (job == null) {
                 log.error("job trigger Id=[{}], not found", jobId);
-            } else if (StrUtil.isNotBlank(job.getCron())) {
+            } else if (StrUtil.isBlank(job.getCron())) {
                 log.error("job trigger Id=[{}], cron is empty", jobId);
-            } else if (CronExpression.isValidExpression(job.getCron())) {
+            } else if (!CronExpression.isValidExpression(job.getCron())) {
                 log.error("job trigger Id=[{}], cron=[{}] is not valid", jobId, job.getCron());
             } else {
                 // 不管是否有效，加入下一个trigger
