@@ -24,7 +24,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
      * @param roleIds 角色ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<String> roleIds) {
+    public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds) {
         // 先删除角色用户关系
         deleteByUserIdList(CollUtil.toList(userId));
 

@@ -16,6 +16,7 @@ import org.apache.ibatis.type.Alias;
 @TableName("uc_role")
 @Alias("uc_role")
 public class RoleEntity extends BaseEntity {
+
     /**
      * 名称
      */
@@ -36,4 +37,5 @@ public class RoleEntity extends BaseEntity {
      * 租户编码
      */
 	private String tenantCode;
+
 }

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [4.0.27] 2024.01.17
+- fix: change roleId from String to Long
+
+## [4.0.26] 2024.01.17
+- fix: fix job cron issue
+
 ## [4.0.25] 2024.01.15
 - new: add DateNoMillisecondTypeHandler to fix mysql data millisecond issue
 

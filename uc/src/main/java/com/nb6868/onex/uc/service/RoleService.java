@@ -33,28 +33,26 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
 
     @Override
     protected void beforeSaveOrUpdateDto(RoleDTO dto, int type) {
-        if (0 == type) {
-            // 新增，检查角色编码是否存在
-            boolean hasRecord = hasIdRecord(dto.getId());
-            AssertUtils.isTrue(hasRecord, "编码[" + dto.getId() + "]已存在");
-        }
+        // 新增，检查角色编码是否存在
+        boolean hasRecord = hasDuplicated(dto.getId(), "code", dto.getCode());
+        AssertUtils.isTrue(hasRecord, "编码[" + dto.getId() + "]已存在");
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     protected void afterSaveOrUpdateDto(boolean ret, RoleDTO dto, RoleEntity existedEntity, int type) {
         if (ret) {
-            // 删除角色菜单关系
+            // 重新保存角色和菜单关系表
             menuService.saveOrUpdateByRoleIdAndMenuIds(dto.getId(), dto.getMenuIdList());
         }
     }
 
     /**
-     * 根据用户查询角色列表
+     * 根据用户查询角色ID列表
      *
      * @param userId 用户id
      */
-    public List<String> getRoleIdListByUserId(@NotNull Long userId) {
+    public List<Long> getRoleIdListByUserId(@NotNull Long userId) {
         return CollStreamUtil.toList(roleUserService.lambdaQuery()
                 .select(RoleUserEntity::getRoleId)
                 .eq(RoleUserEntity::getUserId, userId)
@@ -63,7 +61,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     }
 
     /**
-     * 根据角色id查询用户列表
+     * 根据角色ID查询用户列表
      *
      * @param roleIds 角色id
      */
@@ -79,7 +77,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     }
 
     /**
-     * 根据角色编码查询角色id数组
+     * 根据角色编码查询角色ID数组
      *
      * @param roleCodes 角色编码
      */
@@ -104,7 +102,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
         }
         // 先找到角色id
         List<Long> roleIds = getRoleIdListByRoleCodeList(roleCodes);
-        // 在用角色id找到用户id
+        // 在用角色ID找到用户id
         return getUserIdListByRoleIdList(roleIds);
     }
 

@@ -4,9 +4,9 @@ import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.shiro.ShiroDao;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.MenuDao;
 import com.nb6868.onex.uc.dto.MenuDTO;
@@ -35,15 +35,12 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
 
     @Override
     protected void beforeSaveOrUpdateDto(MenuDTO dto, int type) {
-        if (1 == type && dto.getId().equals(dto.getPid())) {
-            // 更新 上级菜单不能为自身
-            throw new OnexException(ErrorCode.ERROR_REQUEST, "上级不能为自身");
-        }
+        AssertUtils.isTrue(1 == type && dto.getId().equals(dto.getPid()), ErrorCode.ERROR_REQUEST, "上级不能为自身");
     }
 
     @Override
     protected void afterSaveOrUpdateDto(boolean ret, MenuDTO dto, MenuEntity existedEntity, int type) {
-        if (ret && type == 1) {
+        if (ret && type == 1 && !StrUtil.equals(existedEntity.getPermissions(), dto.getPermissions())) {
             // 更新的时候,同时更新menu_scope中的信息
             menuScopeService.lambdaUpdate()
                     .set(MenuScopeEntity::getMenuPermissions, dto.getPermissions())
@@ -111,7 +108,7 @@ public class MenuService extends DtoService<MenuDao, MenuEntity, MenuDTO> {
      */
     public List<Long> getCascadeChildrenListByIds(List<Long> ids) {
         List<Long> menuIds = new ArrayList<>();
-        while (ids.size() > 0) {
+        while (!ids.isEmpty()) {
             menuIds.addAll(ids);
             ids = CollStreamUtil.toList(lambdaQuery()
                     .select(MenuEntity::getId)

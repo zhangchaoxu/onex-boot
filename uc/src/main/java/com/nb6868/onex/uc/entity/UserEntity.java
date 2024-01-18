@@ -117,4 +117,5 @@ public class UserEntity extends BaseEntity {
      * 第三方帐号用户id
      */
     private String oauthUserid;
+
 }

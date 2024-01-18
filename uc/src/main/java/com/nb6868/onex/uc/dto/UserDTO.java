@@ -91,7 +91,10 @@ public class UserDTO extends BaseDTO {
     private String roleNames;
 
     @Schema(description = "角色ID列表")
-    private List<String> roleIds;
+    private List<Long> roleIds;
+
+    @Schema(description = "角色编码列表")
+    private List<String> roleCodes;
 
     @Schema(description = "额外信息")
     private JSONObject extInfo;
