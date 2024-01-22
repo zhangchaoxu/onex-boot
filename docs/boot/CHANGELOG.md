@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.28] 2024.01.22
+- upgrade: upgrade springboot to 3.2.2
+
 ## [4.0.27] 2024.01.17
 - fix: change roleId from String to Long
 
