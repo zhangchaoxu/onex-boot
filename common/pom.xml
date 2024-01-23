@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.0.28</version>
+        <version>4.0.29</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -142,7 +142,7 @@
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
-        <!-- knife4j4+ -->
+        <!-- knife4j+ -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>

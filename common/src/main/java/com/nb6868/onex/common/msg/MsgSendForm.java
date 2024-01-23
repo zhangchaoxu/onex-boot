@@ -41,4 +41,7 @@ public class MsgSendForm extends BaseForm {
     @Schema(description = "附件")
     List<FileBase64Form> attachments;
 
+    @Schema(description = "额外的参数")
+    private JSONObject extParams;
+
 }

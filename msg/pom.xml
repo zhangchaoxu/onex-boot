@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.0.28</version>
+        <version>4.0.29</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>msg</artifactId>
@@ -16,6 +16,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
+        <weixin.version>4.6.0</weixin.version>
     </properties>
 
     <dependencies>
@@ -30,6 +31,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- wechat mp -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>${weixin.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- wechat ma -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+            <version>${weixin.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

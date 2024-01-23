@@ -2,7 +2,7 @@ package com.nb6868.onex.msg.service;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Opt;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -21,11 +21,11 @@ import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.entity.MsgLogEntity;
 import com.nb6868.onex.msg.entity.MsgTplEntity;
 import com.nb6868.onex.msg.mail.AbstractMailService;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -138,7 +138,7 @@ public class MsgService implements BaseMsgService {
         // 判断是否验证码消息类型
         if (mailTpl.getType() == MsgConst.MailTypeEnum.CODE.value()) {
             // 编码关键词
-            JSONObject contentParams = Opt.ofNullable(sendForm.getContentParams()).orElse(new JSONObject());
+            JSONObject contentParams = ObjUtil.defaultIfNull(sendForm.getContentParams(), new JSONObject());
             contentParams.set(tplParams.getStr("codeKey", "code"), RandomUtil.randomString(tplParams.getStr("codeBaseString", RandomUtil.BASE_NUMBER), tplParams.getInt("codeLength", 4)));
             sendForm.setContentParams(contentParams);
         }
