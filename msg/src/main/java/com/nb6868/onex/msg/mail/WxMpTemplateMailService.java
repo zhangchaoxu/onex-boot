@@ -3,6 +3,7 @@ package com.nb6868.onex.msg.mail;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -93,9 +94,12 @@ public class WxMpTemplateMailService extends AbstractMailService {
             // 发送消息
             try {
                 String sendResult = wxService.getTemplateMsgService().sendTemplateMsg(templateMessage);
-                mailLog.setResult(sendResult);
+                mailLog.setResult(new JSONObject().set("errcode", 0).set("errmsg", "ok").set("msgid", sendResult).toString());
+                mailLog.setState(MsgConst.MailSendStateEnum.SUCCESS.value());
             } catch (WxErrorException e) {
-                e.printStackTrace();
+                mailLog.setResult(new JSONObject().set("errcode", e.getError()).set("errmsg", e.getMessage()).toString());
+                mailLog.setState(MsgConst.MailSendStateEnum.FAIL.value());
+                log.error("微信模板消息发送失败", e);
             }
             mailLogService.updateById(mailLog);
         }
