@@ -18,7 +18,8 @@
 </dependency>
 ```
 
-3. 若需要使用电子邮件,引入mail依赖
+3. 引入部分第三方依赖
+3.1 若需要使用电子邮件,引入mail依赖
 ```xml
 <!-- mail -->
 <dependency>
@@ -26,6 +27,25 @@
     <artifactId>spring-boot-starter-mail</artifactId>
 </dependency>
 ```
+3.2 若需要使用微信公众号模板消息,引入java-weixin依赖
+```xml
+ <!-- wechat mp -->
+<dependency>
+    <groupId>com.github.binarywang</groupId>
+    <artifactId>weixin-java-mp</artifactId>
+    <version>${weixin.version}</version>
+</dependency>
+```
+3.3 若需要使用微信小程序订阅消息,引入java-weixin依赖
+```xml
+ <!-- wechat mp -->
+<dependency>
+    <groupId>com.github.binarywang</groupId>
+    <artifactId>weixin-java-miniapp</artifactId>
+    <version>${weixin.version}</version>
+</dependency>
+```
+
 4. 添加消息模板
 
 5. 使用消息模板发送消息
@@ -97,3 +117,19 @@
 | AccessToken | 机器人token      |
 | Keywords    | 加密关键词 |
 
+
+### 微信公众号-模板消息
+具体参数定义见[文档](https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Interface.html)
+
+| 字段         | 描述        |
+|------------|-----------|
+| AppId      | 公众号AppId  |
+| AppSecret  | 公众号Secret |
+| TemplateId | 模板消息ID    |
+```sql
+INSERT INTO `sys_msg_tpl`(`code`, `name`, `type`, `channel`, `platform`, `title`, `content`, `params`,
+                          `create_id`, `create_time`, `update_id`, `update_time`)
+VALUES ('WX_TEMPLATE_NOTIFY', '微信模板通知', 2, 'wx', 'mpTemplate', '消息名称(无作用)', NULL,
+        '{\"AppId\": \"wx1234\", \"AppSecret\": \"abcd\", \"TemplateId\": \"ABCDEF\"}',
+        NULL, now(), NULL, now());
+```
