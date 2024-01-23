@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>msg</artifactId>
     <packaging>jar</packaging>
-    <description>onex message libs</description>
+    <description>消息管理</description>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>

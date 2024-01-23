@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>job</artifactId>
     <packaging>jar</packaging>
+    <description>定时任务管理</description>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
