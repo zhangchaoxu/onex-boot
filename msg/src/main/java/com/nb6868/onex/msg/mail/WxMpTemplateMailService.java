@@ -18,6 +18,7 @@ import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("WxMpTemplateMailService")
+@ConditionalOnClass({WxMpService.class})
 public class WxMpTemplateMailService extends AbstractMailService {
 
     @Override

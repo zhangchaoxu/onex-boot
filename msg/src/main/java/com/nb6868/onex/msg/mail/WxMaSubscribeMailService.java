@@ -1,5 +1,8 @@
 package com.nb6868.onex.msg.mail;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
+import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -11,9 +14,7 @@ import com.nb6868.onex.msg.entity.MsgLogEntity;
 import com.nb6868.onex.msg.entity.MsgTplEntity;
 import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
-import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @Slf4j
 @Service("WxMaSubscribeMailService")
+@ConditionalOnClass({WxMaService.class})
 public class WxMaSubscribeMailService extends AbstractMailService {
 
     @Override
@@ -37,11 +39,11 @@ public class WxMaSubscribeMailService extends AbstractMailService {
         ), MsgConst.MAIL_TPL_PARAMS_ERROR);
 
         // 初始化service
-        WxMpService wxService = new WxMpServiceImpl();
-        WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();
-        config.setAppId(mailTpl.getParams().getStr("AppId"));
+        WxMaService wxService = new WxMaServiceImpl();
+        WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();
+        config.setAppid(mailTpl.getParams().getStr("AppId"));
         config.setSecret(mailTpl.getParams().getStr("AppSecret"));
-        wxService.setWxMpConfigStorage(config);
+        wxService.setWxMaConfig(config);
 
         // 可能是发送多个
         List<String> openIds = StrUtil.splitTrim(request.getMailTo(), ',');
