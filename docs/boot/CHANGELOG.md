@@ -1,8 +1,10 @@
 # CHANGELOG
 
-## [4.0.30] 2024.01.22
+## [4.0.32] 2024.01.24
 - change: change auth role id from string to long
 - new: add wx template msg support
+- upgrade: upgrade entityService to latest version
+- change: change userMenuScope param and response
 
 ## [4.0.28] 2024.01.22
 - upgrade: upgrade springboot to 3.2.2
