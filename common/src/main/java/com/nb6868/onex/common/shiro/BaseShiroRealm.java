@@ -44,10 +44,10 @@ public abstract class BaseShiroRealm extends AuthorizingRealm {
             List<String> permissionsList = shiroUser.isFullPermissions() ? shiroDao.getAllPermissionsList(shiroUser.getTenantCode()) : shiroDao.getPermissionsListByUserId(shiroUser.getId());
             permissionsList.forEach(permissions -> info.addStringPermissions(StrUtil.splitTrim(permissions, ",")));
         }
-        if (null != shiroUser.getLoginConfig() && shiroUser.getLoginConfig().getBool("roleBase", false)) {
+        if (null != shiroUser.getLoginConfig() && shiroUser.getLoginConfig().getBool("roleIdBase", false)) {
             // 塞入角色ID列表,超级管理员全部
-            List<String> roleList = shiroUser.isFullRoles() ? shiroDao.getAllRoleIdList(shiroUser.getTenantCode()) : shiroDao.getRoleIdListByUserId(shiroUser.getId());
-            info.addRoles(roleList);
+            List<Long> roleList = shiroUser.isFullRoles() ? shiroDao.getAllRoleIdList(shiroUser.getTenantCode()) : shiroDao.getRoleIdListByUserId(shiroUser.getId());
+            roleList.forEach(aLong -> info.addRole(aLong.toString()));
         }
         if (null != shiroUser.getLoginConfig() && shiroUser.getLoginConfig().getBool("roleCodeBase", false)) {
             // 塞入角色Code列表,超级管理员全部

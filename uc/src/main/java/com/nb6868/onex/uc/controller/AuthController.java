@@ -249,7 +249,7 @@ public class AuthController {
         // 过滤出其中路由菜单
         List<MenuResult> urlList = new ArrayList<>();
         // 过滤出其中的权限
-        Set<String> permissions = new HashSet<>();
+        List<String> permissions = new ArrayList<>();
         // 获取该用户所有menu
         menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), null, null).forEach(menu -> {
             if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.value()) {
@@ -268,13 +268,17 @@ public class AuthController {
         MenuScopeResult result = new MenuScopeResult()
                 .setMenuTree(menuTree)
                 .setUrlList(urlList);
+        // 塞入权限
         if (form.isPermissions()) {
             result.setPermissions(permissions);
         }
+        // 塞入角色编码
         if (form.isRoleCodes()) {
-            // 获取角色列表
-            Set<String> roles = userService.getUserRoleCodes(user);
-            result.setRoleCodes(roles);
+            result.setRoleCodes(userService.getUserRoleCodes(user));
+        }
+        // 塞入角色id
+        if (form.isRoleIds()) {
+            result.setRoleIds(userService.getUserRoleIds(user));
         }
         return new Result<MenuScopeResult>().success(result);
     }
@@ -297,17 +301,17 @@ public class AuthController {
     @ApiOperationSupport(order = 240)
     public Result<?> userPermissions() {
         ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = userService.getUserPermissions(user);
+        List<String> set = userService.getUserPermissions(user);
 
         return new Result<>().success(set);
     }
 
-    @PostMapping("userRoles")
+    @PostMapping("userRoleIds")
     @Operation(summary = "用户角色id", description = "用户具备的角色,可用于按钮等的控制")
     @ApiOperationSupport(order = 250)
     public Result<?> userRoles() {
         ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = userService.getUserRoles(user);
+        List<Long> set = userService.getUserRoleIds(user);
 
         return new Result<>().success(set);
     }
@@ -317,7 +321,7 @@ public class AuthController {
     @ApiOperationSupport(order = 250)
     public Result<?> userRoleCodes() {
         ShiroUser user = ShiroUtils.getUser();
-        Set<String> set = userService.getUserRoleCodes(user);
+        List<String> set = userService.getUserRoleCodes(user);
 
         return new Result<>().success(set);
     }

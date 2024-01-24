@@ -10,9 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -29,12 +27,12 @@ public class MenuScopeResult implements Serializable {
     private List<MenuResult> urlList = new ArrayList<>();
 
     @Schema(description = "权限列表")
-    private Set<String> permissions = new HashSet<>();
+    private List<String> permissions = new ArrayList<>();
 
     @Schema(description = "角色列表")
-    private Set<String> roles = new HashSet<>();
+    private List<Long> roleIds = new ArrayList<>();
 
     @Schema(description = "角色编码列表")
-    private Set<String> roleCodes = new HashSet<>();
+    private List<String> roleCodes = new ArrayList<>();
 
 }

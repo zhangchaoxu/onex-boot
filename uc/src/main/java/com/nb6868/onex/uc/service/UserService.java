@@ -20,10 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * 用户
@@ -47,9 +45,9 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 获取用户权限列表
      */
-    public Set<String> getUserPermissions(ShiroUser user) {
+    public List<String> getUserPermissions(ShiroUser user) {
         List<String> permissionsList = user.isFullPermissions() ? shiroDao.getAllPermissionsList(user.getTenantCode()) : shiroDao.getPermissionsListByUserId(user.getId());
-        Set<String> set = new HashSet<>();
+        List<String> set = new ArrayList<>();
         permissionsList.forEach(permissions -> set.addAll(StrUtil.splitTrim(permissions, ',')));
         return set;
     }
@@ -57,17 +55,15 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 获取用户角色列表
      */
-    public Set<String> getUserRoles(ShiroUser user) {
-        List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
-        return new HashSet<>(roleList);
+    public List<Long> getUserRoleIds(ShiroUser user) {
+        return user.isFullRoles() ? shiroDao.getAllRoleIdList(user.getTenantCode()) : shiroDao.getRoleIdListByUserId(user.getId());
     }
 
     /**
      * 获取用户角色编码列表
      */
-    public Set<String> getUserRoleCodes(ShiroUser user) {
-        List<String> roleList = user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
-        return new HashSet<>(roleList);
+    public List<String> getUserRoleCodes(ShiroUser user) {
+        return user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
     }
 
     @Override

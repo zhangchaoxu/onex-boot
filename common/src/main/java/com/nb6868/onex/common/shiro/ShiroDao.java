@@ -92,7 +92,7 @@ public interface ShiroDao {
             "</otherwise>" +
             "</choose>" +
             "</script>")
-    List<String> getAllRoleIdList(@Param("tenantCode") String tenantCode);
+    List<Long> getAllRoleIdList(@Param("tenantCode") String tenantCode);
 
     /**
      * 获得所有角色编码列表
@@ -114,7 +114,7 @@ public interface ShiroDao {
      * 通过用户id，获得用户角色列表
      */
     @Select("SELECT DISTINCT(role_id) FROM " + ShiroConst.TABLE_USER_ROLE + " WHERE user_id = #{userId} AND deleted = 0")
-    List<String> getRoleIdListByUserId(@Param("userId") Long userId);
+    List<Long> getRoleIdListByUserId(@Param("userId") Long userId);
 
     /**
      * 通过用户id，获得用户角色编码列表
