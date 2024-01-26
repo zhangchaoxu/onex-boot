@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.Callable;
 
 /**
  * JSON 工具类。
@@ -26,21 +28,19 @@ import java.util.TimeZone;
 public class JacksonUtils {
 
     /**
-     * Map type
-     */
-    public static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<Map<String, Object>>() {
-    };
-    /**
-     * 普通对象 Mapper
-     */
-    // private static ObjectMapper mapper;
-    private static JsonMapper.Builder mapperBuilder;
-
-    /**
      * 私有构造函数。
      */
     private JacksonUtils() {
     }
+
+    /**
+     * Map type
+     */
+    public static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {};
+    /**
+     * 普通对象 Mapper
+     */
+    private static JsonMapper.Builder mapperBuilder;
 
     public static JsonMapper.Builder getMapperBuilder() {
         if (JacksonUtils.mapperBuilder != null) {
@@ -54,12 +54,11 @@ public class JacksonUtils {
             // 设置忽略属性
             JacksonUtils.mapperBuilder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             // 设置允许转义字符,比如CTRL-CHAR
-            JacksonUtils.mapperBuilder.configure( com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS, true);
+            JacksonUtils.mapperBuilder.configure(com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS, true);
             // 设置时间格式
             JacksonUtils.mapperBuilder.defaultDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
             JacksonUtils.mapperBuilder.defaultTimeZone(TimeZone.getTimeZone("GMT+8"));
-            // Long类型转String类型
-            // 解决js中Long型数据精度丢失的问题 {https://mybatis.plus/guide/faq.html#id-worker-生成主键太长导致-js-精度丢失}
+            // Long类型转String类型，解决js中Long型数据精度丢失的问题 {https://mybatis.plus/guide/faq.html#id-worker-生成主键太长导致-js-精度丢失}
             SimpleModule simpleModule = new SimpleModule();
             simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
             simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
@@ -356,6 +355,22 @@ public class JacksonUtils {
             Map<String, Object> map = combineJson(source, target);
             String json = pojoToJson(map);
             return jsonToPojo(json, pojoClass);
+        }
+    }
+
+    // 参考AbstractJsonParser
+    public static <T> T tryParse(Callable<T> parser) {
+        return tryParse(parser, JsonParseException.class);
+    }
+
+    public static <T> T tryParse(Callable<T> parser, Class<? extends Exception> check) {
+        try {
+            return parser.call();
+        } catch (Exception ex) {
+            if (check.isAssignableFrom(ex.getClass())) {
+                throw new JsonParseException(ex);
+            }
+            throw new IllegalStateException(ex);
         }
     }
 
