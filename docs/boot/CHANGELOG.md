@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.33] 2024.01.30
+- upgrade: upgrade poi-tpk to 1.12.2
+
 ## [4.0.32] 2024.01.24
 - change: change auth role id from string to long
 - new: add wx template msg support
