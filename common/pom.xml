@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.0.33</version>
+        <version>4.0.34</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -22,7 +22,7 @@
         <commons-io.version>2.15.1</commons-io.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <dynamic-datasource.version>4.3.0</dynamic-datasource.version>
-        <hutool.version>5.8.25</hutool.version>
+        <hutool.version>5.8.26</hutool.version>
         <bcprov.version>1.77</bcprov.version>
         <jsoup.version>1.17.2</jsoup.version>
         <knife4j.version>4.5.0</knife4j.version>
