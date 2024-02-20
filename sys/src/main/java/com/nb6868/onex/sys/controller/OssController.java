@@ -70,7 +70,7 @@ public class OssController {
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
         String url = uploadService.upload(prefix, file);
-        Dict result = Dict.create().set("src", url);
+        Dict result = Dict.create().set("src", url).set("filename", file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
@@ -98,7 +98,7 @@ public class OssController {
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
         String url = uploadService.upload(prefix, file);
-        Dict result = Dict.create().set("src", url);
+        Dict result = Dict.create().set("src", url).set("filename", file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
@@ -121,7 +121,7 @@ public class OssController {
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isNull(localFile, ErrorCode.OSS_UPLOAD_FILE_ERROR);
 
-        Dict result = Dict.create().set("filePath", localFile.getAbsolutePath());
+        Dict result = Dict.create().set("filePath", localFile.getAbsolutePath()).set("filename", file.getOriginalFilename());
         return new Result<>().success(result);
     }
 
@@ -141,7 +141,7 @@ public class OssController {
         } catch (Exception e) {
             log.error("Excel文件读取失败", e);
         }
-        Dict result = Dict.create().set("filePath", localFile.getAbsolutePath()).set("columns", titles);
+        Dict result = Dict.create().set("filePath", localFile.getAbsolutePath()).set("columns", titles).set("filename", file.getOriginalFilename());
         return new Result<>().success(result);
     }
 
