@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## [4.0.33] 2024.02.18
-- upgrade: upgrade hutool to 5.8.34
+## [4.0.36] 2024.02.26
+- upgrade: upgrade springboot to 3.2.3
+- upgrade: upgrade hutool to 5.8.26
 
 ## [4.0.33] 2024.01.30
 - upgrade: upgrade poi-tpk to 1.12.2
