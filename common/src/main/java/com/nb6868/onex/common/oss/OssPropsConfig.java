@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class OssPropsConfig {
 
-    @Schema(description = "类型 aliyun阿里云/huaweicloud华为云/local本地")
+    @Schema(description = "类型 aliyun阿里云/huaweicloud华为云/awss3亚马逊S3/local本地")
     private String type;
 
     @Schema(description = "类名称")

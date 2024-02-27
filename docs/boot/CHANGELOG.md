@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.37] 2024.02.2
+- new: add aws s3 java sdk 2
+
 ## [4.0.36] 2024.02.26
 - upgrade: upgrade springboot to 3.2.3
 - upgrade: upgrade hutool to 5.8.26

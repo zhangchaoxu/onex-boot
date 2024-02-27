@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 public class OssFactory {
 
     @SuppressWarnings("unchecked")
-    public static AbstractOssService build(OssPropsConfig config){
-        if ("aliyun".equalsIgnoreCase(config.getType())) {
+    public static AbstractOssService build(OssPropsConfig config) {
+        if ("aws".equalsIgnoreCase(config.getType())) {
+            return new AwsS3Service(config);
+        } else if ("aliyun".equalsIgnoreCase(config.getType())) {
             return new AliyunOssService(config);
         } else if ("huaweicloud".equalsIgnoreCase(config.getType())) {
             return new HuaweiCloudOssService(config);
@@ -27,12 +29,10 @@ public class OssFactory {
                     return ReflectUtil.newInstance(clazz, config);
                 } catch (Exception e) {
                     log.error("can not new instance", e);
-                    e.printStackTrace();
                 }
             }
             log.info("load config fail oss [{}] [{}], only support aliyun/huaweicloud/local", config.getType(), config);
         }
-
         return null;
     }
 
