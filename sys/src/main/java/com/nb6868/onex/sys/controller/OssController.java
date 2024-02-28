@@ -61,15 +61,17 @@ public class OssController {
     @ApiOperationSupport(order = 10)
     public Result<?> uploadAnon(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
                                 @RequestParam(required = false) String prefix,
-                                @RequestParam("file") MultipartFile file) {
+                                @RequestParam MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
-        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
+        // 有两个前缀，config定义前缀和用户上传前缀
+        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
+        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
+        String url = uploadService.upload(objectKey, file);
 
-        String url = uploadService.upload(prefix, file);
         Dict result = Dict.create().set("src", url).set("filename", file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -91,13 +93,14 @@ public class OssController {
                             @RequestParam(required = false) String prefix,
                             @RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
-        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
-
-        String url = uploadService.upload(prefix, file);
+        // 有两个前缀，config定义前缀和用户上传前缀
+        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
+        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
+        String url = uploadService.upload(objectKey, file);
         Dict result = Dict.create().set("src", url).set("filename", file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -117,7 +120,6 @@ public class OssController {
     @ApiOperationSupport(order = 20)
     public Result<?> uploadTemp(@RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
-        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isNull(localFile, ErrorCode.OSS_UPLOAD_FILE_ERROR);
 
@@ -130,7 +132,6 @@ public class OssController {
     @ApiOperationSupport(order = 20)
     public Result<?> uploadExcelToTemp(@RequestParam("file") MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
-        AssertUtils.isTrue(StrUtil.containsAny(file.getOriginalFilename(), " ", "+", "=", "&", "#", "/", "?"), "文件名不允许带有/+=%&#?以及空格等特殊符号");
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isFalse(localFile != null && localFile.exists(), ErrorCode.OSS_UPLOAD_FILE_ERROR);
 
@@ -158,7 +159,10 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.upload(form.getPrefix(), file);
+        // 有两个前缀，config定义前缀和用户上传前缀
+        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(form.getPrefix()) ? ("/" + form.getPrefix()) : "");
+        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), form.getFileBase64().getFilaName(), true);
+        String url = uploadService.upload(objectKey, file);
         Dict result = Dict.create().set("src", url);
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -185,7 +189,11 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.upload(form.getPrefix(), file);
+        // 有两个前缀，config定义前缀和用户上传前缀
+        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(form.getPrefix()) ? ("/" + form.getPrefix()) : "");
+        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), form.getFileBase64().getFilaName(), true);
+        String url = uploadService.upload(objectKey, file);
+
         Dict result = Dict.create().set("src", url);
         if (ossConfig.getSaveDb()) {
             //保存文件信息
@@ -212,9 +220,12 @@ public class OssController {
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
+        // 有两个前缀，config定义前缀和用户上传前缀
+        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
         for (MultipartFile file : files) {
             // 上传文件
-            String url = uploadService.upload(prefix, file);
+            String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
+            String url = uploadService.upload(objectKey, file);
             if (ossConfig.getSaveDb()) {
                 //保存文件信息
                 OssEntity oss = new OssEntity();
@@ -243,9 +254,12 @@ public class OssController {
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
+        // 有两个前缀，config定义前缀和用户上传前缀
+        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
         for (MultipartFile file : files) {
             // 上传文件
-            String url = uploadService.upload(prefix, file);
+            String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
+            String url = uploadService.upload(objectKey, file);
             if (ossConfig.getSaveDb()) {
                 //保存文件信息
                 OssEntity oss = new OssEntity();

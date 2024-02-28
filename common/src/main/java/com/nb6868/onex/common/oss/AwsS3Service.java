@@ -1,19 +1,18 @@
 package com.nb6868.onex.common.oss;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -57,35 +56,20 @@ public class AwsS3Service extends AbstractOssService {
 
     @Override
     public InputStream download(String objectKey) {
-        S3Object s3Object = null;
         try {
             GetObjectRequest objectRequest = GetObjectRequest
                     .builder()
                     .key(objectKey)
                     .bucket(config.getBucketName())
                     .build();
-            ResponseInputStream<GetObjectResponse> responseInputStream = s3Client.getObject(objectRequest);
-            return responseInputStream;
+            return s3Client.getObject(objectRequest);
         } catch (S3Exception e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }
     }
 
     @Override
-    public String upload(String prefix, InputStream inputStream, String fileName) {
-        String prefixTotal = StrUtil.nullToEmpty(config.getPrefix());
-        if (StrUtil.isNotEmpty(prefix)) {
-            if (StrUtil.isNotEmpty(prefixTotal)) {
-                prefixTotal += "/" + prefix;
-            } else {
-                prefixTotal = prefix;
-            }
-        }
-        String objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), false);
-        if (isObjectExisted(config.getBucketName(), objectKey)) {
-            // 文件已存在,则需要对文件重命名
-            objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), true);
-        }
+    public String upload(String objectKey, InputStream inputStream) {
         try {
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket(config.getBucketName())
@@ -93,6 +77,21 @@ public class AwsS3Service extends AbstractOssService {
                     .build();
             s3Client.putObject(putOb, RequestBody.fromInputStream(inputStream, inputStream.available()));
         } catch (IOException | S3Exception e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        }
+
+        return config.getDomain() + objectKey;
+    }
+
+    @Override
+    public String upload(String objectKey, File file) {
+        try {
+            PutObjectRequest putOb = PutObjectRequest.builder()
+                    .bucket(config.getBucketName())
+                    .key(objectKey)
+                    .build();
+            s3Client.putObject(putOb, RequestBody.fromFile(file));
+        } catch (S3Exception e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }
 
@@ -109,10 +108,8 @@ public class AwsS3Service extends AbstractOssService {
         return null;
     }
 
-    /**
-     * 对象是否存在
-     */
-    private boolean isObjectExisted(String bucketName, String objectKey) {
+    @Override
+    public boolean isObjectKeyExisted(String bucketName, String objectKey) {
         try {
             s3Client.headObject(HeadObjectRequest.builder()
                     .bucket(bucketName)
@@ -126,6 +123,5 @@ public class AwsS3Service extends AbstractOssService {
                 throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
             }
         }
-
     }
 }

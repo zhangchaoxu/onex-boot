@@ -17,12 +17,10 @@ import cn.hutool.extra.expression.engine.spel.SpELEngine;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.nb6868.onex.common.auth.LoginForm;
 import com.nb6868.onex.common.filter.xss.XssUtils;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.EncryptForm;
-import com.nb6868.onex.common.pojo.PageForm;
 import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.util.SignUtils;
@@ -31,7 +29,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.DigestUtils;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @DisplayName("字符串测试")
@@ -56,6 +57,12 @@ public class StringTest {
                 log.error("result={}", s);
             }
         });
+    }
+
+    @Test
+    @DisplayName("join")
+    void join() {
+        log.error(StrUtil.join("/", "", "ss", null));
     }
 
     @Test

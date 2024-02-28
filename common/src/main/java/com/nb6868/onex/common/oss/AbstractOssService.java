@@ -1,6 +1,6 @@
 package com.nb6868.onex.common.oss;
 
-import cn.hutool.core.codec.Base64Decoder;
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 存储服务(阿里云、本地)
+ * 存储服务
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -31,147 +31,114 @@ public abstract class AbstractOssService {
      * 文件路径
      *
      * @param pathPrefix      路径前缀
+     * @param pathPolicy      路径策略
      * @param fileName        文件名
      * @param keepFileName    是否保留原文件名
-     * @param appendTimestamp 文件名追加时间戳
      * @return 返回上传路径
      */
-    public String buildUploadPath(String pathPrefix, String fileName, boolean keepFileName, boolean appendTimestamp) {
-        // 路径：文件路径,按日分割
-        String path = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN) + "/";
-        if (StrUtil.isNotBlank(pathPrefix)) {
-            path = pathPrefix + "/" + path;
-        }
-        // 文件
-        String newFileName;
-        if (keepFileName) {
-            // 保留原文件名
-            if (appendTimestamp) {
-                String fileExtensionName = FileNameUtil.extName(fileName);
-                if (StrUtil.isNotBlank(fileExtensionName)) {
-                    newFileName = FileNameUtil.mainName(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS") + "." + fileExtensionName;
-                } else {
-                    newFileName = FileNameUtil.getName(fileName) + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS");
-                }
-            } else {
-                newFileName = fileName;
-            }
-        } else {
-            // 生成uuid
-            String uuid = IdUtil.simpleUUID();
-            String fileExtensionName = FileNameUtil.extName(fileName);
-            if (StrUtil.isNotBlank(fileExtensionName)) {
-                if (appendTimestamp) {
-                    newFileName = uuid + "-" + DateUtil.format(DateUtil.date(), "HHmmssSSS") + "." + fileExtensionName;
-                } else {
-                    newFileName = uuid + "." + fileExtensionName;
-                }
-            } else {
-                newFileName = uuid;
-            }
-        }
+    public String buildObjectKey(String bucketName, String pathPrefix, String pathPolicy, String fileName, boolean keepFileName) {
+        String path = buildPath(pathPrefix, pathPolicy);
+        String newFileName = buildFileName(bucketName, path, fileName, keepFileName);
         return path + newFileName;
     }
 
     /**
-     * 文件上传
-     *
-     * @param file 文件
-     * @return 返回http地址
+     * 构建path
      */
-    public String upload(MultipartFile file) {
-        return upload(null, file);
+    public String buildPath(String pathPrefix, String pathPolicy) {
+        // 先不上自定义的prefix与斜杠
+        String path = StrUtil.nullToEmpty(pathPrefix);
+        if ("uuid".equalsIgnoreCase(pathPolicy)) {
+            path += ("/" + IdUtil.fastSimpleUUID());
+        } else if ("day".equalsIgnoreCase(pathPolicy)) {
+            path += ("/" + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN));
+        } else if ("month".equalsIgnoreCase(pathPolicy)) {
+            path += ("/" + DateUtil.format(DateUtil.date(), DatePattern.SIMPLE_MONTH_PATTERN));
+        } else if ("year".equalsIgnoreCase(pathPolicy)) {
+            path += ("/" + DateUtil.format(DateUtil.date(), DatePattern.NORM_YEAR_PATTERN));
+        }
+        // 补上斜杠
+        if (StrUtil.isNotBlank(path)) {
+            path += "/";
+        }
+        return path;
+    }
+
+    /**
+     * 创建文件名
+     */
+    public String buildFileName(String bucketName, String path, String fileName, boolean keepFileName) {
+        // 文件
+        String newFileName;
+        if (keepFileName) {
+            String fileExtName = FileNameUtil.extName(fileName);
+            String fileMainName = FileNameUtil.mainName(fileName);
+            // 去除urlencode不支持字符
+            String fileMainNameNoSpecChar = StrUtil.removeAll(fileMainName, ' ', '+', '=', '&', '#', '/', '?', '%', '*');
+            // 新的文件名
+            newFileName = fileMainNameNoSpecChar + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
+            if (isObjectKeyExisted(bucketName, path + newFileName)) {
+                // 若objectKey已存在,补一个后缀,默认补上后缀后不会再重复
+                newFileName = fileMainNameNoSpecChar + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_MS_PATTERN) + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
+            }
+        } else {
+            // 文件扩展名
+            String fileExtName = FileNameUtil.extName(fileName);
+            // 生成{uuid}.{extName}
+            newFileName = IdUtil.simpleUUID() + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
+        }
+        return newFileName;
     }
 
     /**
      * 文件上传
      *
-     * @param file 文件
-     * @return 返回http地址
-     */
-    public String upload(File file) {
-        return upload(null, file);
-    }
-
-    /**
-     * 文件上传
-     *
+     * @param objectKey    路径前缀+文件名
      * @param inputStream 文件流
-     * @param fileName    文件名
-     * @return 返回http地址
+     * @return 返回objectKey
      */
-    public String upload(InputStream inputStream, String fileName) {
-        return upload(null, inputStream, fileName);
-    }
+    public abstract String upload(String objectKey, InputStream inputStream);
 
-    /**
-     * 文件上传
-     *
-     * @param prefix      文件路径前缀
-     * @param inputStream 文件流
-     * @param fileName    文件名
-     * @return 返回http地址
-     */
-    public abstract String upload(String prefix, InputStream inputStream, String fileName);
-
-    /**
-     * 文件上传
-     *
-     * @param prefix 文件路径前缀
-     * @param file   文件
-     * @return 返回http地址
-     */
-    public String upload(String prefix, MultipartFile file) {
+    public String upload(String objectKey, MultipartFile file) {
         InputStream inputStream;
         try {
             inputStream = file.getInputStream();
         } catch (IOException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }
-        return upload(prefix, inputStream, file.getOriginalFilename());
+        return upload(objectKey, inputStream);
     }
 
     /**
      * 文件上传
      *
-     * @param prefix 文件路径前缀
+     * @param objectKey 文件路径前缀
      * @param file   文件
      * @return 返回http地址
      */
-    public String upload(String prefix, File file) {
+    public String upload(String objectKey, File file) {
         BufferedInputStream inputStream = FileUtil.getInputStream(file);
-        return upload(prefix, inputStream, FileNameUtil.getName(file));
+        return upload(objectKey, inputStream);
     }
 
     /**
      * base64 上传文件
      *
-     * @param prefix 前缀
+     * @param objectKey 前缀
      * @param base64 文件base64
      * @return 上传结果
      */
-    public String uploadBase64(String prefix, String base64, String fileName) {
+    public String uploadBase64(String objectKey, String base64) {
         InputStream inputStream;
         try {
             if (base64.split(",").length > 1) {
                 base64 = base64.split(",")[1];
             }
-            inputStream = IoUtil.toStream(Base64Decoder.decode(base64));
+            inputStream = IoUtil.toStream(Base64.decode(base64));
         } catch (Exception e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }
-        return upload(prefix, inputStream, fileName);
-    }
-
-    /**
-     * base64 上传文件
-     *
-     * @param base64 文件base64
-     * @param fileName 文件名
-     * @return 上传结果
-     */
-    public String uploadBase64(String base64, String fileName) {
-        return uploadBase64(null, base64, fileName);
+        return upload(objectKey, inputStream);
     }
 
     /**
@@ -190,5 +157,10 @@ public abstract class AbstractOssService {
      * 获得sts
      */
     public abstract JSONObject getSts();
+
+    /**
+     * object key是否存在
+     */
+    public abstract boolean isObjectKeyExisted(String bucketName, String objectKey);
 
 }

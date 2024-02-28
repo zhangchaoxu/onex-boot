@@ -1,8 +1,8 @@
 package com.nb6868.onex.common.oss;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileWriter;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -22,35 +22,20 @@ public class LocalOssService extends AbstractOssService {
     }
 
     @Override
+    public String upload(String objectKey, InputStream inputStream) {
+        File localFile = new File(config.getBucketName() + File.separator + objectKey);
+        new FileWriter(localFile).writeFromStream(inputStream, true);
+        return config.getDomain() + objectKey;
+    }
+
+    @Override
     public InputStream download(String objectKey) {
-        File localFile = new File(config.getLocalPath() + File.separator + objectKey);
+        File localFile = new File(config.getBucketName() + File.separator + objectKey);
         if (localFile.exists()) {
             return IoUtil.toStream(localFile);
         } else {
             return null;
         }
-    }
-
-    @Override
-    public String upload(String prefix, InputStream inputStream, String fileName) {
-        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
-        if (StrUtil.isNotEmpty(prefix)) {
-            if (StrUtil.isNotEmpty(prefixTotal)) {
-                prefixTotal += "/" + prefix;
-            } else {
-                prefixTotal = prefix;
-            }
-        }
-        String objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), false);
-        File localFile = new File(config.getLocalPath() + File.separator + objectKey);
-        if (localFile.exists()) {
-            // 文件已存在,则需要对文件重命名
-            objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), true);
-            localFile = new File(config.getLocalPath() + File.separator + objectKey);
-        }
-        new FileWriter(localFile).writeFromStream(inputStream, true);
-        //FileUtil.copy(inputStream, localFile, true);
-        return config.getDomain() + objectKey;
     }
 
     @Override
@@ -61,5 +46,10 @@ public class LocalOssService extends AbstractOssService {
     @Override
     public JSONObject getSts() {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "本地存储不支持sts模式");
+    }
+
+    @Override
+    public boolean isObjectKeyExisted(String bucketName, String objectKey) {
+        return FileUtil.exist(bucketName + File.separator +  objectKey);
     }
 }

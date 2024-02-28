@@ -7,6 +7,8 @@ package com.nb6868.onex.sys;
  */
 public interface SysConst {
 
+    String OSS_PUBLIC = "OSS_PUBLIC";
+
     /**
      * 日志类型
      */

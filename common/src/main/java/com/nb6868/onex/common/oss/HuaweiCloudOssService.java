@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.oss;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -21,8 +20,32 @@ import java.io.InputStream;
 @Slf4j
 public class HuaweiCloudOssService extends AbstractOssService {
 
+    ObsClient s3Client;
+
     public HuaweiCloudOssService(OssPropsConfig config) {
         this.config = config;
+        this.s3Client = new ObsClient(config.getAccessKeyId(), config.getAccessKeySecret(), config.getEndPoint());
+    }
+
+    @Override
+    public String upload(String objectKey, InputStream inputStream) {
+        try {
+            s3Client.putObject(config.getBucketName(), objectKey, inputStream);
+        } catch (ObsException e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        } finally {
+            // 关闭ObsClient实例，如果是全局ObsClient实例，可以不在每个方法调用完成后关闭
+            // ObsClient在调用ObsClient.close方法关闭后不能再次使用
+            if (s3Client != null) {
+                try {
+                    s3Client.close();
+                } catch (IOException e) {
+                    log.error("huaweicloud obs close error", e);
+                }
+            }
+        }
+
+        return config.getDomain() + objectKey;
     }
 
     @Override
@@ -47,41 +70,6 @@ public class HuaweiCloudOssService extends AbstractOssService {
             }
         }
     }
-    @Override
-    public String upload(String prefix, InputStream inputStream, String fileName) {
-        String prefixTotal = StrUtil.isNotEmpty(config.getPrefix()) ? config.getPrefix() : "";
-        if (StrUtil.isNotEmpty(prefix)) {
-            if (StrUtil.isNotEmpty(prefixTotal)) {
-                prefixTotal += "/" + prefix;
-            } else {
-                prefixTotal = prefix;
-            }
-        }
-        String objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), false);
-        ObsClient ossClient = null;
-        try {
-            ossClient = new ObsClient(config.getAccessKeyId(), config.getAccessKeySecret(), config.getEndPoint());
-            if (ossClient.doesObjectExist(config.getBucketName(), objectKey)) {
-                // 文件已存在,则需要对文件重命名
-                objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), true);
-            }
-            ossClient.putObject(config.getBucketName(), objectKey, inputStream);
-        } catch (ObsException e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
-        } finally {
-            // 关闭ObsClient实例，如果是全局ObsClient实例，可以不在每个方法调用完成后关闭
-            // ObsClient在调用ObsClient.close方法关闭后不能再次使用
-            if (ossClient != null) {
-                try {
-                    ossClient.close();
-                } catch (IOException e) {
-                    log.error("huaweicloud obs close error", e);
-                }
-            }
-        }
-
-        return config.getDomain() + objectKey;
-    }
 
     @Override
     public String getPresignedUrl(String objectName, Long expiration) {
@@ -91,5 +79,10 @@ public class HuaweiCloudOssService extends AbstractOssService {
     @Override
     public JSONObject getSts() {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "华为云存储暂不支持sts模式");
+    }
+
+    @Override
+    public boolean isObjectKeyExisted(String bucketName, String objectKey) {
+        return s3Client.doesObjectExist(bucketName, objectKey);
     }
 }

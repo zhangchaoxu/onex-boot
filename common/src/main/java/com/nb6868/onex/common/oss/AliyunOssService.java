@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.oss;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -33,23 +32,37 @@ import java.util.Date;
 @Slf4j
 public class AliyunOssService extends AbstractOssService {
 
+    OSS s3Client;
+
     public AliyunOssService(OssPropsConfig config) {
         this.config = config;
+        this.s3Client = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
+    }
+
+    @Override
+    public String upload(String objectKey, InputStream inputStream) {
+        try {
+            s3Client.putObject(config.getBucketName(), objectKey, inputStream);
+        } catch (OSSException | com.aliyun.oss.ClientException e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+        } finally {
+            s3Client.shutdown();
+        }
+
+        return config.getDomain() + objectKey;
     }
 
     @Override
     public InputStream download(String objectKey) {
-        OSS ossClient = null;
         OSSObject ossObject = null;
         try {
-            ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
-            ossObject = ossClient.getObject(config.getBucketName(), objectKey);
+            ossObject = s3Client.getObject(config.getBucketName(), objectKey);
             return ossObject.getObjectContent();
         } catch (OSSException | com.aliyun.oss.ClientException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         } finally {
-            if (ossClient != null) {
-                ossClient.shutdown();
+            if (s3Client != null) {
+                s3Client.shutdown();
             }
             if (ossObject != null) {
                 try {
@@ -61,46 +74,19 @@ public class AliyunOssService extends AbstractOssService {
         }
     }
 
-    @Override
-    public String upload(String prefix, InputStream inputStream, String fileName) {
-        String prefixTotal = StrUtil.nullToEmpty(config.getPrefix());
-        if (StrUtil.isNotEmpty(prefix)) {
-            if (StrUtil.isNotEmpty(prefixTotal)) {
-                prefixTotal += "/" + prefix;
-            } else {
-                prefixTotal = prefix;
-            }
-        }
-        String objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), false);
-        OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
-        try {
-            if (ossClient.doesObjectExist(config.getBucketName(), objectKey)) {
-                // 文件已存在,则需要对文件重命名
-                objectKey = buildUploadPath(prefixTotal, fileName, config.getKeepFileName(), true);
-            }
-            ossClient.putObject(config.getBucketName(), objectKey, inputStream);
-        } catch (OSSException | com.aliyun.oss.ClientException e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
-        } finally {
-            ossClient.shutdown();
-        }
-
-        return config.getDomain() + objectKey;
-    }
 
     @Override
     public String getPresignedUrl(String objectName, Long expire) {
-        OSS ossClient = new OSSClientBuilder().build(config.getEndPoint(), config.getAccessKeyId(), config.getAccessKeySecret());
         try {
             // 设置URL过期时间。
             Date expiration = DateUtil.offsetSecond(DateUtil.date(), expire.intValue());
             // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
-            URL url = ossClient.generatePresignedUrl(config.getBucketName(), objectName, expiration);
+            URL url = s3Client.generatePresignedUrl(config.getBucketName(), objectName, expiration);
             return url.toString();
         } catch (com.aliyun.oss.ClientException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         } finally {
-            ossClient.shutdown();
+            s3Client.shutdown();
         }
     }
 
@@ -137,5 +123,10 @@ public class AliyunOssService extends AbstractOssService {
         } catch (ClientException e) {
             throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, e);
         }
+    }
+
+    @Override
+    public boolean isObjectKeyExisted(String bucketName, String objectKey) {
+        return s3Client.doesObjectExist(bucketName, objectKey);
     }
 }

@@ -50,13 +50,13 @@ public class OssPropsConfig {
     @Schema(description = "AccessKeySecret")
     private String accessKeySecret;
 
-    @Schema(description = "阿里云BucketName")
+    @Schema(description = "s3对应BucketName/本地存储对应本地路径")
     private String bucketName;
-
-    @Schema(description = "本地上传存储目录")
-    private String localPath;
 
     @Schema(description = "是否保存到存储记录")
     private Boolean saveDb;
+
+    @Schema(description = "路径策略")
+    private String pathPolicy;
 
 }
