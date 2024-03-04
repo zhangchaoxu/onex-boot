@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## [4.0.37] 2024.02.2
+## [4.0.38] 2024.03.01
+- upgrade: upgrade aws-s3 to 2.25.1
+- upgrade: upgrade shiro to 2.0.0
+
+## [4.0.37] 2024.02.28
 - new: add aws s3 java sdk 2
 
 ## [4.0.36] 2024.02.26
