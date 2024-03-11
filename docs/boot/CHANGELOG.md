@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.42] 2024.03.11
+- upgrade: upgrade aws-s3 to 2.25.6
+- fix: add setExcelSXSSFWorkbookTmpPath to fix excel export issue
+
 ## [4.0.38] 2024.03.01
 - upgrade: upgrade aws-s3 to 2.25.1
 - upgrade: upgrade shiro to 2.0.0
