@@ -4,10 +4,15 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.util.DefaultTempFileCreationStrategy;
+import org.apache.poi.util.TempFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -16,6 +21,7 @@ import java.util.Date;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Component
+@Slf4j
 public class OssLocalUtils {
 
     public final static String CONTENT_TYPE_XLS = "application/vnd.ms-excel";
@@ -66,6 +72,19 @@ public class OssLocalUtils {
         } else {
             return StrUtil.format("{}{}-{}{}", StrUtil.endWith(folderName, "/") ? folderName : folderName + "/", fileName, DateUtil.format(new Date(), DatePattern.PURE_DATETIME_MS_FORMAT), FILENAME_XLSX_SUFFIX);
         }
+    }
+
+    /**
+     * 设置使用SXSSFWorkbook对象导出excel报表时，TempFile使用的临时目录，代替{java.io.tmpdir}
+     * excel导出的时候会在/tmp/poifiles下创建目录，而centos会定期清空该目录，导出出错 see {https://www.cnblogs.com/wenboonly/p/14922090.html}
+     */
+    @PostConstruct
+    public void setExcelSXSSFWorkbookTmpPath() {
+        String excelSXSSFWorkbookTmpPath = getOssFileStorageAbsolutePath() + "/poifiles";
+        File dir = FileUtil.mkdir(excelSXSSFWorkbookTmpPath);
+        TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(dir));
+        log.info("setExcelSXSSFWorkbookTmpPath={}", excelSXSSFWorkbookTmpPath);
+
     }
 
 }
