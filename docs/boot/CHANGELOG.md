@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.43] 2024.03.15
+- upgrade: upgrade aws-s3 to 2.25.8
+
 ## [4.0.42] 2024.03.11
 - upgrade: upgrade aws-s3 to 2.25.6
 - fix: add setExcelSXSSFWorkbookTmpPath to fix excel export issue
