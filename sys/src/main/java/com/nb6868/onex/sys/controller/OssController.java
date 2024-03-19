@@ -68,7 +68,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
+        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
         String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
         String url = uploadService.upload(objectKey, file);
 
@@ -98,7 +98,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
+        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
         String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
         String url = uploadService.upload(objectKey, file);
         Dict result = Dict.create().set("src", url).set("filename", file.getOriginalFilename());
@@ -160,7 +160,7 @@ public class OssController {
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(form.getPrefix()) ? ("/" + form.getPrefix()) : "");
+        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), form.getPrefix());
         String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), form.getFileBase64().getFilaName(), true);
         String url = uploadService.upload(objectKey, file);
         Dict result = Dict.create().set("src", url);
@@ -190,7 +190,7 @@ public class OssController {
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(form.getPrefix()) ? ("/" + form.getPrefix()) : "");
+        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), form.getPrefix());
         String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), form.getFileBase64().getFilaName(), true);
         String url = uploadService.upload(objectKey, file);
 
@@ -221,7 +221,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
+        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
         for (MultipartFile file : files) {
             // 上传文件
             String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
@@ -255,7 +255,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = StrUtil.emptyIfNull(ossConfig.getPrefix()) + (StrUtil.isNotBlank(prefix) ? ("/" + prefix) : "");
+        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
         for (MultipartFile file : files) {
             // 上传文件
             String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);

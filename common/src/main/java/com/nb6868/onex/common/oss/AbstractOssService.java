@@ -28,14 +28,17 @@ public abstract class AbstractOssService {
     public OssPropsConfig config;
 
     /**
-     * 文件路径
+     * 文件路径前缀
      *
-     * @param pathPrefix      路径前缀
-     * @param pathPolicy      路径策略
-     * @param fileName        文件名
-     * @param keepFileName    是否保留原文件名
+     * @param prefixGlobal      路径前缀全局
+     * @param prefixCustom      路径前缀自定义
      * @return 返回上传路径
      */
+    public String buildPathPrefix(String prefixGlobal, String prefixCustom) {
+        String prefix = StrUtil.emptyIfNull(prefixGlobal) + (StrUtil.isNotBlank(prefixCustom) ? ("/" + prefixCustom) : "");
+        return StrUtil.removePrefix(prefix, "/");
+    }
+
     public String buildObjectKey(String bucketName, String pathPrefix, String pathPolicy, String fileName, boolean keepFileName) {
         String path = buildPath(pathPrefix, pathPolicy);
         String newFileName = buildFileName(bucketName, path, fileName, keepFileName);
@@ -61,7 +64,7 @@ public abstract class AbstractOssService {
         if (StrUtil.isNotBlank(path)) {
             path += "/";
         }
-        return path;
+        return StrUtil.removePrefix(path, "/");
     }
 
     /**
@@ -79,7 +82,7 @@ public abstract class AbstractOssService {
             newFileName = fileMainNameNoSpecChar + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
             if (isObjectKeyExisted(bucketName, path + newFileName)) {
                 // 若objectKey已存在,补一个后缀,默认补上后缀后不会再重复
-                newFileName = fileMainNameNoSpecChar + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_MS_PATTERN) + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
+                newFileName = fileMainNameNoSpecChar + "-" + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_MS_PATTERN) + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
             }
         } else {
             // 文件扩展名
