@@ -123,7 +123,7 @@ public class AwsS3Service extends AbstractOssService {
             PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
             // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
             return presignedRequest.url().toExternalForm();
-        } catch (com.aliyun.oss.ClientException e) {
+        } catch (S3Exception e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }
     }
