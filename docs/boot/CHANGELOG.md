@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## [4.0.46] 2024.01.03
+## [4.0.48] 2024.03.20
+- upgrade: upgrade aws-s3 to 2.25.12
+
+## [4.0.46] 2024.03.19
 - upgrade: upgrade druid to 1.2.22
 - upgrade: upgrade aws-s3 to 2.25.11
 - fix: fix aws s3 issue

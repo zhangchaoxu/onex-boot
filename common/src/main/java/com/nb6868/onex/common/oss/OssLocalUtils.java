@@ -76,15 +76,15 @@ public class OssLocalUtils {
 
     /**
      * 设置使用SXSSFWorkbook对象导出excel报表时，TempFile使用的临时目录，代替{java.io.tmpdir}
-     * excel导出的时候会在/tmp/poifiles下创建目录，而centos会定期清空该目录，导出出错 see {https://www.cnblogs.com/wenboonly/p/14922090.html}
+     * excel导出的时候会在/tmp/poifiles下创建目录，而centos会定期清空该目录，导出出错
+     * see {https://www.cnblogs.com/wenboonly/p/14922090.html}
      */
     @PostConstruct
     public void setExcelSXSSFWorkbookTmpPath() {
-        String excelSXSSFWorkbookTmpPath = getOssFileStorageAbsolutePath() + "/poifiles";
+        String excelSXSSFWorkbookTmpPath = getOssFileStorageAbsolutePath() + "poifiles";
         File dir = FileUtil.mkdir(excelSXSSFWorkbookTmpPath);
         TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(dir));
         log.info("setExcelSXSSFWorkbookTmpPath={}", excelSXSSFWorkbookTmpPath);
-
     }
 
 }
