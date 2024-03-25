@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.50] 2024.03.25
+- upgrade: upgrade aws-s3 to 2.25.16
+- upgrade: upgrade springboot to 3.2.4
+
 ## [4.0.48] 2024.03.20
 - upgrade: upgrade aws-s3 to 2.25.12
 
