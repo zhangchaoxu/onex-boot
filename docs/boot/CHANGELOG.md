@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.52] 2024.03.27
+- fix: fix index params key issue
+
 ## [4.0.51] 2024.03.27
 - upgrade: upgrade aws-s3 to 2.25.17
 - fix: fix build timestamp issue

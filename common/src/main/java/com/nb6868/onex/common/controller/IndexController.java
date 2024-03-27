@@ -24,15 +24,15 @@ public class IndexController {
     public Result<?> index() {
         Dict result = Dict.create()
                 .set("onex", new JSONObject()
-                        .set("parent-artifact-id", SpringUtil.getProperty("onex.parent-artifact-id"))
-                        .set("artifact-id", SpringUtil.getProperty("onex.artifact-id"))
+                        .set("parentArtifactId", SpringUtil.getProperty("onex.parent-artifact-id"))
+                        .set("artifactId", SpringUtil.getProperty("onex.artifact-id"))
                         .set("version", SpringUtil.getProperty("onex.version"))
-                        .set("build-time", SpringUtil.getProperty("onex.build-time")))
+                        .set("buildTime", SpringUtil.getProperty("onex.build-time")))
                 .set("app", new JSONObject()
-                        .set("parent-artifact-id", SpringUtil.getProperty("onex.app.parent-artifact-id"))
-                        .set("artifact-id", SpringUtil.getProperty("onex.app.artifact-id"))
+                        .set("parentArtifactId", SpringUtil.getProperty("onex.app.parent-artifact-id"))
+                        .set("artifactId", SpringUtil.getProperty("onex.app.artifact-id"))
                         .set("version", SpringUtil.getProperty("onex.app.version"))
-                        .set("build-time", SpringUtil.getProperty("onex.app.build-time")));
+                        .set("buildTime", SpringUtil.getProperty("onex.app.build-time")));
         return new Result<>().success(result);
     }
 
