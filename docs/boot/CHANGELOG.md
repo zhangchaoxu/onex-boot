@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.51] 2024.03.27
+- upgrade: upgrade aws-s3 to 2.25.17
+- fix: fix build timestamp issue
+
 ## [4.0.50] 2024.03.25
 - upgrade: upgrade aws-s3 to 2.25.16
 - upgrade: upgrade springboot to 3.2.4

@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>4.0.50</version>
+    <version>4.0.51</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -66,9 +66,10 @@
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
+        <build-helper-maven-plugin.version>3.5.0</build-helper-maven-plugin.version>
         <!-- libs -->
         <shiro.version>2.0.0</shiro.version>
-        <onex.version>4.0.50</onex.version>
+        <onex.version>4.0.51</onex.version>
     </properties>
 
     <dependencies>
@@ -220,6 +221,25 @@
                         <version>${versions-maven-plugin.version}</version>
                         <configuration>
                             <generateBackupPoms>false</generateBackupPoms>
+                        </configuration>
+                    </plugin>
+                    <!-- 打包版本号时间戳工具 -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>${build-helper-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>timestamp-property</id>
+                                <goals>
+                                    <goal>timestamp-property</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <name>build.time</name>
+                            <pattern>yyyyMMddHHmmss</pattern>
+                            <timeZone>GMT+8</timeZone>
                         </configuration>
                     </plugin>
                 </plugins>

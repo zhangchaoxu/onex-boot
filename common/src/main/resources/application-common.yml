@@ -119,7 +119,7 @@ onex:
   # 版本号
   version: @project.version@
   # maven编译时间
-  build-time: @maven.build.timestamp@
+  build-time: @build.time@
   # 过滤器
   filter:
     enable: false

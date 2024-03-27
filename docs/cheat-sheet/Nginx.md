@@ -36,6 +36,9 @@ tar -zxvf nginx-1.22.1.tar.gz
 # 编译
 make
 # 备份原nginx文件，复制编译后的objs/nginx到原nginx中
+cp objs/nginx /usr/local/nginx/sbin/nginx
+# 若无权限，需要修改权限
+chmod 777 /usr/local/nginx/sbin/nginx
 # 执行升级
 make upgrade
 ```
