@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.53] 2024.03.28
+- upgrade: upgrade aws-s3 to 2.25.18
+
 ## [4.0.52] 2024.03.27
 - fix: fix index params key issue
 
