@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.0.54] 2024.03.31
+- upgrade: upgrade aws-s3 to 2.25.21
+- upgrade: upgrade commons-io to 2.16.0
+- upgrade: upgrade hutool to 5.8.27
+
 ## [4.0.53] 2024.03.28
 - upgrade: upgrade aws-s3 to 2.25.18
 
