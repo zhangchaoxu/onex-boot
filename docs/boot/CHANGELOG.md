@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.0.56] 2024.04.07
+- upgrade: upgrade bcprov-jdk15to18 to 1.78
+- upgrade: upgrade aws-s3 to 2.25.26
+
 ## [4.0.54] 2024.03.31
 - upgrade: upgrade aws-s3 to 2.25.21
 - upgrade: upgrade commons-io to 2.16.0
