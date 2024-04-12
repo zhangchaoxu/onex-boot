@@ -1,9 +1,12 @@
 # CHANGELOG
 
+## [4.0.59] 2024.04.10
+- upgrade: upgrade aws-s3 to 2.25.28
+
 ## [4.0.58] 2024.04.10
 - upgrade: upgrade mybatis-plus to 3.5.6
 - upgrade: upgrade commons-io to 2.16.1
-- upgrade: upgrade aws-s3 to 2.25.18
+- upgrade: upgrade aws-s3 to 2.25.27
 
 ## [4.0.56] 2024.04.07
 - upgrade: upgrade bcprov-jdk15to18 to 1.78
