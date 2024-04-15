@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.0.62] 2024.04.15
+- upgrade: upgrade aws-s3 to 2.25.31
+
 ## [4.0.61] 2024.04.13
 - upgrade: upgrade aws-s3 to 2.25.30
 
