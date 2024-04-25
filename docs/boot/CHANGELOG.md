@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.1.0] 2024.04.25
+- upgrade: upgrade aws-s3 to 2.25.37
+- upgrade: upgrade bcprov-jdk15to18 to 1.78.1
+- upgrade: upgrade springboot to 3.2.5
+
 ## [4.0.63] 2024.04.15
 - upgrade: upgrade aws-s3 to 2.25.31
 
