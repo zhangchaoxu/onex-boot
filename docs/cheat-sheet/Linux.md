@@ -14,6 +14,12 @@ rsync -a --delete-before --progress --stats ./blank.txt ./nohup.out
 rm ./blank.txt
 ```
 
+### scp复制文件
+```shell
+# 复制本机内容到ssh目标服务器
+scp -r ${localFile} root@${targetIP}:${targetPath}
+```
+
 ### 查看磁盘占用
 ```shell
 df -h

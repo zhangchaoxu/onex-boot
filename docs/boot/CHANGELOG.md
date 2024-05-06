@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.1.2] 2024.05.06
+- upgrade: upgrade aws-s3 to 2.25.45
+
 ## [4.1.0] 2024.04.25
 - upgrade: upgrade aws-s3 to 2.25.37
 - upgrade: upgrade bcprov-jdk15to18 to 1.78.1
