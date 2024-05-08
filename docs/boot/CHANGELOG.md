@@ -1,6 +1,9 @@
 # CHANGELOG
 
 ## [4.1.2] 2024.05.06
+- upgrade: upgrade huaweicloud.obs to 3.24.3
+
+## [4.1.2] 2024.05.06
 - upgrade: upgrade aws-s3 to 2.25.45
 
 ## [4.1.0] 2024.04.25
