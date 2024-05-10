@@ -23,6 +23,12 @@ public class ExcelExportParams {
     @Schema(description = "文件夹名")
     private String folderName;
 
+    @Schema(description = "文件模板路径")
+    private String templateFile;
+
+    @Schema(description = "渲染方式")
+    private String renderType;
+
     @Schema(description = "列定义")
     private List<ColumnParams> columns;
 
