@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.1.5] 2024.05.16
+- upgrade: upgrade aws-s3 to 2.25.53
+
 ## [4.1.4] 2024.05.10
 - upgrade: upgrade aws-s3 to 2.25.45
 - new: add templateFile into ExcelExportParams
