@@ -107,17 +107,22 @@ public class ExcelExportUtils {
         String fileName = OssLocalUtils.fmtXlsxFileName(excelExportParams.getFolderName(), excelExportParams.getFileName());
         BigExcelWriter writer = ExcelUtil.getBigWriter(getFileStoragePath(fileName));
         // 处理数据
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        beanList.forEach(bean -> {
-            Map<String, Object> row = new LinkedHashMap<>();
-            excelExportParams.getColumns().forEach(columnParams -> row.put(columnParams.getTitle(), formatColumnValue(bean, columnParams, function)));
-            mapList.add(row);
-        });
-        // 设置宽度
-        for (int i = 0; i < excelExportParams.getColumns().size(); i++) {
-            int width =  excelExportParams.getColumns().get(i).getWidth();
-            if (width > 0) {
-                writer.setColumnWidth(i, width);
+        List<Map<String, Object>> mapList;
+        if ("raw".equalsIgnoreCase(excelExportParams.getRenderType())) {
+            mapList = (List<Map<String, Object>>) beanList;
+        } else {
+            mapList = new ArrayList<>();
+            beanList.forEach(bean -> {
+                Map<String, Object> row = new LinkedHashMap<>();
+                excelExportParams.getColumns().forEach(columnParams -> row.put(columnParams.getTitle(), formatColumnValue(bean, columnParams, function)));
+                mapList.add(row);
+            });
+            // 设置宽度
+            for (int i = 0; i < excelExportParams.getColumns().size(); i++) {
+                int width =  excelExportParams.getColumns().get(i).getWidth();
+                if (width > 0) {
+                    writer.setColumnWidth(i, width);
+                }
             }
         }
         // 设置样式

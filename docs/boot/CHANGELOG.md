@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.1.9] 2024.05.27
+- upgrade: upgrade druid to 1.2.23
+- upgrade: upgrade springboot to 3.3.0
+- upgrade: upgrade aws-s3 to 2.25.60
+
 ## [4.1.6] 2024.05.22
 - upgrade: upgrade aws-s3 to 2.25.56
 

@@ -2,6 +2,7 @@ package com.nb6868.onex.common.util;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
+@Accessors(chain = true)
 public class ExcelExportParams {
 
     @Schema(description = "异步导出")
