@@ -1,11 +1,10 @@
 package com.nb6868.onex.job.config;
 
-import cn.hutool.core.collection.CollStreamUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.job.entity.JobEntity;
 import com.nb6868.onex.job.service.JobService;
 import jakarta.annotation.PostConstruct;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling
@@ -43,8 +42,12 @@ public class JobConfig extends BaseJobConfig {
                 .select("id")
                 .list();
         log.info("job run has [{}] jobs", jobList.size());
-        // 按照id初始化job
-        jobList.forEach(job -> initTrigger(taskRegistrar, job.getId()));
+        if (CollUtil.isNotEmpty(jobList)) {
+            // 设定一个长度size的定时任务线程池,@Scheduled 默认是单线程,当任务同时间时会冲突
+            taskRegistrar.setScheduler(Executors.newScheduledThreadPool(jobList.size()));
+            // 按照id初始化job
+            jobList.forEach(job -> initTrigger(taskRegistrar, job.getId()));
+        }
     }
 
     @PostConstruct

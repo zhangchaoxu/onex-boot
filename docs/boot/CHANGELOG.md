@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [4.1.11] 2024.05.31
+- upgrade: upgrade aws-s3 to 2.25.61
+- upgrade: upgrade hutool to 5.8.28
+
+## [4.1.10] 2024.05.28
+- fix: fix ScheduledThreadPool issue
+
 ## [4.1.9] 2024.05.27
 - upgrade: upgrade druid to 1.2.23
 - upgrade: upgrade springboot to 3.3.0
