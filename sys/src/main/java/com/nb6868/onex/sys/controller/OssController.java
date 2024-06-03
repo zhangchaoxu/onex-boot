@@ -2,7 +2,6 @@ package com.nb6868.onex.sys.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -61,7 +60,7 @@ public class OssController {
     @ApiOperationSupport(order = 10)
     public Result<?> uploadAnon(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
                                 @RequestParam(required = false) String prefix,
-                                @RequestParam MultipartFile file) {
+                                @RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
@@ -91,7 +90,7 @@ public class OssController {
     @ApiOperationSupport(order = 20)
     public Result<?> upload(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
                             @RequestParam(required = false) String prefix,
-                            @RequestParam("file") MultipartFile file) {
+                            @RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AssertUtils.isNull(ossConfig, "未定义的参数配置");
@@ -118,7 +117,7 @@ public class OssController {
     @PostMapping("uploadToTemp")
     @Operation(summary = "上传到临时文件(文件形式)")
     @ApiOperationSupport(order = 20)
-    public Result<?> uploadTemp(@RequestParam("file") MultipartFile file) {
+    public Result<?> uploadTemp(@RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isNull(localFile, ErrorCode.OSS_UPLOAD_FILE_ERROR);
@@ -130,7 +129,7 @@ public class OssController {
     @PostMapping("uploadExcelToTemp")
     @Operation(summary = "上传Excel到临时文件(文件形式)")
     @ApiOperationSupport(order = 20)
-    public Result<?> uploadExcelToTemp(@RequestParam("file") MultipartFile file) {
+    public Result<?> uploadExcelToTemp(@RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         File localFile = MultipartFileUtils.multipartFileToFile(file);
         AssertUtils.isFalse(localFile != null && localFile.exists(), ErrorCode.OSS_UPLOAD_FILE_ERROR);
@@ -213,7 +212,7 @@ public class OssController {
     @ApiOperationSupport(order = 50)
     public Result<?> anonUploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
                                      @RequestParam(required = false) String prefix,
-                                     @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
+                                     @RequestPart @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
@@ -247,7 +246,7 @@ public class OssController {
     @ApiOperationSupport(order = 60)
     public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = "OSS_PUBLIC") String paramsCode,
                                  @RequestParam(required = false) String prefix,
-                                 @RequestParam("file") @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
+                                 @RequestPart @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.1.12] 2024.06.03
+- upgrade: upgrade aws-s3 to 2.25.64
+- upgrade: upgrade shiro to 2.0.1
+- fix: change RequestParam to RequestPart in file upload to fix swagger issue
+
 ## [4.1.11] 2024.05.31
 - upgrade: upgrade aws-s3 to 2.25.61
 - upgrade: upgrade hutool to 5.8.28
