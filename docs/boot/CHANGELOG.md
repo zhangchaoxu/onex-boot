@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.1.13] 2024.06.05
+- upgrade: upgrade aws-s3 to 2.25.65
+
 ## [4.1.12] 2024.06.03
 - upgrade: upgrade aws-s3 to 2.25.64
 - upgrade: upgrade shiro to 2.0.1
