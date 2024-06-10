@@ -25,7 +25,7 @@ import java.util.function.Function;
 
 /**
  * Hutool实现的Excel导出工具
- * see {https://hutool.cn/docs/index.html#/poi/Excel%E7%94%9F%E6%88%90-ExcelWriter}
+ * see {<a href="https://hutool.cn/docs/index.html#/poi/Excel%E7%94%9F%E6%88%90-ExcelWriter">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */

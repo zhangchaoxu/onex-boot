@@ -115,7 +115,7 @@ public class OssController {
     }
 
     @PostMapping("uploadToTemp")
-    @Operation(summary = "上传到临时文件(文件形式)")
+    @Operation(summary = "上传到临时文件", description = "不支持分布式环境")
     @ApiOperationSupport(order = 20)
     public Result<?> uploadTemp(@RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
@@ -127,7 +127,7 @@ public class OssController {
     }
 
     @PostMapping("uploadExcelToTemp")
-    @Operation(summary = "上传Excel到临时文件(文件形式)")
+    @Operation(summary = "上传Excel到临时文件(文件形式)", description = "不支持分布式环境")
     @ApiOperationSupport(order = 20)
     public Result<?> uploadExcelToTemp(@RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
