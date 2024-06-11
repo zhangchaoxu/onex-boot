@@ -63,7 +63,7 @@ public class ShiroUuidRealm extends BaseShiroRealm {
         // 账号锁定
         AssertUtils.isFalse(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ErrorCode.ACCOUNT_LOCK);
         // 转换成UserDetail对象
-        ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true));
+        ShiroUser shiroUser = BeanUtil.toBean(userEntity, ShiroUser.class, CopyOptions.create().setAutoTransCamelCase(true).setIgnoreCase(true));
         shiroUser.setLoginType(loginType);
         // token续期
         if (loginConfig.getInt(AuthConst.TOKEN_RENEWAL_EXPIRE_KEY, AuthConst.TOKEN_RENEWAL_EXPIRE_VALUE) > 0) {

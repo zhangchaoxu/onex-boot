@@ -1,7 +1,9 @@
 # CHANGELOG
 
-## [4.1.14] 2024.06.11
+## [4.1.16] 2024.06.11
 - upgrade: upgrade aws-s3 to 2.25.69
+- upgrade: upgrade mybatis-plus to 3.5.7
+- enhance: add index support in ExcelExportUtils
 
 ## [4.1.13] 2024.06.05
 - upgrade: upgrade aws-s3 to 2.25.65
