@@ -15,6 +15,7 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.util.JwtUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import jakarta.validation.constraints.NotNull;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -83,7 +83,10 @@ public class ShiroJwtRealm extends BaseShiroRealm {
         // 账号锁定
         AssertUtils.isFalse(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ErrorCode.ACCOUNT_LOCK);
         // 转换成UserDetail对象,setIgnoreError保证过程不出错，但可能会吞掉异常问题
-        ShiroUser shiroUser = BeanUtil.mapToBean(userEntity, ShiroUser.class, true, CopyOptions.create().setIgnoreCase(true).setIgnoreError(true));
+        ShiroUser shiroUser = BeanUtil.toBean(userEntity, ShiroUser.class, CopyOptions.create()
+                .setAutoTransCamelCase(true)
+                .setIgnoreCase(true)
+                .setIgnoreError(true));
         if (ObjectUtil.isNotEmpty(userEntity.get("ext_info"))) {
             shiroUser.setExtInfo(JSONUtil.parseObj(userEntity.get("ext_info").toString()));
         }

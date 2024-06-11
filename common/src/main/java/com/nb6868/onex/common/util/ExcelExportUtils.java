@@ -62,7 +62,7 @@ public class ExcelExportUtils {
      * @param bean   实体bean
      * @param column 列定义
      */
-    public static Object formatColumnValue(Object bean, ExcelExportParams.ColumnParams column, Function<Dict, String> function) {
+    public static Object formatColumnValue(Object bean, ExcelExportParams.ColumnParams column, int index, Function<Dict, String> function) {
         String fmt = column.getFmt();
         try {
             if (StrUtil.isBlank(fmt)) {
@@ -75,7 +75,8 @@ public class ExcelExportUtils {
                     Object pObject = BeanUtil.getProperty(bean, column.getProperty());
                     if (pObject instanceof Long) {
                         long timestamp = (long) pObject;
-                        pValue = DateUtil.format(DateUtil.date((timestamp < 1000000000000L ? 1000 : 1) * timestamp), column.getTimeFormat());
+                        // tofix 理论上无法通过数值大小来区分秒和毫秒
+                        pValue = DateUtil.format(DateUtil.date((timestamp < 10000000000L ? 1000 : 1) * timestamp), column.getTimeFormat());
                     } else if (pObject instanceof Date) {
                         pValue = DateUtil.format((Date) pObject, column.getTimeFormat());
                     } else if (pObject instanceof LocalDateTime) {
@@ -85,6 +86,9 @@ public class ExcelExportUtils {
                     // 反射,执行invokeMethod 若空，则执行getProperty
                     String invokeMethod = StrUtil.emptyToDefault(column.getInvokeMethod(), "get" + StrUtil.upperFirst(column.getProperty()));
                     pValue = ReflectUtil.invoke(bean, invokeMethod);
+                }  else if ("index".equalsIgnoreCase(fmt)) {
+                    // 序号
+                    pValue = String.valueOf(index);
                 } else if ("enum".equalsIgnoreCase(fmt)) {
                     // 枚举
                     Object pObject = BeanUtil.getProperty(bean, column.getProperty());
@@ -115,7 +119,7 @@ public class ExcelExportUtils {
             mapList = new ArrayList<>();
             beanList.forEach(bean -> {
                 Map<String, Object> row = new LinkedHashMap<>();
-                excelExportParams.getColumns().forEach(columnParams -> row.put(columnParams.getTitle(), formatColumnValue(bean, columnParams, function)));
+                excelExportParams.getColumns().forEach(columnParams -> row.put(columnParams.getTitle(), formatColumnValue(bean, columnParams, mapList.size() + 1, function)));
                 mapList.add(row);
             });
             // 设置宽度
