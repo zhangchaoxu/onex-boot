@@ -76,8 +76,8 @@ public abstract class AbstractOssService {
         if (keepFileName) {
             String fileExtName = FileNameUtil.extName(fileName);
             String fileMainName = FileNameUtil.mainName(fileName);
-            // 去除urlencode不支持字符
-            String fileMainNameNoSpecChar = StrUtil.removeAll(fileMainName, ' ', '+', '=', '&', '#', '/', '?', '%', '*');
+            // 去除urlencode不支持字符,去除容易出问题的逗号
+            String fileMainNameNoSpecChar = StrUtil.removeAll(fileMainName, ' ', '+', '=', '&', '#', '/', '?', '%', '*', ',', '，');
             // 新的文件名
             newFileName = fileMainNameNoSpecChar + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
             if (isObjectKeyExisted(bucketName, path + newFileName)) {

@@ -39,9 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class JobController {
 
     @Autowired
-    private JobService jobService;
+    JobService jobService;
     @Autowired
-    private JobLogService jobLogService;
+    JobLogService jobLogService;
 
     @PostMapping("page")
     @Operation(summary = "分页")

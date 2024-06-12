@@ -109,12 +109,11 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         if (ObjectUtil.isEmpty(id)) {
             return false;
         }
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(currentModelClass());
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(this.getEntityClass());
         Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
         String keyProperty = tableInfo.getKeyProperty();
         Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-
-        return query().eq(tableInfo.getKeyColumn(), id).exists();
+        return query().eq(keyProperty, id).exists();
     }
 
     /**
@@ -137,11 +136,11 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
     @Transactional(rollbackFor = Exception.class)
     public Object getIdVal(T entity) {
         if (null != entity) {
-            TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(this.getEntityClass());
             Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
             String keyProperty = tableInfo.getKeyProperty();
             Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-            return ReflectionKit.getFieldValue(entity, tableInfo.getKeyProperty());
+            return tableInfo.getPropertyValue(entity, tableInfo.getKeyProperty());
         }
         return null;
     }
@@ -192,12 +191,12 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      */
     public boolean saveOrUpdateById(T entity) {
         if (null != entity) {
-            TableInfo tableInfo = TableInfoHelper.getTableInfo(this.entityClass);
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(this.getEntityClass());
             Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
             String keyProperty = tableInfo.getKeyProperty();
             Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
             Object idVal = tableInfo.getPropertyValue(entity, tableInfo.getKeyProperty());
-            return StringUtils.checkValNull(idVal) ? save(entity) : updateById(entity);
+            return !StringUtils.checkValNull(idVal) ? this.updateById(entity) : this.save(entity);
         }
         return false;
     }
@@ -207,11 +206,11 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateBatchById(Collection<T> entityList, int batchSize) {
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(this.getEntityClass());
         Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
         String keyProperty = tableInfo.getKeyProperty();
         Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-        return SqlHelper.saveOrUpdateBatch(getSqlSessionFactory(), this.mapperClass, this.log, entityList, batchSize, (sqlSession, entity) -> {
+        return SqlHelper.saveOrUpdateBatch(getSqlSessionFactory(), this.currentMapperClass(), this.log, entityList, batchSize, (sqlSession, entity) -> {
             Object idVal = tableInfo.getPropertyValue(entity, keyProperty);
             return StringUtils.checkValNull(idVal);
         }, (sqlSession, entity) -> {
