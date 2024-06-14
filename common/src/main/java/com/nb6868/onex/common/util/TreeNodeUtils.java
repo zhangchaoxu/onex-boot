@@ -12,6 +12,14 @@ import java.util.List;
 
 /**
  * 树结构工具
+ * 注意id不能重复
+ * 比如以下就会以为子节点id相同出现部分重复数据被吞掉的问题
+ * -价格法
+ * --第一条
+ * --第二条
+ * -广告法
+ * --第一条
+ * --第二条
  *
  * @author Charles zhangchaoxu@gmail.com
  */

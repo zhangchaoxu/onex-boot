@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.1.21] 2024.06.14
+- upgrade: upgrade aws-s3 to 2.26.1
+
 ## [4.1.16] 2024.06.11
 - upgrade: upgrade aws-s3 to 2.25.69
 - upgrade: upgrade mybatis-plus to 3.5.7
