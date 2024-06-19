@@ -12,6 +12,7 @@ import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.oss.AbstractOssService;
+import com.nb6868.onex.common.oss.AliyunOssUploadCallbackReq;
 import com.nb6868.onex.common.oss.OssFactory;
 import com.nb6868.onex.common.oss.OssPropsConfig;
 import com.nb6868.onex.common.params.BaseParamsService;
@@ -273,6 +274,14 @@ public class OssController {
         }
 
         return new Result<>().success(Dict.create().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
+    }
+
+    @PostMapping("aliyunUploadCallback")
+    @Operation(summary = "阿里云上传回调")
+    @AccessControl
+    public Result<?> aliyunUploadCallback(@Validated @RequestBody AliyunOssUploadCallbackReq req) {
+        // todo 处理回调请求结果
+        return new Result<>();
     }
 
     @PostMapping("getPresignedUrl")
