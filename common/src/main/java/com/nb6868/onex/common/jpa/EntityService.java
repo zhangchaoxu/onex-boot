@@ -166,8 +166,7 @@ public class EntityService<M extends BaseDao<T>, T> implements IService<T> {
         Class<T> modelClass = currentModelClass();
         try {
             return modelClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
             return null;
         }

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.1.23] 2024.06.19
+- upgrade: upgrade aws-s3 to 2.26.4
+
 ## [4.1.21] 2024.06.14
 - upgrade: upgrade aws-s3 to 2.26.1
 
