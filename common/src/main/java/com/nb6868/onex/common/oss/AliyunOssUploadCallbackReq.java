@@ -5,17 +5,14 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-/**
- * 具体字段定义见https://www.alibabacloud.com/help/zh/oss/developer-reference/callback
- */
 @Data
-@Schema(name = "阿里云上传回调请求")
+@Schema(name = "阿里云上传回调请求", description = "具体定义见https://www.alibabacloud.com/help/zh/oss/developer-reference/callback")
 public class AliyunOssUploadCallbackReq implements Serializable {
 
     @Schema(description = "存储空间名称")
     private String bucket;
 
-    @Schema(description = "对象（文件）的完整路径")
+    @Schema(description = "对象（文件）的完整路径,不包含endpoint前缀")
     private String object;
 
     @Schema(description = "文件的ETag")
