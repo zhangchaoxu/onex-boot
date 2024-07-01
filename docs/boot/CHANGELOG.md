@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.1.30] 2024.07.01
+- upgrade: upgrade aws-s3 to 2.26.12
+- upgrade: upgrade aliyun-oss to 3.18.0
+
 ## [4.1.23] 2024.06.19
 - upgrade: upgrade aws-s3 to 2.26.4
 
