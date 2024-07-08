@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.1.32] 2024.07.08
+- upgrade: upgrade aws-s3 to 2.26.16
+- upgrade: upgrade hutool to 5.8.29
+- upgrade: upgrade poi-ooxml to 5.3.0
+
 ## [4.1.31] 2024.07.04
 - upgrade: upgrade aws-s3 to 2.26.14
 
