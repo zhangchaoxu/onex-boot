@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.1.34] 2024.07.15
+- upgrade: upgrade aws-s3 to 2.26.20
+- upgrade: upgrade jsoup to 1.18.1
+
 ## [4.1.32] 2024.07.08
 - upgrade: upgrade aws-s3 to 2.26.16
 - upgrade: upgrade hutool to 5.8.29
