@@ -2,10 +2,7 @@ package com.nb6868.onex.common.jpa;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.SortItem;
@@ -96,6 +93,12 @@ public class QueryWrapperHelper {
                                         case NULL:
                                             if (val instanceof Boolean) {
                                                 if ((Boolean) val) {
+                                                    wrapper.isNull(column);
+                                                } else {
+                                                    wrapper.isNotNull(column);
+                                                }
+                                            } else if (NumberUtil.isInteger(val.toString())) {
+                                                if (NumberUtil.parseInt(val.toString()) > 0) {
                                                     wrapper.isNull(column);
                                                 } else {
                                                     wrapper.isNotNull(column);
@@ -222,11 +225,19 @@ public class QueryWrapperHelper {
                                 }
                                 break;
                             case NULL:
-                                if (ObjectUtil.isNotNull(val) && val instanceof Boolean) {
-                                    if ((Boolean) val) {
-                                        queryWrapper.isNull(column);
-                                    } else {
-                                        queryWrapper.isNotNull(column);
+                                if (ObjectUtil.isNotNull(val)) {
+                                    if (val instanceof Boolean) {
+                                        if ((Boolean) val) {
+                                            queryWrapper.isNull(column);
+                                        } else {
+                                            queryWrapper.isNotNull(column);
+                                        }
+                                    } else if (NumberUtil.isInteger(val.toString())) {
+                                        if (NumberUtil.parseInt(val.toString()) > 0) {
+                                            queryWrapper.isNull(column);
+                                        } else {
+                                            queryWrapper.isNotNull(column);
+                                        }
                                     }
                                 }
                                 break;
