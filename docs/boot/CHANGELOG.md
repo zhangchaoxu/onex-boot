@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.1.36] 2024.07.22
+- upgrade: upgrade aws-s3 to 2.26.21
+- upgrade: upgrade springboot to 3.3.2
+
 ## [4.1.34] 2024.07.15
 - upgrade: upgrade aws-s3 to 2.26.20
 - upgrade: upgrade jsoup to 1.18.1
