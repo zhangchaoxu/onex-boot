@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.1.38] 2024.07.29
+- upgrade: upgrade aws-s3 to 2.26.25
+- upgrade: upgrade aliyun-oss to 3.18.1
+
 ## [4.1.36] 2024.07.22
 - upgrade: upgrade aws-s3 to 2.26.21
 - upgrade: upgrade springboot to 3.3.2
