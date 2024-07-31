@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [4.1.40] 2024.07.31
+- enhance: add matedata for oss inputstram upload
+- 
 ## [4.1.38] 2024.07.29
 - upgrade: upgrade aws-s3 to 2.26.25
 - upgrade: upgrade aliyun-oss to 3.18.1

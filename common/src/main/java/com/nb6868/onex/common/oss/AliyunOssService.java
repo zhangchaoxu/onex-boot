@@ -1,11 +1,13 @@
 package com.nb6868.onex.common.oss;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.auth.sts.AssumeRoleRequest;
 import com.aliyuncs.auth.sts.AssumeRoleResponse;
@@ -22,10 +24,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 阿里云存储
  * see <a href="https://help.aliyun.com/document_detail/32008.html">...</a>
+ *
+ * 如何配置访问OSS文件时是预览行为
+ * see <a href="https://help.aliyun.com/zh/oss/user-guide/how-to-ensure-an-object-is-previewed-when-you-access-the-object">...</a>
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -40,8 +46,17 @@ public class AliyunOssService extends AbstractOssService {
     }
 
     @Override
-    public String upload(String objectKey, InputStream inputStream) {
+    public String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
         try {
+            // 阿里云上传file会自动按照文件后缀确定application/octet-stream
+            // InputStream的都是application/octet-stream
+            ObjectMetadata objectMetadata = null;
+            if (objectMetadataMap != null && !objectMetadataMap.isEmpty()) {
+                objectMetadata = new ObjectMetadata();
+                objectMetadata.setCacheControl(MapUtil.getStr(objectMetadataMap, "CacheControl", "no-cache"));
+                objectMetadata.setContentType(MapUtil.getStr(objectMetadataMap, "ContentType"));
+                objectMetadata.setContentDisposition(MapUtil.getStr(objectMetadataMap, "ContentDisposition", "inline"));
+            }
             s3Client.putObject(config.getBucketName(), objectKey, inputStream);
         } catch (OSSException | com.aliyun.oss.ClientException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);

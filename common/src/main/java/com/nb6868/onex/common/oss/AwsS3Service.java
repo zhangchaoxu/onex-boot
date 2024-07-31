@@ -1,11 +1,14 @@
 package com.nb6868.onex.common.oss;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.internal.util.Mimetype;
+import software.amazon.awssdk.core.io.ReleasableInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -14,12 +17,16 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.utils.IoUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.Duration;
+import java.util.Map;
+
+import static software.amazon.awssdk.utils.FunctionalUtils.invokeSafely;
 
 /**
  * AWS S3 v2
@@ -73,13 +80,23 @@ public class AwsS3Service extends AbstractOssService {
     }
 
     @Override
-    public String upload(String objectKey, InputStream inputStream) {
+    public String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
         try {
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket(config.getBucketName())
                     .key(objectKey)
                     .build();
-            s3Client.putObject(putOb, RequestBody.fromInputStream(inputStream, inputStream.available()));
+            // 默认使用的mimeType是Mimetype.MIMETYPE_OCTET_STREAM,做手动指定
+            // RequestBody requestBody = RequestBody.fromInputStream(inputStream, inputStream.available());
+            IoUtils.markStreamWithMaxReadLimit(inputStream);
+            InputStream nonCloseable = ReleasableInputStream.wrap(inputStream).disableClose();
+            RequestBody requestBody = RequestBody.fromContentProvider(() -> {
+                if (nonCloseable.markSupported()) {
+                    invokeSafely(nonCloseable::reset);
+                }
+                return nonCloseable;
+            }, inputStream.available(), MapUtil.getStr(objectMetadataMap, "ContentType", Mimetype.MIMETYPE_OCTET_STREAM));
+            s3Client.putObject(putOb, requestBody);
         } catch (IOException | S3Exception e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }

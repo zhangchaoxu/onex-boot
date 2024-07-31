@@ -17,6 +17,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 存储服务
@@ -98,9 +100,14 @@ public abstract class AbstractOssService {
      *
      * @param objectKey    路径前缀+文件名
      * @param inputStream 文件流
+     * @param objectMetadata 自定义的objectMetadata
      * @return 返回objectKey
      */
-    public abstract String upload(String objectKey, InputStream inputStream);
+    public abstract String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadata);
+
+    public String upload(String objectKey, InputStream inputStream) {
+        return this.upload(objectKey, inputStream, null);
+    }
 
     public String upload(String objectKey, MultipartFile file) {
         InputStream inputStream;
@@ -109,7 +116,10 @@ public abstract class AbstractOssService {
         } catch (IOException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }
-        return upload(objectKey, inputStream);
+        Map<String, Object> objectMetadata = new HashMap<>();
+        // 手动指定content-type
+        objectMetadata.put("ContentType", FileUtil.getMimeType(file.getOriginalFilename()));
+        return upload(objectKey, inputStream, objectMetadata);
     }
 
     /**

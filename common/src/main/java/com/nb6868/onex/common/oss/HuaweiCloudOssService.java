@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.oss;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * 华为云OBS存储
@@ -28,8 +30,15 @@ public class HuaweiCloudOssService extends AbstractOssService {
     }
 
     @Override
-    public String upload(String objectKey, InputStream inputStream) {
+    public String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
         try {
+            com.obs.services.model.ObjectMetadata objectMetadata = null;
+            if (objectMetadataMap != null && !objectMetadataMap.isEmpty()) {
+                objectMetadata = new  com.obs.services.model.ObjectMetadata();
+                objectMetadata.setCacheControl(MapUtil.getStr(objectMetadataMap, "CacheControl", "no-cache"));
+                objectMetadata.setContentType(MapUtil.getStr(objectMetadataMap, "ContentType"));
+                objectMetadata.setContentDisposition(MapUtil.getStr(objectMetadataMap, "ContentDisposition", "inline"));
+            }
             s3Client.putObject(config.getBucketName(), objectKey, inputStream);
         } catch (ObsException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);

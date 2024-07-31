@@ -32,7 +32,7 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
             } else if (job.getState() != JobConst.JobState.NORMAL.getValue()) {
                 log.error("job run Id=[{}], state=[{}] abnormal", jobId, job.getState());
             } else {
-                log.error("job run Id=[{}], go start", jobId);
+                log.info("job run Id=[{}], go start", jobId);
                 jobService.run(job, job.getParams());
             }
         }, triggerContext -> {
@@ -46,7 +46,7 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
                 log.error("job trigger Id=[{}], cron=[{}] is not valid", jobId, job.getCron());
             } else {
                 // 不管是否有效，加入下一个trigger
-                log.error("job trigger Id=[{}], cron=[{}] add next execution", jobId, job.getCron());
+                log.info("job trigger Id=[{}], cron=[{}] add next execution", jobId, job.getCron());
                 return new CronTrigger(job.getCron()).nextExecution(triggerContext);
             }
             return null;

@@ -9,6 +9,7 @@ import com.nb6868.onex.common.exception.OnexException;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * 本地上传
@@ -22,7 +23,7 @@ public class LocalOssService extends AbstractOssService {
     }
 
     @Override
-    public String upload(String objectKey, InputStream inputStream) {
+    public String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
         File localFile = new File(config.getBucketName() + File.separator + objectKey);
         new FileWriter(localFile).writeFromStream(inputStream, true);
         return config.getDomain() + objectKey;
