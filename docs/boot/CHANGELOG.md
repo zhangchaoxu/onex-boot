@@ -1,7 +1,10 @@
 # CHANGELOG
 
+## [4.1.42] 2024.08.02
+- enhance: add more params for excel export
+
 ## [4.1.40] 2024.07.31
-- enhance: add matedata for oss inputstram upload
+- enhance: add matedata for oss inputstream upload
 - 
 ## [4.1.38] 2024.07.29
 - upgrade: upgrade aws-s3 to 2.26.25

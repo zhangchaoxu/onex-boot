@@ -31,6 +31,15 @@ public class ExcelExportParams {
     @Schema(description = "渲染方式")
     private String renderType;
 
+    @Schema(description = "表头高度")
+    private int headerHeight;
+
+    @Schema(description = "列高度")
+    private int rowHeight;
+
+    @Schema(description = "其它额外的元数据")
+    private Map<String, Object> metaInfo;
+
     @Schema(description = "列定义")
     private List<ColumnParams> columns;
 
@@ -55,8 +64,20 @@ public class ExcelExportParams {
         @Schema(description = "时间格式化,fmt=time有效")
         private String timeFormat;
 
-        @Schema(description = "文件夹名")
+        @Schema(description = "宽度")
         private int width;
+
+        @Schema(description = "水平居中方式")
+        private Integer horizontalAlignment;
+
+        @Schema(description = "垂直居中方式")
+        private Integer verticalAlignment;
+
+        @Schema(description = "文字自动换行")
+        private Boolean wrapText;
+
+        @Schema(description = "空数值填充")
+        private String emptyToDefault;
 
         @Schema(description = "枚举变量定义")
         private Map<String, Object> enmuMap;

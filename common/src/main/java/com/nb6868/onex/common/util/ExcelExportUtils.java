@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
@@ -67,7 +68,12 @@ public class ExcelExportUtils {
         try {
             if (StrUtil.isBlank(fmt)) {
                 // 非String类型，转String会ClassCastException
-                return BeanUtil.getProperty(bean, column.getProperty());
+                Object pObject = BeanUtil.getProperty(bean, column.getProperty());
+                if (pObject == null || (pObject instanceof String && StrUtil.isEmpty(pObject.toString()))) {
+                    return column.getEmptyToDefault();
+                } else {
+                    return pObject;
+                }
             } else {
                 String pValue = "";
                 if ("time".equalsIgnoreCase(fmt)) {
@@ -96,10 +102,11 @@ public class ExcelExportUtils {
                 } else if (function != null) {
                     pValue = function.apply(Dict.create().set("bean", bean).set("column", column));
                 }
-                return pValue;
+                return StrUtil.emptyToDefault(pValue, column.getEmptyToDefault());
             }
         } catch (Exception e) {
             // 遇到问题返回异常,便于从结果中发现问题
+            e.printStackTrace();
             return StrUtil.nullToDefault(column.getErrorDefaultMsg(), e.getMessage());
         }
     }
@@ -130,12 +137,21 @@ public class ExcelExportUtils {
                 }
             }
         }
-        // 设置样式
+        // 一次性写出内容，使用默认样式，强制输出标题
+        writer.write(mapList, true);
+        // 设置样式,在写入数据之后
         if (null != writerFunction) {
             writerFunction.apply(writer);
         }
-        // 一次性写出内容，使用默认样式，强制输出标题
-        writer.write(mapList, true);
+        // 设置行高,需要在write后，
+        if (excelExportParams.getHeaderHeight() > 0 && writer.getRowCount() > 0) {
+            writer.setRowHeight(0, excelExportParams.getHeaderHeight());
+        }
+        if (excelExportParams.getHeaderHeight() > 0 && writer.getRowCount() > 1) {
+            for (int i = 1; i < writer.getRowCount(); i++) {
+                writer.setRowHeight(i, excelExportParams.getRowHeight());
+            }
+        }
         // 关闭writer，释放内存
         writer.close();
         return fileName;
