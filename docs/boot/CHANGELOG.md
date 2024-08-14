@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.1.48] 2024.08.14
+- upgrade: upgrade aws-s3 to 2.27.3
+- upgrade: upgrade hutool to 5.8.31
+
 ## [4.1.42] 2024.08.02
 - enhance: add more params for excel export
 

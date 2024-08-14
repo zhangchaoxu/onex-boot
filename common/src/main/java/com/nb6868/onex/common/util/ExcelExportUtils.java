@@ -115,7 +115,7 @@ public class ExcelExportUtils {
      * bean export with params
      */
     @SuppressWarnings("unchecked")
-    public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams, Function<Dict, String> function, Function<BigExcelWriter, BigExcelWriter> writerFunction) {
+    public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams, Function<Dict, String> function, Function<ExcelWriter, ExcelWriter> writerFunction) {
         String fileName = OssLocalUtils.fmtXlsxFileName(excelExportParams.getFolderName(), excelExportParams.getFileName());
         BigExcelWriter writer = ExcelUtil.getBigWriter(getFileStoragePath(fileName));
         // 处理数据
