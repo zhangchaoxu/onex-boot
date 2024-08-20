@@ -35,6 +35,7 @@ import java.util.Map;
 /**
  * 短信 华为云 消息服务
  * see {<a href="https://support.huaweicloud.com/devg-msgsms/sms_04_0002.html">...</a>}
+ * 注意这里的AppKey和AppKeySecret是短信应用的信息，而不是账号的ak/sk
  *
  * @author Charles zhangchaoxu@gmail.com
  */
