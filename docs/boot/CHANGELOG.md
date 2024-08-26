@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.1.50] 2024.08.26
+- upgrade: upgrade aws-s3 to 2.27.12
+- upgrade: upgrade springboot to 3.3.3
+
 ## [4.1.48] 2024.08.14
 - upgrade: upgrade aws-s3 to 2.27.3
 - upgrade: upgrade hutool to 5.8.31
