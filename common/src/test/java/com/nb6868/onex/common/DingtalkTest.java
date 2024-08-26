@@ -7,6 +7,7 @@ import com.nb6868.onex.common.dingtalk.BaseResponse;
 import com.nb6868.onex.common.dingtalk.DingTalkApi;
 import com.nb6868.onex.common.dingtalk.GetUserInfoByCodeResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +18,15 @@ public class DingtalkTest {
     @Test
     @DisplayName("获得accessToken")
     void getAccessToken() {
-        AccessTokenResponse response = DingTalkApi.getAccessToken("dingzy0fp2ltwvg3gw8m", "edraUxgxNGlNB1mD8TINHRrPTDzu-unRoVAoAszfLpc7IKQUML7mFLbVbhsGIf1y", true);
+        AccessTokenResponse response = DingTalkApi.getAccessToken("", "", true);
         System.out.println(response);
+    }
+
+    @Test
+    @DisplayName("获得子部门id")
+    void getDepartmentIdList() {
+        Triple response = DingTalkApi.getAllDeptIdList("", "");
+        System.out.println(response.toString());
     }
 
     @Test

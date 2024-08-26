@@ -5,11 +5,14 @@ import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.util.SignUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.MutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -19,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +87,9 @@ public class DingTalkApi {
      * 获取用户信息
      */
     private final static String GET_USER_CONTACT = "https://api.dingtalk.com/v1.0/contact/users/";
+
+    // 下级部门id see https://open.dingtalk.com/document/orgapp/obtain-a-sub-department-id-list-v2
+    private final static String GET_DEPARTMENT_SUBLIST_ID = "https://oapi.dingtalk.com/topapi/v2/department/listsubid";
 
     /**
      * 自定义机器人消息发送
@@ -159,7 +166,6 @@ public class DingTalkApi {
                 .queryParam("signature", SignUtils.urlEncode(signature))
                 .build(true)
                 .toUri();
-
         try {
             return new RestTemplate().postForObject(uri, requestBody, GetUserInfoByCodeResponse.class);
         } catch (Exception e) {
@@ -479,31 +485,31 @@ public class DingTalkApi {
     }
 
     /**
-     * 获得所有的部门id,会将所有异常都吞掉
+     * 获得所有的部门id
+     * 使用triple封装结果，避免异常的丢失
      *
      * @param accessKey key
      * @param appSecret 密钥
      * @return 部门id数组
      */
-    public static List<String> getAllDeptIdList(String accessKey, String appSecret) {
+    public static Triple<Boolean, String, List<Integer>> getAllDeptIdList(String accessKey, String appSecret) {
+        // 三元组结果
+        MutableTriple<Boolean, String, List<Integer>> triple = new MutableTriple<>(false, null, new ArrayList<>());
+        // 获取token
         AccessTokenResponse tokenResponse = getAccessToken(accessKey, appSecret, false);
         if (tokenResponse.isSuccess()) {
             // 初始化的时候把根id放进去，用户可能会挂载根上
-            List<String> departmemtIdList = CollUtil.newArrayList("1");
+            List<Integer> departmemtIdList = CollUtil.newArrayList(1);
             // 根部门dept_id传1
-            List<String> dept_id_list = CollUtil.newArrayList("1");
+            List<Integer> dept_id_list = CollUtil.newArrayList(1);
             // 逐级遍历
             while (!dept_id_list.isEmpty()) {
                 // 初始化一个新的数组存储结果
-                List<String> dept_sub_id_list = CollUtil.newArrayList();
+                List<Integer> dept_sub_id_list = CollUtil.newArrayList();
                 dept_id_list.forEach(deptId -> {
                     try {
-                        JSONObject result = JSONUtil.parseObj(cn.hutool.http.HttpRequest.post("https://oapi.dingtalk.com/topapi/v2/department/listsubid?access_token=" + tokenResponse.getAccess_token())
-                                .body(new JSONObject().set("dept_id", deptId).toString())
-                                .execute().body());
-                        if (result.getInt("errcode", -1) == 0 && result.getJSONObject("result") != null) {
-                            dept_sub_id_list.addAll(result.getJSONObject("result").getBeanList("dept_id_list", String.class));
-                        }
+                        JSONObject result = JSONUtil.parseObj(HttpUtil.post(GET_DEPARTMENT_SUBLIST_ID + "?access_token=" + tokenResponse.getAccess_token(), new JSONObject().set("dept_id", deptId).toString()));
+                        dept_sub_id_list.addAll(JSONUtil.getByPath(result, "result.dept_id_list", new ArrayList<>()));
                     } catch (Exception e) {
                         log.error("获取子部门列表失败", e);
                     }
@@ -513,11 +519,15 @@ public class DingTalkApi {
                 // 塞入结果数组
                 departmemtIdList.addAll(dept_sub_id_list);
             }
-            return departmemtIdList;
+            // 塞入三元组
+            triple.setLeft(true);
+            triple.setRight(departmemtIdList);
         } else {
+            triple.setLeft(false);
+            triple.setMiddle(tokenResponse.getErrmsg());
             log.error("获得token失败:{}", tokenResponse.getErrmsg());
-            return CollUtil.newArrayList();
         }
+        return triple;
     }
 
     /**
