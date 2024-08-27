@@ -464,7 +464,7 @@ public class DingTalkApiUtils {
      * 使用triple封装结果，避免异常的丢失
      * <a href="https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> getUserListByDeptIds(String accessKey, String appSecret, List<String> deptIds) {
+    public static Triple<Boolean, String, List<JSONObject>> getUserListByDeptIds(String accessKey, String appSecret, List<Integer> deptIds) {
         // 三元组结果
         MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, new ArrayList<>());
         // token结果
