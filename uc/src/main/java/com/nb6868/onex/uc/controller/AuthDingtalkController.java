@@ -26,6 +26,7 @@ import com.nb6868.onex.uc.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,25 +64,25 @@ public class AuthDingtalkController {
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
         AssertUtils.isTrue(StrUtil.hasBlank(loginParams.getStr("appId"), loginParams.getStr("appSecret")), "登录配置缺少appId和appSecret信息");
 
-        ResultResponse<UserContactResponse> userContactResponse = DingTalkApiUtils.getUserContactByCode(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
-        if (userContactResponse.isSuccess()) {
-            GetUserIdByUnionidResponse userIdResponse = DingTalkApiUtils.getUserIdByUnionid(loginParams.getStr("appId"), loginParams.getStr("appSecret"), userContactResponse.getResult().getUnionId());
-            if (userIdResponse.isSuccess()) {
+        Triple<Boolean, String, JSONObject> userContactResponse = DingTalkApiUtils.getUserContactByCode(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
+        if (userContactResponse.getLeft()) {
+            Triple<Boolean, String, JSONObject> userIdResponse = DingTalkApiUtils.getUserIdByUnionid(loginParams.getStr("appId"), loginParams.getStr("appSecret"), userContactResponse.getRight().getStr("unionId"));
+            if (userIdResponse.getLeft()) {
                 // 封装自己的业务逻辑,比如用userId去找用户
-                UserEntity user = userService.query().eq("oauth_userid", userIdResponse.getResult().getUserid()).last(Const.LIMIT_ONE).one();
+                UserEntity user = userService.query().eq("oauth_userid", userIdResponse.getRight().getStr("userid")).last(Const.LIMIT_ONE).one();
                 if (user == null) {
                     // 不存在
                     if (loginParams.getBool("autoCreateUserEnable", false)) {
                         // 自动创建用户
                         user = new UserEntity();
-                        user.setUsername(userContactResponse.getResult().getNick());
-                        user.setRealName(userContactResponse.getResult().getNick());
-                        user.setPassword(DigestUtil.bcrypt(userIdResponse.getResult().getUserid()));
-                        user.setPasswordRaw(PasswordUtils.aesEncode(userIdResponse.getResult().getUserid(), Const.AES_KEY));
-                        user.setOauthUserid(userIdResponse.getResult().getUserid());
-                        user.setOauthInfo(JSONUtil.parseObj(userContactResponse.getResult()));
-                        user.setMobile(userContactResponse.getResult().getMobile());
-                        user.setAvatar(userContactResponse.getResult().getAvatarUrl());
+                        user.setUsername(userContactResponse.getRight().getStr("nick"));
+                        user.setRealName(userContactResponse.getRight().getStr("nick"));
+                        user.setPassword(DigestUtil.bcrypt(userIdResponse.getRight().getStr("userid")));
+                        user.setPasswordRaw(PasswordUtils.aesEncode(userIdResponse.getRight().getStr("userid"), Const.AES_KEY));
+                        user.setOauthUserid(userIdResponse.getRight().getStr("userid"));
+                        user.setOauthInfo(JSONUtil.parseObj(userContactResponse.getRight()));
+                        user.setMobile(userContactResponse.getRight().getStr("mobile"));
+                        user.setAvatar(userContactResponse.getRight().getStr("avatarUrl"));
                         user.setType(UcConst.UserTypeEnum.DEPT_ADMIN.value());
                         user.setState(UcConst.UserStateEnum.ENABLED.value());
                         user.setTenantCode(form.getTenantCode());
@@ -112,10 +113,10 @@ public class AuthDingtalkController {
                         .setTokenKey(authProps.getTokenHeaderKey());
                 return new Result<>().success(loginResult);
             } else {
-                return new Result<>().error(userIdResponse.getErrcode() + ":" + userIdResponse.getErrmsg());
+                return new Result<>().error(userIdResponse.getMiddle());
             }
         } else {
-            return new Result<>().error(userContactResponse.getErrcode() + ":" + userContactResponse.getErrmsg());
+            return new Result<>().error(userContactResponse.getMiddle());
         }
     }
 
