@@ -6,7 +6,9 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -22,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,14 +92,15 @@ public class SmsAliyunMailService extends AbstractMailService {
         String sortedQueryString = SignUtils.paramToQueryString(paras);
         // 参数签名
         String sign = SignUtils.urlEncode(SignUtils.signToBase64("GET" + "&" + SignUtils.urlEncode("/") + "&" + SignUtils.urlEncode(sortedQueryString), mailTpl.getParams().getStr("AppKeySecret") + "&", "HmacSHA1"));
+        // 签名加回去
+        paras.put("Signature", sign);
         // 调用接口发送
         try {
-            // 直接get RestTemplate会将参数直接做UrlEncode,需要使用UriComponentsBuilder先build一下
-            URI uri = UriComponentsBuilder.fromHttpUrl("http://dysmsapi.aliyuncs.com/?Signature=" + sign + "&" + sortedQueryString).build(true).toUri();
-            String result = new RestTemplate().getForObject(uri, String.class);
-            Map<String, Object> json = JacksonUtils.jsonToMap(result);
+            String url = HttpUtil.urlWithForm("http://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset(), true);
+            String result = HttpUtil.get(url);
+            JSONObject resultJson = JSONUtil.parseObj(result);
             mailLog.setResult(result);
-            mailLog.setState("OK".equalsIgnoreCase(json.get("Code").toString()) ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+            mailLog.setState("OK".equalsIgnoreCase(resultJson.getStr("Code")) ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
         } catch (Exception e) {
             // 接口调用失败
             log.error("AliyunSms", e);

@@ -4,8 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.dingtalk.BaseResponse;
-import com.nb6868.onex.common.dingtalk.DingTalkApi;
+import com.nb6868.onex.common.util.DingTalkApiUtils;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -14,6 +13,7 @@ import com.nb6868.onex.msg.entity.MsgLogEntity;
 import com.nb6868.onex.msg.entity.MsgTplEntity;
 import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,12 +49,12 @@ public class DingtalkNotifyMailService extends AbstractMailService {
         mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         mailLogService.save(mailLog);
 
-        BaseResponse sendResponse = DingTalkApi.sendNotifyMsg(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), params);
-        mailLog.setState(sendResponse.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
-        mailLog.setResult(sendResponse.toString());
+        Triple<Boolean, String, JSONObject> sendResponse =  DingTalkApiUtils.sendNotifyMsg(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), params);
+        mailLog.setState(sendResponse.getLeft() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+        mailLog.setResult(sendResponse.getMiddle());
         mailLogService.updateById(mailLog);
 
-        return sendResponse.isSuccess();
+        return sendResponse.getLeft();
     }
 
 }

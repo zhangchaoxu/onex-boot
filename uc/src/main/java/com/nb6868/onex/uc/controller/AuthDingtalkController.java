@@ -11,10 +11,7 @@ import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.auth.CodeLoginForm;
 import com.nb6868.onex.common.auth.LoginResult;
-import com.nb6868.onex.common.dingtalk.DingTalkApi;
-import com.nb6868.onex.common.dingtalk.GetUserIdByUnionidResponse;
-import com.nb6868.onex.common.dingtalk.ResultResponse;
-import com.nb6868.onex.common.dingtalk.UserContactResponse;
+import com.nb6868.onex.common.util.DingTalkApiUtils;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.Result;
@@ -66,9 +63,9 @@ public class AuthDingtalkController {
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
         AssertUtils.isTrue(StrUtil.hasBlank(loginParams.getStr("appId"), loginParams.getStr("appSecret")), "登录配置缺少appId和appSecret信息");
 
-        ResultResponse<UserContactResponse> userContactResponse = DingTalkApi.getUserContactByCode(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
+        ResultResponse<UserContactResponse> userContactResponse = DingTalkApiUtils.getUserContactByCode(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
         if (userContactResponse.isSuccess()) {
-            GetUserIdByUnionidResponse userIdResponse = DingTalkApi.getUserIdByUnionid(loginParams.getStr("appId"), loginParams.getStr("appSecret"), userContactResponse.getResult().getUnionId());
+            GetUserIdByUnionidResponse userIdResponse = DingTalkApiUtils.getUserIdByUnionid(loginParams.getStr("appId"), loginParams.getStr("appSecret"), userContactResponse.getResult().getUnionId());
             if (userIdResponse.isSuccess()) {
                 // 封装自己的业务逻辑,比如用userId去找用户
                 UserEntity user = userService.query().eq("oauth_userid", userIdResponse.getResult().getUserid()).last(Const.LIMIT_ONE).one();

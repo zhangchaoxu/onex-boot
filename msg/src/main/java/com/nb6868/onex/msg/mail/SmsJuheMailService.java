@@ -1,11 +1,14 @@
 package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -31,7 +35,7 @@ import java.util.Map;
 @Service("SmsJuheMailService")
 public class SmsJuheMailService extends AbstractMailService {
 
-    private static final String JUHE_SMS_SEND_URL = "http://v.juhe.cn/sms/send?key={1}&mobile={2}&tpl_id={3}&tpl_value={4}";
+    private static final String BASE_URL = "http://v.juhe.cn";
 
     @Override
     public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
@@ -61,13 +65,18 @@ public class SmsJuheMailService extends AbstractMailService {
         mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
-
         // 调用接口发送
         try {
-            String result = new RestTemplate().getForObject(JUHE_SMS_SEND_URL, String.class, mailTpl.getParams().getStr("AppKeyId"), request.getMailTo(), mailTpl.getParams().getStr("TemplateId"), URLEncoder.encode(paramJuhe.toString(), StandardCharsets.UTF_8.name()));
-            Map<String, Object> json = JacksonUtils.jsonToMap(result);
+            // "http://v.juhe.cn/sms/send?key={1}&mobile={2}&tpl_id={3}&tpl_value={4}"
+            String url = HttpUtil.urlWithForm(BASE_URL + "/sms/send", Dict.create()
+                    .set("key", mailTpl.getParams().getStr("AppKeyId"))
+                    .set("tpl_id", mailTpl.getParams().getStr("TemplateId"))
+                    .set("tpl_value", paramJuhe.toString())
+                    .set("mobile", request.getMailTo()), Charset.defaultCharset(), true);
+            String result = HttpUtil.get(url);
+            JSONObject resultJson = JSONUtil.parseObj(result);
             mailLog.setResult(result);
-            mailLog.setState((int) json.get("error_code") == 0 ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+            mailLog.setState((resultJson.getInt("error_code") == 0 ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value()));
         } catch (Exception e) {
             // 接口调用失败
             log.error("JuheSms", e);

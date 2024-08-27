@@ -9,8 +9,11 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -30,6 +33,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -105,41 +109,38 @@ public class SmsHwcloudMailService extends AbstractMailService {
          * 查看更多模板和变量规范:产品介绍>模板和变量规范
          */
         //模板变量，此处以单变量验证码短信为例，请客户自行生成6位验证码，并定义为字符串类型，以杜绝首位0丢失的问题（例如：002569变成了2569）。
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Authorization", AUTH_HEADER_VALUE);
-        headers.add("X-WSSE", buildWsseHeader(appKey, appSecret));
-
-        MultiValueMap<String, Object> postParameters = new LinkedMultiValueMap<>();
-        postParameters.add("from", sender);
-        postParameters.add("to", receiver);
-        postParameters.add("templateId", templateId);
+        Map<String, Object> postParameters = new HashMap<>();
+        postParameters.put("from", sender);
+        postParameters.put("to", receiver);
+        postParameters.put("templateId", templateId);
         if (!paramArray.isEmpty()) {
-            postParameters.add("templateParas", paramArray.toString());
+            postParameters.put("templateParas", paramArray.toString());
         }
         if (StrUtil.isNotBlank(statusCallBack)) {
-            postParameters.add("statusCallback", statusCallBack);
+            postParameters.put("statusCallback", statusCallBack);
         }
         if (StrUtil.isNotBlank(signature)) {
-            postParameters.add("signature", signature);
+            postParameters.put("signature", signature);
         }
         // 扩展码，原样返回
-        postParameters.add("extend", String.valueOf(mailLog.getId()));
-        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(postParameters, headers);
+        postParameters.put("extend", String.valueOf(mailLog.getId()));
         try {
             // 设置链接超时
-            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-            String result = new RestTemplate(factory).postForObject(mailTpl.getParams().getStr("RegionId") + "/sms/batchSendSms/v1", httpEntity, String.class);
-
-            Map<String, Object> json = JacksonUtils.jsonToMap(result);
+            String url = mailTpl.getParams().getStr("RegionId") + "/sms/batchSendSms/v1";
+            String result = HttpRequest.post(url)
+                    .header("Authorization", AUTH_HEADER_VALUE)
+                    .header("X-WSSE", buildWsseHeader(appKey, appSecret))
+                    .form(postParameters)
+                    .execute()
+                    .body();
+            JSONObject resultJson = JSONUtil.parseObj(result);
             mailLog.setResult(result);
-            mailLog.setState("000000".equalsIgnoreCase(MapUtil.getStr(json, "code")) ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+            mailLog.setState("000000".equalsIgnoreCase(resultJson.getStr("code")) ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
         } catch (Exception e) {
             log.error("HwcloudSms", e);
             mailLog.setState(MsgConst.MailSendStateEnum.FAIL.value());
             mailLog.setResult(e.getMessage());
         }
-
         mailLogService.updateById(mailLog);
         return mailLog.getState() == MsgConst.MailSendStateEnum.SUCCESS.value();
     }
