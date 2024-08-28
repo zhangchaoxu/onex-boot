@@ -1,6 +1,5 @@
 package com.nb6868.onex.common;
 
-import cn.hutool.core.lang.Dict;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.util.DingTalkApiUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ public class DingtalkTest {
     @Test
     @DisplayName("获得accessToken")
     void getAccessToken() {
-        Triple response = DingTalkApiUtils.getAccessToken("", "-", true);
+        Triple response = DingTalkApiUtils.getOauth2AccessToken("dingzy0fp2ltwvg3gw8m9", "edraUxgxNGlNB1mD8TINHRrPTDzu-unRoVAoAszfLpc7IKQUML7mFLbVbhsGIf1y", false);
         log.error(response.toString());
     }
 

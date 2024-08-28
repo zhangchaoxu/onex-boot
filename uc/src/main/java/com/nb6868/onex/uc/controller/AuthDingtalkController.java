@@ -64,9 +64,10 @@ public class AuthDingtalkController {
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
         AssertUtils.isTrue(StrUtil.hasBlank(loginParams.getStr("appId"), loginParams.getStr("appSecret")), "登录配置缺少appId和appSecret信息");
 
-        Triple<Boolean, String, JSONObject> userContactResponse = DingTalkApiUtils.getUserContactByCode(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
-        if (userContactResponse.getLeft()) {
-            Triple<Boolean, String, JSONObject> userIdResponse = DingTalkApiUtils.getUserIdByUnionid(loginParams.getStr("appId"), loginParams.getStr("appSecret"), userContactResponse.getRight().getStr("unionId"));
+        Triple<Boolean, String, String> userAccessToken = DingTalkApiUtils.getUserAccessToken(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
+        Triple<Boolean, String, JSONObject> userContact = DingTalkApiUtils.getUserContact(userAccessToken.getRight(), "me");
+        if (userContact.getLeft()) {
+            Triple<Boolean, String, JSONObject> userIdResponse = DingTalkApiUtils.getUserIdByUnionid(loginParams.getStr("appId"), loginParams.getStr("appSecret"), userContact.getRight().getStr("unionId"));
             if (userIdResponse.getLeft()) {
                 // 封装自己的业务逻辑,比如用userId去找用户
                 UserEntity user = userService.query().eq("oauth_userid", userIdResponse.getRight().getStr("userid")).last(Const.LIMIT_ONE).one();
@@ -75,14 +76,14 @@ public class AuthDingtalkController {
                     if (loginParams.getBool("autoCreateUserEnable", false)) {
                         // 自动创建用户
                         user = new UserEntity();
-                        user.setUsername(userContactResponse.getRight().getStr("nick"));
-                        user.setRealName(userContactResponse.getRight().getStr("nick"));
+                        user.setUsername(userContact.getRight().getStr("nick"));
+                        user.setRealName(userContact.getRight().getStr("nick"));
                         user.setPassword(DigestUtil.bcrypt(userIdResponse.getRight().getStr("userid")));
                         user.setPasswordRaw(PasswordUtils.aesEncode(userIdResponse.getRight().getStr("userid"), Const.AES_KEY));
                         user.setOauthUserid(userIdResponse.getRight().getStr("userid"));
-                        user.setOauthInfo(JSONUtil.parseObj(userContactResponse.getRight()));
-                        user.setMobile(userContactResponse.getRight().getStr("mobile"));
-                        user.setAvatar(userContactResponse.getRight().getStr("avatarUrl"));
+                        user.setOauthInfo(JSONUtil.parseObj(userContact.getRight()));
+                        user.setMobile(userContact.getRight().getStr("mobile"));
+                        user.setAvatar(userContact.getRight().getStr("avatarUrl"));
                         user.setType(UcConst.UserTypeEnum.DEPT_ADMIN.value());
                         user.setState(UcConst.UserStateEnum.ENABLED.value());
                         user.setTenantCode(form.getTenantCode());
@@ -116,7 +117,7 @@ public class AuthDingtalkController {
                 return new Result<>().error(userIdResponse.getMiddle());
             }
         } else {
-            return new Result<>().error(userContactResponse.getMiddle());
+            return new Result<>().error(userContact.getMiddle());
         }
     }
 
