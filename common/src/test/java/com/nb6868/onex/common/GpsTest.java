@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelUtil;
-import com.nb6868.onex.common.util.AmapUtils;
+import com.nb6868.onex.common.util.AmapApiUtils;
 import com.nb6868.onex.common.util.GpsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,7 @@ public class GpsTest {
     @DisplayName("高德测试")
     @Test
     void testAmap() {
-        AmapUtils amapClient = new AmapUtils();
+        AmapApiUtils amapClient = new AmapApiUtils();
 
         GpsUtils.LngLat lngLat = new GpsUtils.LngLat(121.570626, 29.90893);
         JSONObject geocodeRegeoForm = new JSONObject()
