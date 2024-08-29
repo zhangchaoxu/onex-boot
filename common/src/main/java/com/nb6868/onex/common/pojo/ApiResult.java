@@ -71,4 +71,11 @@ public class ApiResult<T> implements Serializable {
         return this;
     }
 
+    public ApiResult<T> copy(ApiResult<?> apiResult) {
+        this.setSuccess(apiResult.isSuccess());
+        this.setCode(apiResult.getCode());
+        this.setMsg(apiResult.getMsg());
+        return this;
+    }
+
 }

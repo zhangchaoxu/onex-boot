@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.util;
 
-import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
@@ -30,12 +29,17 @@ public class AmapApiUtils {
 
     /**
      * 公共基础调用方法
+     *
+     * @param url 请求连接
+     * @param paramMap 请求参数,会拼接到url中
      */
-    public static ApiResult<JSONObject> baseCallApi(String url, JSONObject paramMap) {
+    public static ApiResult<JSONObject> baseCallApiGet(String url, JSONObject paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
-        if (StrUtil.isBlank(url) || ObjUtil.isEmpty(paramMap)) {
+        if (StrUtil.isBlank(url)) {
             return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
         }
+        // 将参数拼接到url上
+        url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), true);
         try {
             HttpRequest request = HttpRequest.get(url);
             log.debug(request.toString());
@@ -57,8 +61,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/georegeo">...</a>
      */
     public static ApiResult<JSONObject> geocodeGeo(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/geocode/geo", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/geocode/geo", paramMap);
     }
 
     /**
@@ -66,8 +69,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/georegeo">...</a>
      */
     public static ApiResult<JSONObject> geocodeRegeo(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/geocode/regeo", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/geocode/regeo", paramMap);
     }
 
     /**
@@ -75,8 +77,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public static ApiResult<JSONObject> distance(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/distance", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/distance", paramMap);
     }
 
     /**
@@ -85,8 +86,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public static ApiResult<JSONObject> directionWalking(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/walking", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/direction/walking", paramMap);
     }
 
     /**
@@ -94,8 +94,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public static ApiResult<JSONObject> directionDriving(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/driving", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/direction/driving", paramMap);
     }
 
     /**
@@ -103,8 +102,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public static ApiResult<JSONObject> directionBicycling(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/bicycling", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/direction/bicycling", paramMap);
     }
 
     /**
@@ -112,8 +110,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
     public static ApiResult<JSONObject> directionTransitIntegrated(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/transit/integrated", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/direction/transit/integrated", paramMap);
     }
 
     /**
@@ -130,8 +127,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/weatherinfo">...</a>
      */
     public static ApiResult<JSONObject> weatherWeatherInfo(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/weather/weatherInfo", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/weather/weatherInfo", paramMap);
     }
 
     /**
@@ -139,8 +135,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/ipconfig">...</a>
      */
     public static ApiResult<JSONObject> ip(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/ip", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/ip", paramMap);
     }
 
     /**
@@ -148,8 +143,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api-advanced/ip">...</a>
      */
     public static ApiResult<JSONObject> ipLocation(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v5/ip/location", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v5/ip/location", paramMap);
     }
 
     /**
@@ -157,8 +151,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api-advanced/hardware-location">...</a>
      */
     public static ApiResult<JSONObject> position(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm("https://apilocate.amap.com/position", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet("https://apilocate.amap.com/position", paramMap);
     }
 
     /**
@@ -166,8 +159,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/convert">...</a>
      */
     public static ApiResult<JSONObject> assistantCoordinateConvert(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/assistant/coordinate/convert", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/assistant/coordinate/convert", paramMap);
     }
 
     /**
@@ -175,8 +167,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/district">...</a>
      */
     public static ApiResult<JSONObject> configDistrict(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/config/district", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/config/district", paramMap);
     }
 
     /**
@@ -184,8 +175,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/inputtips">...</a>
      */
     public static ApiResult<JSONObject> assistantInputtips(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/assistant/inputtips", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/assistant/inputtips", paramMap);
     }
 
     /**
@@ -193,8 +183,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/search">...</a>
      */
     public static ApiResult<JSONObject> placeText(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/place/text", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v3/place/text", paramMap);
     }
 
     /**
@@ -202,8 +191,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/newpoisearch">...</a>
      */
     public static ApiResult<JSONObject> placeTextV2(JSONObject paramMap) {
-        String url = HttpUtil.urlWithForm(BASE_URL + "/v5/place/text", paramMap, Charset.defaultCharset(), true);
-        return baseCallApi(url, paramMap);
+        return baseCallApiGet(BASE_URL + "/v5/place/text", paramMap);
     }
 
 }
