@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.pojo;
 
+import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -76,6 +77,10 @@ public class ApiResult<T> implements Serializable {
         this.setCode(apiResult.getCode());
         this.setMsg(apiResult.getMsg());
         return this;
+    }
+
+    public String getCodeMsg() {
+        return StrUtil.format("{}:{}", StrUtil.nullToEmpty(getCode()), StrUtil.nullToEmpty(getMsg()));
     }
 
 }

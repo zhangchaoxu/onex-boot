@@ -4,16 +4,16 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.util.DingTalkApiUtils;
 import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.common.util.DingTalkApiUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.entity.MsgLogEntity;
 import com.nb6868.onex.msg.entity.MsgTplEntity;
 import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.stereotype.Service;
 
 /**
@@ -55,12 +55,12 @@ public class DingtalkRobotMailService extends AbstractMailService {
         mailLogService.save(mailLog);
 
         // https://oapi.dingtalk.com/robot/send?access_token=xxxx
-        Triple<Boolean, String, JSONObject> sendResponse = DingTalkApiUtils.sendRobotMsg(mailTpl.getParams().getStr("AccessToken"), request.getContentParams());
-        mailLog.setState(sendResponse.getLeft() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
-        mailLog.setResult(sendResponse.getMiddle());
+        ApiResult<JSONObject> sendResponse = DingTalkApiUtils.sendRobotMsg(mailTpl.getParams().getStr("AccessToken"), request.getContentParams());
+        mailLog.setState(sendResponse.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+        mailLog.setResult(sendResponse.getCodeMsg());
         mailLogService.updateById(mailLog);
 
-        return sendResponse.getLeft();
+        return sendResponse.isSuccess();
     }
 
 }

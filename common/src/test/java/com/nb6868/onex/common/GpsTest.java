@@ -5,10 +5,10 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelUtil;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.util.AmapApiUtils;
 import com.nb6868.onex.common.util.GpsUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Triple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +49,7 @@ public class GpsTest {
                 .set("extensions", "base")
                 .set("key", AMAP_KEY)
                 .set("location", lngLat.toString());
-        Triple resp = amapClient.geocodeRegeo(geocodeRegeoForm);
+        ApiResult<JSONObject> resp = amapClient.geocodeRegeo(geocodeRegeoForm);
         log.error("geocodeRegeo={}", resp);
 
         GpsUtils.LngLat gcj02 = GpsUtils.calWGS84toGCJ02(lngLat);
@@ -59,7 +59,7 @@ public class GpsTest {
                 .set("extensions", "base")
                 .set("key", AMAP_KEY)
                 .set("location", gcj02.toString());
-        Triple resp2 = amapClient.geocodeRegeo(geocodeRegeoForm2);
+        ApiResult<JSONObject> resp2 = amapClient.geocodeRegeo(geocodeRegeoForm2);
         log.error("geocodeRegeo={}", resp2);
     }
 

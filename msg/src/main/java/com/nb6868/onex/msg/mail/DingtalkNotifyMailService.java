@@ -4,16 +4,16 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.util.DingTalkApiUtils;
 import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.Const;
+import com.nb6868.onex.common.util.DingTalkApiUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.entity.MsgLogEntity;
 import com.nb6868.onex.msg.entity.MsgTplEntity;
 import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,12 +49,13 @@ public class DingtalkNotifyMailService extends AbstractMailService {
         mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         mailLogService.save(mailLog);
 
-        Triple<Boolean, String, JSONObject> sendResponse =  DingTalkApiUtils.sendNotifyMsg(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), params);
-        mailLog.setState(sendResponse.getLeft() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
-        mailLog.setResult(sendResponse.getMiddle());
+        ApiResult<String> accessTokenResult = DingTalkApiUtils.getOauth2AccessToken(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), false);
+        ApiResult<JSONObject> sendResult = DingTalkApiUtils.sendNotifyMsg(accessTokenResult.getData(), params);
+        mailLog.setState(sendResult.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+        mailLog.setResult(sendResult.getCodeMsg());
         mailLogService.updateById(mailLog);
 
-        return sendResponse.getLeft();
+        return sendResult.isSuccess();
     }
 
 }
