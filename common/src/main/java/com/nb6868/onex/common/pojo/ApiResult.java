@@ -31,8 +31,14 @@ public class ApiResult<T> implements Serializable {
     @Schema(description = "消息数据")
     private T data;
 
-    public static ApiResult of() {
+    public static <T> ApiResult<T> of() {
+       /* @SuppressWarnings("unchecked") final ApiResult<T> t = (ApiResult<T>) EMPTY;
+        return t;*/
         return new ApiResult<>();
+    }
+
+    public static <T> ApiResult<T> of(final T value) {
+        return new ApiResult<T>().setData(value);
     }
 
     public ApiResult<T> success() {

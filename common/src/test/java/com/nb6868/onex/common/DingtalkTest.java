@@ -1,13 +1,14 @@
 package com.nb6868.onex.common;
 
 import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.util.DingTalkApiUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Triple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @DisplayName("钉钉")
@@ -16,21 +17,23 @@ public class DingtalkTest {
     @Test
     @DisplayName("获得accessToken")
     void getAccessToken() {
-        Triple response = DingTalkApiUtils.getOauth2AccessToken("dingzy0fp2ltwvg3gw8m9", "edraUxgxNGlNB1mD8TINHRrPTDzu-unRoVAoAszfLpc7IKQUML7mFLbVbhsGIf1y", false);
+        ApiResult<String> response = DingTalkApiUtils.getOauth2AccessToken("", "-", true);
+        ApiResult<String> response2 = DingTalkApiUtils.getAccessToken("", "-", true);
         log.error(response.toString());
+        log.error(response2.toString());
     }
 
     @Test
     @DisplayName("获得子部门id")
     void getDepartmentIdList() {
-        Triple response = DingTalkApiUtils.getAllDeptIdList("", "-");
+        ApiResult<List<Integer>> response = DingTalkApiUtils.getAllDeptIdList("195a1443e9d737a6baa3af5114dc9df0");
         log.error(response.toString());
     }
 
     @Test
     @DisplayName("获得用户信息")
     void getUserInfoByCode() {
-        Triple response = DingTalkApiUtils.getUserInfoByCode("", "", "1234");
+        ApiResult<JSONObject> response = DingTalkApiUtils.getUserInfoByCode("", "", "1234");
         log.error(response.toString());
     }
 
@@ -47,7 +50,7 @@ public class DingtalkTest {
         dict.set("msgtype", "markdown")
                 .set("at", new JSONObject().set("atMobiles", new ArrayList<>()))
                 .set("markdown", new JSONObject().set("title", "任务[苏州-]已完成").set("text", "nihaoma a"));
-        Triple response = DingTalkApiUtils.sendRobotMsg("", dict);
+        ApiResult<JSONObject> response = DingTalkApiUtils.sendRobotMsg("", dict);
         log.error(response.toString());
     }
 

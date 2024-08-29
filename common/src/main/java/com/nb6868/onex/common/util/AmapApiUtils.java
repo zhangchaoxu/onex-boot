@@ -1,16 +1,15 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.pojo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.MutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
 
 import java.nio.charset.Charset;
-import java.util.List;
 
 /**
  * 高德 Web服务 API
@@ -23,16 +22,21 @@ import java.util.List;
 @Slf4j
 public class AmapApiUtils {
 
-    private static final String BASE_URL = "https://restapi.amap.com";
+    public static final String BASE_URL = "https://restapi.amap.com";
+    // 错误码,异常
+    public static final String ERROR_CODE_EXCEPTION = "50500";
+    // 错误码,请求参数问题
+    public static final String ERROR_CODE_BAD_REQUEST = "50400";
 
     /**
-     * 地理编码
-     * <a href="https://lbs.amap.com/api/webservice/guide/api/georegeo">...</a>
+     * 公共基础调用方法
      */
-    public static ApiResult<?> geocodeGeo(JSONObject paramMap) {
-        ApiResult<List<JSONObject>> apiResult = new ApiResult<>();
+    public static ApiResult<JSONObject> baseCallApi(String url, JSONObject paramMap) {
+        ApiResult<JSONObject> apiResult = ApiResult.of();
+        if (StrUtil.isBlank(url) || ObjUtil.isEmpty(paramMap)) {
+            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+        }
         try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/geocode/geo", paramMap, Charset.defaultCharset(), true);
             HttpRequest request = HttpRequest.get(url);
             log.debug(request.toString());
             request.then(httpResponse -> {
@@ -40,150 +44,76 @@ public class AmapApiUtils {
                 apiResult.setSuccess(resultJson.getInt("infocode", 0) == 10000)
                         .setCode(resultJson.getStr("infocode"))
                         .setMsg(resultJson.getStr("info"))
-                        .setData(resultJson.getBeanList("geocodes", JSONObject.class));
+                        .setData(resultJson);
             });
+            return apiResult;
         } catch (Exception e) {
-            apiResult.error("50000", "amap.v3/geocode/geo error:" + e.getMessage());
+            return apiResult.error(ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
         }
-        return apiResult;
     }
 
     /**
-     * 逆地理编码
+     * 地理编码,数据在geocodes列表
      * <a href="https://lbs.amap.com/api/webservice/guide/api/georegeo">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> geocodeRegeo(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/geocode/regeo", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("regeocode", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/geocode/regeo error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> geocodeGeo(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/geocode/geo", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
-     * 距离测量
+     * 逆地理编码，数据在regeocode列表
+     * <a href="https://lbs.amap.com/api/webservice/guide/api/georegeo">...</a>
+     */
+    public static ApiResult<JSONObject> geocodeRegeo(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/geocode/regeo", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
+    }
+
+    /**
+     * 距离测量，数据在route列表，resultJson.getBeanList("route", JSONObject.class)
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> distance(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/distance", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("route", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/distance error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> distance(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/distance", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 步行路径规划
+     * resultJson.getBeanList("route", JSONObject.class)
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> directionWalking(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/walking", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("route", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/direction/walking error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> directionWalking(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/walking", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 驾车路径规划
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> directionDriving(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/driving", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("route", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/direction/driving error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> directionDriving(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/driving", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 骑行路径规划
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> directionBicycling(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/bicycling", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("route", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/direction/bicycling error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> directionBicycling(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/bicycling", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 公交路径规划
      * <a href="https://lbs.amap.com/api/webservice/guide/api/direction">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> directionTransitIntegrated(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/transit/integrated", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("route", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/direction/transit/integrated error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> directionTransitIntegrated(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/direction/transit/integrated", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
@@ -199,207 +129,81 @@ public class AmapApiUtils {
      * 结果中解析lives(实况天气)和forecast(预报天气)
      * <a href="https://lbs.amap.com/api/webservice/guide/api/weatherinfo">...</a>
      */
-    public static Triple<Boolean, String, JSONObject> weatherWeatherInfo(JSONObject paramMap) {
-        MutableTriple<Boolean, String, JSONObject> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/weather/weatherInfo", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson);
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/weather/weatherInfo error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> weatherWeatherInfo(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/weather/weatherInfo", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * IP定位
      * <a href="https://lbs.amap.com/api/webservice/guide/api/ipconfig">...</a>
      */
-    public static Triple<Boolean, String, JSONObject> ip(JSONObject paramMap) {
-        MutableTriple<Boolean, String, JSONObject> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/ip", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson);
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/ip error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> ip(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/ip", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 高级IP定位-属于高级服务接口
      * <a href="https://lbs.amap.com/api/webservice/guide/api-advanced/ip">...</a>
      */
-    public static Triple<Boolean, String, JSONObject> ipLocation(JSONObject paramMap) {
-        MutableTriple<Boolean, String, JSONObject> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v5/ip/location", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson);
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v5/ip/location error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> ipLocation(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v5/ip/location", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 智能硬件定位-属于高级服务接口
      * <a href="https://lbs.amap.com/api/webservice/guide/api-advanced/hardware-location">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> position(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm("https://apilocate.amap.com/position", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("result", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.position error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> position(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm("https://apilocate.amap.com/position", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 坐标转换
      * <a href="https://lbs.amap.com/api/webservice/guide/api/convert">...</a>
      */
-    public static Triple<Boolean, String, String> assistantCoordinateConvert(JSONObject paramMap) {
-        MutableTriple<Boolean, String, String> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/assistant/coordinate/convert", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getStr("locations"));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/assistant/coordinate/convert error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> assistantCoordinateConvert(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/assistant/coordinate/convert", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 行政区域查询
      * <a href="https://lbs.amap.com/api/webservice/guide/api/district">...</a>
      */
-    public static Triple<Boolean, String, JSONObject> configDistrict(JSONObject paramMap) {
-        MutableTriple<Boolean, String, JSONObject> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/config/district", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson);
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/config/district error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> configDistrict(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/config/district", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 输入提示
      * <a href="https://lbs.amap.com/api/webservice/guide/api/inputtips">...</a>
      */
-    public static Triple<Boolean, String, List<JSONObject>> assistantInputtips(JSONObject paramMap) {
-        MutableTriple<Boolean, String, List<JSONObject>> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/assistant/inputtips", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson.getBeanList("geocodes", JSONObject.class));
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/assistant/inputtips error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> assistantInputtips(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/assistant/inputtips", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 搜索POI
      * <a href="https://lbs.amap.com/api/webservice/guide/api/search">...</a>
      */
-    public static Triple<Boolean, String, JSONObject> placeText(JSONObject paramMap) {
-        MutableTriple<Boolean, String, JSONObject> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v3/place/text", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson);
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v3/place/text error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> placeText(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v3/place/text", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
     /**
      * 搜索POI 2.0
      * <a href="https://lbs.amap.com/api/webservice/guide/api/newpoisearch">...</a>
      */
-    public static Triple<Boolean, String, JSONObject> placeTextV2(JSONObject paramMap) {
-        MutableTriple<Boolean, String, JSONObject> triple = new MutableTriple<>(false, null, null);
-        try {
-            String url = HttpUtil.urlWithForm(BASE_URL + "/v5/place/text", paramMap, Charset.defaultCharset(), true);
-            HttpRequest request = HttpRequest.get(url);
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                triple.setLeft(resultJson.getInt("status") == 1);
-                triple.setMiddle(resultJson.getInt("infocode", 10000) + ":" + resultJson.getStr("info"));
-                triple.setRight(resultJson);
-            });
-        } catch (Exception e) {
-            triple.setLeft(false);
-            triple.setMiddle("amap.v5/place/text error:" + e.getMessage());
-        }
-        return triple;
+    public static ApiResult<JSONObject> placeTextV2(JSONObject paramMap) {
+        String url = HttpUtil.urlWithForm(BASE_URL + "/v5/place/text", paramMap, Charset.defaultCharset(), true);
+        return baseCallApi(url, paramMap);
     }
 
 }
