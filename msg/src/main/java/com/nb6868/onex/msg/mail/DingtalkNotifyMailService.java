@@ -50,12 +50,17 @@ public class DingtalkNotifyMailService extends AbstractMailService {
         mailLogService.save(mailLog);
 
         ApiResult<String> accessTokenResult = DingTalkApiUtils.getOauth2AccessToken(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), false);
-        ApiResult<JSONObject> sendResult = DingTalkApiUtils.sendNotifyMsg(accessTokenResult.getData(), params);
-        mailLog.setState(sendResult.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
-        mailLog.setResult(sendResult.getCodeMsg());
-        mailLogService.updateById(mailLog);
-
-        return sendResult.isSuccess();
+        if (accessTokenResult.isSuccess()) {
+            ApiResult<JSONObject> sendResult = DingTalkApiUtils.sendNotifyMsg(accessTokenResult.getData(), params);
+            mailLog.setState(sendResult.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
+            mailLog.setResult(sendResult.getCodeMsg());
+            mailLogService.updateById(mailLog);
+            return sendResult.isSuccess();
+        } else {
+            mailLog.setState(MsgConst.MailSendStateEnum.FAIL.value());
+            mailLog.setResult(accessTokenResult.getCodeMsg());
+            return false;
+        }
     }
 
 }

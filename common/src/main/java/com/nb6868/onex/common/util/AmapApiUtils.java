@@ -22,10 +22,6 @@ import java.nio.charset.Charset;
 public class AmapApiUtils {
 
     public static final String BASE_URL = "https://restapi.amap.com";
-    // 错误码,异常
-    public static final String ERROR_CODE_EXCEPTION = "50500";
-    // 错误码,请求参数问题
-    public static final String ERROR_CODE_BAD_REQUEST = "50400";
 
     /**
      * 公共基础调用方法
@@ -36,7 +32,7 @@ public class AmapApiUtils {
     public static ApiResult<JSONObject> baseCallApiGet(String url, JSONObject paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 将参数拼接到url上
         url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), true);
@@ -52,7 +48,7 @@ public class AmapApiUtils {
             });
             return apiResult;
         } catch (Exception e) {
-            return apiResult.error(ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
         }
     }
 

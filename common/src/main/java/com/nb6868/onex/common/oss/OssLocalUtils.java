@@ -77,7 +77,7 @@ public class OssLocalUtils {
     /**
      * 设置使用SXSSFWorkbook对象导出excel报表时，TempFile使用的临时目录，代替{java.io.tmpdir}
      * excel导出的时候会在/tmp/poifiles下创建目录，而centos会定期清空该目录，导出出错
-     * see {https://www.cnblogs.com/wenboonly/p/14922090.html}
+     * <a href="https://www.cnblogs.com/wenboonly/p/14922090.html">SXSSFWorkbook POI 临时文件夹“poifiles”问题处理</a>
      */
     @PostConstruct
     public void setExcelSXSSFWorkbookTmpPath() {

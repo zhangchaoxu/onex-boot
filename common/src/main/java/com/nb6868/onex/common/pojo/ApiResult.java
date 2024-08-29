@@ -20,8 +20,16 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiResult<T> implements Serializable {
 
+    // 错误码，异常错误
+    public static final String ERROR_CODE_EXCEPTION = "999500";
+    // 错误码，入参错误
+    public static final String ERROR_CODE_PARAMS = "999400";
+
     @Schema(description = "是否成功")
     private boolean success;
+
+    @Schema(description = "是否可重试")
+    private boolean retry;
 
     @Schema(description = "消息码")
     private String code;

@@ -3,6 +3,7 @@ package com.nb6868.onex.common.exception;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
@@ -327,7 +328,7 @@ public abstract class BaseExceptionHandler {
             if (StrUtil.isNotBlank(request.getQueryString())) {
                 requestParams.set("queryString", request.getQueryString());
             }
-            if (HttpMethod.POST.name().equalsIgnoreCase(request.getMethod()) && StrUtil.nullToEmpty(request.getContentType()).toLowerCase().startsWith("application/json")) {
+            if (HttpMethod.POST.name().equalsIgnoreCase(request.getMethod()) && StrUtil.equalsIgnoreCase(request.getContentType(), ContentType.JSON.getValue())) {
                 try {
                     requestParams.set("params", IoUtil.read(request.getInputStream()).toString());
                 } catch (IOException e) {

@@ -1,5 +1,7 @@
 package com.nb6868.onex.common.filter;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.ContentType;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,7 +17,7 @@ public class HttpServletRequestReplaceFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (request instanceof HttpServletRequest) {
-            if ("application/json".equalsIgnoreCase(request.getContentType())) {
+            if (StrUtil.equalsIgnoreCase(request.getContentType(), ContentType.JSON.getValue())) {
                 chain.doFilter(new OnexHttpServletRequestWrapper((HttpServletRequest) request), response);
                 return;
             }

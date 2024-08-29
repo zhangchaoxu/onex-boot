@@ -34,10 +34,6 @@ public class DingTalkApiUtils {
     private static final String ACS_TOKEN_KEY = "x-acs-dingtalk-access-token";
     private static final String BASE_URL = "https://oapi.dingtalk.com";
     private static final String BASE_URL_V2 = "https://api.dingtalk.com";
-    // 错误码,异常
-    public static final String ERROR_CODE_EXCEPTION = "500500";
-    // 错误码,请求参数问题
-    public static final String ERROR_CODE_BAD_REQUEST = "500400";
 
     /**
      * 清空token缓存
@@ -62,7 +58,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> baseCallApiGet(String url, JSONObject paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 将参数拼接到url上
         url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), true);
@@ -78,7 +74,7 @@ public class DingTalkApiUtils {
             });
             return apiResult;
         } catch (Exception e) {
-            return apiResult.error(ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
         }
     }
 
@@ -91,7 +87,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> baseCallApiPostJson(String url, String accessToken, JSONObject paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 将accessToken参数拼接到url上
         if (StrUtil.isNotBlank(accessToken)) {
@@ -115,7 +111,7 @@ public class DingTalkApiUtils {
             });
             return apiResult;
         } catch (Exception e) {
-            return apiResult.error(ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
         }
     }
 
@@ -129,7 +125,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> baseCallApiPostJsonV2(String url, String accessToken, JSONObject paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 将参数拼接到url上
         url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), true);
@@ -152,7 +148,7 @@ public class DingTalkApiUtils {
             });
             return apiResult;
         } catch (Exception e) {
-            return apiResult.error(ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
         }
     }
 
@@ -164,14 +160,14 @@ public class DingTalkApiUtils {
     public static ApiResult<String> getAccessToken(String appKey, String appSecret, boolean refresh) {
         ApiResult<String> apiResult = ApiResult.of();
         if (StrUtil.isBlank(appKey)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String token = tokenCache.get(appKey, false);
         if (!refresh && StrUtil.isNotBlank(token)) {
             return apiResult.success("token from cache", token);
         }
         if (StrUtil.hasBlank(appKey, appSecret)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 调用接口
         String url = BASE_URL + "/gettoken";
@@ -191,14 +187,14 @@ public class DingTalkApiUtils {
     public static ApiResult<String> getOauth2AccessToken(String appKey, String appSecret, boolean refresh) {
         ApiResult<String> apiResult = ApiResult.of();
         if (StrUtil.isBlank(appKey)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String token = tokenCache.get(appKey, false);
         if (!refresh && StrUtil.isNotBlank(token)) {
             return apiResult.success("token from cache", token);
         }
         if (StrUtil.hasBlank(appKey, appSecret)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 调用接口
         String url = BASE_URL_V2 + "/v1.0/oauth2/accessToken";
@@ -218,7 +214,7 @@ public class DingTalkApiUtils {
     public static ApiResult<String> getUserAccessToken(String clientId, String clientSecret, String code) {
         ApiResult<String> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(clientId, clientId, clientId)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 调用接口
         String url = BASE_URL_V2 + "/v1.0/oauth2/userAccessToken";
@@ -235,7 +231,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> getUserInfoByCode(String appId, String appSecret, String code) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(appId, appSecret, code)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 处理参数
         String timestamp = String.valueOf(System.currentTimeMillis());
@@ -256,7 +252,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> getUserInfoV2ByCode(String accessToken, String code) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, code)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = HttpUtil.urlWithForm(BASE_URL + "/topapi/v2/user/getuserinfo", Dict.create().set("access_token", accessToken), Charset.defaultCharset(), true);
         JSONObject formBody = new JSONObject().set("code", code);
@@ -273,7 +269,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> getUserContact(String accessToken, String unionId) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, unionId)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL_V2 + "/v1.0/contact/users/" + unionId;
         // 调用接口
@@ -289,7 +285,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> getUserIdByUnionid(String accessToken, String unionid) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, unionid)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/user/getbyunionid";
         // 调用接口
@@ -305,7 +301,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> getUserDetailByUserId(String accessToken, String userid) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, userid)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/v2/user/get";
         JSONObject formBody = new JSONObject().set("userid", userid).set("language", "zh_CN");
@@ -322,7 +318,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> sendRobotMsg(String accessToken, JSONObject formBody) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/robot/send";
         // 调用接口
@@ -338,7 +334,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> sendNotifyMsg(String accessToken, JSONObject formBody) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/message/corpconversation/asyncsend_v2";
         // 调用接口
@@ -354,7 +350,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> registerCallback(String accessToken, String aesKey, String token, String callbackUrl, String[] callbackTag) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, aesKey, token)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/call_back/register_call_back";
         JSONObject formBody = new JSONObject()
@@ -375,7 +371,7 @@ public class DingTalkApiUtils {
     public static ApiResult<?> uploadMedia(String accessToken, String type, String filePath) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = HttpUtil.urlWithForm(BASE_URL + "/media/upload", Dict.create().set("access_token", accessToken), Charset.defaultCharset(), true);
         try {
@@ -393,7 +389,7 @@ public class DingTalkApiUtils {
             });
             return apiResult;
         } catch (Exception e) {
-            return apiResult.error(ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, url + "=>exception=>" + e.getMessage());
         }
     }
 
@@ -404,7 +400,7 @@ public class DingTalkApiUtils {
     public static ApiResult<?> asrVoiceTranslate(String accessToken, String mediaId) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, mediaId)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/asr/voice/translate";
         JSONObject formBody = new JSONObject().set("media_id", mediaId);
@@ -421,7 +417,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> ocrStructuredRecognize(String accessToken, String type, String mediaUrl) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, mediaUrl)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/ocr/structured/recognize";
         JSONObject formBody = new JSONObject()
@@ -441,7 +437,7 @@ public class DingTalkApiUtils {
         // 三元组结果
         ApiResult<List<Integer>> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/v2/department/listsubid";
         JSONObject formBody = new JSONObject().set("dept_id", deptId);
@@ -458,7 +454,7 @@ public class DingTalkApiUtils {
     public static ApiResult<JSONObject> getUserListByDeptId(String accessToken, JSONObject formBody) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/v2/user/list";
         // 调用接口
@@ -475,7 +471,7 @@ public class DingTalkApiUtils {
     public static ApiResult<List<Integer>> getAllDeptIdList(String accessToken) {
         ApiResult<List<Integer>> apiResult = new ApiResult<List<Integer>>().success(); // 默认是success
         if (StrUtil.hasBlank(accessToken)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 初始化的时候把根id放进去，用户可能会挂载根上
         List<Integer> departmemtIdList = CollUtil.newArrayList(1);
@@ -511,7 +507,7 @@ public class DingTalkApiUtils {
     public static ApiResult<List<JSONObject>> getUserListByDeptIds(String accessToken, List<Integer> deptIds) {
         ApiResult<List<JSONObject>> apiResult = new ApiResult<List<JSONObject>>().success(); // 默认是success
         if (StrUtil.hasBlank(accessToken) || CollUtil.isEmpty(deptIds)) {
-            return apiResult.error(ERROR_CODE_BAD_REQUEST, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         List<JSONObject> userList = new ArrayList<>();
         deptIds.forEach(deptId -> {
