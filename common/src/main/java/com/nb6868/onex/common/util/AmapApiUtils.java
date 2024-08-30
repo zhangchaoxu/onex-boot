@@ -35,7 +35,7 @@ public class AmapApiUtils {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         // 将参数拼接到url上
-        url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), true);
+        url = HttpUtil.urlWithFormUrlEncoded(url, paramMap, Charset.defaultCharset());
         try {
             HttpRequest request = HttpRequest.get(url);
             log.debug(request.toString());
@@ -114,7 +114,7 @@ public class AmapApiUtils {
      * <a href="https://lbs.amap.com/api/webservice/guide/api/staticmaps">...</a>
      */
     public static String staticmap(JSONObject paramMap) {
-        return HttpUtil.urlWithForm(BASE_URL + "/v3/staticmap", paramMap, Charset.defaultCharset(), true);
+        return HttpUtil.urlWithFormUrlEncoded(BASE_URL + "/v3/staticmap", paramMap, Charset.defaultCharset());
     }
 
     /**
