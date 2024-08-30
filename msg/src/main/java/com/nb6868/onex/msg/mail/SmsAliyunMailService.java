@@ -11,7 +11,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.JacksonUtils;
 import com.nb6868.onex.common.util.SignUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
@@ -20,10 +19,7 @@ import com.nb6868.onex.msg.entity.MsgTplEntity;
 import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,7 +92,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.put("Signature", sign);
         // 调用接口发送
         try {
-            String url = HttpUtil.urlWithForm("http://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset(), true);
+            String url = HttpUtil.urlWithFormUrlEncoded("http://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset());
             String result = HttpUtil.get(url);
             JSONObject resultJson = JSONUtil.parseObj(result);
             mailLog.setResult(result);

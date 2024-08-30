@@ -68,11 +68,11 @@ public class SmsJuheMailService extends AbstractMailService {
         // 调用接口发送
         try {
             // "http://v.juhe.cn/sms/send?key={1}&mobile={2}&tpl_id={3}&tpl_value={4}"
-            String url = HttpUtil.urlWithForm(BASE_URL + "/sms/send", Dict.create()
+            String url = HttpUtil.urlWithFormUrlEncoded(BASE_URL + "/sms/send", Dict.create()
                     .set("key", mailTpl.getParams().getStr("AppKeyId"))
                     .set("tpl_id", mailTpl.getParams().getStr("TemplateId"))
                     .set("tpl_value", paramJuhe.toString())
-                    .set("mobile", request.getMailTo()), Charset.defaultCharset(), true);
+                    .set("mobile", request.getMailTo()), Charset.defaultCharset());
             String result = HttpUtil.get(url);
             JSONObject resultJson = JSONUtil.parseObj(result);
             mailLog.setResult(result);
