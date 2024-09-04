@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [4.1.59] 2024.08.26
+- upgrade: upgrade aws-s3 to 2.27.17
+- upgrade: upgrade huaweicloud obs to 3.24.8
+- upgrade: upgrade hutool to 5.8.32
+- enhance: change api method
+
 ## [4.1.50] 2024.08.26
 - upgrade: upgrade aws-s3 to 2.27.12
 - upgrade: upgrade springboot to 3.3.3
