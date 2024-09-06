@@ -16,7 +16,7 @@ import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.Const;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.DingTalkApiUtils;
+import com.nb6868.onex.common.util.DingTalkApi;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
@@ -67,11 +67,11 @@ public class AuthDingtalkController {
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
         AssertUtils.isTrue(StrUtil.hasBlank(loginParams.getStr("appId"), loginParams.getStr("appSecret")), "登录配置缺少appId和appSecret信息");
 
-        ApiResult<String> userAccessToken = DingTalkApiUtils.getUserAccessToken(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
+        ApiResult<String> userAccessToken = DingTalkApi.getUserAccessToken(loginParams.getStr("appId"), loginParams.getStr("appSecret"), form.getCode());
         AssertUtils.isTrue(userAccessToken.isSuccess(), userAccessToken.getMsg());
-        ApiResult<JSONObject> userContact = DingTalkApiUtils.getUserContact(userAccessToken.getData(), "me");
+        ApiResult<JSONObject> userContact = DingTalkApi.getUserContact(userAccessToken.getData(), "me");
         AssertUtils.isTrue(userContact.isSuccess(), userContact.getMsg());
-        ApiResult<JSONObject> userIdResponse = DingTalkApiUtils.getUserIdByUnionid(userAccessToken.getData(), userContact.getData().getStr("unionId"));
+        ApiResult<JSONObject> userIdResponse = DingTalkApi.getUserIdByUnionid(userAccessToken.getData(), userContact.getData().getStr("unionId"));
         AssertUtils.isTrue(userIdResponse.isSuccess(), userIdResponse.getMsg());
         // 封装自己的业务逻辑,比如用userId去找用户
         UserEntity user = userService.query().eq("oauth_userid", userIdResponse.getData().getStr("userid")).last(Const.LIMIT_ONE).one();

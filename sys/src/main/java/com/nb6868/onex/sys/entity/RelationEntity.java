@@ -32,4 +32,5 @@ public class RelationEntity extends BaseEntity {
      * 排序
      */
     private Integer sort;
+
 }

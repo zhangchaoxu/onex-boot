@@ -7,7 +7,7 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.DingTalkApiUtils;
+import com.nb6868.onex.common.util.DingTalkApi;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.entity.MsgLogEntity;
@@ -49,9 +49,9 @@ public class DingtalkNotifyMailService extends AbstractMailService {
         mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         mailLogService.save(mailLog);
 
-        ApiResult<String> accessTokenResult = DingTalkApiUtils.getOauth2AccessToken(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), false);
+        ApiResult<String> accessTokenResult = DingTalkApi.getOauth2AccessToken(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), false);
         if (accessTokenResult.isSuccess()) {
-            ApiResult<JSONObject> sendResult = DingTalkApiUtils.sendNotifyMsg(accessTokenResult.getData(), params);
+            ApiResult<JSONObject> sendResult = DingTalkApi.sendNotifyMsg(accessTokenResult.getData(), params);
             mailLog.setState(sendResult.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
             mailLog.setResult(sendResult.getCodeMsg());
             mailLogService.updateById(mailLog);

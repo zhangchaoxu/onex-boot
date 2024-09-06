@@ -9,5 +9,5 @@ import lombok.extern.slf4j.Slf4j;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class AliyunOssApiUtils {
+public class AliyunOssApi {
 }

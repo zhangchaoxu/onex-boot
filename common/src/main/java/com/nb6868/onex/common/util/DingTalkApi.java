@@ -5,9 +5,11 @@ import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.pojo.ApiResult;
@@ -27,7 +29,7 @@ import java.util.function.Function;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class DingTalkApiUtils {
+public class DingTalkApi {
 
     // token 缓存,有效时间2小时
     private static TimedCache<String, String> tokenCache = CacheUtil.newTimedCache(7200 * 1000);
@@ -56,9 +58,9 @@ public class DingTalkApiUtils {
      * @param paramMap 请求参数,会拼接到url中
      */
     public static ApiResult<JSONObject> baseCallApiGet(String url, JSONObject paramMap) {
-        ApiResult<JSONObject> apiResult = ApiResult.of();
+        ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
         }
         // 将参数拼接到url上
         url = HttpUtil.urlWithFormUrlEncoded(url, paramMap, Charset.defaultCharset());
@@ -73,8 +75,12 @@ public class DingTalkApiUtils {
                         .setData(resultJson);
             });
             return apiResult;
+        } catch (HttpException he) {
+            return apiResult.error(ApiResult.ERROR_CODE_HTTP_EXCEPTION, url + "=>http exception=>" + he.getMessage()).setRetry(true);
+        } catch (JSONException je) {
+            return apiResult.error(ApiResult.ERROR_CODE_JSON_EXCEPTION, url + "=>http exception=>" + je.getMessage()).setRetry(true);
         } catch (Exception e) {
-            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage()).setRetry(true);
         }
     }
 
@@ -85,9 +91,9 @@ public class DingTalkApiUtils {
      * @param paramMap 请求参数
      */
     public static ApiResult<JSONObject> baseCallApiPostJson(String url, String accessToken, JSONObject paramMap) {
-        ApiResult<JSONObject> apiResult = ApiResult.of();
+        ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
         }
         // 将accessToken参数拼接到url上
         if (StrUtil.isNotBlank(accessToken)) {
@@ -110,8 +116,12 @@ public class DingTalkApiUtils {
                         .setData(resultJson);
             });
             return apiResult;
+        } catch (HttpException he) {
+            return apiResult.error(ApiResult.ERROR_CODE_HTTP_EXCEPTION, url + "=>http exception=>" + he.getMessage()).setRetry(true);
+        } catch (JSONException je) {
+            return apiResult.error(ApiResult.ERROR_CODE_JSON_EXCEPTION, url + "=>http exception=>" + je.getMessage()).setRetry(true);
         } catch (Exception e) {
-            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage()).setRetry(true);
         }
     }
 
@@ -123,9 +133,9 @@ public class DingTalkApiUtils {
      * @param paramMap 请求参数
      */
     public static ApiResult<JSONObject> baseCallApiPostJsonV2(String url, String accessToken, JSONObject paramMap) {
-        ApiResult<JSONObject> apiResult = ApiResult.of();
+        ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
         }
         // 将参数拼接到url上
         url = HttpUtil.urlWithFormUrlEncoded(url, paramMap, Charset.defaultCharset());
@@ -147,8 +157,12 @@ public class DingTalkApiUtils {
                         .setData(resultJson);
             });
             return apiResult;
+        } catch (HttpException he) {
+            return apiResult.error(ApiResult.ERROR_CODE_HTTP_EXCEPTION, url + "=>http exception=>" + he.getMessage()).setRetry(true);
+        } catch (JSONException je) {
+            return apiResult.error(ApiResult.ERROR_CODE_JSON_EXCEPTION, url + "=>http exception=>" + je.getMessage()).setRetry(true);
         } catch (Exception e) {
-            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage()).setRetry(true);
         }
     }
 

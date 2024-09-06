@@ -7,7 +7,7 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.Const;
-import com.nb6868.onex.common.util.DingTalkApiUtils;
+import com.nb6868.onex.common.util.DingTalkApi;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.entity.MsgLogEntity;
@@ -55,7 +55,7 @@ public class DingtalkRobotMailService extends AbstractMailService {
         mailLogService.save(mailLog);
 
         // https://oapi.dingtalk.com/robot/send?access_token=xxxx
-        ApiResult<JSONObject> sendResponse = DingTalkApiUtils.sendRobotMsg(mailTpl.getParams().getStr("AccessToken"), request.getContentParams());
+        ApiResult<JSONObject> sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("AccessToken"), request.getContentParams());
         mailLog.setState(sendResponse.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.value() : MsgConst.MailSendStateEnum.FAIL.value());
         mailLog.setResult(sendResponse.getCodeMsg());
         mailLogService.updateById(mailLog);

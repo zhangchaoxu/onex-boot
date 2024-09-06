@@ -21,16 +21,6 @@ import java.util.Map;
 @Service
 public class RegionService extends DtoService<RegionDao, RegionEntity, RegionDTO> {
 
-    @Override
-    public QueryWrapper<RegionEntity> getWrapper(String method, Map<String, Object> params) {
-        return new WrapperUtils<RegionEntity>(new QueryWrapper<>(), params)
-                .eq("id", "id")
-                .eq("pid", "pid")
-                .eq("deep", "deep")
-                .like("name", "name")
-                .getQueryWrapper();
-    }
-
     /**
      * 通过id获得pcdt
      */

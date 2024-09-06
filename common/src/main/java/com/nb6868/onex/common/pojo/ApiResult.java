@@ -20,10 +20,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiResult<T> implements Serializable {
 
-    // 错误码，异常错误
-    public static final String ERROR_CODE_EXCEPTION = "999500";
-    // 错误码，入参错误
-    public static final String ERROR_CODE_PARAMS = "999400";
+    public static final String ERROR_CODE_HTTP_EXCEPTION = "999501"; // 网络异常
+    public static final String ERROR_CODE_JSON_EXCEPTION = "999502"; // JSON异常
+    public static final String ERROR_CODE_EXCEPTION = "999500"; // 其它异常
+    public static final String ERROR_CODE_PARAMS = "999400"; // 参数异常
 
     @Schema(description = "是否成功")
     private boolean success;
@@ -73,6 +73,12 @@ public class ApiResult<T> implements Serializable {
         return this;
     }
 
+    public ApiResult<T> error(String code) {
+        this.setSuccess(false);
+        this.setCode(code);
+        return this;
+    }
+
     public ApiResult<T> error(String code, String msg) {
         this.setSuccess(false);
         this.setCode(code);
@@ -88,7 +94,11 @@ public class ApiResult<T> implements Serializable {
     }
 
     public String getCodeMsg() {
-        return StrUtil.format("{}:{}", StrUtil.nullToEmpty(getCode()), StrUtil.nullToEmpty(getMsg()));
+        if (StrUtil.equalsIgnoreCase(getCode(), getMsg())) {
+            return StrUtil.format("{}", StrUtil.nullToEmpty(getCode()));
+        } else {
+            return StrUtil.format("{}:{}", StrUtil.nullToEmpty(getCode()), StrUtil.nullToEmpty(getMsg()));
+        }
     }
 
 }

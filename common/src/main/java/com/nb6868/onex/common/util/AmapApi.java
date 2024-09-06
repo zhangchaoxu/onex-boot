@@ -1,8 +1,10 @@
 package com.nb6868.onex.common.util;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.pojo.ApiResult;
@@ -19,20 +21,20 @@ import java.nio.charset.Charset;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-public class AmapApiUtils {
+public class AmapApi {
 
     public static final String BASE_URL = "https://restapi.amap.com";
 
     /**
      * 公共基础调用方法
      *
-     * @param url 请求连接
+     * @param url      请求连接
      * @param paramMap 请求参数,会拼接到url中
      */
     public static ApiResult<JSONObject> baseCallApiGet(String url, JSONObject paramMap) {
-        ApiResult<JSONObject> apiResult = ApiResult.of();
+        ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
         if (StrUtil.isBlank(url)) {
-            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
         }
         // 将参数拼接到url上
         url = HttpUtil.urlWithFormUrlEncoded(url, paramMap, Charset.defaultCharset());
@@ -47,8 +49,12 @@ public class AmapApiUtils {
                         .setData(resultJson);
             });
             return apiResult;
+        } catch (HttpException he) {
+            return apiResult.error(ApiResult.ERROR_CODE_HTTP_EXCEPTION, url + "=>http exception=>" + he.getMessage()).setRetry(true);
+        } catch (JSONException je) {
+            return apiResult.error(ApiResult.ERROR_CODE_JSON_EXCEPTION, url + "=>http exception=>" + je.getMessage()).setRetry(true);
         } catch (Exception e) {
-            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage());
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage()).setRetry(true);
         }
     }
 
