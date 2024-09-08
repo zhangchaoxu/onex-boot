@@ -26,18 +26,6 @@ import static com.nb6868.onex.common.pojo.Const.LIMIT_ONE;
 public class DictService extends DtoService<DictDao, DictEntity, DictDTO> {
 
     @Override
-    public QueryWrapper<DictEntity> getWrapper(String method, Map<String, Object> params) {
-        return new WrapperUtils<DictEntity>(new QueryWrapper<>(), params)
-                .eq("pid", "pid")
-                .eq("type", "type")
-                .like("name", "name")
-                .eq("value", "value")
-                .getQueryWrapper()
-                .ne(ObjectUtils.isEmpty(MapUtil.getLong(params, "pid")), "pid", 0)
-                .orderByAsc(Arrays.asList("sort", "value"));
-    }
-
-    @Override
     protected void beforeSaveOrUpdateDto(DictDTO dto, int type) {
         if (type == 1 && dto.getPid() == Const.DICT_ROOT.longValue()) {
             // 更新下面所有的父类

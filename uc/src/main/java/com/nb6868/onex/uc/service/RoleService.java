@@ -40,7 +40,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    protected void afterSaveOrUpdateDto(boolean ret, RoleDTO dto, RoleEntity existedEntity, int type) {
+    public void afterSaveOrUpdateDto(boolean ret, RoleDTO dto, RoleEntity existedEntity, int type) {
         if (ret) {
             // 重新保存角色和菜单关系表
             menuService.saveOrUpdateByRoleIdAndMenuIds(dto.getId(), dto.getMenuIdList());

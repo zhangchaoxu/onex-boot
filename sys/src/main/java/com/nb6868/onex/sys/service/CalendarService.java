@@ -1,16 +1,19 @@
 package com.nb6868.onex.sys.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.sys.SysConst;
 import com.nb6868.onex.sys.dao.CalendarDao;
 import com.nb6868.onex.sys.dto.CalendarDTO;
 import com.nb6868.onex.sys.entity.CalendarEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 万年历
@@ -25,7 +28,37 @@ public class CalendarService extends DtoService<CalendarDao, CalendarEntity, Cal
      */
     public boolean isWorkday(String day) {
         CalendarEntity calendarEntity = getOneByColumn("day_date", day);
-        return calendarEntity != null && (calendarEntity.getType() == 0 || calendarEntity.getType() == 3);
+        return calendarEntity != null && (calendarEntity.getType() == SysConst.CalenderTypeEnum.WORKDAY.value() || calendarEntity.getType() == SysConst.CalenderTypeEnum.HOLIDAY_EXCHANGE.value());
+    }
+
+    /**
+     * 获取时间区间内某类型的数据
+     *
+     * @param startDay 开始日期
+     * @param endDay   结束日期
+     * @return 日期数组
+     */
+    public List<Date> getDayList(Integer type, String startDay, String endDay) {
+        return CollStreamUtil.toList(lambdaQuery().select(CalendarEntity::getDayDate)
+                .between(CalendarEntity::getDayDate, startDay, endDay)
+                .eq(type != null, CalendarEntity::getType, type)
+                .orderByAsc(CalendarEntity::getDayDate)
+                .list(), CalendarEntity::getDayDate);
+    }
+
+    /**
+     * 获取时间区间内某类型的数量
+     *
+     * @param startDay 开始日期
+     * @param endDay   结束日期
+     * @return 日期天数
+     */
+    public Long getDayCount(Integer type, String startDay, String endDay) {
+        return lambdaQuery().select(CalendarEntity::getDayDate)
+                .between(CalendarEntity::getDayDate, startDay, endDay)
+                .eq(type != null, CalendarEntity::getType, type)
+                .orderByAsc(CalendarEntity::getDayDate)
+                .count();
     }
 
     /**

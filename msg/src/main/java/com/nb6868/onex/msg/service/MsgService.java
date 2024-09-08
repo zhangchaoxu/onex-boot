@@ -47,7 +47,11 @@ public class MsgService implements BaseMsgService {
      */
     @Override
     public boolean consumeLog(Long logId) {
-        return msgLogService.update().eq("id", logId).set("consume_state", Const.BooleanEnum.TRUE.value()).update(new MsgLogEntity());
+        return msgLogService
+                .lambdaUpdate()
+                .eq(MsgLogEntity::getId, logId)
+                .set(MsgLogEntity::getConsumeState, Const.BooleanEnum.TRUE.value())
+                .update(new MsgLogEntity());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.nb6868.onex.sys.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.sys.dao.RelationDao;
@@ -9,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 系统-中间关系表
@@ -77,17 +76,12 @@ public class RelationService extends EntityService<RelationDao, RelationEntity> 
      * @return 关联列表
      */
     public List<Long> getRightIdListByLeftId(String type, Long leftId) {
-        return lambdaQuery()
+        return CollStreamUtil.toList(lambdaQuery()
                 .select(RelationEntity::getRightId)
                 .eq(RelationEntity::getType, type)
                 .eq(RelationEntity::getLeftId, leftId)
                 .orderByAsc(RelationEntity::getSort, RelationEntity::getId)
-                .list()
-                // 数据过滤字段
-                .stream()
-                .filter(Objects::nonNull)
-                .map(RelationEntity::getRightId)
-                .collect(Collectors.toList());
+                .list(), RelationEntity::getRightId);
     }
 
 }

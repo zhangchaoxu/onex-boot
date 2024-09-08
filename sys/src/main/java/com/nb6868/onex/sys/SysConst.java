@@ -42,4 +42,40 @@ public interface SysConst {
         }
     }
 
+
+    /**
+     * 日历类型
+     * 0工作日/1周末/2节日/3调休
+     */
+    enum CalenderTypeEnum {
+
+        /**
+         * 详见name
+         */
+        WORKDAY(0, "工作日"),
+        WEEKEND(1, "周末"),
+        HOLIDAY(2, "节日"),
+        HOLIDAY_EXCHANGE(3, "调休");
+
+        private int value;
+        private String name;
+
+        CalenderTypeEnum(int value) {
+            this.value = value;
+        }
+
+        CalenderTypeEnum(int value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int value() {
+            return this.value;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
 }
