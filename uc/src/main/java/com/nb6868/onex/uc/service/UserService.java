@@ -1,5 +1,7 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -14,14 +16,15 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.UserDao;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import jakarta.validation.constraints.NotNull;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 用户
@@ -32,15 +35,15 @@ import java.util.*;
 public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
 
     @Autowired
-    private ShiroDao shiroDao;
+    ShiroDao shiroDao;
     @Autowired
-    private MenuScopeService menuScopeService;
+    MenuScopeService menuScopeService;
     @Autowired
-    private MenuService menuService;
+    MenuService menuService;
     @Autowired
-    private TokenService tokenService;
+    TokenService tokenService;
     @Autowired
-    private RoleUserService roleUserService;
+    RoleUserService roleUserService;
 
     /**
      * 获取用户权限列表
@@ -103,8 +106,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * @return 用户
      */
     public UserEntity getByUsername(String tenantCode, @NotNull String username) {
-        return query().eq("username", username)
-                .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
+        return lambdaQuery().eq(UserEntity::getUsername, username)
+                .eq(StrUtil.isNotBlank(tenantCode), UserEntity::getTenantCode, tenantCode)
                 .last(Const.LIMIT_ONE)
                 .one();
     }
@@ -114,12 +117,11 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      *
      * @param tenantCode 租户编码
      * @param mobile     手机号
-     *
      * @return 用户
      */
     public UserEntity getByMobile(String tenantCode, @NotNull String mobile) {
-        return query().eq("mobile", mobile)
-                .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
+        return lambdaQuery().eq(UserEntity::getMobile, mobile)
+                .eq(StrUtil.isNotBlank(tenantCode), UserEntity::getTenantCode, tenantCode)
                 .last(Const.LIMIT_ONE)
                 .one();
     }
@@ -175,10 +177,10 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updatePassword(Long id, String newPassword) {
-        return update()
-                .eq("id", id)
-                .set("password", PasswordUtils.encode(newPassword))
-                .set("password_raw", PasswordUtils.aesEncode(newPassword, Const.AES_KEY))
+        return lambdaUpdate()
+                .eq(UserEntity::getId, id)
+                .set(UserEntity::getPassword, PasswordUtils.encode(newPassword))
+                .set(UserEntity::getPasswordRaw, PasswordUtils.aesEncode(newPassword, Const.AES_KEY))
                 .update(new UserEntity());
     }
 
@@ -191,6 +193,36 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         removeByIds(mergeFrom);
         // 将被删除业务数据中的create_id/update_id更新为mergeTo
         return true;
+    }
+
+    /**
+     * 通过用户ids获得用户真实名列表
+     */
+    public List<String> getUsernameListByUserIds(List<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return CollUtil.newArrayList();
+        }
+        return CollStreamUtil.toList(lambdaQuery().select(UserEntity::getUsername).in(UserEntity::getId, ids).list(), UserEntity::getUsername);
+    }
+
+    /**
+     * 通过用户ids获得用户手机号列表
+     */
+    public List<String> getMobileListByUserIds(List<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return CollUtil.newArrayList();
+        }
+        return CollStreamUtil.toList(lambdaQuery().select(UserEntity::getMobile).in(UserEntity::getId, ids).list(), UserEntity::getMobile);
+    }
+
+    /**
+     * 通过用户ids获得用户真实姓名列表
+     */
+    public List<String> getRealNameListByUserIds(List<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return CollUtil.newArrayList();
+        }
+        return CollStreamUtil.toList(lambdaQuery().select(UserEntity::getRealName).in(UserEntity::getId, ids).list(), UserEntity::getRealName);
     }
 
 }

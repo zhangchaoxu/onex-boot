@@ -25,11 +25,11 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired
-    private UserService userService;
+    UserService userService;
     @Autowired
-    private BaseLogService logService;
+    BaseLogService logService;
     @Autowired
-    private BaseMsgService msgService;
+    BaseMsgService msgService;
 
     /**
      * 帐号密码登录

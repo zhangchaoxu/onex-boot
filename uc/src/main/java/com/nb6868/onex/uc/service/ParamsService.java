@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.params.ParamsProps;
@@ -12,10 +13,9 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.ParamsDao;
 import com.nb6868.onex.uc.dto.ParamsDTO;
 import com.nb6868.onex.uc.entity.ParamsEntity;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import jakarta.validation.constraints.NotNull;
 
 /**
  * 租户参数
@@ -26,7 +26,7 @@ import jakarta.validation.constraints.NotNull;
 public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO> implements BaseParamsService {
 
     @Autowired
-    private ParamsProps paramsProps;
+    ParamsProps paramsProps;
 
     @Override
     public <T> T getSystemPropsObject(String code, Class<T> clazz, T defObj) {
@@ -77,12 +77,12 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
      */
     @Override
     public String getContent(Integer type, String tenantCode, Long userId, String code, String contentJsonKey, String contentJsonValue) {
-        return query().select("content")
-                .eq(StrUtil.isNotBlank(tenantCode), "tenant_code", tenantCode)
-                .eq(StrUtil.isNotBlank(code), "code", code)
-                .eq(null != type, "type", type)
-                .eq(null != userId, "user_id", userId)
-                .eq(StrUtil.isAllNotBlank(contentJsonKey, contentJsonValue), "content->'$." + contentJsonKey + "'", contentJsonValue)
+        return lambdaQuery().select(ParamsEntity::getContent)
+                .eq(StrUtil.isNotBlank(tenantCode), ParamsEntity::getTenantCode, tenantCode)
+                .eq(StrUtil.isNotBlank(code), ParamsEntity::getCode, code)
+                .eq(null != type, ParamsEntity::getType, type)
+                .eq(null != userId, ParamsEntity::getUserId, userId)
+                .eq(StrUtil.isAllNotBlank(contentJsonKey, contentJsonValue), (SFunction<ParamsEntity, String>) paramsEntity -> "content->'$." + contentJsonKey + "'", contentJsonValue)
                 .last(Const.LIMIT_ONE)
                 .oneOpt()
                 .map(ParamsEntity::getContent)
@@ -145,7 +145,11 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
      * 新增或者更新数据,通过code来判断
      */
     public ParamsEntity saveOrUpdateUserParams(String code, String content, String scope, Long userId) {
-        ParamsEntity params = query().eq("type", UcConst.ParamsTypeEnum.USER.value()).eq("code", code).eq("user_id", userId).last(Const.LIMIT_ONE).one();
+        ParamsEntity params = lambdaQuery().eq(ParamsEntity::getType, UcConst.ParamsTypeEnum.USER.value())
+                .eq(ParamsEntity::getCode, code)
+                .eq(ParamsEntity::getUserId, userId)
+                .last(Const.LIMIT_ONE)
+                .one();
         if (params != null) {
             params.setContent(content);
             params.setScope(scope);
@@ -166,7 +170,7 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
      * 新增或者更新数据,通过code来判断
      */
     public ParamsEntity saveOrUpdateSystemParams(String code, String content, String scope) {
-        ParamsEntity params = query().eq("type", UcConst.ParamsTypeEnum.SYSTEM.value()).eq("code", code).last(Const.LIMIT_ONE).one();
+        ParamsEntity params = lambdaQuery().eq(ParamsEntity::getType, UcConst.ParamsTypeEnum.SYSTEM.value()).eq(ParamsEntity::getCode, code).last(Const.LIMIT_ONE).one();
         if (params != null) {
             params.setContent(content);
             params.setScope(scope);
@@ -186,7 +190,7 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
      * 新增或者更新数据,通过code来判断
      */
     public ParamsEntity saveOrUpdateTenantParams(String code, String content, String scope, String tenantCode) {
-        ParamsEntity params = query().eq("type", UcConst.ParamsTypeEnum.TENANT.value()).eq("tenant_code", tenantCode).eq("code", code).last(Const.LIMIT_ONE).one();
+        ParamsEntity params = lambdaQuery().eq(ParamsEntity::getType, UcConst.ParamsTypeEnum.TENANT.value()).eq(ParamsEntity::getTenantCode, tenantCode).eq(ParamsEntity::getCode, code).last(Const.LIMIT_ONE).one();
         if (params != null) {
             params.setContent(content);
             params.setScope(scope);
