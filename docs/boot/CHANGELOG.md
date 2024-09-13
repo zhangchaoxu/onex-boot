@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [4.1.64] 2024.09.13
+- upgrade: upgrade aws-s3 to 2.27.24
+- upgrade: upgrade easyexcel to 4.0.3
+- upgrade: upgrade maven build tool version
+
 ## [4.1.59] 2024.08.26
 - upgrade: upgrade aws-s3 to 2.27.17
 - upgrade: upgrade huaweicloud obs to 3.24.8
@@ -21,6 +26,7 @@
 - enhance: add matedata for oss inputstream upload
 - 
 ## [4.1.38] 2024.07.29
+
 - upgrade: upgrade aws-s3 to 2.26.25
 - upgrade: upgrade aliyun-oss to 3.18.1
 

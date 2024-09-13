@@ -6,6 +6,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.SysConst;
 import com.nb6868.onex.sys.dao.CalendarDao;
 import com.nb6868.onex.sys.dto.CalendarDTO;
@@ -28,7 +29,8 @@ public class CalendarService extends DtoService<CalendarDao, CalendarEntity, Cal
      */
     public boolean isWorkday(String day) {
         CalendarEntity calendarEntity = getOneByColumn("day_date", day);
-        return calendarEntity != null && (calendarEntity.getType() == SysConst.CalenderTypeEnum.WORKDAY.value() || calendarEntity.getType() == SysConst.CalenderTypeEnum.HOLIDAY_EXCHANGE.value());
+        AssertUtils.isNull(calendarEntity, "日期超出数据库内数据范围:" + day);
+        return calendarEntity.getType() == SysConst.CalenderTypeEnum.WORKDAY.value() || calendarEntity.getType() == SysConst.CalenderTypeEnum.HOLIDAY_EXCHANGE.value();
     }
 
     /**
