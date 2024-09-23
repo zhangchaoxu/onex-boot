@@ -49,3 +49,11 @@ grant select,create on {databaseName}.{tableName} to '{username}'@'{授权ip, %�
 # 刷新授权
 flush privileges;
 ```
+
+### 修复表
+SQLException; SQL state [HY000]; error code [1114]; The table '/tmp/#sql40d5_e_1' is full
+在my.cnf文件中加入
+```
+[mysqld]
+internal_tmp_mem_storage_engine = MEMORY
+```
