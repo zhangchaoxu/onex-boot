@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.1.68</version>
+        <version>4.1.69</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -29,7 +29,7 @@
         <weixin.version>4.6.0</weixin.version>
         <aliyun-oss.version>3.18.1</aliyun-oss.version>
         <huaweicloud-obs.version>3.24.8</huaweicloud-obs.version>
-        <aws-s3.version>2.28.7</aws-s3.version>
+        <aws-s3.version>2.28.11</aws-s3.version>
         <poi.version>5.3.0</poi.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <easyexcel.version>4.0.3</easyexcel.version>
