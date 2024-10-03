@@ -1,11 +1,9 @@
 package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.date.DateField;
-import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.jpa.EntityService;
 import com.nb6868.onex.uc.dao.TokenDao;
 import com.nb6868.onex.uc.entity.TokenEntity;
@@ -31,7 +29,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @param tokenStoreType token存储类型
      * @param loginType 登录类型
      * @param tokenKey token密钥
-     * @param tokenExpire 有效期(秒) <=0 表示不限
+     * @param tokenExpire 有效期(秒) 小等于 0 表示不限
      * @param tokenLimit token限制策略 0不限制 1同type只允许一个 2同用户只允许一个
      * @return result
      */
