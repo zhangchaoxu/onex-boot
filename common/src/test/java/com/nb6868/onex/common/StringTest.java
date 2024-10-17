@@ -3,6 +3,8 @@ package com.nb6868.onex.common;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.format.FastDateFormat;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
@@ -29,10 +31,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.DigestUtils;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 @DisplayName("字符串测试")
@@ -303,6 +302,15 @@ public class StringTest {
         map.put("test", null);
         log.error(StrUtil.format(tpl, map, true));
         log.error(StrUtil.format(tpl, map, false));
+    }
+
+    @Test
+    @DisplayName("时间测试")
+    void dateTest() {
+        String fmt = DateUtil.format(new Date(), FastDateFormat.getInstance("yyyyMMdd'T'HHmmss'Z'", TimeZone.getTimeZone("GMT+08:00")));
+        String fmt2 = DateUtil.formatHttpDate(new Date());
+        log.error("fmt={}", fmt);
+        log.error("fmt2={}", fmt2);
     }
 
 }

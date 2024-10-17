@@ -14,7 +14,7 @@ import java.nio.charset.Charset;
 
 /**
  * 高德 Web服务 API
- * 高德有应该隐藏参数s=rsv3,可以将webApi的接口当前端接口用,避免USERKEY_PLAT_NOMATCH的问题
+ * 高德隐藏参数s=rsv3,可以将webApi的接口当前端接口用,避免USERKEY_PLAT_NOMATCH的问题
  * <a href="https://lbs.amap.com/api/webservice/gettingstarted">文档</a>
  * <a href="https://lbs.amap.com/api/webservice/guide/tools/info">错误码</a>
  *

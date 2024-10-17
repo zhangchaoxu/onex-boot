@@ -45,6 +45,7 @@ public class GpsTest {
                 .set("radius", 200)
                 .set("batch", false)
                 .set("extensions", "base")
+                .set("s", "rsv3")
                 .set("key", AMAP_KEY)
                 .set("location", lngLat.toString());
         ApiResult<JSONObject> resp = AmapApi.geocodeRegeo(geocodeRegeoForm);
@@ -55,6 +56,7 @@ public class GpsTest {
                 .set("radius", 200)
                 .set("batch", false)
                 .set("extensions", "base")
+                .set("s", "rsv3")
                 .set("key", AMAP_KEY)
                 .set("location", gcj02.toString());
         ApiResult<JSONObject> resp2 = AmapApi.geocodeRegeo(geocodeRegeoForm2);

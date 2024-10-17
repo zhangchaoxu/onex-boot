@@ -18,7 +18,9 @@ public class OssFactory {
             return new AwsS3Service(config);
         } else if ("aliyun".equalsIgnoreCase(config.getType())) {
             return new AliyunOssService(config);
-        } else if ("huaweicloud".equalsIgnoreCase(config.getType())) {
+        } else if ("aliyunApi".equalsIgnoreCase(config.getType())) {
+            return new AliyunApiOssService(config);
+        } else if ("huaweiCloud".equalsIgnoreCase(config.getType())) {
             return new HuaweiCloudOssService(config);
         } else if ("local".equalsIgnoreCase(config.getType())) {
             return new LocalOssService(config);

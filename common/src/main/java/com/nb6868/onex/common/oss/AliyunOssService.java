@@ -136,6 +136,7 @@ public class AliyunOssService extends AbstractOssService {
                     .set("secure", config.getSecure())
                     .set("bucketName", config.getBucketName());
         } catch (ClientException e) {
+            log.error("aliyun oss get ste exception", e);
             throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, e);
         }
     }
