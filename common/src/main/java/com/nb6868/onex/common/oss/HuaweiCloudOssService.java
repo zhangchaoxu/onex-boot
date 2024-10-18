@@ -81,7 +81,7 @@ public class HuaweiCloudOssService extends AbstractOssService {
     }
 
     @Override
-    public String getPresignedUrl(String objectName, Long expiration) {
+    public String getPresignedUrl(String objectKey, String method, Long expire) {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "华为云存储暂不支持生成url模式");
     }
 

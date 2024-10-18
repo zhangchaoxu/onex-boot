@@ -16,6 +16,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.http.Method;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
@@ -30,7 +31,7 @@ import java.util.*;
 /**
  * 阿里云存储
  * see <a href="https://help.aliyun.com/document_detail/32008.html">...</a>
- *
+ * <p>
  * 如何配置访问OSS文件时是预览行为
  * see <a href="https://help.aliyun.com/zh/oss/user-guide/how-to-ensure-an-object-is-previewed-when-you-access-the-object">...</a>
  *
@@ -87,18 +88,54 @@ public class AliyunApiOssService extends AbstractOssService {
 
     @Override
     public InputStream download(String objectKey) {
-        return null;
+        Date date = DateUtil.date();
+        HttpRequest request = HttpRequest.get(StrUtil.format("http://{}.oss-{}.aliyuncs.com/{}", this.config.getBucketName(), this.config.getRegion(), objectKey))
+                //.header("Host", "xxx-dc.oss-cn-hangzhou.aliyuncs.com")
+                //.header("Date", DateUtil.format(date, DatePattern.HTTP_DATETIME_FORMAT))
+                .header("x-oss-content-sha256", "UNSIGNED-PAYLOAD")
+                .header("x-oss-date", DateUtil.format(date, FastDateFormat.getInstance("yyyyMMdd'T'HHmmss'Z'", TimeZone.getTimeZone("GMT"))));
+
+        String sign = signV4(request, date, this.config.getBucketName(), this.config.getRegion(), this.config.getAccessKeyId(), this.config.getAccessKeySecret());
+        request.header("Authorization", sign);
+        HttpResponse response;
+        try {
+            response = request.execute();
+        } catch (Exception e) {
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e.getMessage());
+        }
+        if (response.isOk()) {
+            // 成功
+            return response.bodyStream();
+        } else {
+            // 不成功，解析错误
+            Document resultDoc = XmlUtil.parseXml(response.body());
+            Object code = XmlUtil.getByXPath("//Error/Code", resultDoc, XPathConstants.STRING);
+            Object message = XmlUtil.getByXPath("//Error/Message", resultDoc, XPathConstants.STRING);
+            log.error("code={},msg={}", code, message);
+            log.error("res.body={}", response.body());
+            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, code.toString() + ":" + message.toString());
+        }
     }
 
 
     @Override
-    public String getPresignedUrl(String objectName, Long expire) {
+    public String getPresignedUrl(String objectKey, String method, Long expiration) {
+        Date date = DateUtil.date();
+        HttpRequest request = HttpRequest.of(StrUtil.format("http://{}.oss-{}.aliyuncs.com/{}", this.config.getBucketName(), this.config.getRegion(), objectKey))
+                .method(Method.valueOf(method.toUpperCase()))
+                //.header("Host", "xxx-dc.oss-cn-hangzhou.aliyuncs.com")
+                //.header("Date", DateUtil.format(date, DatePattern.HTTP_DATETIME_FORMAT))
+                .header("x-oss-expires", String.valueOf(expiration))
+                .header("x-oss-content-sha256", "UNSIGNED-PAYLOAD")
+                .header("x-oss-date", DateUtil.format(date, FastDateFormat.getInstance("yyyyMMdd'T'HHmmss'Z'", TimeZone.getTimeZone("GMT"))));
+
+        String sign = signV4(request, date, this.config.getBucketName(), this.config.getRegion(), this.config.getAccessKeyId(), this.config.getAccessKeySecret());
         return "";
     }
 
     @Override
     public JSONObject getSts() {
-       return null;
+        return null;
     }
 
     /**

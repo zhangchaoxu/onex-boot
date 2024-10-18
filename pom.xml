@@ -69,7 +69,7 @@
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <!-- libs -->
         <shiro.version>2.0.1</shiro.version>
-        <onex.version>4.1.70</onex.version>
+        <onex.version>4.1.71</onex.version>
     </properties>
 
     <dependencies>

@@ -164,7 +164,7 @@ public abstract class AbstractOssService {
     /**
      * 生成访问时间
      */
-    public abstract String getPresignedUrl(String objectName, Long expiration);
+    public abstract String getPresignedUrl(String objectKey, String method,  Long expiration);
 
     /**
      * 获得sts

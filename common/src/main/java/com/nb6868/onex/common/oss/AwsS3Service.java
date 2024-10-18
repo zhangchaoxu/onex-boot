@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.oss;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -17,6 +18,8 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 import software.amazon.awssdk.utils.IoUtils;
 
 import java.io.File;
@@ -24,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.Duration;
+import java.util.Date;
 import java.util.Map;
 
 import static software.amazon.awssdk.utils.FunctionalUtils.invokeSafely;
@@ -125,21 +129,40 @@ public class AwsS3Service extends AbstractOssService {
      * see https://docs.aws.amazon.com/zh_cn/sdk-for-java/latest/developer-guide/examples-s3-presign.html
      */
     @Override
-    public String getPresignedUrl(String objectKey, Long expire) {
+    public String getPresignedUrl(String objectKey, String method, Long expire) {
         try {
             S3Presigner presigner = S3Presigner.create();
-            GetObjectRequest objectRequest = GetObjectRequest.builder()
-                    .bucket(config.getBucketName())
-                    .key(objectKey)
-                    .build();
-
-            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofSeconds(expire))
-                    .getObjectRequest(objectRequest)
-                    .build();
-            PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
-            // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
-            return presignedRequest.url().toExternalForm();
+            if ("get".equalsIgnoreCase(method)) {
+                GetObjectRequest objectRequest = GetObjectRequest.builder()
+                        .bucket(config.getBucketName())
+                        // 设置过期时间
+                        .responseExpires(DateUtil.toInstant(DateUtil.offsetSecond(new Date(), expire.intValue())))
+                        .key(objectKey)
+                        .build();
+                GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                        .signatureDuration(Duration.ofSeconds(expire))
+                        .getObjectRequest(objectRequest)
+                        .build();
+                PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+                // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
+                return presignedRequest.url().toExternalForm();
+            } else if ("put".equalsIgnoreCase(method)) {
+                PutObjectRequest objectRequest = PutObjectRequest.builder()
+                        .bucket(config.getBucketName())
+                        // 设置过期时间
+                        .expires(DateUtil.toInstant(DateUtil.offsetSecond(new Date(), expire.intValue())))
+                        .key(objectKey)
+                        .build();
+                PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                        .signatureDuration(Duration.ofSeconds(expire))
+                        .putObjectRequest(objectRequest)
+                        .build();
+                PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
+                // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
+                return presignedRequest.url().toExternalForm();
+            } else {
+                throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR);
+            }
         } catch (S3Exception e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
         }

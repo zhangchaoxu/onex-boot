@@ -3,6 +3,7 @@ package com.nb6868.onex.common.oss;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
+import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
@@ -91,12 +92,12 @@ public class AliyunOssService extends AbstractOssService {
 
 
     @Override
-    public String getPresignedUrl(String objectName, Long expire) {
+    public String getPresignedUrl(String objectKey, String method, Long expire) {
         try {
             // 设置URL过期时间。
             Date expiration = DateUtil.offsetSecond(DateUtil.date(), expire.intValue());
             // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
-            URL url = s3Client.generatePresignedUrl(config.getBucketName(), objectName, expiration);
+            URL url = s3Client.generatePresignedUrl(config.getBucketName(), objectKey, expiration, HttpMethod.valueOf(method.toUpperCase()));
             return url.toString();
         } catch (com.aliyun.oss.ClientException e) {
             throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);

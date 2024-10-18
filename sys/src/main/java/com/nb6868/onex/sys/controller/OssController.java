@@ -293,7 +293,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.getPresignedUrl(form.getObjectName(), form.getExpiration());
+        String url = uploadService.getPresignedUrl(form.getObjectKey(), form.getMethod(), form.getExpiration());
 
         return new Result<>().success(url);
     }

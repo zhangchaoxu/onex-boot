@@ -40,7 +40,7 @@ public class LocalOssService extends AbstractOssService {
     }
 
     @Override
-    public String getPresignedUrl(String objectName, Long expiration) {
+    public String getPresignedUrl(String objectKey, String method, Long expire) {
         throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "本地存储不支持生成url模式");
     }
 
