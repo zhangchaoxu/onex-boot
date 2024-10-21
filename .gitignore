@@ -30,3 +30,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### confidential ###
+!**/src/test/resources/confidential/*.properties
+/common/src/test/resources/confidential/
