@@ -89,7 +89,7 @@ public class MultipartFileUtils {
                 .createItem("textField", "text/plain", true, file.getName());*/
         try {
             // IoUtil.copy(new FileInputStream(file), fileItem.getOutputStream());
-            return new MockMultipartFile(file.getName(), file.getName(), "text/plain", FileUtil.getInputStream(file));
+            return new MockMultipartFile(file.getName(), file.getName(), FileUtil.getMimeType(file.getPath()), FileUtil.getInputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

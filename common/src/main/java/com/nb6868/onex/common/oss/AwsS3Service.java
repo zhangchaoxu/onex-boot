@@ -5,6 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.pojo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -48,7 +49,6 @@ public class AwsS3Service extends AbstractOssService {
         s3Client = initClient();
     }
 
-
     /**
      * 初始化client
      */
@@ -70,21 +70,24 @@ public class AwsS3Service extends AbstractOssService {
     }
 
     @Override
-    public InputStream download(String objectKey) {
+    public ApiResult<InputStream> download(String objectKey) {
+        ApiResult<InputStream> apiResult = new ApiResult<>();
         try {
             GetObjectRequest objectRequest = GetObjectRequest
                     .builder()
                     .key(objectKey)
                     .bucket(config.getBucketName())
                     .build();
-            return s3Client.getObject(objectRequest);
+            apiResult.success(s3Client.getObject(objectRequest));
         } catch (S3Exception e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "文件下载异常:" + e.getMessage());
         }
+        return apiResult;
     }
 
     @Override
-    public String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
+    public ApiResult<JSONObject> upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
+        ApiResult<JSONObject> apiResult = new ApiResult<>();
         try {
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket(config.getBucketName())
@@ -100,27 +103,33 @@ public class AwsS3Service extends AbstractOssService {
                 }
                 return nonCloseable;
             }, inputStream.available(), MapUtil.getStr(objectMetadataMap, "ContentType", Mimetype.MIMETYPE_OCTET_STREAM));
-            s3Client.putObject(putOb, requestBody);
+            PutObjectResponse putObjectResult = s3Client.putObject(putOb, requestBody);
+            JSONObject resultJson = new JSONObject();
+            resultJson.set("eTag", putObjectResult.eTag());
+            resultJson.set("objectKey", objectKey);
+            apiResult.success(resultJson);
         } catch (IOException | S3Exception e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "文件上传异常:" + e.getMessage());
         }
-
-        return config.getDomain() + objectKey;
+        return apiResult;
     }
 
     @Override
-    public String upload(String objectKey, File file) {
+    public ApiResult<JSONObject> upload(String objectKey, File file) {
+        ApiResult<JSONObject> apiResult = new ApiResult<>();
         try {
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket(config.getBucketName())
                     .key(objectKey)
                     .build();
-            s3Client.putObject(putOb, RequestBody.fromFile(file));
+            PutObjectResponse putObjectResult = s3Client.putObject(putOb, RequestBody.fromFile(file));
+            JSONObject resultJson = new JSONObject();
+            resultJson.set("eTag", putObjectResult.eTag());
+            apiResult.success(resultJson);
         } catch (S3Exception e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "文件上传异常:" + e.getMessage());
         }
-
-        return config.getDomain() + objectKey;
+        return apiResult;
     }
 
     /**
@@ -129,14 +138,15 @@ public class AwsS3Service extends AbstractOssService {
      * see https://docs.aws.amazon.com/zh_cn/sdk-for-java/latest/developer-guide/examples-s3-presign.html
      */
     @Override
-    public String getPresignedUrl(String objectKey, String method, Long expire) {
+    public ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire) {
+        ApiResult<String> apiResult = new ApiResult<>();
         try {
             S3Presigner presigner = S3Presigner.create();
             if ("get".equalsIgnoreCase(method)) {
                 GetObjectRequest objectRequest = GetObjectRequest.builder()
                         .bucket(config.getBucketName())
                         // 设置过期时间
-                        .responseExpires(DateUtil.toInstant(DateUtil.offsetSecond(new Date(), expire.intValue())))
+                        .responseExpires(DateUtil.toInstant(DateUtil.offsetSecond(new Date(), expire)))
                         .key(objectKey)
                         .build();
                 GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
@@ -145,12 +155,12 @@ public class AwsS3Service extends AbstractOssService {
                         .build();
                 PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
                 // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
-                return presignedRequest.url().toExternalForm();
+                apiResult.success(presignedRequest.url().toExternalForm());
             } else if ("put".equalsIgnoreCase(method)) {
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                         .bucket(config.getBucketName())
                         // 设置过期时间
-                        .expires(DateUtil.toInstant(DateUtil.offsetSecond(new Date(), expire.intValue())))
+                        .expires(DateUtil.toInstant(DateUtil.offsetSecond(new Date(), expire)))
                         .key(objectKey)
                         .build();
                 PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
@@ -159,34 +169,33 @@ public class AwsS3Service extends AbstractOssService {
                         .build();
                 PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
                 // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
-                return presignedRequest.url().toExternalForm();
+                apiResult.success(presignedRequest.url().toExternalForm());
             } else {
-                throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR);
+                apiResult.error(ApiResult.ERROR_CODE_PARAMS, "不支持的method方法:" + method);
             }
         } catch (S3Exception e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "生成链接异常:" + e.getMessage());
         }
+        return apiResult;
     }
 
     @Override
-    public JSONObject getSts() {
-        return null;
-    }
-
-    @Override
-    public boolean isObjectKeyExisted(String bucketName, String objectKey) {
+    public ApiResult<Boolean> isObjectKeyExisted(String bucketName, String objectKey) {
+        // 给一个默认值，免得出错
+        ApiResult<Boolean> apiResult = ApiResult.of(false);
         try {
             s3Client.headObject(HeadObjectRequest.builder()
                     .bucket(bucketName)
                     .key(objectKey)
                     .build());
-            return true;
+            apiResult.setData(true);
         } catch (S3Exception e) {
             if (e instanceof NoSuchKeyException) {
-                return false;
+                apiResult.setData(false);
             } else {
-                throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+                apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "doesObjectExist exception:" + e.getMessage());
             }
         }
+        return apiResult;
     }
 }

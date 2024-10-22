@@ -14,6 +14,9 @@ public class OssFactory {
 
     @SuppressWarnings("unchecked")
     public static AbstractOssService build(OssPropsConfig config) {
+        if (null == config) {
+            return null;
+        }
         if ("aws".equalsIgnoreCase(config.getType())) {
             return new AwsS3Service(config);
         } else if ("aliyun".equalsIgnoreCase(config.getType())) {

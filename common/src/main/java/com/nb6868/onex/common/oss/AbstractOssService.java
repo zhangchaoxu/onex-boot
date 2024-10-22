@@ -9,15 +9,13 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.pojo.ApiResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,59 +28,70 @@ public abstract class AbstractOssService {
     public OssPropsConfig config;
 
     /**
-     * 文件路径前缀
+     * 通过自定义前缀和文件名构建object key
      *
-     * @param prefixGlobal      路径前缀全局
-     * @param prefixCustom      路径前缀自定义
-     * @return 返回上传路径
+     * @param customPrefix 自定义前缀，可以是a/b
+     * @param fileName 文件名
+     * @return 构建后的objectKey
      */
-    public String buildPathPrefix(String prefixGlobal, String prefixCustom) {
-        String prefix = StrUtil.emptyIfNull(prefixGlobal) + (StrUtil.isNotBlank(prefixCustom) ? ("/" + prefixCustom) : "");
-        return StrUtil.removePrefix(prefix, "/");
-    }
-
-    public String buildObjectKey(String bucketName, String pathPrefix, String pathPolicy, String fileName, boolean keepFileName) {
-        String path = buildPath(pathPrefix, pathPolicy);
-        String newFileName = buildFileName(bucketName, path, fileName, keepFileName);
+    public String buildObjectKey(String customPrefix, String fileName) {
+        // 构建前缀,前后没有斜杠
+        String path = StrUtil.emptyIfNull(config.getPrefix());
+        if (StrUtil.isNotBlank(path)) {
+            path += StrUtil.SLASH;
+        }
+        if (StrUtil.isNotBlank(customPrefix)) {
+            path += customPrefix + StrUtil.SLASH;
+        }
+        // 构建路径
+        String policyPath = buildPolicyPath(config.getPathPolicy());
+        if (StrUtil.isNotBlank(policyPath)) {
+            path += policyPath;
+        }
+        if (!StrUtil.endWith(path, StrUtil.SLASH)) {
+            path += StrUtil.SLASH;
+        }
+        // 构建文件名
+        String newFileName = buildFileName(path, fileName);
         return path + newFileName;
     }
 
     /**
-     * 构建path
+     * 构建策略path
      */
-    public String buildPath(String pathPrefix, String pathPolicy) {
-        // 先不上自定义的prefix与斜杠
-        String path = StrUtil.nullToEmpty(pathPrefix);
+    public String buildPolicyPath(String pathPolicy) {
         if ("uuid".equalsIgnoreCase(pathPolicy)) {
-            path += ("/" + IdUtil.fastSimpleUUID());
+            return IdUtil.fastSimpleUUID();
         } else if ("day".equalsIgnoreCase(pathPolicy)) {
-            path += ("/" + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN));
+            return  DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN);
         } else if ("month".equalsIgnoreCase(pathPolicy)) {
-            path += ("/" + DateUtil.format(DateUtil.date(), DatePattern.SIMPLE_MONTH_PATTERN));
+            return DateUtil.format(DateUtil.date(), DatePattern.SIMPLE_MONTH_PATTERN);
         } else if ("year".equalsIgnoreCase(pathPolicy)) {
-            path += ("/" + DateUtil.format(DateUtil.date(), DatePattern.NORM_YEAR_PATTERN));
+            return DateUtil.format(DateUtil.date(), DatePattern.NORM_YEAR_PATTERN);
+        } else if ("dayReverse".equalsIgnoreCase(pathPolicy)) {
+            return StrUtil.reverse(DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN));
+        } else if ("monthReverse".equalsIgnoreCase(pathPolicy)) {
+            return StrUtil.reverse(DateUtil.format(DateUtil.date(), DatePattern.SIMPLE_MONTH_PATTERN));
+        } else if ("yearReverse".equalsIgnoreCase(pathPolicy)) {
+            return StrUtil.reverse(DateUtil.format(DateUtil.date(), DatePattern.NORM_YEAR_PATTERN));
         }
-        // 补上斜杠
-        if (StrUtil.isNotBlank(path)) {
-            path += "/";
-        }
-        return StrUtil.removePrefix(path, "/");
+        return "";
     }
 
     /**
      * 创建文件名
      */
-    public String buildFileName(String bucketName, String path, String fileName, boolean keepFileName) {
+    public String buildFileName(String path, String fileName) {
         // 文件
         String newFileName;
-        if (keepFileName) {
+        if (config.getKeepFileName()) {
             String fileExtName = FileNameUtil.extName(fileName);
             String fileMainName = FileNameUtil.mainName(fileName);
             // 去除urlencode不支持字符,去除容易出问题的逗号
             String fileMainNameNoSpecChar = StrUtil.removeAll(fileMainName, ' ', '+', '=', '&', '#', '/', '?', '%', '*', ',', '，');
             // 新的文件名
             newFileName = fileMainNameNoSpecChar + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
-            if (isObjectKeyExisted(bucketName, path + newFileName)) {
+            if (isObjectKeyExisted(config.getBucketName(), path + newFileName).getData()) {
                 // 若objectKey已存在,补一个后缀,默认补上后缀后不会再重复
                 newFileName = fileMainNameNoSpecChar + "-" + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_MS_PATTERN) + (StrUtil.isNotBlank(fileExtName) ? ("." + fileExtName) : "");
             }
@@ -98,38 +107,35 @@ public abstract class AbstractOssService {
     /**
      * 文件上传
      *
-     * @param objectKey    路径前缀+文件名
-     * @param inputStream 文件流
+     * @param objectKey      路径前缀+文件名
+     * @param inputStream    文件流
      * @param objectMetadata 自定义的objectMetadata
      * @return 返回objectKey
      */
-    public abstract String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadata);
+    public abstract ApiResult<JSONObject> upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadata);
 
-    public String upload(String objectKey, InputStream inputStream) {
+    public ApiResult<JSONObject> upload(String objectKey, InputStream inputStream) {
         return this.upload(objectKey, inputStream, null);
     }
 
-    public String upload(String objectKey, MultipartFile file) {
+    public ApiResult<JSONObject> upload(String objectKey, MultipartFile file) {
         InputStream inputStream;
         try {
             inputStream = file.getInputStream();
         } catch (IOException e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            return new ApiResult<JSONObject>().error(ApiResult.ERROR_CODE_EXCEPTION, "文件处理异常:" + e.getMessage());
         }
-        Map<String, Object> objectMetadata = new HashMap<>();
-        // 手动指定content-type
-        objectMetadata.put("ContentType", FileUtil.getMimeType(file.getOriginalFilename()));
-        return upload(objectKey, inputStream, objectMetadata);
+        return upload(objectKey, inputStream, null);
     }
 
     /**
      * 文件上传
      *
      * @param objectKey 文件路径前缀
-     * @param file   文件
+     * @param file      文件
      * @return 返回http地址
      */
-    public String upload(String objectKey, File file) {
+    public ApiResult<JSONObject> upload(String objectKey, File file) {
         BufferedInputStream inputStream = FileUtil.getInputStream(file);
         return upload(objectKey, inputStream);
     }
@@ -138,10 +144,10 @@ public abstract class AbstractOssService {
      * base64 上传文件
      *
      * @param objectKey 前缀
-     * @param base64 文件base64
+     * @param base64    文件base64
      * @return 上传结果
      */
-    public String uploadBase64(String objectKey, String base64) {
+    public ApiResult<JSONObject> uploadBase64(String objectKey, String base64) {
         InputStream inputStream;
         try {
             if (base64.split(",").length > 1) {
@@ -149,7 +155,7 @@ public abstract class AbstractOssService {
             }
             inputStream = IoUtil.toStream(Base64.decode(base64));
         } catch (Exception e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            return new ApiResult<JSONObject>().error(ApiResult.ERROR_CODE_EXCEPTION, "文件base64处理异常:" + e.getMessage());
         }
         return upload(objectKey, inputStream);
     }
@@ -159,21 +165,19 @@ public abstract class AbstractOssService {
      *
      * @param objectKey 文件名
      */
-    public abstract InputStream download(String objectKey);
+    public abstract ApiResult<InputStream> download(String objectKey);
 
     /**
-     * 生成访问时间
+     * 生成预签名链接
+     *
+     * @param expire 过期时间(单位秒)
      */
-    public abstract String getPresignedUrl(String objectKey, String method,  Long expiration);
-
-    /**
-     * 获得sts
-     */
-    public abstract JSONObject getSts();
+    public abstract ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire);
 
     /**
      * object key是否存在
+     * 默认存在
      */
-    public abstract boolean isObjectKeyExisted(String bucketName, String objectKey);
+    public abstract ApiResult<Boolean> isObjectKeyExisted(String bucketName, String objectKey);
 
 }

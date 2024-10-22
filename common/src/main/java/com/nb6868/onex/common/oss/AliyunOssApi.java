@@ -15,10 +15,7 @@ import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.http.Header;
-import cn.hutool.http.HttpException;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.Method;
+import cn.hutool.http.*;
 import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -48,7 +45,7 @@ public class AliyunOssApi {
     /**
      * 获得预授权地址
      * 在URL中包含V4签名
-     * https://help.aliyun.com/zh/oss/developer-reference/add-signatures-to-urls
+     * <a href="https://help.aliyun.com/zh/oss/developer-reference/add-signatures-to-urls">在URL中包含V4签名</a>
      *
      * @param expires 签名URL的有效时长，单位为秒（s）。最小值为1，最大值为 604800
      */
@@ -64,7 +61,6 @@ public class AliyunOssApi {
 
         List<String> additionalHeaders = new ArrayList<>();
         additionalHeaders.add("host");
-
         // https://examplebucket.oss-cn-hangzhou.aliyuncs.com/exampleobject
         // ?x-oss-signature-version=OSS4-HMAC-SHA256
         // &x-oss-credential=<AccessKeyId>/20231203/cn-hangzhou/oss/aliyun_v4_request
@@ -90,7 +86,7 @@ public class AliyunOssApi {
             request.header(key, String.valueOf(value));
         });
         if (StrUtil.isBlank(request.header(Header.CONTENT_TYPE))) {
-            request.contentType(StrUtil.emptyToDefault(FileUtil.getMimeType(objectKey), "text/plain"));
+            request.contentType(StrUtil.emptyToDefault(FileUtil.getMimeType(objectKey), ContentType.OCTET_STREAM.getValue()));
         }
         String sign = signV4(request, date, bucketName, region, additionalHeaders, accessKeySecret);
         return apiResult.success(URLEncodeUtil.encode(url) + "?" + queryString + "&x-oss-signature=" + sign);
@@ -168,7 +164,7 @@ public class AliyunOssApi {
             request.header(key, String.valueOf(value));
         });
         if (StrUtil.isBlank(request.header(Header.CONTENT_TYPE))) {
-            request.contentType(StrUtil.emptyToDefault(FileUtil.getMimeType(objectKey), "text/plain"));
+            request.contentType(StrUtil.emptyToDefault(FileUtil.getMimeType(objectKey), ContentType.OCTET_STREAM.getValue()));
         }
         List<String> additionalHeaders = new ArrayList<>();
         additionalHeaders.add("host");
@@ -184,6 +180,7 @@ public class AliyunOssApi {
                             result.set(key, CollUtil.join(values, ";"));
                         }
                     });
+                    result.set("objectKey", objectKey);
                     apiResult.setSuccess(true)
                             .setCode("ok")
                             .setMsg("ok")
@@ -277,7 +274,7 @@ public class AliyunOssApi {
                 // HTTP Verb
                 request.getMethod().name() + StrUtil.LF +
                         // Canonical URI
-                        "/" + bucketName + requestUrl.getPathStr() + StrUtil.LF;
+                        StrUtil.SLASH + bucketName + requestUrl.getPathStr() + StrUtil.LF;
         // Canonical Query String，针对QueryString排序UriEncode后的字符串，单独对key和value进行编码
         canonicalRequest += getSortedQueryString(requestUrl.getQuery() == null ? null : requestUrl.getQuery().getQueryMap());
         canonicalRequest += StrUtil.LF;
@@ -298,7 +295,7 @@ public class AliyunOssApi {
                 // Hashed PayLoad
                 "UNSIGNED-PAYLOAD";
 
-        log.info("canonicalRequest={}", canonicalRequest);
+        // log.info("canonicalRequest={}", canonicalRequest);
 
         // 步骤2：构造待签名字符串（StringToSign）
         String stringToSign =
@@ -307,7 +304,7 @@ public class AliyunOssApi {
                         // timestampe
                         dateFmt1 + StrUtil.LF +
                         // scope
-                        dateFmt2 + "/" + region + "/oss/" + TERMINATOR + StrUtil.LF +
+                        dateFmt2 + StrUtil.SLASH + region + StrUtil.SLASH + "oss" + StrUtil.SLASH + TERMINATOR + StrUtil.LF +
                         // sha256
                         SecureUtil.sha256(canonicalRequest);
 

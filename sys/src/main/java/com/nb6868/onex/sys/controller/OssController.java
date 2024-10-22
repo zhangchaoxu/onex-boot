@@ -1,6 +1,7 @@
 package com.nb6868.onex.sys.controller;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelReader;
@@ -16,6 +17,7 @@ import com.nb6868.onex.common.oss.AliyunOssUploadCallbackReq;
 import com.nb6868.onex.common.oss.OssFactory;
 import com.nb6868.onex.common.oss.OssPropsConfig;
 import com.nb6868.onex.common.params.BaseParamsService;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.IdsForm;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
@@ -23,9 +25,8 @@ import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.dto.OssFileBase64UploadForm;
-import com.nb6868.onex.sys.dto.OssPresignedUrlForm;
+import com.nb6868.onex.sys.dto.OssPreSignedUrlForm;
 import com.nb6868.onex.sys.dto.OssQueryForm;
-import com.nb6868.onex.sys.dto.OssStsForm;
 import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,19 +65,19 @@ public class OssController {
                                 @RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
-        // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
-        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
-        String url = uploadService.upload(objectKey, file);
+        String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
+        ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
+        AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
 
-        Dict result = Dict.create().set("src", url).set("filename", file.getOriginalFilename());
+        Dict result = Dict.create()
+                .set("src", ossConfig.getDomain() + objectKey)
+                .set("filename", file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
-            oss.setUrl(url);
+            oss.setUrl(ossConfig.getDomain() + objectKey);
             oss.setFilename(file.getOriginalFilename());
             oss.setSize(file.getSize());
             oss.setContentType(file.getContentType());
@@ -94,18 +95,16 @@ public class OssController {
                             @RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
-        // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
-        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
-        String url = uploadService.upload(objectKey, file);
-        Dict result = Dict.create().set("src", url).set("filename", file.getOriginalFilename());
+        String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
+        ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
+        AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
+        Dict result = Dict.create().set("src", ossConfig.getDomain() + objectKey).set("filename", file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
-            oss.setUrl(url);
+            oss.setUrl(ossConfig.getDomain() + objectKey);
             oss.setFilename(file.getOriginalFilename());
             oss.setSize(file.getSize());
             oss.setContentType(file.getContentType());
@@ -151,26 +150,21 @@ public class OssController {
     @AccessControl
     @ApiOperationSupport(order = 30)
     public Result<?> anonUploadBase64(@Validated @RequestBody OssFileBase64UploadForm form) {
-        // 将base64转成file
-        MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
-        AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), form.getPrefix());
-        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), form.getFileBase64().getFilaName(), true);
-        String url = uploadService.upload(objectKey, file);
-        Dict result = Dict.create().set("src", url);
+        String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFilaName());
+        ApiResult<JSONObject> uploadResult = uploadService.uploadBase64(objectKey, form.getFileBase64());
+        AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
+        Dict result = Dict.create().set("src", ossConfig.getDomain() + objectKey).set("filename", form.getFilaName());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
-            oss.setUrl(url);
-            oss.setFilename(file.getOriginalFilename());
-            oss.setSize(file.getSize());
-            oss.setContentType(file.getContentType());
+            oss.setUrl(ossConfig.getDomain() + objectKey);
+            oss.setFilename(form.getFilaName());
+            oss.setSize(0L);
+            oss.setContentType(FileUtil.getMimeType(form.getFilaName()));
             ossService.save(oss);
             result.set("oss", oss);
         }
@@ -181,27 +175,22 @@ public class OssController {
     @Operation(summary = "上传单文件(base64)")
     @ApiOperationSupport(order = 40)
     public Result<?> uploadBase64(@Validated @RequestBody OssFileBase64UploadForm form) {
-        // 将base64转成file
-        MultipartFile file = MultipartFileUtils.base64ToMultipartFile(form.getFileBase64().getFileBase64());
-        AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), form.getPrefix());
-        String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), form.getFileBase64().getFilaName(), true);
-        String url = uploadService.upload(objectKey, file);
-
-        Dict result = Dict.create().set("src", url);
+        String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFilaName());
+        ApiResult<JSONObject> uploadResult = uploadService.uploadBase64(objectKey, form.getFileBase64());
+        AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
+        Dict result = Dict.create().set("src", ossConfig.getDomain() + objectKey).set("filename", form.getFilaName());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
-            oss.setUrl(url);
-            oss.setFilename(file.getOriginalFilename());
-            oss.setSize(file.getSize());
-            oss.setContentType(file.getContentType());
+            oss.setUrl(ossConfig.getDomain() + objectKey);
+            oss.setFilename(form.getFilaName());
+            oss.setSize(0L);
+            oss.setContentType(FileUtil.getMimeType(form.getFilaName()));
             ossService.save(oss);
             result.set("oss", oss);
         }
@@ -217,24 +206,22 @@ public class OssController {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
         for (MultipartFile file : files) {
             // 上传文件
-            String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
-            String url = uploadService.upload(objectKey, file);
-            if (ossConfig.getSaveDb()) {
+            String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
+            ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
+            if (uploadResult.isSuccess() && ossConfig.getSaveDb()) {
                 //保存文件信息
                 OssEntity oss = new OssEntity();
-                oss.setUrl(url);
+                oss.setUrl(ossConfig.getDomain() + objectKey);
                 oss.setFilename(file.getOriginalFilename());
                 oss.setSize(file.getSize());
                 oss.setContentType(file.getContentType());
                 ossService.save(oss);
-                srcList.add(url);
+                srcList.add(ossConfig.getDomain() + objectKey);
                 ossList.add(oss);
             }
         }
@@ -251,24 +238,22 @@ public class OssController {
         List<String> srcList = new ArrayList<>();
         List<OssEntity> ossList = new ArrayList<>();
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
         // 有两个前缀，config定义前缀和用户上传前缀
-        String pathPrefix = uploadService.buildPathPrefix(ossConfig.getPrefix(), prefix);
         for (MultipartFile file : files) {
             // 上传文件
-            String objectKey = uploadService.buildObjectKey(ossConfig.getBucketName(), pathPrefix, ossConfig.getPathPolicy(), file.getOriginalFilename(), true);
-            String url = uploadService.upload(objectKey, file);
-            if (ossConfig.getSaveDb()) {
+            String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
+            ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
+            if (uploadResult.isSuccess() && ossConfig.getSaveDb()) {
                 //保存文件信息
                 OssEntity oss = new OssEntity();
-                oss.setUrl(url);
+                oss.setUrl(ossConfig.getDomain() + objectKey);
                 oss.setFilename(file.getOriginalFilename());
                 oss.setSize(file.getSize());
                 oss.setContentType(file.getContentType());
                 ossService.save(oss);
-                srcList.add(url);
+                srcList.add(ossConfig.getDomain() + objectKey);
                 ossList.add(oss);
             }
         }
@@ -284,31 +269,17 @@ public class OssController {
         return new Result<>();
     }
 
-    @PostMapping("getPresignedUrl")
+    @PostMapping("getPreSignedUrl")
     @Operation(summary = "获得授权访问地址")
     @ApiOperationSupport(order = 70)
-    public Result<?> getPresignedUrl(@Validated @RequestBody OssPresignedUrlForm form) {
+    public Result<?> getPreSignedUrl(@Validated @RequestBody OssPreSignedUrlForm form) {
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String url = uploadService.getPresignedUrl(form.getObjectKey(), form.getMethod(), form.getExpiration());
-
-        return new Result<>().success(url);
-    }
-
-    @PostMapping("getSts")
-    @Operation(summary = "获得STS临时访问token")
-    @ApiOperationSupport(order = 80)
-    public Result<?> getSts(@Validated @RequestBody OssStsForm form) {
-        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
-        AssertUtils.isNull(ossConfig, "未定义的参数配置");
-        AbstractOssService uploadService = OssFactory.build(ossConfig);
-        AssertUtils.isNull(uploadService, "未定义的上传方式");
-
-        JSONObject result = uploadService.getSts();
-        return new Result<>().success(result);
+        ApiResult<String> result = uploadService.getPreSignedUrl(form.getObjectKey(), form.getMethod(), form.getExpire());
+        AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
+        return new Result<>().success(result.getData());
     }
 
     @PostMapping("page")

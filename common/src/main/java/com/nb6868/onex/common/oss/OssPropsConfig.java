@@ -2,6 +2,8 @@ package com.nb6868.onex.common.oss;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * 存储配置
@@ -9,6 +11,8 @@ import lombok.Data;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Data
+@Accessors(chain = true)
+@NoArgsConstructor
 public class OssPropsConfig {
 
     @Schema(description = "类型 aliyun阿里云/huaweicloud华为云/awss3亚马逊S3/local本地")
@@ -44,6 +48,9 @@ public class OssPropsConfig {
     @Schema(description = "EndPoint")
     private String endPoint;
 
+    @Schema(description = "EndPoint公网")
+    private String endPointPublic;
+
     @Schema(description = "AccessKeyId")
     private String accessKeyId;
 
@@ -58,5 +65,12 @@ public class OssPropsConfig {
 
     @Schema(description = "路径策略")
     private String pathPolicy;
+
+    /**
+     * 检查config有效性
+     */
+    public boolean checkValid() {
+        return true;
+    }
 
 }

@@ -1,8 +1,9 @@
 package com.nb6868.onex.sys.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.pojo.BaseForm;
-import com.nb6868.onex.common.pojo.FileBase64Form;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,7 +18,13 @@ public class OssFileBase64UploadForm extends BaseForm {
     @Schema(description = "文件前缀")
     private String prefix;
 
-    @Schema(description = "文件上传表单")
-    private FileBase64Form fileBase64;
+    @Schema(description = "base64文件内容")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotEmpty(message = "文件base64不能为空")
+    private String fileBase64;
+
+    @Schema(description = "文件名")
+    @NotEmpty(message = "文件名不能为空")
+    private String filaName;
 
 }

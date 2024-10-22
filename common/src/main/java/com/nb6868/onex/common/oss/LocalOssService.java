@@ -4,8 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.exception.OnexException;
+import com.nb6868.onex.common.pojo.ApiResult;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,34 +22,35 @@ public class LocalOssService extends AbstractOssService {
     }
 
     @Override
-    public String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
+    public ApiResult<JSONObject> upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
+        ApiResult<JSONObject> apiResult = new ApiResult<>();
         File localFile = new File(config.getBucketName() + File.separator + objectKey);
         new FileWriter(localFile).writeFromStream(inputStream, true);
-        return config.getDomain() + objectKey;
+        return apiResult.success(new JSONObject());
     }
 
     @Override
-    public InputStream download(String objectKey) {
+    public ApiResult<InputStream> download(String objectKey) {
+        ApiResult<InputStream> apiResult = new ApiResult<>();
         File localFile = new File(config.getBucketName() + File.separator + objectKey);
         if (localFile.exists()) {
-            return IoUtil.toStream(localFile);
+            apiResult.setData(IoUtil.toStream(localFile));
         } else {
-            return null;
+            apiResult.error(ApiResult.ERROR_CODE_PARAMS, "文件不存在");
         }
+        return apiResult;
     }
 
     @Override
-    public String getPresignedUrl(String objectKey, String method, Long expire) {
-        throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "本地存储不支持生成url模式");
+    public ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire) {
+        return new ApiResult<String >().error(ApiResult.ERROR_CODE_EXCEPTION, "local oss getPreSignedUrl 未实现");
     }
 
     @Override
-    public JSONObject getSts() {
-        throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "本地存储不支持sts模式");
-    }
-
-    @Override
-    public boolean isObjectKeyExisted(String bucketName, String objectKey) {
-        return FileUtil.exist(bucketName + File.separator +  objectKey);
+    public ApiResult<Boolean> isObjectKeyExisted(String bucketName, String objectKey) {
+        // 给一个默认值，免得出错
+        ApiResult<Boolean> apiResult = ApiResult.of(false);
+        apiResult.setData(FileUtil.exist(bucketName + File.separator +  objectKey));
+        return apiResult;
     }
 }

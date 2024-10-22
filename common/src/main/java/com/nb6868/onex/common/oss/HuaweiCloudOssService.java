@@ -1,12 +1,16 @@
 package com.nb6868.onex.common.oss;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.exception.OnexException;
+import com.aliyun.oss.OSSException;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.obs.services.ObsClient;
 import com.obs.services.exception.ObsException;
 import com.obs.services.model.ObsObject;
+import com.obs.services.model.PutObjectResult;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -30,18 +34,25 @@ public class HuaweiCloudOssService extends AbstractOssService {
     }
 
     @Override
-    public String upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
+    public ApiResult<JSONObject> upload(String objectKey, InputStream inputStream, Map<String, Object> objectMetadataMap) {
+        ApiResult<JSONObject> apiResult = new ApiResult<>();
         try {
-            com.obs.services.model.ObjectMetadata objectMetadata = null;
+            com.obs.services.model.ObjectMetadata objectMetadata = new com.obs.services.model.ObjectMetadata();
             if (objectMetadataMap != null && !objectMetadataMap.isEmpty()) {
-                objectMetadata = new  com.obs.services.model.ObjectMetadata();
                 objectMetadata.setCacheControl(MapUtil.getStr(objectMetadataMap, "CacheControl", "no-cache"));
                 objectMetadata.setContentType(MapUtil.getStr(objectMetadataMap, "ContentType"));
                 objectMetadata.setContentDisposition(MapUtil.getStr(objectMetadataMap, "ContentDisposition", "inline"));
             }
-            s3Client.putObject(config.getBucketName(), objectKey, inputStream);
+            if (StrUtil.isBlank(objectMetadata.getContentType())) {
+                objectMetadata.setContentType(StrUtil.emptyToDefault(FileUtil.getMimeType(objectKey), ContentType.OCTET_STREAM.getValue()));
+            }
+            PutObjectResult putObjectResult = s3Client.putObject(config.getBucketName(), objectKey, inputStream, objectMetadata);
+            JSONObject resultJson = new JSONObject();
+            resultJson.set("requestId", putObjectResult.getRequestId());
+            resultJson.set("versionId", putObjectResult.getVersionId());
+            apiResult.success(resultJson);
         } catch (ObsException e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "文件上传异常:" + e.getMessage());
         } finally {
             // 关闭ObsClient实例，如果是全局ObsClient实例，可以不在每个方法调用完成后关闭
             // ObsClient在调用ObsClient.close方法关闭后不能再次使用
@@ -53,20 +64,21 @@ public class HuaweiCloudOssService extends AbstractOssService {
                 }
             }
         }
-
-        return config.getDomain() + objectKey;
+        return apiResult;
     }
 
     @Override
-    public InputStream download(String objectKey) {
+    public ApiResult<InputStream> download(String objectKey) {
+        ApiResult<InputStream> apiResult = new ApiResult<>();
+
         ObsClient ossClient = null;
         ObsObject ossObject;
         try {
             ossClient = new ObsClient(config.getAccessKeyId(), config.getAccessKeySecret(), config.getEndPoint());
             ossObject = ossClient.getObject(config.getBucketName(), objectKey);
-            return ossObject.getObjectContent();
+            apiResult.success(ossObject.getObjectContent());
         } catch (ObsException e) {
-            throw new OnexException(ErrorCode.OSS_UPLOAD_FILE_ERROR, e);
+            apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "文件下载异常:" + e.getMessage());
         } finally {
             // 关闭ObsClient实例，如果是全局ObsClient实例，可以不在每个方法调用完成后关闭
             // ObsClient在调用ObsClient.close方法关闭后不能再次使用
@@ -78,20 +90,23 @@ public class HuaweiCloudOssService extends AbstractOssService {
                 }
             }
         }
+        return apiResult;
     }
 
     @Override
-    public String getPresignedUrl(String objectKey, String method, Long expire) {
-        throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "华为云存储暂不支持生成url模式");
+    public ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire) {
+        return new ApiResult<String>().error(ApiResult.ERROR_CODE_EXCEPTION, "huaweicloud oss getPreSignedUrl 未实现");
     }
 
     @Override
-    public JSONObject getSts() {
-        throw new OnexException(ErrorCode.OSS_CONFIG_ERROR, "华为云存储暂不支持sts模式");
-    }
-
-    @Override
-    public boolean isObjectKeyExisted(String bucketName, String objectKey) {
-        return s3Client.doesObjectExist(bucketName, objectKey);
+    public ApiResult<Boolean> isObjectKeyExisted(String bucketName, String objectKey) {
+        // 给一个默认值，免得出错
+        ApiResult<Boolean> apiResult = ApiResult.of(false);
+        try {
+            apiResult.setData(s3Client.doesObjectExist(bucketName, objectKey));
+        } catch (OSSException | com.aliyun.oss.ClientException e) {
+            apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "doesObjectExist exception:" + e.getMessage());
+        }
+        return apiResult;
     }
 }
