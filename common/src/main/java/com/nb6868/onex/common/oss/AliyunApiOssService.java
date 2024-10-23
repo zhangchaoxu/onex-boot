@@ -72,13 +72,13 @@ public class AliyunApiOssService extends AbstractOssService {
         // 访问地址
         result.set("host",  StrUtil.format("{}.{}", this.config.getBucketName(), StrUtil.emptyToDefault(this.config.getEndPointPublic(), this.config.getEndPoint())));
         // header
-        JSONObject header = new JSONObject();
-        header.set("policy", Base64.encode(policy.toString()));
-        header.set("x-oss-signature-version", AliyunOssApi.OSS4_HMAC_SHA256);
-        header.set("x-oss-credential", StrUtil.format("{}/{}/{}/oss/aliyun_v4_request", this.config.getAccessKeyId(), DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATE_FORMAT, TimeZone.getTimeZone("GMT"))), this.config.getRegion()));
-        header.set("x-oss-date", DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATETIME_FORMAT, TimeZone.getTimeZone("GMT"))));
-        header.set("x-oss-signature", sign);
-        result.set("header", header);
+        JSONObject form = new JSONObject();
+        form.set("policy", Base64.encode(policy.toString()));
+        form.set("x-oss-signature-version", AliyunOssApi.OSS4_HMAC_SHA256);
+        form.set("x-oss-credential", StrUtil.format("{}/{}/{}/oss/aliyun_v4_request", this.config.getAccessKeyId(), DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATE_FORMAT, TimeZone.getTimeZone("GMT"))), this.config.getRegion()));
+        form.set("x-oss-date", DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATETIME_FORMAT, TimeZone.getTimeZone("GMT"))));
+        form.set("x-oss-signature", sign);
+        result.set("form", form);
         // result.set("key", objectKey);
         // result.set("file", file);
         return new ApiResult<JSONObject>().success(result);

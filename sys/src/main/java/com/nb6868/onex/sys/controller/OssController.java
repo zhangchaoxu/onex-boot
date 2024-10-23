@@ -3,6 +3,7 @@ package com.nb6868.onex.sys.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -25,7 +26,7 @@ import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.dto.OssFileBase64UploadForm;
-import com.nb6868.onex.sys.dto.OssPreSignedUrlForm;
+import com.nb6868.onex.sys.dto.OssPreSignedForm;
 import com.nb6868.onex.sys.dto.OssQueryForm;
 import com.nb6868.onex.sys.dto.OssSignedPostForm;
 import com.nb6868.onex.sys.entity.OssEntity;
@@ -43,6 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -273,6 +275,7 @@ public class OssController {
     @PostMapping("getSignedPostForm")
     @Operation(summary = "获得已签名的post表单参数")
     @ApiOperationSupport(order = 70)
+    @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss"}, logical = Logical.OR)
     public Result<?> getSignedPostForm(@Validated @RequestBody OssSignedPostForm form) {
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
@@ -283,15 +286,35 @@ public class OssController {
         return new Result<>().success(result.getData());
     }
 
-    @PostMapping("getPreSignedUrl")
-    @Operation(summary = "获得授权访问地址")
+    @PostMapping("getPreSignedPostForm")
+    @Operation(summary = "获得已签名的post表单参数")
     @ApiOperationSupport(order = 70)
-    public Result<?> getPreSignedUrl(@Validated @RequestBody OssPreSignedUrlForm form) {
+    public Result<?> getPreSignedPostForm(@Validated @RequestBody OssPreSignedForm form) {
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        ApiResult<String> result = uploadService.getPreSignedUrl(form.getObjectKey(), form.getMethod(), form.getExpire());
+        String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFileName());
+        JSONArray conditions = new JSONArray();
+        // 限定key
+        conditions.put(Arrays.asList("eq", "$key", objectKey));
+        ApiResult<JSONObject> result = uploadService.getSignedPostForm(conditions, form.getExpire());
+        AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
+        // 再补充上key
+        result.getData().set("key", objectKey);
+        return new Result<>().success(result.getData());
+    }
+
+    @PostMapping("getPreSignedUrl")
+    @Operation(summary = "获得授权访问地址")
+    @ApiOperationSupport(order = 70)
+    public Result<?> getPreSignedUrl(@Validated @RequestBody OssPreSignedForm form) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
+
+        String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFileName());
+        ApiResult<String> result = uploadService.getPreSignedUrl(objectKey, form.getMethod(), form.getExpire());
         AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
         return new Result<>().success(result.getData());
     }

@@ -36,7 +36,7 @@ public class AliyunOssApi {
 
     // ISO 8601 format
     public static final String ISO8601_DATETIME_FORMAT = "yyyyMMdd'T'HHmmss'Z'";
-    public static final String ISO8601_DATETIME_MS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss:SSS'Z'";
+    public static final String ISO8601_DATETIME_MS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String ISO8601_DATE_FORMAT = "yyyyMMdd";
 
     public static final String OSS4_HMAC_SHA256 = "OSS4-HMAC-SHA256";
