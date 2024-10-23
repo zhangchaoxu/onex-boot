@@ -8,6 +8,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.ApiResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -173,6 +174,13 @@ public abstract class AbstractOssService {
      * @param expire 过期时间(单位秒)
      */
     public abstract ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire);
+
+    /**
+     * 生成已签名的表单
+     */
+    public ApiResult<JSONObject> getSignedPostForm(JSONArray conditions, int expire) {
+        return new ApiResult<JSONObject>().error("暂未实现该方法");
+    }
 
     /**
      * object key是否存在

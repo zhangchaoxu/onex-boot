@@ -1,6 +1,7 @@
 package com.nb6868.onex.sys.dto;
 
 import com.nb6868.onex.common.pojo.BaseForm;
+import com.nb6868.onex.common.validator.EnumValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class OssPreSignedUrlForm extends BaseForm {
 
     @Schema(description = "请求method")
     @NotEmpty(message = "method不能为空")
+    @EnumValue(strValues = {"put", "get"}, message = "method只支持put和get")
     private String method;
 
     @Schema(description = "过期秒数")

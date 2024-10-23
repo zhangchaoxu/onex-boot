@@ -35,16 +35,18 @@ import java.util.*;
 public class AliyunOssApi {
 
     // ISO 8601 format
-    private static final String ISO8601_DATETIME_FORMAT = "yyyyMMdd'T'HHmmss'Z'";
-    private static final String ISO8601_DATE_FORMAT = "yyyyMMdd";
+    public static final String ISO8601_DATETIME_FORMAT = "yyyyMMdd'T'HHmmss'Z'";
+    public static final String ISO8601_DATETIME_MS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss:SSS'Z'";
+    public static final String ISO8601_DATE_FORMAT = "yyyyMMdd";
 
-    private static final String OSS4_HMAC_SHA256 = "OSS4-HMAC-SHA256";
-    private static final String TERMINATOR = "aliyun_v4_request";
-    private static final String SECRET_KEY_PREFIX = "aliyun_v4";
+    public static final String OSS4_HMAC_SHA256 = "OSS4-HMAC-SHA256";
+    public static final String TERMINATOR = "aliyun_v4_request";
+    public static final String SECRET_KEY_PREFIX = "aliyun_v4";
 
     /**
-     * 获得预授权地址
+     * 获得预授权地址,支持put和get
      * 在URL中包含V4签名
+     * <a href="https://help.aliyun.com/zh/oss/use-cases/uploading-objects-to-oss-directly-from-clients">在客户端直接上传文件到OSS</a>
      * <a href="https://help.aliyun.com/zh/oss/developer-reference/add-signatures-to-urls">在URL中包含V4签名</a>
      *
      * @param expires 签名URL的有效时长，单位为秒（s）。最小值为1，最大值为 604800
@@ -261,13 +263,33 @@ public class AliyunOssApi {
     }
 
     /**
+     * POST V4签名
+     * <a href="https://help.aliyun.com/zh/oss/developer-reference/signature-version-4-recommend">POST V4签名</a>
+     */
+    public static String postSignV4(Date date, String region, String accessKeySecret, JSONObject policy) {
+        // 时间格式化
+        String dateFmt2 = DateUtil.format(date, FastDateFormat.getInstance(ISO8601_DATE_FORMAT, TimeZone.getTimeZone("GMT")));
+        // 步骤1：创建policy。
+        // 步骤2：构造待签名字符串（StringToSign）。
+        String stringToSign = Base64.encode(policy.toString());
+        // 步骤3：计算SigningKey。
+        byte[] dateKey = hmacSha256((SECRET_KEY_PREFIX + accessKeySecret).getBytes(), dateFmt2);
+        byte[] dateRegionKey = hmacSha256(dateKey, region);
+        byte[] dateRegionServiceKey = hmacSha256(dateRegionKey, "oss");
+        byte[] signingKey = hmacSha256(dateRegionServiceKey, TERMINATOR);
+        // 步骤4：计算Signature。
+        byte[] result = hmacSha256(signingKey, stringToSign);
+        return HexUtil.encodeHexStr(result);
+    }
+
+    /**
      * V4签名
      * <a href="https://help.aliyun.com/zh/oss/developer-reference/recommend-to-use-signature-version-4">在Header中包含V4签名</a>
      */
     public static String signV4(HttpRequest request, Date date, String bucketName, String region, List<String> additionalHeaders, String accessKeySecret) {
         // 时间格式化
-        String dateFmt1 = DateUtil.format(date, FastDateFormat.getInstance("yyyyMMdd'T'HHmmss'Z'", TimeZone.getTimeZone("GMT")));
-        String dateFmt2 = DateUtil.format(date, FastDateFormat.getInstance("yyyyMMdd", TimeZone.getTimeZone("GMT")));
+        String dateFmt1 = DateUtil.format(date, FastDateFormat.getInstance(ISO8601_DATETIME_FORMAT, TimeZone.getTimeZone("GMT")));
+        String dateFmt2 = DateUtil.format(date, FastDateFormat.getInstance(ISO8601_DATE_FORMAT, TimeZone.getTimeZone("GMT")));
         UrlBuilder requestUrl = UrlBuilder.ofHttp(request.getUrl(), Charset.forName(request.charset()));
         // 步骤1：构造CanonicalRequest
         String canonicalRequest =
@@ -300,7 +322,7 @@ public class AliyunOssApi {
         // 步骤2：构造待签名字符串（StringToSign）
         String stringToSign =
                 // 签名哈希算法
-                "OSS4-HMAC-SHA256" + StrUtil.LF +
+                OSS4_HMAC_SHA256 + StrUtil.LF +
                         // timestampe
                         dateFmt1 + StrUtil.LF +
                         // scope
@@ -313,6 +335,7 @@ public class AliyunOssApi {
         byte[] dateRegionKey = hmacSha256(dateKey, region);
         byte[] dateRegionServiceKey = hmacSha256(dateRegionKey, "oss");
         byte[] signingKey = hmacSha256(dateRegionServiceKey, TERMINATOR);
+        // 步骤4：计算Signature。
         byte[] result = hmacSha256(signingKey, stringToSign);
         return HexUtil.encodeHexStr(result);
     }

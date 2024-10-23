@@ -27,6 +27,7 @@ import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.dto.OssFileBase64UploadForm;
 import com.nb6868.onex.sys.dto.OssPreSignedUrlForm;
 import com.nb6868.onex.sys.dto.OssQueryForm;
+import com.nb6868.onex.sys.dto.OssSignedPostForm;
 import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -267,6 +268,19 @@ public class OssController {
     public Result<?> aliyunUploadCallback(@Validated @RequestBody AliyunOssUploadCallbackReq req) {
         // todo 处理回调请求结果
         return new Result<>();
+    }
+
+    @PostMapping("getSignedPostForm")
+    @Operation(summary = "获得已签名的post表单参数")
+    @ApiOperationSupport(order = 70)
+    public Result<?> getSignedPostForm(@Validated @RequestBody OssSignedPostForm form) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
+
+        ApiResult<JSONObject> result = uploadService.getSignedPostForm(form.getConditions(), form.getExpire());
+        AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
+        return new Result<>().success(result.getData());
     }
 
     @PostMapping("getPreSignedUrl")
