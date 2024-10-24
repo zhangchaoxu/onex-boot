@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.baomidou.mybatisplus.extension.repository.IRepository;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.pojo.BaseForm;
@@ -210,7 +211,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveDto(D dto) {
-        T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
+        T entity = ConvertUtils.sourceToTarget(dto, getEntityClass());
         // 检查id
         Object idVal = getIdVal(entity);
         if (ObjectUtil.isNotEmpty(idVal)) {
@@ -234,7 +235,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateDto(D dto) {
-        T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
+        T entity = ConvertUtils.sourceToTarget(dto, getEntityClass());
         // 检查id
         Object idVal = getIdVal(entity);
         if (ObjectUtil.isEmpty(idVal)) {
@@ -265,10 +266,10 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveDtos(List<D> dtos) {
-        List<T> entityList = ConvertUtils.sourceToTarget(dtos, currentModelClass());
+        List<T> entityList = ConvertUtils.sourceToTarget(dtos, getEntityClass());
         // copy主键值到dto
         BeanUtils.copyProperties(entityList, dtos);
-        return saveBatch(entityList);
+        return saveBatch(entityList, IRepository.DEFAULT_BATCH_SIZE);
     }
 
     /**
@@ -279,8 +280,8 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateDtos(List<D> dtos) {
-        List<T> entityList = ConvertUtils.sourceToTarget(dtos, currentModelClass());
-        return updateBatchById(entityList);
+        List<T> entityList = ConvertUtils.sourceToTarget(dtos, getEntityClass());
+        return updateBatchById(entityList, IRepository.DEFAULT_BATCH_SIZE);
     }
 
     /**
@@ -292,7 +293,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateDto(D dto) {
-        T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
+        T entity = ConvertUtils.sourceToTarget(dto, getEntityClass());
         Object idVal = getIdVal(entity);
         if (ObjectUtil.isNotEmpty(idVal)) {
             return updateDto(dto);
@@ -309,8 +310,8 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateDtos(List<D> dtos) {
-        List<T> entityList = ConvertUtils.sourceToTarget(dtos, currentModelClass());
-        boolean ret = saveOrUpdateBatch(entityList);
+        List<T> entityList = ConvertUtils.sourceToTarget(dtos, getEntityClass());
+        boolean ret = saveOrUpdateBatch(entityList, IRepository.DEFAULT_BATCH_SIZE);
         // copy主键值到dto
         BeanUtils.copyProperties(entityList, dtos);
         return ret;
