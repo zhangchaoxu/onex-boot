@@ -11,6 +11,7 @@ import com.nb6868.onex.common.pojo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
@@ -53,7 +54,7 @@ public class AliyunApiOssService extends AbstractOssService {
     }
 
     @Override
-    public ApiResult<JSONObject> getSignedPostForm(JSONArray conditions, int expire) {
+    public ApiResult<JSONObject> getSignedPostForm(JSONArray conditions, int expire, String objectKey) {
         Date date = DateUtil.date();
         JSONObject policy = new JSONObject();
         // https://help.aliyun.com/zh/oss/developer-reference/signature-version-4-recommend
@@ -65,11 +66,16 @@ public class AliyunApiOssService extends AbstractOssService {
         conditions.add(new JSONObject().set("x-oss-signature-version", AliyunOssApi.OSS4_HMAC_SHA256));
         conditions.add(new JSONObject().set("x-oss-credential", StrUtil.format("{}/{}/{}/oss/aliyun_v4_request", this.config.getAccessKeyId(), DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATE_FORMAT, TimeZone.getTimeZone("GMT"))), this.config.getRegion())));
         conditions.add(new JSONObject().set("x-oss-date", DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATETIME_FORMAT, TimeZone.getTimeZone("GMT")))));
+        if (StrUtil.isNotBlank(objectKey)) {
+            // 限定key
+            conditions.put(Arrays.asList("eq", "$key", objectKey));
+        }
         policy.set("conditions", conditions);
         // 签名
         String sign = AliyunOssApi.postSignV4(date, this.config.getRegion(), this.config.getAccessKeySecret(), policy);
         JSONObject result = new JSONObject();
         // 访问地址
+        result.set("domain", this.config.getDomain());
         result.set("host",  StrUtil.format("{}.{}", this.config.getBucketName(), StrUtil.emptyToDefault(this.config.getEndPointPublic(), this.config.getEndPoint())));
         // header
         JSONObject form = new JSONObject();
@@ -78,7 +84,15 @@ public class AliyunApiOssService extends AbstractOssService {
         form.set("x-oss-credential", StrUtil.format("{}/{}/{}/oss/aliyun_v4_request", this.config.getAccessKeyId(), DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATE_FORMAT, TimeZone.getTimeZone("GMT"))), this.config.getRegion()));
         form.set("x-oss-date", DateUtil.format(date, FastDateFormat.getInstance(AliyunOssApi.ISO8601_DATETIME_FORMAT, TimeZone.getTimeZone("GMT"))));
         form.set("x-oss-signature", sign);
+        if (StrUtil.isNotBlank(objectKey)) {
+            // 限定key
+            form.set("key", objectKey);
+        }
         result.set("form", form);
+        if (StrUtil.isNotBlank(objectKey)) {
+            // 限定key
+            form.set("url", this.config.getDomain() + objectKey);
+        }
         // result.set("key", objectKey);
         // result.set("file", file);
         return new ApiResult<JSONObject>().success(result);

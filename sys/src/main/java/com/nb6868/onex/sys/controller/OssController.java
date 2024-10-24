@@ -3,7 +3,6 @@ package com.nb6868.onex.sys.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -44,7 +43,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -281,7 +279,7 @@ public class OssController {
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        ApiResult<JSONObject> result = uploadService.getSignedPostForm(form.getConditions(), form.getExpire());
+        ApiResult<JSONObject> result = uploadService.getSignedPostForm(form.getConditions(), form.getExpire(), null);
         AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
         return new Result<>().success(result.getData());
     }
@@ -295,13 +293,8 @@ public class OssController {
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
         String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFileName());
-        JSONArray conditions = new JSONArray();
-        // 限定key
-        conditions.put(Arrays.asList("eq", "$key", objectKey));
-        ApiResult<JSONObject> result = uploadService.getSignedPostForm(conditions, form.getExpire());
+        ApiResult<JSONObject> result = uploadService.getSignedPostForm(null, form.getExpire(), objectKey);
         AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
-        // 再补充上key
-        result.getData().set("key", objectKey);
         return new Result<>().success(result.getData());
     }
 

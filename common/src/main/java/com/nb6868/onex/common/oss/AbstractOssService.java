@@ -178,7 +178,7 @@ public abstract class AbstractOssService {
     /**
      * 生成已签名的表单
      */
-    public ApiResult<JSONObject> getSignedPostForm(JSONArray conditions, int expire) {
+    public ApiResult<JSONObject> getSignedPostForm(JSONArray conditions, int expire, String objectKey) {
         return new ApiResult<JSONObject>().error("暂未实现该方法");
     }
 
