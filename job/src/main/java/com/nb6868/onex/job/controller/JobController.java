@@ -41,10 +41,10 @@ public class JobController {
     @Operation(summary = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody JobQueryReq form) {
-        PageData<?> page = jobService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<JobDTO>> page(@Validated({PageGroup.class}) @RequestBody JobQueryReq form) {
+        PageData<JobDTO> page = jobService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<JobDTO>>().success(page);
     }
 
     @PostMapping("info")
@@ -63,10 +63,10 @@ public class JobController {
     @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:edit"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> saveOrUpdate(@Validated @RequestBody JobSaveOrUpdateReq req) {
+    public Result<JobDTO> saveOrUpdate(@Validated @RequestBody JobSaveOrUpdateReq req) {
         JobEntity entity = jobService.saveOrUpdateByReq(req);
         JobDTO dto = ConvertUtils.sourceToTarget(entity, JobDTO.class);
-        return new Result<>().success(dto);
+        return new Result<JobDTO>().success(dto);
     }
 
 
@@ -97,10 +97,10 @@ public class JobController {
     @Operation(summary = "日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
-    public Result<?> logPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryReq form) {
-        PageData<?> page = jobLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<JobLogDTO>> logPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryReq form) {
+        PageData<JobLogDTO> page = jobLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<JobLogDTO>>().success(page);
     }
 
     @PostMapping("logInfo")

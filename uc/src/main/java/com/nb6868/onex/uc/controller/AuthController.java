@@ -14,7 +14,7 @@ import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.auth.AuthProps;
-import com.nb6868.onex.common.auth.LoginResult;
+import com.nb6868.onex.uc.dto.LoginRes;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.msg.BaseMsgService;
 import com.nb6868.onex.common.msg.MsgLogBody;
@@ -27,10 +27,7 @@ import com.nb6868.onex.common.util.*;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
-import com.nb6868.onex.uc.dto.MenuResult;
-import com.nb6868.onex.uc.dto.MenuScopeReq;
-import com.nb6868.onex.uc.dto.MenuScopeResult;
-import com.nb6868.onex.uc.dto.UserDTO;
+import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,7 +74,7 @@ public class AuthController {
     @PostMapping("captcha")
     @AccessControl
     @Operation(summary = "图形验证码(base64)", description = "Anon")
-    public Result<?> captcha(@Validated @RequestBody BaseReq req) {
+    public Result<CaptchaRes> captcha(@Validated @RequestBody BaseReq req) {
         // 获得登录验证码配置,设置默认杜绝空信息
         JSONObject captchaParams = paramsService.getSystemPropsObject("CAPTCHA_LOGIN", JSONObject.class, new JSONObject());
         // uuid是用来存和后续对比图片验证码的
@@ -90,15 +87,15 @@ public class AuthController {
                 captchaParams.getInt("width", 110),
                 captchaParams.getInt("height", 40));
         // 将uuid和图片base64返回给前端
-        JSONObject result = new JSONObject().set("uuid", uuid).set("image", captchaBase64);
-        return new Result<>().success(result);
+        CaptchaRes captchaRes = new CaptchaRes().setUuid(uuid).setImage(captchaBase64);
+        return new Result<CaptchaRes>().success(captchaRes);
     }
 
-    @PostMapping({"userLogin", "userLoginByUsernamePassword"})
+    @PostMapping("userLoginByUsernamePassword")
     @AccessControl
     @Operation(summary = "用户账号密码登录", description = "Anon")
     @LogOperation(value = "用户账号密码登录", type = "login")
-    public Result<?> userLogin(@Validated @RequestBody LoginByUsernamePasswordReq req) {
+    public Result<LoginRes> userLogin(@Validated @RequestBody LoginByUsernamePasswordReq req) {
         // 检查密码不为空
         AssertUtils.isTrue(StrUtil.isAllBlank(req.getPassword(), req.getPasswordEncrypted(), "密码不能为空"));
         // 获得对应登录类型的登录参数,并且设置默认类型
@@ -121,18 +118,18 @@ public class AuthController {
                 loginParams.getInt(AuthConst.TOKEN_EXPIRE_KEY, AuthConst.TOKEN_EXPIRE_VALUE),
                 loginParams.getInt(AuthConst.TOKEN_LIMIT_KEY, AuthConst.TOKEN_LIMIT_VALUE));
         // 登录成功
-        LoginResult loginResult = new LoginResult()
+        LoginRes loginResult = new LoginRes()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
                 .setToken(token)
                 .setTokenKey(authProps.getTokenHeaderKey());
-        return new Result<>().success(loginResult);
+        return new Result<LoginRes>().success(loginResult);
     }
 
     @PostMapping("userLoginByMobileSms")
     @AccessControl
     @Operation(summary = "手机验证码登录", description = "Anon")
     @LogOperation(value = "手机验证码登录", type = "login")
-    public Result<?> userLoginByMobileSms(@Validated @RequestBody LoginByMobileSmsReq req) {
+    public Result<LoginRes> userLoginByMobileSms(@Validated @RequestBody LoginByMobileSmsReq req) {
         // 获得对应登录类型的登录参数,并且设置默认类型
         JSONObject loginParams = paramsService.getSystemPropsJson(StrUtil.blankToDefault(req.getType(), "ADMIN_MOBILE_SMS"));
         AssertUtils.isNull(loginParams, "缺少登录配置");
@@ -150,18 +147,18 @@ public class AuthController {
                 loginParams.getInt(AuthConst.TOKEN_EXPIRE_KEY, AuthConst.TOKEN_EXPIRE_VALUE),
                 loginParams.getInt(AuthConst.TOKEN_LIMIT_KEY, AuthConst.TOKEN_LIMIT_VALUE));
         // 登录成功
-        LoginResult loginResult = new LoginResult()
+        LoginRes loginResult = new LoginRes()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
                 .setToken(token)
                 .setTokenKey(authProps.getTokenHeaderKey());
-        return new Result<>().success(loginResult);
+        return new Result<LoginRes>().success(loginResult);
     }
 
     @PostMapping("userLoginByCode")
     @AccessControl
     @Operation(summary = "授权code登录,如钉钉", description = "Anon")
     @LogOperation(value = "授权code登录", type = "login")
-    public Result<?> userLoginByCode(@Validated @RequestBody LoginByCodeReq req) {
+    public Result<LoginRes> userLoginByCode(@Validated @RequestBody LoginByCodeReq req) {
         // 获得对应登录类型的登录参数
         JSONObject loginParams = paramsService.getSystemPropsJson(StrUtil.blankToDefault(req.getType(), "ADMIN_DINGTALK_CODE"));
         AssertUtils.isNull(loginParams, "缺少登录配置");
@@ -199,7 +196,7 @@ public class AuthController {
                 // 保存角色关系
                 roleUserService.saveOrUpdateByUserIdAndRoleIds(user.getId(), loginParams.getBeanList("autoCreateUserRoleIds", Long.class), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
             } else {
-                return new Result<>().error("用户未注册");
+                return new Result<LoginRes>().error("用户未注册");
             }
         }
         // 判断用户是否存在
@@ -214,11 +211,11 @@ public class AuthController {
                 loginParams.getInt(AuthConst.TOKEN_EXPIRE_KEY, AuthConst.TOKEN_EXPIRE_VALUE),
                 loginParams.getInt(AuthConst.TOKEN_LIMIT_KEY, AuthConst.TOKEN_LIMIT_VALUE));
         // 登录成功
-        LoginResult loginResult = new LoginResult()
+        LoginRes loginResult = new LoginRes()
                 .setUser(ConvertUtils.sourceToTarget(user, UserDTO.class))
                 .setToken(token)
                 .setTokenKey(authProps.getTokenHeaderKey());
-        return new Result<>().success(loginResult);
+        return new Result<LoginRes>().success(loginResult);
     }
 
     @PostMapping("sendMsgCode")
@@ -254,14 +251,14 @@ public class AuthController {
 
     @PostMapping("userInfo")
     @Operation(summary = "用户信息")
-    public Result<?> userInfo(@Validated @RequestBody BaseReq req) {
+    public Result<UserDTO> userInfo(@Validated @RequestBody BaseReq req) {
         UserEntity user = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
 
         UserDTO data = ConvertUtils.sourceToTarget(user, UserDTO.class);
         // todo 补上用户的其他信息
         // data.setRoleCodes(userService.getUserRoleCodes());
-        return new Result<>().success(data);
+        return new Result<UserDTO>().success(data);
     }
 
     @PostMapping("userChangePassword")
@@ -320,7 +317,7 @@ public class AuthController {
 
     @PostMapping("userMenuScope")
     @Operation(summary = "用户权限范围", description = "返回包括菜单、路由、权限、角色等所有内容")
-    public Result<MenuScopeResult> userMenuScope(@Validated @RequestBody MenuScopeReq form) {
+    public Result<MenuScopeRes> userMenuScope(@Validated @RequestBody MenuScopeReq form) {
         ShiroUser user = ShiroUtils.getUser();
         // 过滤出其中显示菜单
         List<TreeNode<Long>> menuList = new ArrayList<>();
@@ -348,7 +345,7 @@ public class AuthController {
         });
         // 将菜单列表转成菜单树
         List<Tree<Long>> menuTree = TreeNodeUtils.buildIdTree(menuList);
-        MenuScopeResult result = new MenuScopeResult()
+        MenuScopeRes result = new MenuScopeRes()
                 .setMenuTree(menuTree)
                 .setUrlList(urlList);
         // 塞入权限
@@ -363,12 +360,12 @@ public class AuthController {
         if (form.isRoleIds()) {
             result.setRoleIds(userService.getUserRoleIds(user));
         }
-        return new Result<MenuScopeResult>().success(result);
+        return new Result<MenuScopeRes>().success(result);
     }
 
     @PostMapping("userMenuTree")
     @Operation(summary = "用户菜单树", description = "用户左侧显示菜单")
-    public Result<?> userMenuTree(@Validated @RequestBody BaseReq req) {
+    public Result<List<Tree<Long>>> userMenuTree(@Validated @RequestBody BaseReq req) {
         ShiroUser user = ShiroUtils.getUser();
         List<TreeNode<Long>> menuList = new ArrayList<>();
         // 获取该用户所有menu, 菜单需要显示 && 菜单类型为菜单
@@ -380,34 +377,34 @@ public class AuthController {
                         .set("url", menu.getUrl())
                         .set("urlNewBlank", menu.getUrlNewBlank()))));
         List<Tree<Long>> menuTree = TreeNodeUtils.buildIdTree(menuList);
-        return new Result<>().success(menuTree);
+        return new Result<List<Tree<Long>>>().success(menuTree);
     }
 
     @PostMapping("userPermissions")
     @Operation(summary = "用户授权编码", description = "用户具备的权限,可用于按钮等的控制")
-    public Result<?> userPermissions(@Validated @RequestBody BaseReq req) {
+    public Result<List<String>> userPermissions(@Validated @RequestBody BaseReq req) {
         ShiroUser user = ShiroUtils.getUser();
         List<String> set = userService.getUserPermissions(user);
 
-        return new Result<>().success(set);
+        return new Result<List<String>>().success(set);
     }
 
     @PostMapping("userRoleIds")
     @Operation(summary = "用户角色id", description = "用户具备的角色,可用于按钮等的控制")
-    public Result<?> userRoles(@Validated @RequestBody BaseReq req) {
+    public Result<List<Long>> userRoles(@Validated @RequestBody BaseReq req) {
         ShiroUser user = ShiroUtils.getUser();
         List<Long> set = userService.getUserRoleIds(user);
 
-        return new Result<>().success(set);
+        return new Result<List<Long>>().success(set);
     }
 
     @PostMapping("userRoleCodes")
     @Operation(summary = "用户角色编码", description = "用户具备的角色,可用于按钮等的控制")
-    public Result<?> userRoleCodes(@Validated @RequestBody BaseReq req) {
+    public Result<List<String>> userRoleCodes(@Validated @RequestBody BaseReq req) {
         ShiroUser user = ShiroUtils.getUser();
         List<String> set = userService.getUserRoleCodes(user);
 
-        return new Result<>().success(set);
+        return new Result<List<String>>().success(set);
     }
 
 }

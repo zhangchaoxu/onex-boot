@@ -1,19 +1,16 @@
-package com.nb6868.onex.common.auth;
+package com.nb6868.onex.uc.dto;
 
+import com.nb6868.onex.common.pojo.BaseRes;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(name = "登录结果")
-public class LoginResult implements Serializable {
+public class LoginRes extends BaseRes {
 
     @Schema(description = "token")
     private String token;

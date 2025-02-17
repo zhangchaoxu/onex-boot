@@ -52,37 +52,37 @@ public class RegionController {
     @PostMapping("tree")
     @Operation(summary = "树表")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
-    public Result<?> tree(@Validated @RequestBody RegionQueryReq form) {
+    public Result<List<Tree<Long>>> tree(@Validated @RequestBody RegionQueryReq form) {
         QueryWrapper<RegionEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<TreeNode<Long>> nodeList = new ArrayList<>();
         regionService.list(queryWrapper).forEach(entity -> nodeList.add(new TreeNode<>(entity.getId(), entity.getPid(), entity.getName(), entity.getId())
                 .setExtra(Dict.create().set("extName", entity.getExtName()))));
         List<Tree<Long>> treeList = TreeNodeUtils.buildIdTree(nodeList);
-        return new Result<>().success(treeList);
+        return new Result<List<Tree<Long>>>().success(treeList);
     }
 
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
-    public Result<?> list(@Validated @RequestBody RegionQueryReq form) {
-        List<?> list = regionService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+    public Result<List<RegionDTO>> list(@Validated @RequestBody RegionQueryReq form) {
+        List<RegionDTO> list = regionService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
-        return new Result<>().success(list);
+        return new Result<List<RegionDTO>>().success(list);
     }
 
     @PostMapping("page")
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated(PageGroup.class) @RequestBody RegionQueryReq form) {
-        PageData<?> page = regionService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<RegionDTO>> page(@Validated(PageGroup.class) @RequestBody RegionQueryReq form) {
+        PageData<RegionDTO> page = regionService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<RegionDTO>>().success(page);
     }
 
     @PostMapping("info")
     @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:query"}, logical = Logical.OR)
-    public Result<RegionDTO>info(@Validated @RequestBody IdReq form) {
+    public Result<RegionDTO> info(@Validated @RequestBody IdReq form) {
         RegionDTO data = regionService.oneDto(QueryWrapperHelper.getPredicate(form));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
@@ -93,10 +93,11 @@ public class RegionController {
     @Operation(summary = "新增或更新")
     @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:region", "sys:region:edit"}, logical = Logical.OR)
-    public Result<?> saveOrUpdate(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RegionSaveOrUpdateReq req) {
+    public Result<RegionDTO> saveOrUpdate(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody RegionSaveOrUpdateReq req) {
         RegionEntity entity = regionService.saveOrUpdateByReq(req);
         RegionDTO dto = ConvertUtils.sourceToTarget(entity, RegionDTO.class);
-        return new Result<>().success(dto);
+
+        return new Result<RegionDTO>().success(dto);
     }
 
 

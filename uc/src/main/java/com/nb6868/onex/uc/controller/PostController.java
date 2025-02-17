@@ -7,13 +7,15 @@ import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.IdReq;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
-import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.PostDTO;
 import com.nb6868.onex.uc.dto.PostQueryReq;
+import com.nb6868.onex.uc.dto.PostSaveOrUpdateReq;
+import com.nb6868.onex.uc.entity.PostEntity;
 import com.nb6868.onex.uc.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,26 +37,26 @@ import java.util.List;
 public class PostController {
 
     @Autowired
-    private PostService postService;
+    PostService postService;
 
     @PostMapping("page")
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody PostQueryReq form) {
-        PageData<?> page = postService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<PostDTO>> page(@Validated({PageGroup.class}) @RequestBody PostQueryReq form) {
+        PageData<PostDTO> page = postService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<PostDTO>>().success(page);
     }
 
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> list(@Validated @RequestBody PostQueryReq form) {
-        List<?> list = postService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+    public Result<List<PostDTO>> list(@Validated @RequestBody PostQueryReq form) {
+        List<PostDTO> list = postService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
-        return new Result<>().success(list);
+        return new Result<List<PostDTO>>().success(list);
     }
 
     @PostMapping("info")
@@ -68,24 +70,15 @@ public class PostController {
         return new Result<PostDTO>().success(data);
     }
 
-    @PostMapping("save")
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @PostMapping("saveOrUpdate")
+    @Operation(summary = "新增或更新")
+    @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:edit"}, logical = Logical.OR)
-    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody PostDTO dto) {
-        postService.saveDto(dto);
+    public Result<PostDTO> saveOrUpdate(@Validated @RequestBody PostSaveOrUpdateReq req) {
+        PostEntity entity = postService.saveOrUpdateByReq(req);
+        PostDTO dto = ConvertUtils.sourceToTarget(entity, PostDTO.class);
 
-        return new Result<>().success(dto);
-    }
-
-    @PostMapping("update")
-    @Operation(summary = "修改")
-    @LogOperation("修改")
-    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:post:edit"}, logical = Logical.OR)
-    public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody PostDTO dto) {
-        postService.updateDto(dto);
-
-        return new Result<>().success(dto);
+        return new Result<PostDTO>().success(dto);
     }
 
     @PostMapping("delete")

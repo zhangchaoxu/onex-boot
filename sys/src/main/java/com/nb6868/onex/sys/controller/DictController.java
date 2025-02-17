@@ -40,19 +40,19 @@ public class DictController {
     @PostMapping("page")
     @Operation(summary = "字典分类")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated(PageGroup.class) @RequestBody DictQueryReq form) {
-        PageData<?> page = dictService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<DictDTO>> page(@Validated(PageGroup.class) @RequestBody DictQueryReq req) {
+        PageData<DictDTO> page = dictService.pageDto(req, QueryWrapperHelper.getPredicate(req, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<DictDTO>>().success(page);
     }
 
     @PostMapping("list")
     @Operation(summary = "字典分类数据")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:query"}, logical = Logical.OR)
-    public Result<?> list(@Validated @RequestBody DictQueryReq form) {
-        List<?> list = dictService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+    public Result<List<DictDTO>> list(@Validated @RequestBody DictQueryReq req) {
+        List<DictDTO> list = dictService.listDto(QueryWrapperHelper.getPredicate(req, "list"));
 
-        return new Result<>().success(list);
+        return new Result<List<DictDTO>>().success(list);
     }
 
     @PostMapping("info")
@@ -69,10 +69,10 @@ public class DictController {
     @Operation(summary = "新增或更新")
     @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:dict", "sys:dict:edit"}, logical = Logical.OR)
-    public Result<?> saveOrUpdate(@Validated @RequestBody DictSaveOrUpdateReq req) {
+    public Result<DictDTO> saveOrUpdate(@Validated @RequestBody DictSaveOrUpdateReq req) {
         DictEntity entity = dictService.saveOrUpdateByReq(req);
         DictDTO dto = ConvertUtils.sourceToTarget(entity, DictDTO.class);
-        return new Result<>().success(dto);
+        return new Result<DictDTO>().success(dto);
     }
 
     @PostMapping("delete")

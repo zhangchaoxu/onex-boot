@@ -40,21 +40,21 @@ public class TenantController {
     @PostMapping("page")
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody TenantQueryReq form) {
+    public Result<PageData<TenantDTO>> page(@Validated({PageGroup.class}) @RequestBody TenantQueryReq form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        PageData<?> page = tenantService.pageDto(form, queryWrapper);
+        PageData<TenantDTO> page = tenantService.pageDto(form, queryWrapper);
 
-        return new Result<>().success(page);
+        return new Result<PageData<TenantDTO>>().success(page);
     }
 
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:query"}, logical = Logical.OR)
-    public Result<?> list(@Validated @RequestBody TenantQueryReq form) {
+    public Result<List<TenantDTO>> list(@Validated @RequestBody TenantQueryReq form) {
         QueryWrapper<TenantEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
-        List<?> list = tenantService.listDto(queryWrapper);
+        List<TenantDTO> list = tenantService.listDto(queryWrapper);
 
-        return new Result<>().success(list);
+        return new Result<List<TenantDTO>>().success(list);
     }
 
     @PostMapping("info")
@@ -71,11 +71,11 @@ public class TenantController {
     @Operation(summary = "新增或更新")
     @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:tenant:edit"}, logical = Logical.OR)
-    public Result<?> saveOrUpdate(@Validated @RequestBody TenantSaveOrUpdateReq req) {
+    public Result<TenantDTO> saveOrUpdate(@Validated @RequestBody TenantSaveOrUpdateReq req) {
         TenantEntity entity = tenantService.saveOrUpdateByReq(req);
         TenantDTO dto = ConvertUtils.sourceToTarget(entity, TenantDTO.class);
 
-        return new Result<>().success(dto);
+        return new Result<TenantDTO>().success(dto);
     }
 
     @PostMapping("delete")

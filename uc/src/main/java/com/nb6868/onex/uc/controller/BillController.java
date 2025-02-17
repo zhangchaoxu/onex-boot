@@ -4,12 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.*;
+import com.nb6868.onex.common.pojo.IdReq;
+import com.nb6868.onex.common.pojo.PageData;
+import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.common.validator.group.AddGroup;
-import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
-import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.BillDTO;
 import com.nb6868.onex.uc.dto.BillQueryForm;
 import com.nb6868.onex.uc.entity.BillEntity;
@@ -38,22 +37,22 @@ public class BillController {
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions("uc:bill:list")
-    public Result<?> list(@Validated @RequestBody BillQueryForm form) {
+    public Result<List<BillDTO>> list(@Validated @RequestBody BillQueryForm form) {
         QueryWrapper<BillEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
-        List<?> list = billService.listDto(queryWrapper);
+        List<BillDTO> list = billService.listDto(queryWrapper);
 
-        return new Result<>().success(list);
+        return new Result<List<BillDTO>>().success(list);
     }
 
     @PostMapping("page")
     @Operation(summary = "分页")
     @RequiresPermissions("uc:bill:page")
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody BillQueryForm form) {
+    public Result<PageData<BillDTO>> page(@Validated({PageGroup.class}) @RequestBody BillQueryForm form) {
         QueryWrapper<BillEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
 
-        PageData<?> page = billService.pageDto(form, queryWrapper);
+        PageData<BillDTO> page = billService.pageDto(form, queryWrapper);
 
-        return new Result<>().success(page);
+        return new Result<PageData<BillDTO>>().success(page);
     }
 
     @PostMapping("info")
@@ -66,14 +65,14 @@ public class BillController {
         return new Result<BillDTO>().success(data);
     }
 
-    @PostMapping("save")
+    /*@PostMapping("save")
     @Operation(summary = "保存")
     @LogOperation("保存")
     @RequiresPermissions("uc:bill:save")
-    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody BillDTO dto) {
+    public Result<BillDTO> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody BillDTO dto) {
         billService.saveDto(dto);
 
-        return new Result<>().success(dto);
+        return new Result<BillDTO>().success(dto);
     }
 
     @PostMapping("update")
@@ -84,7 +83,7 @@ public class BillController {
         billService.updateDto(dto);
 
         return new Result<>().success(dto);
-    }
+    }*/
 
     @PostMapping("delete")
     @Operation(summary = "删除")

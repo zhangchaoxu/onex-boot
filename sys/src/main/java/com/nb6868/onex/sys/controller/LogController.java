@@ -39,11 +39,11 @@ public class LogController {
     @Operation(summary = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody LogQueryReq req) {
+    public Result<PageData<LogDTO>> page(@Validated({PageGroup.class}) @RequestBody LogQueryReq req) {
         QueryWrapper<LogEntity> queryWrapper = QueryWrapperHelper.getPredicate(req, "page");
         PageData<LogDTO> page = logService.pageDto(req, queryWrapper);
 
-        return new Result<>().success(page);
+        return new Result<PageData<LogDTO>>().success(page);
     }
 
     @PostMapping("info")

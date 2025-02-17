@@ -30,30 +30,30 @@ public class DbController {
     @PostMapping("query")
     @Operation(summary = "数据查询")
     @AccessControl(value = "/query", allowTokenName = "token-tunnel")
-    public Result<?> query(@Validated @RequestBody DbQueryReq form) {
+    public Result<List<Entity>> query(@Validated @RequestBody DbQueryReq form) {
         // init 数据源
         DataSource ds = initDataSource(form);
         // 执行数据查询
         try {
             List<Entity> result = Db.use(ds).query(form.getSql(), form.getParams());
-            return new Result<>().success(result);
+            return new Result<List<Entity>>().success(result);
         } catch (Exception e) {
-            return new Result<>().error(e.getMessage());
+            return new Result<List<Entity>>().error(e.getMessage());
         }
     }
 
     @PostMapping("execute")
     @Operation(summary = "数据执行")
     @AccessControl(value = "/execute", allowTokenName = "token-tunnel")
-    public Result<?> execute(@Validated @RequestBody DbQueryReq form) {
+    public Result<Integer> execute(@Validated @RequestBody DbQueryReq form) {
         // init 数据源
         DataSource ds = initDataSource(form);
         // 执行数据查询
         try {
             int result = Db.use(ds).execute(form.getSql(), form.getParams());
-            return new Result<>().success(result);
+            return new Result<Integer>().success(result);
         } catch (Exception e) {
-            return new Result<>().error(e.getMessage());
+            return new Result<Integer>().error(e.getMessage());
         }
     }
 

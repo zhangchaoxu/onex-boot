@@ -1,12 +1,13 @@
 package com.nb6868.onex.uc.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.pojo.ChangeStateReq;
-import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.shiro.ShiroDao;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -15,6 +16,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.UserDao;
 import com.nb6868.onex.uc.dto.UserDTO;
+import com.nb6868.onex.uc.dto.UserSaveOrUpdateReq;
 import com.nb6868.onex.uc.entity.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,40 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     RoleUserService roleUserService;
 
     /**
+     * 新增或修改
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public UserEntity saveOrUpdateByReq(UserSaveOrUpdateReq req) {
+        // 检查请求
+        ShiroUser user = ShiroUtils.getUser();
+        AssertUtils.isTrue(user.getType() > req.getType(), "无权创建高等级用户");
+        AssertUtils.isTrue(req.getType() == UcConst.UserTypeEnum.DEPT_ADMIN.getCode() && StrUtil.isEmpty(req.getDeptCode()), "单位管理员需指定所在单位");
+        // AssertUtils.isTrue(user.getDeptId() != null && dto.getDeptId() == null, "需指定所在单位");
+        AssertUtils.isTrue(hasDuplicated(req.getId(), "username", req.getUsername()), ErrorCode.ERROR_REQUEST, "用户名已存在");
+        AssertUtils.isTrue(hasDuplicated(req.getId(), "mobile", req.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已存在");
+        // 转换数据格式
+        UserEntity entity;
+        if (req.hasId()) {
+            // 编辑数据
+            entity = getById(req.getId());
+            AssertUtils.isNull(entity, ErrorCode.DB_RECORD_NOT_EXISTED);
+            BeanUtil.copyProperties(req, entity);
+            entity.setPassword(ObjectUtils.isEmpty(req.getPassword()) ? null : PasswordUtils.encode(req.getPassword()));
+            entity.setPasswordRaw(ObjectUtils.isEmpty(req.getPassword()) ? null : PasswordUtils.aesEncode(req.getPassword(), Const.AES_KEY));
+        } else {
+            // 新增数据
+            entity = BeanUtil.copyProperties(req, UserEntity.class);
+            entity.setPassword(PasswordUtils.encode(req.getPassword()));
+            entity.setPasswordRaw(PasswordUtils.aesEncode(req.getPassword(), Const.AES_KEY));
+        }
+        // 处理数据
+        saveOrUpdateById(entity);
+        // 保存角色用户关系
+        roleUserService.saveOrUpdateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
+        return entity;
+    }
+
+    /**
      * 获取用户权限列表
      */
     public List<String> getUserPermissions(ShiroUser user) {
@@ -67,35 +103,6 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      */
     public List<String> getUserRoleCodes(ShiroUser user) {
         return user.isFullRoles() ? shiroDao.getAllRoleCodeList(user.getTenantCode()) : shiroDao.getRoleCodeListByUserId(user.getId());
-    }
-
-    @Override
-    protected void beforeSaveOrUpdateDto(UserDTO dto, UserEntity toSaveEntity, int type) {
-        // 检查用户权限
-        ShiroUser user = ShiroUtils.getUser();
-        AssertUtils.isTrue(user.getType() > dto.getType(), "无权创建高等级用户");
-        AssertUtils.isTrue(dto.getType() == UcConst.UserTypeEnum.DEPT_ADMIN.getCode() && StrUtil.isEmpty(dto.getDeptCode()), "单位管理员需指定所在单位");
-        // AssertUtils.isTrue(user.getDeptId() != null && dto.getDeptId() == null, "需指定所在单位");
-        AssertUtils.isTrue(hasDuplicated(dto.getId(), "username", dto.getUsername()), ErrorCode.ERROR_REQUEST, "用户名已存在");
-        AssertUtils.isTrue(hasDuplicated(dto.getId(), "mobile", dto.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已存在");
-        if (type == 1) {
-            // 更新
-            // 检查是否需要修改密码,对于null的不会更新字段
-            toSaveEntity.setPassword(ObjectUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.encode(dto.getPassword()));
-            toSaveEntity.setPasswordRaw(ObjectUtils.isEmpty(dto.getPassword()) ? null : PasswordUtils.aesEncode(dto.getPassword(), Const.AES_KEY));
-        } else {
-            // 新增
-            toSaveEntity.setPassword(PasswordUtils.encode(dto.getPassword()));
-            toSaveEntity.setPasswordRaw(PasswordUtils.aesEncode(dto.getPassword(), Const.AES_KEY));
-        }
-    }
-
-    @Override
-    protected void afterSaveOrUpdateDto(boolean ret, UserDTO dto, UserEntity existedEntity, int type) {
-        if (ret) {
-            // 保存角色用户关系
-            roleUserService.saveOrUpdateByUserIdAndRoleIds(dto.getId(), dto.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
-        }
     }
 
     /**

@@ -25,7 +25,7 @@ public class HttpController {
     @PostMapping("execute")
     @Operation(summary = "接口调用")
     @AccessControl(value = "/execute", allowTokenName = "token-tunnel")
-    public Result<?> execute(@Validated @RequestBody HttpQueryReq form) {
+    public Result<String> execute(@Validated @RequestBody HttpQueryReq form) {
         try {
             String result = HttpRequest.of(form.getUrl())
                     .headerMap(form.getHeaders(), true)
@@ -34,10 +34,10 @@ public class HttpController {
                     .method(Method.valueOf(form.getMethod()))
                     .timeout(form.getTimeout() <= 0 ? (int) DateUnit.MINUTE.getMillis() : form.getTimeout())
                     .execute().body();
-            return new Result<>().success(result);
+            return new Result<String>().success(result);
         } catch (Exception e) {
             log.error("数据请求失败", e);
-            return new Result<>().error(e.getMessage());
+            return new Result<String>().error(e.getMessage());
         }
     }
 

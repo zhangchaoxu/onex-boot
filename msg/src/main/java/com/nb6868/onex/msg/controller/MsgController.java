@@ -13,10 +13,7 @@ import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
-import com.nb6868.onex.msg.dto.MsgLogQueryReq;
-import com.nb6868.onex.msg.dto.MsgTplDTO;
-import com.nb6868.onex.msg.dto.MsgTplQueryReq;
-import com.nb6868.onex.msg.dto.MsgTplSaveOrUpdateReq;
+import com.nb6868.onex.msg.dto.*;
 import com.nb6868.onex.msg.entity.MsgTplEntity;
 import com.nb6868.onex.msg.service.MsgLogService;
 import com.nb6868.onex.msg.service.MsgService;
@@ -51,27 +48,27 @@ public class MsgController {
     @Operation(summary = "模板分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
-    public Result<?> tplPage(@Validated({PageGroup.class}) @RequestBody MsgTplQueryReq form) {
-        PageData<?> page = msgTplService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<MsgTplDTO>> tplPage(@Validated({PageGroup.class}) @RequestBody MsgTplQueryReq req) {
+        PageData<MsgTplDTO> page = msgTplService.pageDto(req, QueryWrapperHelper.getPredicate(req, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<MsgTplDTO>>().success(page);
     }
 
     @PostMapping("tplList")
     @Operation(summary = "模板列表")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
-    public Result<?> tplList(@Validated @RequestBody MsgTplQueryReq form) {
-        List<?> list = msgTplService.listDto(QueryWrapperHelper.getPredicate(form));
-        return new Result<>().success(list);
+    public Result<List<MsgTplDTO>> tplList(@Validated @RequestBody MsgTplQueryReq req) {
+        List<MsgTplDTO> list = msgTplService.listDto(QueryWrapperHelper.getPredicate(req));
+        return new Result<List<MsgTplDTO>>().success(list);
     }
 
     @PostMapping("tplInfo")
     @Operation(summary = "模板详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:query"}, logical = Logical.OR)
-    public Result<MsgTplDTO> info(@Validated @RequestBody IdReq form) {
-        MsgTplDTO data = msgTplService.oneDto(QueryWrapperHelper.getPredicate(form));
+    public Result<MsgTplDTO> info(@Validated @RequestBody IdReq req) {
+        MsgTplDTO data = msgTplService.oneDto(QueryWrapperHelper.getPredicate(req));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<MsgTplDTO>().success(data);
@@ -81,11 +78,11 @@ public class MsgController {
     @Operation(summary = "模板新增或保存")
     @LogOperation("模板新增或保存")
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgTpl:edit"}, logical = Logical.OR)
-    public Result<?> tplSaveOrUpdate(@Validated @RequestBody MsgTplSaveOrUpdateReq req) {
+    public Result<MsgTplDTO> tplSaveOrUpdate(@Validated @RequestBody MsgTplSaveOrUpdateReq req) {
         MsgTplEntity entity = msgTplService.saveOrUpdateByReq(req);
         MsgTplDTO dto = ConvertUtils.sourceToTarget(entity, MsgTplDTO.class);
 
-        return new Result<>().success(dto);
+        return new Result<MsgTplDTO>().success(dto);
     }
 
     @PostMapping("tplDelete")
@@ -105,18 +102,18 @@ public class MsgController {
     @Operation(summary = "日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msgLog:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody MsgLogQueryReq form) {
-        PageData<?> page = msgLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<MsgLogDTO>> page(@Validated({PageGroup.class}) @RequestBody MsgLogQueryReq req) {
+        PageData<MsgLogDTO> page = msgLogService.pageDto(req, QueryWrapperHelper.getPredicate(req, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<MsgLogDTO>>().success(page);
     }
 
     @PostMapping("send")
     @Operation(summary = "发送消息")
     @LogOperation("发送消息")
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msg:send"}, logical = Logical.OR)
-    public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
-        boolean flag = msgService.sendMail(form);
+    public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm req) {
+        boolean flag = msgService.sendMail(req);
         return new Result<>().bool(flag);
     }
 

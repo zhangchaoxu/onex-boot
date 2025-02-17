@@ -29,33 +29,33 @@ import java.util.List;
 public class CalendarController {
 
     @Autowired
-    private CalendarService calendarService;
+    CalendarService calendarService;
 
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
-    public Result<?> list(@Validated @RequestBody CalenderQueryReq form) {
-        QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
+    public Result<List<CalendarDTO>> list(@Validated @RequestBody CalenderQueryReq req) {
+        QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(req, "list");
         List<CalendarDTO> list = calendarService.listDto(queryWrapper);
 
-        return new Result<>().success(list);
+        return new Result<List<CalendarDTO>>().success(list);
     }
 
     @PostMapping("page")
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated(PageGroup.class) @RequestBody CalenderQueryReq form) {
-        QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        PageData<CalendarDTO> page = calendarService.pageDto(form, queryWrapper);
+    public Result<PageData<CalendarDTO>> page(@Validated(PageGroup.class) @RequestBody CalenderQueryReq req) {
+        QueryWrapper<CalendarEntity> queryWrapper = QueryWrapperHelper.getPredicate(req, "page");
+        PageData<CalendarDTO> page = calendarService.pageDto(req, queryWrapper);
 
-        return new Result<>().success(page);
+        return new Result<PageData<CalendarDTO>>().success(page);
     }
 
     @PostMapping("info")
     @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:calendar", "sys:calendar:query"}, logical = Logical.OR)
-    public Result<CalendarDTO> info(@Validated @RequestBody CalenderDayDateReq form) {
-        CalendarDTO data = calendarService.oneDto(QueryWrapperHelper.getPredicate(form));
+    public Result<CalendarDTO> info(@Validated @RequestBody CalenderDayDateReq req) {
+        CalendarDTO data = calendarService.oneDto(QueryWrapperHelper.getPredicate(req));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<CalendarDTO>().success(data);

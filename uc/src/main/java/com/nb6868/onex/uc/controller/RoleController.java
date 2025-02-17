@@ -44,20 +44,20 @@ public class RoleController {
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody RoleQueryReq form) {
-        PageData<?> page = roleService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<RoleDTO>> page(@Validated({PageGroup.class}) @RequestBody RoleQueryReq form) {
+        PageData<RoleDTO> page = roleService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<RoleDTO>>().success(page);
     }
 
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> list(@Validated @RequestBody RoleQueryReq form) {
-        List<?> list = roleService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+    public Result<List<RoleDTO>> list(@Validated @RequestBody RoleQueryReq form) {
+        List<RoleDTO> list = roleService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
-        return new Result<>().success(list);
+        return new Result<List<RoleDTO>>().success(list);
     }
 
     @PostMapping("info")
@@ -67,11 +67,9 @@ public class RoleController {
     public Result<RoleDTO> info(@Validated @RequestBody IdReq req) {
         RoleDTO data = roleService.oneDto(QueryWrapperHelper.getPredicate(req));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
-
         // 查询角色对应的菜单
         List<Long> menuIdList = menuScopeService.getMenuIdListByRoleId(data.getId());
         data.setMenuIdList(menuIdList);
-
         return new Result<RoleDTO>().success(data);
     }
 

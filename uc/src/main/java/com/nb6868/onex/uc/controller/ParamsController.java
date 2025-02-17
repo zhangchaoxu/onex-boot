@@ -60,20 +60,20 @@ public class ParamsController {
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> list(@RequestBody ParamsQueryReq form) {
-        List<?> list = paramsService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+    public Result<List<ParamsDTO>> list(@RequestBody ParamsQueryReq form) {
+        List<ParamsDTO> list = paramsService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
-        return new Result<>().success(list);
+        return new Result<List<ParamsDTO>>().success(list);
     }
 
     @PostMapping("page")
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody ParamsQueryReq form) {
-        PageData<?> page = paramsService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<ParamsDTO>> page(@Validated({PageGroup.class}) @RequestBody ParamsQueryReq form) {
+        PageData<ParamsDTO> page = paramsService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<ParamsDTO>>().success(page);
     }
 
     @PostMapping("info")
@@ -91,10 +91,11 @@ public class ParamsController {
     @Operation(summary = "新增或更新")
     @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:params:edit"}, logical = Logical.OR)
-    public Result<?> saveOrUpdate(@Validated @RequestBody ParamsSaveOrUpdateReq req) {
+    public Result<ParamsDTO> saveOrUpdate(@Validated @RequestBody ParamsSaveOrUpdateReq req) {
         ParamsEntity entity = paramsService.saveOrUpdateByReq(req);
         ParamsDTO dto = ConvertUtils.sourceToTarget(entity, ParamsDTO.class);
-        return new Result<>().success(dto);
+
+        return new Result<ParamsDTO>().success(dto);
     }
 
     @PostMapping("delete")

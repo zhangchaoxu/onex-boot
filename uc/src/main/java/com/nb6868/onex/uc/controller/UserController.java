@@ -11,13 +11,13 @@ import com.nb6868.onex.common.pojo.IdReq;
 import com.nb6868.onex.common.pojo.PageData;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUtils;
+import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
-import com.nb6868.onex.common.validator.group.UpdateGroup;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.dto.UserQueryReq;
+import com.nb6868.onex.uc.dto.UserSaveOrUpdateReq;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.RoleService;
@@ -54,48 +54,48 @@ public class UserController {
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody UserQueryReq form) {
+    public Result<PageData<UserDTO>> page(@Validated({PageGroup.class}) @RequestBody UserQueryReq form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
         if (CollUtil.isNotEmpty(form.getRoleCodes())) {
             List<Long> userIds = roleService.getUserIdListByRoleCodeList(form.getRoleCodes());
             if (CollUtil.isEmpty(userIds)) {
-                return new Result<>().success(new PageData<>());
+                return new Result<PageData<UserDTO>>().success(new PageData<>());
             }
             queryWrapper.in("id", userIds);
         } else if (CollUtil.isNotEmpty(form.getRoleIds())) {
             List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
             if (CollUtil.isEmpty(userIds)) {
-                return new Result<>().success(new PageData<>());
+                return new Result<PageData<UserDTO>>().success(new PageData<>());
             }
             queryWrapper.in("id", userIds);
         }
-        PageData<?> page = userService.pageDto(form, queryWrapper);
+        PageData<UserDTO> page = userService.pageDto(form, queryWrapper);
 
-        return new Result<>().success(page);
+        return new Result<PageData<UserDTO>>().success(page);
     }
 
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> list(@Validated @RequestBody UserQueryReq form) {
+    public Result<List<UserDTO>> list(@Validated @RequestBody UserQueryReq form) {
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
         if (CollUtil.isNotEmpty(form.getRoleCodes())) {
             List<Long> userIds = roleService.getUserIdListByRoleCodeList(form.getRoleCodes());
             if (CollUtil.isEmpty(userIds)) {
-                return new Result<>().success(CollUtil.newArrayList());
+                return new Result<List<UserDTO>>().success(CollUtil.newArrayList());
             }
             queryWrapper.in("id", userIds);
         } else if (CollUtil.isNotEmpty(form.getRoleIds())) {
             List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
             if (CollUtil.isEmpty(userIds)) {
-                return new Result<>().success(CollUtil.newArrayList());
+                return new Result<List<UserDTO>>().success(CollUtil.newArrayList());
             }
             queryWrapper.in("id", userIds);
         }
-        List<?> list = userService.listDto(queryWrapper);
+        List<UserDTO> list = userService.listDto(queryWrapper);
 
-        return new Result<>().success(list);
+        return new Result<List<UserDTO>>().success(list);
     }
 
     @PostMapping("info")
@@ -112,24 +112,15 @@ public class UserController {
         return new Result<UserDTO>().success(data);
     }
 
-    @PostMapping("save")
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @PostMapping("saveOrUpdate")
+    @Operation(summary = "新增或更新")
+    @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
-    public Result<?> save(@Validated(value = {DefaultGroup.class, AddGroup.class}) @RequestBody UserDTO dto) {
-        userService.saveDto(dto);
+    public Result<UserDTO> saveOrUpdate(@RequestBody UserSaveOrUpdateReq req) {
+        UserEntity entity = userService.saveOrUpdateByReq(req);
+        UserDTO dto = ConvertUtils.sourceToTarget(entity, UserDTO.class);
 
-        return new Result<>();
-    }
-
-    @PostMapping("update")
-    @Operation(summary = "修改")
-    @LogOperation("修改")
-    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
-    public Result<?> update(@Validated(value = {DefaultGroup.class, UpdateGroup.class}) @RequestBody UserDTO dto) {
-        userService.updateDto(dto);
-
-        return new Result<>();
+        return new Result<UserDTO>().success(dto);
     }
 
     @PostMapping("changeState")

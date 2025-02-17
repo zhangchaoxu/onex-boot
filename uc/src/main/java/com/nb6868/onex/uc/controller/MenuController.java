@@ -45,7 +45,7 @@ public class MenuController {
     @Operation(summary = "树列表", description = "按租户来,不做用户的权限区分")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:query"}, logical = Logical.OR)
-    public Result<?> tree(@Validated @RequestBody MenuQueryReq form) {
+    public Result<List<Tree<Long>>> tree(@Validated @RequestBody MenuQueryReq form) {
         QueryWrapper<MenuEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<TreeNode<Long>> menuList = new ArrayList<>();
         menuService.list(queryWrapper).forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create()
@@ -58,7 +58,7 @@ public class MenuController {
                 .set("showMenu", menu.getShowMenu())
                 .set("urlNewBlank", menu.getUrlNewBlank()))));
         List<Tree<Long>> treeList = TreeNodeUtils.buildIdTree(menuList);
-        return new Result<>().success(treeList);
+        return new Result<List<Tree<Long>>>().success(treeList);
     }
 
     @PostMapping("info")
@@ -78,10 +78,10 @@ public class MenuController {
     @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:menu:edit"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> saveOrUpdate(@Validated @RequestBody MenuSaveOrUpdateReq req) {
+    public Result<MenuDTO> saveOrUpdate(@Validated @RequestBody MenuSaveOrUpdateReq req) {
         MenuEntity entity = menuService.saveOrUpdateByReq(req);
         MenuDTO dto = ConvertUtils.sourceToTarget(entity, MenuDTO.class);
-        return new Result<>().success(dto);
+        return new Result<MenuDTO>().success(dto);
     }
 
     @PostMapping("delete")

@@ -45,7 +45,6 @@ public class SystemController {
                 .set("javaMaxMemory", SystemUtil.getMaxMemory() / 1024 / 1024)
                 .set("userName", System.getProperty("user.name"))
                 .set("userTimezone", System.getProperty("user.timezone"));
-
         return new Result<>().success(result);
     }
 

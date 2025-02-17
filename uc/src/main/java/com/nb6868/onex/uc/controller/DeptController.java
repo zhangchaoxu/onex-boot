@@ -47,30 +47,30 @@ public class DeptController {
     @Operation(summary = "树表")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
-    public Result<?> tree(@Validated @RequestBody DeptQueryReq form) {
+    public Result<List<Tree<String>>> tree(@Validated @RequestBody DeptQueryReq form) {
         QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<Tree<String>> treeList = TreeNodeUtils.buildCodeTree(
                 CollStreamUtil.toList(deptService.list(queryWrapper),
                         (entity) -> new TreeNode<>(entity.getCode(), entity.getPcode(), entity.getName(), entity.getSort()).setExtra(Dict.create().set("type", entity.getType()))));
-        return new Result<>().success(treeList);
+        return new Result<List<Tree<String>>>().success(treeList);
     }
 
     @PostMapping("list")
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
-    public Result<?> list(@Validated @RequestBody DeptQueryReq form) {
-        List<?> list = deptService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
+    public Result<List<DeptDTO>> list(@Validated @RequestBody DeptQueryReq form) {
+        List<DeptDTO> list = deptService.listDto(QueryWrapperHelper.getPredicate(form, "list"));
 
-        return new Result<>().success(list);
+        return new Result<List<DeptDTO>>().success(list);
     }
 
     @PostMapping("page")
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated(PageGroup.class) @RequestBody DeptQueryReq form) {
-        PageData<?> page = deptService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<DeptDTO>> page(@Validated(PageGroup.class) @RequestBody DeptQueryReq form) {
+        PageData<DeptDTO> page = deptService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<DeptDTO>>().success(page);
     }
 
     @PostMapping("info")
@@ -87,10 +87,11 @@ public class DeptController {
     @Operation(summary = "新增或更新")
     @LogOperation("新增或更新")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:edit"}, logical = Logical.OR)
-    public Result<?> saveOrUpdate(@Validated @RequestBody DeptSaveOrUpdateReq req) {
+    public Result<DeptDTO> saveOrUpdate(@Validated @RequestBody DeptSaveOrUpdateReq req) {
         DeptEntity entity = deptService.saveOrUpdateByReq(req);
         DeptDTO dto = ConvertUtils.sourceToTarget(entity, DeptDTO.class);
-        return new Result<>().success(dto);
+
+        return new Result<DeptDTO>().success(dto);
     }
 
     @PostMapping("delete")

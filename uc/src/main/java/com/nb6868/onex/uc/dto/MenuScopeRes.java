@@ -1,24 +1,20 @@
 package com.nb6868.onex.uc.dto;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.nb6868.onex.common.pojo.BaseRes;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
-@Schema(name = "权限范围")
-public class MenuScopeResult implements Serializable {
+@Schema(name = "权限范围结果")
+public class MenuScopeRes extends BaseRes {
 
     @Schema(description = "菜单树")
     private List<Tree<Long>> menuTree = new ArrayList<>();

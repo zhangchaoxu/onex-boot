@@ -2,27 +2,21 @@ package com.nb6868.onex.uc.dto;
 
 import cn.hutool.json.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nb6868.onex.common.pojo.BaseDTO;
+import com.nb6868.onex.common.pojo.BaseIdReq;
 import com.nb6868.onex.common.validator.group.AddGroup;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * 用户
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Schema(name = "用户")
-public class UserDTO extends BaseDTO {
+@Schema(name = "用户请求")
+public class UserSaveOrUpdateReq extends BaseIdReq {
 
     @Schema(description = "类型")
     private Integer type;
@@ -46,7 +40,13 @@ public class UserDTO extends BaseDTO {
     private String level;
 
     @Schema(description = "用户名")
+    @NotBlank(message = "{username.require}", groups = DefaultGroup.class)
     private String username;
+
+    @Schema(description = "密码")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "{password.require}", groups = AddGroup.class)
+    private String password;
 
     @Schema(description = "真实姓名")
     private String realName;
