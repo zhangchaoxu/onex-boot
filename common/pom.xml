@@ -23,6 +23,7 @@
         <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <hutool.version>5.8.35</hutool.version>
+        <ip2region.version>2.7.0</ip2region.version>
         <bcprov.version>1.80</bcprov.version>
         <jsoup.version>1.18.3</jsoup.version>
         <knife4j.version>4.5.0</knife4j.version>
@@ -150,6 +151,13 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
+        </dependency>
+        <!-- ip2region -->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+            <version>${ip2region.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- knife4j+
         <dependency>

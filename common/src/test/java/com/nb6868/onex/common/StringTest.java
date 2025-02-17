@@ -7,6 +7,7 @@ import cn.hutool.core.date.format.FastDateFormat;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
@@ -308,6 +309,20 @@ public class StringTest {
         String fmt2 = DateUtil.formatHttpDate(new Date());
         log.error("fmt={}", fmt);
         log.error("fmt2={}", fmt2);
+    }
+
+    @Test
+    @DisplayName("urlEncode")
+    void urlEncode() {
+        String url = "https://oss.eborapp.51ebo.com/smjc_app/specialty/26755/b8038f964dbf3b2f194e8c02c762fbe4/27B9F59F-4CAD-4275-8A1A-0114CEED6C8E.jpg?x-oss-process=image/resize,l_1920/watermark,image_c21qY193YXRlcm1hcmsucG5n,g_ne/watermark,text_MjAyNS0wMS0yMyAyMjo0ODo0OA,color_ffffff,size_28,g_sw,shadow_50,x_30,y_115/watermark,text_5LyN5a625bKX5Yy65aS36Zm15aSn6YGTNDIz5Y-35ruo5rGf6aao6IuR,color_ffffff,size_28,g_sw,shadow_50,x_30,y_70/watermark,text_MTExLjM0Njg2NSAzMC42NDc1Njg,color_ffffff,size_28,g_sw,shadow_50,x_30,y_30";
+        String encodeQuery = URLEncodeUtil.encodeQuery(url);
+        String encodeFragment = URLEncodeUtil.encodeFragment(url);
+        String encodeAll = URLEncodeUtil.encodeAll(url);
+        String encode = URLEncodeUtil.encode(url);
+        log.error(encodeQuery);
+        log.error(encodeFragment);
+        log.error(encodeAll);
+        log.error(encode);
     }
 
 }

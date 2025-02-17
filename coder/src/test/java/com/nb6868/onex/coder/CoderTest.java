@@ -25,6 +25,16 @@ import java.util.zip.ZipOutputStream;
 public class CoderTest {
 
     @Test
+    @DisplayName("加载所有表")
+    void loadAllTables() {
+        /*String tableNameSearch = "cms";
+        tableSchemaDao.queryTable(tableNameSearch).forEach(tableMap -> {
+            // 打印出所有表
+            log.error("table={},json={}", MapUtil.getStr(tableMap, "table_name"), JSONUtil.toJsonStr(tableMap));
+        });*/
+    }
+
+    @Test
     @DisplayName("生成代码")
     void generateCode() throws Exception {
         TimeInterval timeInterval = DateUtil.timer();
