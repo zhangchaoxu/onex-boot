@@ -314,7 +314,7 @@ public class StringTest {
     @Test
     @DisplayName("urlEncode")
     void urlEncode() {
-        String url = "https://oss.eborapp.51ebo.com/smjc_app/specialty/26755/b8038f964dbf3b2f194e8c02c762fbe4/27B9F59F-4CAD-4275-8A1A-0114CEED6C8E.jpg?x-oss-process=image/resize,l_1920/watermark,image_c21qY193YXRlcm1hcmsucG5n,g_ne/watermark,text_MjAyNS0wMS0yMyAyMjo0ODo0OA,color_ffffff,size_28,g_sw,shadow_50,x_30,y_115/watermark,text_5LyN5a625bKX5Yy65aS36Zm15aSn6YGTNDIz5Y-35ruo5rGf6aao6IuR,color_ffffff,size_28,g_sw,shadow_50,x_30,y_70/watermark,text_MTExLjM0Njg2NSAzMC42NDc1Njg,color_ffffff,size_28,g_sw,shadow_50,x_30,y_30";
+        String url = "https://oss.xxx.xxx.com/xxx/xxx/26755/xxx/27B9F59F-4CAD-4275-8A1A-0114CEED6C8E.jpg?x-oss-process=image/resize,l_1920/watermark,image_c21qY193YXRlcm1hcmsucG5n,g_ne/watermark,text_MjAyNS0wMS0yMyAyMjo0ODo0OA,color_ffffff,size_28,g_sw,shadow_50,x_30,y_115/watermark,text_5LyN5a625bKX5Yy65aS36Zm15aSn6YGTNDIz5Y-35ruo5rGf6aao6IuR,color_ffffff,size_28,g_sw,shadow_50,x_30,y_70/watermark,text_MTExLjM0Njg2NSAzMC42NDc1Njg,color_ffffff,size_28,g_sw,shadow_50,x_30,y_30";
         String encodeQuery = URLEncodeUtil.encodeQuery(url);
         String encodeFragment = URLEncodeUtil.encodeFragment(url);
         String encodeAll = URLEncodeUtil.encodeAll(url);
