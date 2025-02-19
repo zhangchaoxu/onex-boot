@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.jpa;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
@@ -21,6 +22,10 @@ import java.util.Date;
 @Component
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
+    /**
+     * UUID
+     */
+    protected final static String UUID = "uuid";
     /**
      * 创建时间
      */
@@ -66,13 +71,14 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         ShiroUser user = ShiroUtils.getUser();
         Date now = new Date();
 
+        strictInsertFill(metaObject, UUID, String.class, IdUtil.fastSimpleUUID());
         strictInsertFill(metaObject, DELETED, Long.class, 0L);
         strictInsertFill(metaObject, CREATE_TIME, Date.class, now);
         strictInsertFill(metaObject, UPDATE_TIME, Date.class, now);
         /*if (metaObject.hasGetter(DEPT_ID) && metaObject.getValue(DEPT_ID) == null && user.getDeptId() != null) {
             strictInsertFill(metaObject, DEPT_ID, Long.class, user.getDeptId());
         }*/
-        if (metaObject.hasGetter(TENANT_CODE) && StrUtil.isNotBlank(user.getTenantCode()) &&  !ObjectUtil.isEmpty(metaObject.getValue(TENANT_CODE))) {
+        if (metaObject.hasGetter(TENANT_CODE) && StrUtil.isNotBlank(user.getTenantCode()) && !ObjectUtil.isEmpty(metaObject.getValue(TENANT_CODE))) {
             // 存在租户编码字段,并且用户存在租户信息,并且未指定租户信息
             // Entity中需要定义tenantCode为@TableField(fill = FieldFill.INSERT)
             strictInsertFill(metaObject, TENANT_CODE, String.class, user.getTenantCode());

@@ -16,13 +16,22 @@ import lombok.EqualsAndHashCode;
 public class OssDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+    @Schema(description = "uuid")
+    private String uuid;
+
+    @Schema(description = "路径")
+    private String path;
+
+    @Schema(description = "类型")
+    private String type;
+
     @Schema(description = "文件路径")
     private String url;
 
     @Schema(description = "文件尺寸")
     private Long size;
 
-    @Schema(description = "类型")
+    @Schema(description = "内容类型")
     private String contentType;
 
     @Schema(description = "文件名")

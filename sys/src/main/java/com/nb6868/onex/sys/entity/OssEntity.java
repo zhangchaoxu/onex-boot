@@ -1,5 +1,7 @@
 package com.nb6868.onex.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.nb6868.onex.common.pojo.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -17,17 +19,20 @@ public class OssEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
+     * uuid
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private String uuid;
+    /**
      * URL地址
      */
     private String url;
-
     /**
      * 文件尺寸
      */
     private Long size;
-
     /**
-     * 类型
+     * 内容类型
      */
     private String contentType;
 
@@ -35,5 +40,13 @@ public class OssEntity extends BaseEntity {
      * 文件名
      */
     private String filename;
+    /**
+     * 存储路径
+     */
+    private String path;
+    /**
+     * 类型
+     */
+    private String type;
 
 }

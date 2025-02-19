@@ -1,6 +1,5 @@
 package com.nb6868.onex.sys.controller;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
@@ -10,12 +9,10 @@ import cn.hutool.poi.excel.ExcelUtil;
 import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
+import com.nb6868.onex.common.config.NonStaticResourceHttpRequestConfig;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.oss.AbstractOssService;
-import com.nb6868.onex.common.oss.AliyunOssUploadCallbackReq;
-import com.nb6868.onex.common.oss.OssFactory;
-import com.nb6868.onex.common.oss.OssPropsConfig;
+import com.nb6868.onex.common.oss.*;
 import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.IdsReq;
@@ -25,24 +22,32 @@ import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.sys.SysConst;
-import com.nb6868.onex.sys.dto.OssFileBase64UploadReq;
-import com.nb6868.onex.sys.dto.OssPreSignedReq;
-import com.nb6868.onex.sys.dto.OssQueryReq;
-import com.nb6868.onex.sys.dto.OssSignedPostReq;
+import com.nb6868.onex.sys.dto.*;
 import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,12 +62,14 @@ public class OssController {
     OssService ossService;
     @Autowired
     BaseParamsService paramsService;
+    @Autowired
+    NonStaticResourceHttpRequestConfig nonStaticResourceHttpRequestConfig;
 
-    @PostMapping("upload")
+    @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传文件(文件形式)")
-    public Result<?> upload(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
-                            @RequestParam(required = false) String prefix,
-                            @RequestPart MultipartFile file) {
+    public Result<FileUploadRes> upload(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
+                                        @RequestParam(required = false) String prefix,
+                                        @RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
@@ -70,7 +77,7 @@ public class OssController {
         String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
         ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
         AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
-        Dict result = Dict.create().set("src", ossConfig.getDomain() + objectKey).set("filename", file.getOriginalFilename());
+        FileUploadRes result = new FileUploadRes().setUrl(ossConfig.getDomain() + objectKey).setFilename(file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
@@ -78,10 +85,49 @@ public class OssController {
             oss.setFilename(file.getOriginalFilename());
             oss.setSize(file.getSize());
             oss.setContentType(file.getContentType());
+            oss.setType(prefix);
+            oss.setPath(objectKey);
             ossService.save(oss);
-            result.set("oss", oss);
+            result.setUuid(oss.getUuid());
         }
-        return new Result<>().success(result);
+        return new Result<FileUploadRes>().success(result);
+    }
+
+    @GetMapping("download/{uuid}")
+    @AccessControl("download/**")
+    @Operation(summary = "文件下载")
+    public ResponseEntity<?> download(@PathVariable("uuid") String uuid) throws IOException {
+        OssEntity entity = ossService.getByUuid(uuid);
+        AssertUtils.isNull(entity, "文件记录不存在");
+        File file = ResourceUtils.getFile(entity.getPath());
+        AssertUtils.isFalse(file.exists(), "文件不存在");
+        AssertUtils.isFalse(file.canRead(), "文件读取失败");
+        // 文件名编码，防止中文乱码
+        String filename = URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(OssLocalUtils.FILENAME_FMT, filename))
+                .header(HttpHeaders.CONTENT_TYPE, StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .body(new FileSystemResource(file));
+    }
+
+    @GetMapping("preview/{uuid}")
+    @AccessControl("preview/**")
+    @Operation(summary = "预览文件(对image和video做预览)")
+    public void preview(@PathVariable("uuid") String uuid, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
+        OssEntity entity = ossService.getByUuid(uuid);
+        AssertUtils.isNull(entity, "文件记录不存在");
+        File file = ResourceUtils.getFile(entity.getPath());
+        AssertUtils.isFalse(file.exists(), "文件不存在");
+        AssertUtils.isFalse(file.canRead(), "文件读取失败");
+        // 文件名编码，防止中文乱码
+        String filename = URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8);
+
+        httpServletResponse.addHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(OssLocalUtils.FILENAME_FMT, filename));
+        httpServletResponse.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()));
+        httpServletResponse.setContentType(StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE));
+        httpServletRequest.setAttribute(NonStaticResourceHttpRequestConfig.ATTR_FILE, entity.getPath());
+        nonStaticResourceHttpRequestConfig.handleRequest(httpServletRequest, httpServletResponse);
     }
 
     @PostMapping("uploadToTemp")
@@ -115,36 +161,36 @@ public class OssController {
 
     @PostMapping("uploadBase64")
     @Operation(summary = "上传单文件(base64)")
-    public Result<?> uploadBase64(@Validated @RequestBody OssFileBase64UploadReq form) {
-        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
+    public Result<FileUploadRes> uploadBase64(@Validated @RequestBody OssFileBase64UploadReq req) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(req.getParamsCode(), OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
-
         // 有两个前缀，config定义前缀和用户上传前缀
-        String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFilaName());
-        ApiResult<JSONObject> uploadResult = uploadService.uploadBase64(objectKey, form.getFileBase64());
+        String objectKey = uploadService.buildObjectKey(req.getPrefix(), req.getFilaName());
+        ApiResult<JSONObject> uploadResult = uploadService.uploadBase64(objectKey, req.getFileBase64());
         AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
-        Dict result = Dict.create().set("src", ossConfig.getDomain() + objectKey).set("filename", form.getFilaName());
+        FileUploadRes result = new FileUploadRes().setUrl(ossConfig.getDomain() + objectKey).setFilename(req.getFilaName());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
             oss.setUrl(ossConfig.getDomain() + objectKey);
-            oss.setFilename(form.getFilaName());
+            oss.setFilename(req.getFilaName());
             oss.setSize(0L);
-            oss.setContentType(FileUtil.getMimeType(form.getFilaName()));
+            oss.setContentType(FileUtil.getMimeType(req.getFilaName()));
+            oss.setType(req.getPrefix());
+            oss.setPath(objectKey);
             ossService.save(oss);
-            result.set("oss", oss);
+            result.setUuid(oss.getUuid());
         }
-        return new Result<>().success(result);
+        return new Result<FileUploadRes>().success(result);
     }
 
     @PostMapping("uploadMulti")
     @Operation(summary = "上传多文件")
-    public Result<?> uploadMulti(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
+    public Result<List<FileUploadRes>> uploadMulti(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
                                  @RequestParam(required = false) String prefix,
                                  @RequestPart @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
-        List<String> srcList = new ArrayList<>();
-        List<OssEntity> ossList = new ArrayList<>();
+        List<FileUploadRes> resList = new ArrayList<>();
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
@@ -153,20 +199,23 @@ public class OssController {
             // 上传文件
             String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
             ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
-            if (uploadResult.isSuccess() && ossConfig.getSaveDb()) {
-                //保存文件信息
-                OssEntity oss = new OssEntity();
-                oss.setUrl(ossConfig.getDomain() + objectKey);
-                oss.setFilename(file.getOriginalFilename());
-                oss.setSize(file.getSize());
-                oss.setContentType(file.getContentType());
-                ossService.save(oss);
-                srcList.add(ossConfig.getDomain() + objectKey);
-                ossList.add(oss);
+            if (uploadResult.isSuccess()) {
+                FileUploadRes result = new FileUploadRes().setUrl(ossConfig.getDomain() + objectKey).setFilename(file.getOriginalFilename());
+                if (ossConfig.getSaveDb()) {
+                    //保存文件信息
+                    OssEntity oss = new OssEntity();
+                    oss.setUrl(ossConfig.getDomain() + objectKey);
+                    oss.setFilename(file.getOriginalFilename());
+                    oss.setSize(file.getSize());
+                    oss.setContentType(file.getContentType());
+                    ossService.save(oss);
+                    result.setUuid(oss.getUuid());
+                }
+                resList.add(result);
             }
         }
 
-        return new Result<>().success(Dict.create().set("src", CollUtil.join(srcList, ",")).set("oss", ossList));
+        return new Result<List<FileUploadRes>>().success(resList);
     }
 
     @PostMapping("aliyunUploadCallback")
@@ -220,10 +269,10 @@ public class OssController {
     @Operation(summary = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss", "sys:oss:query"}, logical = Logical.OR)
-    public Result<?> page(@Validated({PageGroup.class}) @RequestBody OssQueryReq form) {
-        PageData<?> page = ossService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<OssDTO>> page(@Validated({PageGroup.class}) @RequestBody OssQueryReq form) {
+        PageData<OssDTO> page = ossService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
 
-        return new Result<>().success(page);
+        return new Result<PageData<OssDTO>>().success(page);
     }
 
     @PostMapping("deleteBatch")

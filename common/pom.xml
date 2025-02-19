@@ -30,7 +30,7 @@
         <weixin.version>4.7.0</weixin.version>
         <aliyun-oss.version>3.18.1</aliyun-oss.version>
         <huaweicloud-obs.version>3.24.12</huaweicloud-obs.version>
-        <aws-s3.version>2.30.21</aws-s3.version>
+        <aws-s3.version>2.30.22</aws-s3.version>
         <poi.version>5.4.0</poi.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <easyexcel.version>4.0.3</easyexcel.version>
@@ -180,7 +180,7 @@
             <groupId>com.deepoove</groupId>
             <artifactId>poi-tl</artifactId>
             <version>${poi-tl.version}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <!-- bcprov -->
         <dependency>
