@@ -24,6 +24,7 @@ import java.util.Date;
 @Slf4j
 public class OssLocalUtils {
 
+    public final static String FILENAME_FMT = "attachment;filename={}";
     public final static String CONTENT_TYPE_XLS = "application/vnd.ms-excel";
     public final static String CONTENT_TYPE_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
     public final static String FILENAME_XLS_FMT = "attachment;filename={}.xls";
@@ -81,7 +82,7 @@ public class OssLocalUtils {
      */
     @PostConstruct
     public void setExcelSXSSFWorkbookTmpPath() {
-        String excelSXSSFWorkbookTmpPath = getOssFileStorageAbsolutePath() + "poifiles";
+        String excelSXSSFWorkbookTmpPath = getOssFileStorageAbsolutePath() + File.pathSeparator + "poifiles";
         File dir = FileUtil.mkdir(excelSXSSFWorkbookTmpPath);
         TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(dir));
         log.info("setExcelSXSSFWorkbookTmpPath={}", excelSXSSFWorkbookTmpPath);

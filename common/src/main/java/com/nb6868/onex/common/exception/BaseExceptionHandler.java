@@ -26,6 +26,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -81,6 +82,19 @@ public abstract class BaseExceptionHandler {
         log.error("DuplicateKeyException", e);
         saveLog(request, new OnexException(ErrorCode.DB_RECORD_EXISTS, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.DB_RECORD_EXISTS);
+    }
+
+    /**
+     * 处理HttpMediaTypeNotSupportedException类型错误
+     *
+     * @param e exception
+     * @return result
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public Object handleHttpMediaTypeNotSupportedException(HttpServletRequest request, HttpMediaTypeNotSupportedException e) {
+        log.error("HttpMediaTypeNotSupportedException", e);
+        // 不做存储,直接返回错误
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
 
     /**

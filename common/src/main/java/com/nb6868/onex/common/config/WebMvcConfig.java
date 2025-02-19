@@ -10,6 +10,7 @@ import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +44,9 @@ import java.util.Locale;
 @Configuration
 @ConditionalOnProperty(name = "onex.webmvc.enable", havingValue = "true")
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Value("${onex.oss.enable:false}")
+    private boolean ossEnable;
 
     /**
      * 链路日志拦截器
@@ -97,7 +101,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // registry.addResourceHandler("/easypoi-preview.html").addResourceLocations("classpath:/META-INF/resources/");
         // registry.addResourceHandler("/easypoijs/**").addResourceLocations("classpath:/META-INF/resources/easypoijs/");
         // 文件读取映射
-        if (StrUtil.isAllNotBlank(OssLocalUtils.getOssFileStoragePath(), OssLocalUtils.getOssFileRequestPath())) {
+        if (ossEnable && StrUtil.isAllNotBlank(OssLocalUtils.getOssFileStoragePath(), OssLocalUtils.getOssFileRequestPath())) {
             // 先创建目录，若直接使用./xxx会在api.jar!/BOOT-INF/classes!/下创建文件夹,而不是在jar包下
             // System.getProperty("user.dir")可以获得jar路径，不带斜杠
             File file = FileUtil.mkdir(OssLocalUtils.getOssFileStorageAbsolutePath());

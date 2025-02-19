@@ -173,9 +173,12 @@ onex:
     enable: false
   # oss
   oss:
-    # 文件请求路径
+    enable: false
+    # 非静态文件处理
+    non-static: false
+    # 文件请求路径/oss/**
     file-request-path: /oss/**
-    # 文件存储路径,以/结尾
+    # 文件存储路径,以/结尾, 如./onex-oss/
     file-storage-path: ./onex-oss/
   # 授权配置
   auth:
