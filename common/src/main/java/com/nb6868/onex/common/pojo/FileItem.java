@@ -12,6 +12,7 @@ import java.io.Serializable;
  * 文件，只需要链接和名称
  * 可在使用时
  * @Schema(description = "图片数组")
+ *
  * @Valid
  * @NotNull(message = "图片数组需传入内容", groups = {DefaultGroup.class})
  * private List<FileItem> imgs;
