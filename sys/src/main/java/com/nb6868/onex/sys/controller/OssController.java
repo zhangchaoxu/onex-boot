@@ -95,7 +95,7 @@ public class OssController {
 
     @GetMapping("download/{uuid}")
     @AccessControl("download/**")
-    @Operation(summary = "文件下载")
+    @Operation(summary = "文件下载", description = "Anon")
     public ResponseEntity<?> download(@PathVariable("uuid") String uuid) throws IOException {
         OssEntity entity = ossService.getByUuid(uuid);
         AssertUtils.isNull(entity, "文件记录不存在");
@@ -113,7 +113,7 @@ public class OssController {
 
     @GetMapping("preview/{uuid}")
     @AccessControl("preview/**")
-    @Operation(summary = "预览文件(对image和video做预览)")
+    @Operation(summary = "预览文件(对image和video做预览)", description = "Anon")
     public void preview(@PathVariable("uuid") String uuid, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
         OssEntity entity = ossService.getByUuid(uuid);
         AssertUtils.isNull(entity, "文件记录不存在");
@@ -122,7 +122,6 @@ public class OssController {
         AssertUtils.isFalse(file.canRead(), "文件读取失败");
         // 文件名编码，防止中文乱码
         String filename = URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8);
-
         httpServletResponse.addHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(OssLocalUtils.FILENAME_FMT, filename));
         httpServletResponse.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()));
         httpServletResponse.setContentType(StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE));
