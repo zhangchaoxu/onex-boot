@@ -3,6 +3,7 @@ package com.nb6868.onex.common.pojo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * 文件，带有uuid
@@ -11,6 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 @Schema(name = "Uuid文件")
 public class FileUuidItem extends UuidReq {
 

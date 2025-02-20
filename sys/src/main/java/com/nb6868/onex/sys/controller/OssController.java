@@ -14,10 +14,7 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.oss.*;
 import com.nb6868.onex.common.params.BaseParamsService;
-import com.nb6868.onex.common.pojo.ApiResult;
-import com.nb6868.onex.common.pojo.IdsReq;
-import com.nb6868.onex.common.pojo.PageData;
-import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
@@ -67,7 +64,7 @@ public class OssController {
 
     @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传文件(文件形式)")
-    public Result<FileUploadRes> upload(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
+    public Result<FileUuidItem> upload(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
                                         @RequestParam(required = false) String prefix,
                                         @RequestPart MultipartFile file) {
         AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
@@ -77,7 +74,7 @@ public class OssController {
         String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
         ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
         AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
-        FileUploadRes result = new FileUploadRes().setUrl(ossConfig.getDomain() + objectKey).setFilename(file.getOriginalFilename());
+        FileUuidItem result = new FileUuidItem().setUrl(ossConfig.getDomain() + objectKey).setName(file.getOriginalFilename());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
@@ -90,7 +87,7 @@ public class OssController {
             ossService.save(oss);
             result.setUuid(oss.getUuid());
         }
-        return new Result<FileUploadRes>().success(result);
+        return new Result<FileUuidItem>().success(result);
     }
 
     @GetMapping("download/{uuid}")
@@ -160,7 +157,7 @@ public class OssController {
 
     @PostMapping("uploadBase64")
     @Operation(summary = "上传单文件(base64)")
-    public Result<FileUploadRes> uploadBase64(@Validated @RequestBody OssFileBase64UploadReq req) {
+    public Result<FileUuidItem> uploadBase64(@Validated @RequestBody OssFileBase64UploadReq req) {
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(req.getParamsCode(), OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
@@ -168,7 +165,7 @@ public class OssController {
         String objectKey = uploadService.buildObjectKey(req.getPrefix(), req.getFilaName());
         ApiResult<JSONObject> uploadResult = uploadService.uploadBase64(objectKey, req.getFileBase64());
         AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
-        FileUploadRes result = new FileUploadRes().setUrl(ossConfig.getDomain() + objectKey).setFilename(req.getFilaName());
+        FileUuidItem result = new FileUuidItem().setUrl(ossConfig.getDomain() + objectKey).setName(req.getFilaName());
         if (ossConfig.getSaveDb()) {
             //保存文件信息
             OssEntity oss = new OssEntity();
@@ -181,15 +178,15 @@ public class OssController {
             ossService.save(oss);
             result.setUuid(oss.getUuid());
         }
-        return new Result<FileUploadRes>().success(result);
+        return new Result<FileUuidItem>().success(result);
     }
 
     @PostMapping("uploadMulti")
     @Operation(summary = "上传多文件")
-    public Result<List<FileUploadRes>> uploadMulti(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
+    public Result<List<FileUuidItem>> uploadMulti(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
                                  @RequestParam(required = false) String prefix,
                                  @RequestPart @NotEmpty(message = "文件不能为空") MultipartFile[] files) {
-        List<FileUploadRes> resList = new ArrayList<>();
+        List<FileUuidItem> resList = new ArrayList<>();
         OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
@@ -199,7 +196,7 @@ public class OssController {
             String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
             ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
             if (uploadResult.isSuccess()) {
-                FileUploadRes result = new FileUploadRes().setUrl(ossConfig.getDomain() + objectKey).setFilename(file.getOriginalFilename());
+                FileUuidItem result = new FileUuidItem().setUrl(ossConfig.getDomain() + objectKey).setName(file.getOriginalFilename());
                 if (ossConfig.getSaveDb()) {
                     //保存文件信息
                     OssEntity oss = new OssEntity();
@@ -214,7 +211,7 @@ public class OssController {
             }
         }
 
-        return new Result<List<FileUploadRes>>().success(resList);
+        return new Result<List<FileUuidItem>>().success(resList);
     }
 
     @PostMapping("aliyunUploadCallback")
