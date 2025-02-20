@@ -1,9 +1,7 @@
 package com.nb6868.onex.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.nb6868.onex.common.pojo.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.nb6868.onex.common.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,7 +19,7 @@ public class OssEntity extends BaseEntity {
     /**
      * uuid
      */
-    @TableField(fill = FieldFill.INSERT)
+    // @TableField(fill = FieldFill.INSERT)
     private String uuid;
     /**
      * URL地址

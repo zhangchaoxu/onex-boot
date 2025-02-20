@@ -2,6 +2,7 @@ package com.nb6868.onex.sys.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelReader;
@@ -84,6 +85,7 @@ public class OssController {
             oss.setContentType(file.getContentType());
             oss.setType(prefix);
             oss.setPath(objectKey);
+            oss.setUuid(IdUtil.fastUUID());
             ossService.save(oss);
             result.setUuid(oss.getUuid());
         }
@@ -175,6 +177,7 @@ public class OssController {
             oss.setContentType(FileUtil.getMimeType(req.getFilaName()));
             oss.setType(req.getPrefix());
             oss.setPath(objectKey);
+            oss.setUuid(IdUtil.fastUUID());
             ossService.save(oss);
             result.setUuid(oss.getUuid());
         }
