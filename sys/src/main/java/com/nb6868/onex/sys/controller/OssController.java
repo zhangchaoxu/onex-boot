@@ -7,13 +7,15 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
-import com.nb6868.onex.common.annotation.AccessControl;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
-import com.nb6868.onex.common.config.NonStaticResourceHttpRequestConfig;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.oss.*;
+import com.nb6868.onex.common.oss.AbstractOssService;
+import com.nb6868.onex.common.oss.AliyunOssUploadCallbackReq;
+import com.nb6868.onex.common.oss.OssFactory;
+import com.nb6868.onex.common.oss.OssPropsConfig;
 import com.nb6868.onex.common.params.BaseParamsService;
 import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.util.MultipartFileUtils;
@@ -25,9 +27,6 @@ import com.nb6868.onex.sys.entity.OssEntity;
 import com.nb6868.onex.sys.service.OssService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.Logical;
@@ -37,13 +36,11 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -60,8 +57,6 @@ public class OssController {
     OssService ossService;
     @Autowired
     BaseParamsService paramsService;
-    @Autowired
-    NonStaticResourceHttpRequestConfig nonStaticResourceHttpRequestConfig;
 
     @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传文件(文件形式)")
@@ -93,39 +88,42 @@ public class OssController {
     }
 
     @GetMapping("download/{uuid}")
-    @AccessControl("download/**")
+    // @AccessControl("download/**")
     @Operation(summary = "文件下载", description = "Anon")
-    public ResponseEntity<?> download(@PathVariable("uuid") String uuid) throws IOException {
+    public ResponseEntity<?> download(@PathVariable("uuid") String uuid) {
         OssEntity entity = ossService.getByUuid(uuid);
         AssertUtils.isNull(entity, "文件记录不存在");
-        File file = ResourceUtils.getFile(entity.getPath());
+        File file = FileUtil.file(entity.getPath());
         AssertUtils.isFalse(file.exists(), "文件不存在");
         AssertUtils.isFalse(file.canRead(), "文件读取失败");
-        // 文件名编码，防止中文乱码
-        String filename = URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8);
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(OssLocalUtils.FILENAME_FMT, filename))
+                // 文件名编码，防止中文乱码
+                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(Const.CONTENT_DISPOSITION_INLINE, URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8)))
                 .header(HttpHeaders.CONTENT_TYPE, StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                // 不做cache
+                .header(HttpHeaders.CACHE_CONTROL, "no-cache")
                 .body(new FileSystemResource(file));
     }
 
     @GetMapping("preview/{uuid}")
-    @AccessControl("preview/**")
-    @Operation(summary = "预览文件(对image和video做预览)", description = "Anon")
-    public void preview(@PathVariable("uuid") String uuid, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
+    // @AccessControl("preview/**")
+    @Operation(summary = "预览文件(使用inline对image、video、pdf做预览)")
+    public ResponseEntity<?> preview(@PathVariable("uuid") String uuid) {
         OssEntity entity = ossService.getByUuid(uuid);
         AssertUtils.isNull(entity, "文件记录不存在");
-        File file = ResourceUtils.getFile(entity.getPath());
+        File file = FileUtil.file(entity.getPath());
         AssertUtils.isFalse(file.exists(), "文件不存在");
         AssertUtils.isFalse(file.canRead(), "文件读取失败");
         // 文件名编码，防止中文乱码
-        String filename = URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8);
-        httpServletResponse.addHeader(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(OssLocalUtils.FILENAME_FMT, filename));
-        httpServletResponse.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()));
-        httpServletResponse.setContentType(StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE));
-        httpServletRequest.setAttribute(NonStaticResourceHttpRequestConfig.ATTR_FILE, entity.getPath());
-        nonStaticResourceHttpRequestConfig.handleRequest(httpServletRequest, httpServletResponse);
+        return ResponseEntity
+                .ok()
+                // 文件名编码，防止中文乱码
+                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(Const.CONTENT_DISPOSITION_ATTACHMENT, URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8)))
+                .header(HttpHeaders.CONTENT_TYPE, StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                // 不做cache
+                .header(HttpHeaders.CACHE_CONTROL, "no-cache")
+                .body(new FileSystemResource(file));
     }
 
     @PostMapping("uploadToTemp")
@@ -219,7 +217,7 @@ public class OssController {
 
     @PostMapping("aliyunUploadCallback")
     @Operation(summary = "阿里云上传回调")
-    @AccessControl
+    // @AccessControl
     public Result<?> aliyunUploadCallback(@Validated @RequestBody AliyunOssUploadCallbackReq req) {
         // todo 处理回调请求结果
         return new Result<>();

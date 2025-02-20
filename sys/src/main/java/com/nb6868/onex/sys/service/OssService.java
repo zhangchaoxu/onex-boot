@@ -1,18 +1,21 @@
 package com.nb6868.onex.sys.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.pojo.FileUuidItem;
 import com.nb6868.onex.common.pojo.UuidReq;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.sys.dao.OssDao;
 import com.nb6868.onex.sys.dto.OssDTO;
 import com.nb6868.onex.sys.entity.OssEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,23 @@ import java.util.List;
  */
 @Service
 public class OssService extends DtoService<OssDao, OssEntity, OssDTO> {
+
+    /**
+     * 通过uuid获得文件
+     */
+    public File getFileByUuid(String uuid) {
+        OssEntity entity = getByUuid(uuid);
+        AssertUtils.isNull(entity, "文件记录不存在");
+        File file = null;
+        try {
+            file = ResourceUtils.getFile(entity.getPath());
+        } catch (FileNotFoundException e) {
+
+        }
+        AssertUtils.isTrue(file == null || !file.exists(), "文件不存在");
+        AssertUtils.isTrue(!file.canRead(), "文件读取失败");
+        return file;
+    }
 
     /**
      * 通过uuid获得数据
