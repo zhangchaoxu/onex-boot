@@ -98,6 +98,11 @@ public interface Const {
      * 默认页数
      */
     Long DEFAULT_PAGE_SIZE = 10L;
+    /**
+     * 请求contentDisposition
+     */
+    String CONTENT_DISPOSITION_ATTACHMENT = "attachment;filename={}";
+    String CONTENT_DISPOSITION_INLINE = "inline;filename={}";
 
     /**
      * 结果枚举

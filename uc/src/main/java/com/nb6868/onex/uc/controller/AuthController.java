@@ -10,11 +10,9 @@ import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.Const;
-import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.auth.AuthProps;
-import com.nb6868.onex.uc.dto.LoginRes;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.msg.BaseMsgService;
 import com.nb6868.onex.common.msg.MsgLogBody;
@@ -72,7 +70,7 @@ public class AuthController {
     RoleUserService roleUserService;
 
     @PostMapping("captcha")
-    @AccessControl
+    // @AccessControl
     @Operation(summary = "图形验证码(base64)", description = "Anon")
     public Result<CaptchaRes> captcha(@Validated @RequestBody BaseReq req) {
         // 获得登录验证码配置,设置默认杜绝空信息
@@ -92,10 +90,10 @@ public class AuthController {
     }
 
     @PostMapping("userLoginByUsernamePassword")
-    @AccessControl
+    // @AccessControl
     @Operation(summary = "用户账号密码登录", description = "Anon")
     @LogOperation(value = "用户账号密码登录", type = "login")
-    public Result<LoginRes> userLogin(@Validated @RequestBody LoginByUsernamePasswordReq req) {
+    public Result<LoginRes> userLoginByUsernamePassword(@Validated @RequestBody LoginByUsernamePasswordReq req) {
         // 检查密码不为空
         AssertUtils.isTrue(StrUtil.isAllBlank(req.getPassword(), req.getPasswordEncrypted(), "密码不能为空"));
         // 获得对应登录类型的登录参数,并且设置默认类型
@@ -126,7 +124,7 @@ public class AuthController {
     }
 
     @PostMapping("userLoginByMobileSms")
-    @AccessControl
+    // @AccessControl
     @Operation(summary = "手机验证码登录", description = "Anon")
     @LogOperation(value = "手机验证码登录", type = "login")
     public Result<LoginRes> userLoginByMobileSms(@Validated @RequestBody LoginByMobileSmsReq req) {
@@ -155,7 +153,7 @@ public class AuthController {
     }
 
     @PostMapping("userLoginByCode")
-    @AccessControl
+    // @AccessControl
     @Operation(summary = "授权code登录,如钉钉", description = "Anon")
     @LogOperation(value = "授权code登录", type = "login")
     public Result<LoginRes> userLoginByCode(@Validated @RequestBody LoginByCodeReq req) {
@@ -219,7 +217,7 @@ public class AuthController {
     }
 
     @PostMapping("sendMsgCode")
-    @AccessControl
+    // @AccessControl
     @Operation(summary = "发送验证码消息", description = "Anon")
     @LogOperation("发送验证码消息")
     public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
@@ -287,7 +285,7 @@ public class AuthController {
     }
 
     @PostMapping("userResetPassword")
-    @AccessControl
+    // @AccessControl
     @Operation(summary = "用户重置密码(帐号找回)")
     @LogOperation("用户重置密码(帐号找回)")
     public Result<?> userResetPassword(@Validated @RequestBody ChangePasswordByMailCodeReq form) {

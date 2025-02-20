@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -38,7 +37,7 @@ public class CallbackController {
      */
     @PostMapping("smsHwcloudStatusCallback")
     @Operation(summary = "华为云短信发送状态回调")
-    @AccessControl
+    // @AccessControl
     public Result<?> smsHwcloudStatusCallback(@RequestParam String smsMsgId, @RequestParam String status, @RequestParam Long extend) {
         // 用扩展码对应数据
         MsgLogEntity msgLog = msgLogService.getById(extend);
@@ -74,7 +73,7 @@ public class CallbackController {
      */
     @PostMapping("smsAliyunStatusCallback")
     @Operation(summary = "阿里云短信发送状态回调")
-    @AccessControl
+    // @AccessControl
     public Result<?> smsAliyunStatusCallback(@RequestBody JSONArray form) {
         for (int i = 0; i < form.size(); i++) {
             JSONObject itm = form.getJSONObject(i);

@@ -1,7 +1,6 @@
 package com.nb6868.onex.uc.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.nb6868.onex.common.annotation.AccessControl;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -46,7 +45,7 @@ public class ParamsController {
      * 也可以从@RequestHeader(value = "Origin") String originHeader获得
      */
     @PostMapping("infoByCode")
-    @AccessControl
+    // @AccessControl
     @Operation(summary = "通过编码获取配置信息")
     public Result<?> infoByCode(@Validated @RequestBody ParamsInfoQueryReq form) {
         QueryWrapper<ParamsEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);

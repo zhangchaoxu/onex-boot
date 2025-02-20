@@ -1,6 +1,5 @@
 package com.nb6868.onex.common.controller;
 
-import cn.hutool.core.lang.Dict;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.annotation.AccessControl;
@@ -22,7 +21,8 @@ public class IndexController {
     @Operation(summary = "index")
     @AccessControl("")
     public Result<?> index() {
-        Dict result = Dict.create()
+        JSONObject result = new JSONObject()
+                .set("tips", "hello onex")
                 .set("onex", new JSONObject()
                         .set("parentArtifactId", SpringUtil.getProperty("onex.parent-artifact-id"))
                         .set("artifactId", SpringUtil.getProperty("onex.artifact-id"))

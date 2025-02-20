@@ -192,6 +192,8 @@ onex:
     # token在jwt中的key
     token-jwt-key: sub
     # 访问白名单,若有需要将file-request-path也加入
+    # 框架内所有接口都不再提供@AccessControl,需手动加入white-list
+    # /uc/auth/captcha,/uc/auth/userLoginByUsernamePassword,/uc/params/infoByCode
     white-list: /favicon.ico,/static/**,/webjars/**,/ws/**,/druid/**,/doc.html,/swagger-resources,/v3/api-docs/**,/v2/api-docs/**,/oss/**
     # 验证码有效期
     captcha-timeout: 900000
@@ -239,10 +241,10 @@ springdoc:
   group-configs:
     - group: '80.uc'
       display-name: '用户中心'
-      packages-to-scan: com.nb6868.onex.uc.controller
+      packages-to-scan: /uc/**
     - group: '90.sys'
       display-name: '系统管理'
-      packages-to-scan: com.nb6868.onex.sys.controller,com.nb6868.onex.websocket.controller,com.nb6868.onex.common.controller,com.nb6868.onex.common.sse.controller,com.nb6868.onex.msg.controller,com.nb6868.onex.job.controller
+      packages-to-scan: /sys/**
     - group: '100.default'
       display-name: '默认'
       paths-to-match: '/**'
