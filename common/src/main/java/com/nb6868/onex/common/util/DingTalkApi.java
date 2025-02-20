@@ -2,6 +2,7 @@ package com.nb6868.onex.common.util;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
@@ -462,6 +463,49 @@ public class DingTalkApi {
     }
 
     /**
+     * 根据部门id获得子部门信息数组
+     *  {
+     *             "auto_add_user": true,
+     *             "create_dept_group": true,
+     *             "dept_id": 37xxxx95,
+     *             "name": "市场部",
+     *             "parent_id": 1
+     *         }
+     * <a href="https://open.dingtalk.com/document/orgapp/obtain-the-department-list-v2">...</a>
+     */
+    public static ApiResult<List<JSONObject>> getDeptList(String accessToken, Integer deptId) {
+        // 三元组结果
+        ApiResult<List<JSONObject>> apiResult = ApiResult.of();
+        if (StrUtil.hasBlank(accessToken)) {
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
+        }
+        String url = BASE_URL + "/topapi/v2/department/listsub";
+        JSONObject formBody = new JSONObject().set("dept_id", deptId);
+        // 调用接口
+        ApiResult<JSONObject> callApiResult = baseCallApiPostJson(url, accessToken, formBody);
+        apiResult.copy(callApiResult).setData(JSONUtil.getByPath(callApiResult.getData(), "result", new ArrayList<>()));
+        return apiResult;
+    }
+
+    /**
+     * 根据部门id获取部门详情
+     * <a href="https://open.dingtalk.com/document/orgapp/query-department-details0-v2">...</a>
+     */
+    public static ApiResult<JSONObject> getDeptInfo(String accessToken, Integer deptId) {
+        // 三元组结果
+        ApiResult<JSONObject> apiResult = ApiResult.of();
+        if (StrUtil.hasBlank(accessToken)) {
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
+        }
+        String url = BASE_URL + "/topapi/v2/department/get";
+        JSONObject formBody = new JSONObject().set("dept_id", deptId);
+        // 调用接口
+        ApiResult<JSONObject> callApiResult = baseCallApiPostJson(url, accessToken, formBody);
+        apiResult.copy(callApiResult).setData(JSONUtil.getByPath(callApiResult.getData(), "result", new JSONObject()));
+        return apiResult;
+    }
+
+    /**
      * 根据部门id获得用户列表
      * <a href="https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user">...</a>
      */
@@ -511,6 +555,40 @@ public class DingTalkApi {
             departmemtIdList.addAll(dept_sub_id_list);
         }
         return apiResult.setData(departmemtIdList);
+    }
+
+    /**
+     * 获得所有的部门信息,逻辑同getAllDeptIdList
+     */
+    public static ApiResult<List<JSONObject>> getAllDeptListList(String accessToken) {
+        ApiResult<List<JSONObject>> apiResult = new ApiResult<List<JSONObject>>().success(); // 默认是success
+        if (StrUtil.hasBlank(accessToken)) {
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
+        }
+        // 初始化的时候把根id放进去，用户可能会挂载根上
+        List<JSONObject> departmemtList = new ArrayList<>();
+        // 根部门dept_id传1
+        List<Integer> dept_id_list = CollUtil.newArrayList(1);
+        // 逐级遍历
+        while (!dept_id_list.isEmpty() && apiResult.isSuccess()) {
+            // 初始化一个新的数组存储结果
+            List<JSONObject> dept_sub_list = CollUtil.newArrayList();
+            dept_id_list.forEach(deptId -> {
+                // 调用接口
+                ApiResult<List<JSONObject>> callApiResult = getDeptList(accessToken, deptId);
+                if (callApiResult.isSuccess()) {
+                    dept_sub_list.addAll(callApiResult.getData());
+                } else {
+                    // 出现错误，中断循环
+                    apiResult.copy(callApiResult);
+                }
+            });
+            // 反馈给循环条件
+            dept_id_list = CollStreamUtil.toList(dept_sub_list, entries -> entries.getInt("dept_id"));
+            // 塞入结果数组
+            departmemtList.addAll(dept_sub_list);
+        }
+        return apiResult.setData(departmemtList);
     }
 
     /**
