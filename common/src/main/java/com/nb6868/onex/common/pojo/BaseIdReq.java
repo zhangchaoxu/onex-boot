@@ -24,7 +24,8 @@ public class BaseIdReq extends BaseReq {
     @Schema(description = "是否存在id，用来判断还是新增")
     @JsonIgnore
     public boolean hasId() {
-        return id != null && id > 0;
+        //return id != null && id > 0;
+        return id != null;
     }
 
 }
