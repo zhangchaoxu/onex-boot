@@ -103,6 +103,8 @@ public class QueryWrapperHelper {
                                                 } else {
                                                     wrapper.isNotNull(column);
                                                 }
+                                            } else {
+                                                log.error("QueryType.NULL参数不支持");
                                             }
                                             break;
                                         case EMPTY:
@@ -112,6 +114,8 @@ public class QueryWrapperHelper {
                                                 } else {
                                                     wrapper.isNotNull(column).ne(column, "");
                                                 }
+                                            } else {
+                                                log.error("QueryType.EMPTY参数需为Boolean");
                                             }
                                             break;
                                     }
@@ -134,14 +138,14 @@ public class QueryWrapperHelper {
                                 break;
                             case EQ_STRICT:
                                 if (ObjectUtil.isNotEmpty(val)) {
-                                    queryWrapper.eq(ObjectUtil.isNotEmpty(val), column, val);
+                                    queryWrapper.eq(column, val);
                                 } else {
                                     queryWrapper.isNull(columnFinal);
                                 }
                                 break;
                             case EQ_STRICT_EMPTY:
                                 if (ObjectUtil.isNotEmpty(val)) {
-                                    queryWrapper.eq(ObjectUtil.isNotEmpty(val), column, val);
+                                    queryWrapper.eq(column, val);
                                 } else {
                                     queryWrapper.and(qw -> qw.isNull(columnFinal).or().eq(columnFinal, ""));
                                 }
@@ -200,6 +204,8 @@ public class QueryWrapperHelper {
                                         } else {
                                             queryWrapper.in(column, (Collection<?>) val);
                                         }
+                                    } else {
+                                        log.error("QueryType.In,不支持");
                                     }
                                 }
                                 break;
@@ -221,6 +227,8 @@ public class QueryWrapperHelper {
                                         } else {
                                             queryWrapper.notIn(column, (Collection<?>) val);
                                         }
+                                    } else {
+                                        log.error("QueryType.NOT_IN,不支持");
                                     }
                                 }
                                 break;
@@ -238,6 +246,8 @@ public class QueryWrapperHelper {
                                         } else {
                                             queryWrapper.isNotNull(column);
                                         }
+                                    } else {
+                                        log.error("QueryType.Null,不支持");
                                     }
                                 }
                                 break;
@@ -263,6 +273,8 @@ public class QueryWrapperHelper {
                                     List<?> list = (List<?>) val;
                                     if (CollUtil.emptyIfNull(list).size() == 2) {
                                         queryWrapper.between(column, list.get(0), list.get(1));
+                                    } else {
+                                        log.error("QueryType.BETWEEN传参个数需为2个");
                                     }
                                 }
                                 break;
@@ -271,6 +283,8 @@ public class QueryWrapperHelper {
                                     List<?> list = (List<?>) val;
                                     if (CollUtil.emptyIfNull(list).size() == 2) {
                                         queryWrapper.between(column, DateUtil.parse(list.get(0).toString()), DateUtil.parse(list.get(1).toString()));
+                                    } else {
+                                        log.error("QueryType.BETWEEN_TIME传参个数需为2个");
                                     }
                                 }
                                 break;
@@ -279,6 +293,8 @@ public class QueryWrapperHelper {
                                 if (val instanceof List) {
                                     // 注意要将参数驼峰转下划线
                                     CollUtil.emptyIfNull((List<SortItem>) val).forEach(sortItem -> queryWrapper.orderByAsc(StrUtil.isNotBlank(sortItem.getColumn()) && sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())).orderByDesc(StrUtil.isNotBlank(sortItem.getColumn()) && !sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())));
+                                } else {
+                                    log.error("QueryType.ORDER_BY参数需为List");
                                 }
                                 break;
                             case LIMIT:
