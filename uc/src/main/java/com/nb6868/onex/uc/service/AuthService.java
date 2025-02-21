@@ -44,7 +44,7 @@ public class AuthService {
         // 先检验验证码表单
         ValidatorUtils.validateEntity(req, CaptchaGroup.class);
         // 再校验验证码与魔术验证码不同，并且 校验失败
-        AssertUtils.isTrue((StrUtil.isNotBlank(magicCaptcha) && !StrUtil.equalsIgnoreCase(req.getCaptchaValue(), magicCaptcha)) && !captchaService.validate(req.getCaptchaUuid(), req.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
+        AssertUtils.isTrue(!StrUtil.equalsIgnoreCase(req.getCaptchaValue(), magicCaptcha) && !captchaService.validate(req.getCaptchaUuid(), req.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
     }
 
     /**

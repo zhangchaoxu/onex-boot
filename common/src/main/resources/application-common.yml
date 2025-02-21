@@ -174,8 +174,6 @@ onex:
   # oss
   oss:
     enable: false
-    # 非静态文件处理
-    non-static: false
     # 文件请求路径/oss/**
     file-request-path: /oss/**
     # 文件存储路径,以/结尾, 如./onex-oss/
@@ -227,6 +225,11 @@ knife4j:
     ## 自定义首页
     enable-home-custom: true
     home-custom-path: classpath:README.md
+  #production: false
+  #basic:
+    #enable: true
+    #username: onex
+    #password: onex@2025
 
 # springdoc-openapi see https://springdoc.org/
 springdoc:
