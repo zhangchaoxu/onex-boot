@@ -20,11 +20,7 @@ public interface Const {
     /**
      * 登录信息过期提醒
      */
-    String MSG_LOGIN_EXPIRED = "登录已过期,请重新登录";
-    /**
-     * access token key
-     */
-    String ACCESS_TOKEN_KEY = "access_token";
+    String MSG_LOGIN_EXPIRED = "请重新登录...";
 
     String AES_KEY = "1234567890adbcde";
     /**

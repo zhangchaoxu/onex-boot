@@ -99,7 +99,7 @@ public class OssController {
         return ResponseEntity
                 .ok()
                 // 文件名编码，防止中文乱码
-                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(Const.CONTENT_DISPOSITION_INLINE, URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8)))
+                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(Const.CONTENT_DISPOSITION_ATTACHMENT, URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8)))
                 .header(HttpHeaders.CONTENT_TYPE, StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE))
                 // 不做cache
                 .header(HttpHeaders.CACHE_CONTROL, "no-cache")
@@ -119,7 +119,7 @@ public class OssController {
         return ResponseEntity
                 .ok()
                 // 文件名编码，防止中文乱码
-                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(Const.CONTENT_DISPOSITION_ATTACHMENT, URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8)))
+                .header(HttpHeaders.CONTENT_DISPOSITION, StrUtil.format(Const.CONTENT_DISPOSITION_INLINE, URLEncoder.encode(entity.getFilename(), StandardCharsets.UTF_8)))
                 .header(HttpHeaders.CONTENT_TYPE, StrUtil.blankToDefault(entity.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE))
                 // 不做cache
                 .header(HttpHeaders.CACHE_CONTROL, "no-cache")
