@@ -40,7 +40,8 @@ public class RegionService extends DtoService<RegionDao, RegionEntity, RegionDTO
             entity = BeanUtil.copyProperties(req, RegionEntity.class);
         }
         // 处理数据
-        saveOrUpdateById(entity);
+        boolean ret = saveOrUpdateById(entity);
+        AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
     }
 

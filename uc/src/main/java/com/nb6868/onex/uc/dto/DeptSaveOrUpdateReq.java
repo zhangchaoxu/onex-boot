@@ -4,7 +4,6 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseIdReq;
-import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -12,26 +11,25 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * 部门
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "部门")
 public class DeptSaveOrUpdateReq extends BaseIdReq {
+
+    @Schema(description = "上级ID，一级为0")
+    @NotNull(message = "请选择上级")
+    private Long pid;
 
     @Schema(description = "类型")
     @NotNull(message = "类型不能为空")
     private Integer type;
 
     @Schema(description = "编码")
-    @NotNull(message = "编码不能为空")
+    // @NotNull(message = "编码不能为空")
     private String code;
 
     @Schema(description = "上级编码")
-    @NotNull(message = "上级编码不能为空")
+    //@NotNull(message = "上级编码不能为空")
     private String pcode;
 
     @Schema(description = "区域编码")

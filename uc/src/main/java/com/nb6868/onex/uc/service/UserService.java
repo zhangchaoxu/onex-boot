@@ -75,7 +75,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
             entity.setPasswordRaw(PasswordUtils.aesEncode(req.getPassword(), Const.AES_KEY));
         }
         // 处理数据
-        saveOrUpdateById(entity);
+        boolean ret = saveOrUpdateById(entity);
+        AssertUtils.isFalse(ret, "数据更新保存失败");
         // 保存角色用户关系
         roleUserService.saveOrUpdateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
         return entity;

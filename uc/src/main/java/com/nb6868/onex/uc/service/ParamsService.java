@@ -188,7 +188,8 @@ public class ParamsService extends DtoService<ParamsDao, ParamsEntity, ParamsDTO
             entity = BeanUtil.copyProperties(req, ParamsEntity.class);
         }
         // 处理数据
-        saveOrUpdateById(entity);
+        boolean ret = saveOrUpdateById(entity);
+        AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
     }
 

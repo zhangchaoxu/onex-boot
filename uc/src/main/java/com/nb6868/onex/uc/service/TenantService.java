@@ -38,7 +38,8 @@ public class TenantService extends DtoService<TenantDao, TenantEntity, TenantDTO
             entity = BeanUtil.copyProperties(req, TenantEntity.class);
         }
         // 处理数据
-        saveOrUpdateById(entity);
+        boolean ret = saveOrUpdateById(entity);
+        AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
     }
 

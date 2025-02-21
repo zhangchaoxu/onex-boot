@@ -58,7 +58,8 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
             entity = BeanUtil.copyProperties(req, JobEntity.class);
         }
         // 处理数据
-        saveOrUpdateById(entity);
+        boolean ret = saveOrUpdateById(entity);
+        AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
     }
 

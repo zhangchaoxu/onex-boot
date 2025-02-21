@@ -22,6 +22,10 @@ public class DeptEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * 上级ID
+	 */
+	private Long pid;
+	/**
 	 * 类型
 	 */
 	private Integer type;

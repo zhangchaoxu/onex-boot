@@ -52,7 +52,8 @@ public class DictService extends DtoService<DictDao, DictEntity, DictDTO> {
             entity = BeanUtil.copyProperties(req, DictEntity.class);
         }
         // 处理数据
-        saveOrUpdateById(entity);
+        boolean ret = saveOrUpdateById(entity);
+        AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
     }
 

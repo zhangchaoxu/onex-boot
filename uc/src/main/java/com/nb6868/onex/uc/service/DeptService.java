@@ -39,9 +39,14 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 	@Transactional(rollbackFor = Exception.class)
 	public DeptEntity saveOrUpdateByReq(DeptSaveOrUpdateReq req) {
 		// 检查请求
+		// 检查父菜单
+		if (req.getPid() != 0L) {
+			AssertUtils.isFalse(lambdaQuery().eq(DeptEntity::getId, req.getPid()).exists(), "上级不存在");
+		}
 		// 转换数据格式
 		DeptEntity entity;
 		if (req.hasId()) {
+			AssertUtils.isTrue(req.getId().equals(req.getPid()), ErrorCode.ERROR_REQUEST, "上级不能为自身");
 			// 编辑数据
 			entity = getById(req.getId());
 			AssertUtils.isNull(entity, ErrorCode.DB_RECORD_NOT_EXISTED);
@@ -51,7 +56,8 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 			entity = BeanUtil.copyProperties(req, DeptEntity.class);
 		}
 		// 处理数据
-		saveOrUpdateById(entity);
+		boolean ret = saveOrUpdateById(entity);
+		AssertUtils.isFalse(ret, "数据更新保存失败");
 		return entity;
 	}
 

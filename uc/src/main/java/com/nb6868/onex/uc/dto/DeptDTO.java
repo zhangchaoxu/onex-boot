@@ -1,27 +1,18 @@
 package com.nb6868.onex.uc.dto;
 
 import cn.hutool.json.JSONObject;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.pojo.BaseDTO;
-import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-/**
- * 部门
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "部门")
 public class DeptDTO extends BaseDTO {
+
+    @Schema(description = "上级ID")
+    private Long pid;
 
     @Schema(description = "类型")
     private Integer type;

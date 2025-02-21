@@ -44,10 +44,22 @@ public class DeptController {
     DeptService deptService;
 
     @PostMapping("tree")
-    @Operation(summary = "树表")
+    @Operation(summary = "树表(通过id)")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
-    public Result<List<Tree<String>>> tree(@Validated @RequestBody DeptQueryReq form) {
+    public Result<List<Tree<Long>>> tree(@Validated @RequestBody DeptQueryReq form) {
+        QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
+        List<Tree<Long>> treeList = TreeNodeUtils.buildIdTree(
+                CollStreamUtil.toList(deptService.list(queryWrapper),
+                        (entity) -> new TreeNode<>(entity.getId(), entity.getPid(), entity.getName(), entity.getSort()).setExtra(Dict.create().set("type", entity.getType()))));
+        return new Result<List<Tree<Long>>>().success(treeList);
+    }
+
+    @PostMapping("treeByCode")
+    @Operation(summary = "树表(通过code)")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:query"}, logical = Logical.OR)
+    public Result<List<Tree<String>>> treeByCode(@Validated @RequestBody DeptQueryReq form) {
         QueryWrapper<DeptEntity> queryWrapper = QueryWrapperHelper.getPredicate(form);
         List<Tree<String>> treeList = TreeNodeUtils.buildCodeTree(
                 CollStreamUtil.toList(deptService.list(queryWrapper),

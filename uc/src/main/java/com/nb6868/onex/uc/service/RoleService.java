@@ -54,7 +54,8 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
             entity = BeanUtil.copyProperties(req, RoleEntity.class);
         }
         // 处理数据
-        saveOrUpdateById(entity);
+        boolean ret = saveOrUpdateById(entity);
+        AssertUtils.isFalse(ret, "数据更新保存失败");
         // 重新保存角色和菜单关系表
         menuService.saveOrUpdateByRoleIdAndMenuIds(entity.getId(), req.getMenuIdList());
         return entity;
