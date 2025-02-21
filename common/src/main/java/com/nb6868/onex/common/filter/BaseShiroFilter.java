@@ -66,7 +66,7 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
      * 响应未授权
      */
     @SneakyThrows
-    @SuppressWarnings("deprecated")
+    @SuppressWarnings("deprecation")
     protected void responseUnauthorized(ServletRequest request, ServletResponse response, Exception e) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
