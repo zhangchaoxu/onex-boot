@@ -11,6 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.params.BaseParamsService;
@@ -50,7 +51,7 @@ public class ShiroJwtRealm extends BaseShiroRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(@NotNull AuthenticationToken authenticationToken) throws AuthenticationException {
         // AuthenticationToken包含身份信息和认证信息，在Filter中塞入
         String token = getTokenFromAuthenticationToken(authenticationToken);
-        Assert.isTrue(StrUtil.isNotBlank(token), ()-> new AuthenticationException("请先登录..."));
+        Assert.isTrue(StrUtil.isNotBlank(token), ()-> new AuthenticationException(Const.MSG_LOGIN_REQUIRED));
         // 尝试解析为jwt
         JWT jwt = JwtUtils.parseToken(token);
         Assert.isTrue(ObjUtil.isNotNull(jwt) && ObjUtil.isNotNull(jwt.getPayload()) && ObjUtil.isNotNull(jwt.getPayload().getClaimsJson()), ()-> new AuthenticationException("登录信息错误,请重新登录..."));

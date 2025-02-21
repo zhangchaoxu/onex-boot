@@ -6,6 +6,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.auth.AuthConst;
 import com.nb6868.onex.common.params.BaseParamsService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -41,7 +42,7 @@ public class ShiroUuidRealm extends BaseShiroRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         // AuthenticationToken包含身份信息和认证信息，在Filter中塞入
         String token = getTokenFromAuthenticationToken(authenticationToken);
-        Assert.isTrue(StrUtil.isNotBlank(token), () -> new AuthenticationException("请先登录..."));
+        Assert.isTrue(StrUtil.isNotBlank(token), () -> new AuthenticationException(Const.MSG_LOGIN_REQUIRED));
         // token存在数据库/缓存中
         Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
         Assert.notNull(tokenEntity, () -> new AuthenticationException("登录信息已失效,请重新登录..."));

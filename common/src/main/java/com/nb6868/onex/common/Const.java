@@ -14,6 +14,14 @@ import java.util.stream.Stream;
 public interface Const {
 
     /**
+     * 未登录提醒
+     */
+    String MSG_LOGIN_REQUIRED = "请先登录...";
+    /**
+     * 登录信息过期提醒
+     */
+    String MSG_LOGIN_EXPIRED = "登录已过期,请重新登录";
+    /**
      * access token key
      */
     String ACCESS_TOKEN_KEY = "access_token";

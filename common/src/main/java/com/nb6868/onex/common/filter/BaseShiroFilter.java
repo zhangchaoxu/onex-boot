@@ -3,6 +3,7 @@ package com.nb6868.onex.common.filter;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -30,7 +31,7 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
         AuthenticationToken token = createToken(request, response);
         if (token == null) {
-            return onLoginFailure(token, new AuthenticationException("请先登录..."), request, response);
+            return onLoginFailure(token, new AuthenticationException(Const.MSG_LOGIN_REQUIRED), request, response);
         }
         try {
             Subject subject = getSubject(request, response);
