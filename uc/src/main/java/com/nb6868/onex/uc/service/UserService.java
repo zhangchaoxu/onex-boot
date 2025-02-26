@@ -135,6 +135,18 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     }
 
     /**
+     * 通过第三方id获得用户
+     *
+     * @param oauthId 第三方用户id
+     */
+    public UserEntity getByOauthId(String tenantCode, @NotNull String oauthId) {
+        return lambdaQuery().eq(UserEntity::getOauthUserid, oauthId)
+                .eq(StrUtil.isNotBlank(tenantCode), UserEntity::getTenantCode, tenantCode)
+                .last(Const.LIMIT_ONE)
+                .one();
+    }
+
+    /**
      * 删除数据本身及关联关系
      *
      * @param ids 角色id
@@ -180,8 +192,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 修改密码
      *
-     * @param id          用户ID
-     * @param newPassword 新密码
+     * @param id               用户ID
+     * @param newPassword      新密码
      * @param passwordStoreKey 密码可逆加密的key
      */
     @Transactional(rollbackFor = Exception.class)
