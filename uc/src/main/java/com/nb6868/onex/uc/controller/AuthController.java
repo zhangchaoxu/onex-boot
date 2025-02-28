@@ -247,8 +247,9 @@ public class AuthController {
         return new Result<>();
     }
 
+    @Deprecated
     @PostMapping("userInfo")
-    @Operation(summary = "用户信息")
+    @Operation(summary = "用户信息(即将废弃,见profile)")
     public Result<UserDTO> userInfo(@Validated @RequestBody BaseReq req) {
         UserEntity user = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
