@@ -15,10 +15,7 @@ import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
-import com.nb6868.onex.uc.dto.UserDTO;
-import com.nb6868.onex.uc.dto.UserQueryReq;
-import com.nb6868.onex.uc.dto.UserSaveOrUpdateReq;
-import com.nb6868.onex.uc.dto.UserUpdateRoleReq;
+import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.RoleService;
@@ -119,6 +116,16 @@ public class UserController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> updateRole(@RequestBody UserUpdateRoleReq req) {
         userService.updateRole(req);
+
+        return new Result<>().success();
+    }
+
+    @PostMapping("updateDept")
+    @Operation(summary = "更新用户部门关系")
+    @LogOperation("更新用户部门关系")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
+    public Result<?> updateDept(@RequestBody UserUpdateDeptReq req) {
+        userService.updateDept(req);
 
         return new Result<>().success();
     }

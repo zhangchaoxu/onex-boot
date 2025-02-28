@@ -18,6 +18,7 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.UserDao;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.dto.UserSaveOrUpdateReq;
+import com.nb6868.onex.uc.dto.UserUpdateDeptReq;
 import com.nb6868.onex.uc.dto.UserUpdateRoleReq;
 import com.nb6868.onex.uc.entity.UserEntity;
 import jakarta.validation.constraints.NotNull;
@@ -48,14 +49,25 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     TokenService tokenService;
     @Autowired
     RoleUserService roleUserService;
+    @Autowired
+    DeptUserService deptUserService;
 
     /**
-     * 更新用户角色
+     * 更新用户角色关系
      */
     public void updateRole(UserUpdateRoleReq req) {
         // 判断用户
         AssertUtils.isFalse(hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
-        roleUserService.saveOrUpdateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), ObjUtil.defaultIfNull(req.getType(), UcConst.RoleUserTypeEnum.DEFAULT.getCode()));
+        roleUserService.updateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), ObjUtil.defaultIfNull(req.getType(), UcConst.RoleUserTypeEnum.DEFAULT.getCode()));
+    }
+
+    /**
+     * 更新用户部门关系
+     */
+    public void updateDept(UserUpdateDeptReq req) {
+        // 判断用户
+        AssertUtils.isFalse(hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        deptUserService.updateByUserIdAndDeptIds(req.getId(), req.getDeptIds(), ObjUtil.defaultIfNull(req.getType(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()));
     }
 
     /**
@@ -89,7 +101,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         boolean ret = saveOrUpdateById(entity);
         AssertUtils.isFalse(ret, "数据更新保存失败");
         // 保存角色用户关系
-        roleUserService.saveOrUpdateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
+        roleUserService.updateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
         return entity;
     }
 

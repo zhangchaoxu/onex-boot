@@ -24,13 +24,13 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
     RoleService roleService;
 
     /**
-     * 保存或修改，对角色做了检查，对用户没做检查
+     * 更新用户角色关系，对角色做了检查，对用户没做检查
      *
      * @param userId  用户ID
      * @param roleIds 角色ID数组
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds, Integer type) {
+    public boolean updateByUserIdAndRoleIds(Long userId, List<Long> roleIds, Integer type) {
         if (CollUtil.isEmpty(roleIds)) {
             // 删除用户所有角色关系
             remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getType, type).getWrapper());
@@ -41,11 +41,11 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
                 // 判断关系是否存在
                 if (!lambdaQuery().eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getRoleId, roleId).eq(RoleUserEntity::getType, type).exists()) {
                     // 不存在的做保存
-                    RoleUserEntity roleUserEntity = new RoleUserEntity();
-                    roleUserEntity.setUserId(userId);
-                    roleUserEntity.setRoleId(roleId);
-                    roleUserEntity.setType(type);
-                    save(roleUserEntity);
+                    RoleUserEntity relEntity = new RoleUserEntity();
+                    relEntity.setUserId(userId);
+                    relEntity.setRoleId(roleId);
+                    relEntity.setType(type);
+                    save(relEntity);
                 }
             });
         }

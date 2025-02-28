@@ -10,12 +10,12 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Schema(name = "更新用户角色关系请求")
-public class UserUpdateRoleReq extends BaseIdReq {
+@Schema(name = "更新用户部门关系请求")
+public class UserUpdateDeptReq extends BaseIdReq {
 
-    @Schema(description = "角色ID列表")
-    @NotNull(message = "角色id不能为null,若无角色请传空数组")
-    private List<Long> roleIds;
+    @Schema(description = "部门ID列表")
+    @NotNull(message = "部门id不能为null,若无部门请传空数组")
+    private List<Long> deptIds;
 
     @Schema(description = "用户角色关系,预留,传0或者null")
     private Integer type;
