@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -118,6 +119,17 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
         List<Long> roleIds = getRoleIdListByRoleCodeList(roleCodes);
         // 在用角色ID找到用户id
         return getUserIdListByRoleIdList(roleIds);
+    }
+
+    /**
+     * 通过code获得角色
+     *
+     * @param code 角色编码
+     */
+    public RoleEntity getByCode(@NotNull String code) {
+        return lambdaQuery().eq(RoleEntity::getCode, code)
+                .last(Const.LIMIT_ONE)
+                .one();
     }
 
     /**
