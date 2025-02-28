@@ -48,6 +48,8 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
                     save(relEntity);
                 }
             });
+            // 删除非指定范围内的其它的关系
+            remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId).notIn(RoleUserEntity::getRoleId, roleIds).eq(RoleUserEntity::getType, type).getWrapper());
         }
         return true;
     }

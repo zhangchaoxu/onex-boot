@@ -49,6 +49,8 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
                     save(relEntity);
                 }
             });
+            // 删除非指定范围内的其它的关系
+            remove(lambdaQuery().eq(DeptUserEntity::getUserId, userId).notIn(DeptUserEntity::getDeptId, deptIds).eq(DeptUserEntity::getType, type).getWrapper());
         }
         return true;
     }
