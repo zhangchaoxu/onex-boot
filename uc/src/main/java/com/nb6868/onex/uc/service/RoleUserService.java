@@ -2,8 +2,11 @@ package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.collection.CollUtil;
 import com.nb6868.onex.common.jpa.EntityService;
+import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.dao.RoleUserDao;
+import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,25 +20,35 @@ import java.util.List;
 @Service
 public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> {
 
+    @Autowired
+    RoleService roleService;
+
     /**
-     * 保存或修改
+     * 保存或修改，对角色做了检查，对用户没做检查
      *
      * @param userId  用户ID
      * @param roleIds 角色ID数组
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateByUserIdAndRoleIds(Long userId, List<Long> roleIds, Integer type) {
-        // 保存角色用户关系
-        CollUtil.distinct(roleIds).forEach(roleId -> {
-            // 先删除户关系
-            remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getRoleId, roleId).eq(RoleUserEntity::getType, type).getWrapper());
-            // 再做保存
-            RoleUserEntity roleUserEntity = new RoleUserEntity();
-            roleUserEntity.setUserId(userId);
-            roleUserEntity.setRoleId(roleId);
-            roleUserEntity.setType(type);
-            save(roleUserEntity);
-        });
+        if (CollUtil.isEmpty(roleIds)) {
+            // 删除用户所有角色关系
+            remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getType, type).getWrapper());
+        } else {
+            // 判断传入的角色是否存在
+            AssertUtils.isFalse(roleIds.size() == roleService.lambdaQuery().in(RoleEntity::getId, roleIds).count(), "请检查角色Id参数");
+            roleIds.forEach(roleId -> {
+                // 判断关系是否存在
+                if (!lambdaQuery().eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getRoleId, roleId).eq(RoleUserEntity::getType, type).exists()) {
+                    // 不存在的做保存
+                    RoleUserEntity roleUserEntity = new RoleUserEntity();
+                    roleUserEntity.setUserId(userId);
+                    roleUserEntity.setRoleId(roleId);
+                    roleUserEntity.setType(type);
+                    save(roleUserEntity);
+                }
+            });
+        }
         return true;
     }
 

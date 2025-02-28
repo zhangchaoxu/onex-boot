@@ -18,6 +18,7 @@ import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.dto.UserQueryReq;
 import com.nb6868.onex.uc.dto.UserSaveOrUpdateReq;
+import com.nb6868.onex.uc.dto.UserUpdateRoleReq;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.RoleService;
@@ -112,6 +113,16 @@ public class UserController {
         return new Result<UserDTO>().success(data);
     }
 
+    @PostMapping("updateRole")
+    @Operation(summary = "更新用户角色关系")
+    @LogOperation("更新用户角色关系")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
+    public Result<?> updateRole(@RequestBody UserUpdateRoleReq req) {
+        userService.updateRole(req);
+
+        return new Result<>().success();
+    }
+
     @PostMapping("saveOrUpdate")
     @Operation(summary = "新增或更新")
     @LogOperation("新增或更新")
@@ -148,9 +159,9 @@ public class UserController {
     @Operation(summary = "删除")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:delete"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<?> delete(@Validated @RequestBody IdReq form) {
+    public Result<?> delete(@Validated @RequestBody IdReq req) {
         // 判断数据是否存在
-        UserEntity data = userService.getOne(QueryWrapperHelper.getPredicate(form));
+        UserEntity data = userService.getOne(QueryWrapperHelper.getPredicate(req));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         AssertUtils.isTrue(Objects.equals(ShiroUtils.getUserId(), data.getId()), "无法删除当前登录用户");
         // 删除

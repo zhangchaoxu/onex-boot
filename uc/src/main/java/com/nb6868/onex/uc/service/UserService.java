@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -17,6 +18,7 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.UserDao;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.dto.UserSaveOrUpdateReq;
+import com.nb6868.onex.uc.dto.UserUpdateRoleReq;
 import com.nb6868.onex.uc.entity.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,15 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     TokenService tokenService;
     @Autowired
     RoleUserService roleUserService;
+
+    /**
+     * 更新用户角色
+     */
+    public void updateRole(UserUpdateRoleReq req) {
+        // 判断用户
+        AssertUtils.isFalse(hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        roleUserService.saveOrUpdateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), ObjUtil.defaultIfNull(req.getType(), UcConst.RoleUserTypeEnum.DEFAULT.getCode()));
+    }
 
     /**
      * 新增或修改
