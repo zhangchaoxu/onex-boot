@@ -1,6 +1,9 @@
 package com.nb6868.onex.uc.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollStreamUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -14,6 +17,8 @@ import com.nb6868.onex.uc.dao.DeptDao;
 import com.nb6868.onex.uc.dto.DeptDTO;
 import com.nb6868.onex.uc.dto.DeptSaveOrUpdateReq;
 import com.nb6868.onex.uc.entity.DeptEntity;
+import com.nb6868.onex.uc.entity.DeptUserEntity;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +38,8 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 
     @Autowired
     UserService userService;
+    @Autowired
+    DeptUserService deptUserService;
 
     /**
      * 通过第三方id获得部门
@@ -69,6 +76,32 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
         boolean ret = saveOrUpdateById(entity);
         AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
+    }
+
+    /**
+     * 根据用户ID查询部门ID列表
+     *
+     * @param userId 用户id
+     */
+    public List<Long> getDeptIdListByUserId(@NotNull Long userId, Integer type) {
+        return CollStreamUtil.toList(deptUserService.lambdaQuery()
+                .select(DeptUserEntity::getDeptId)
+                .eq(DeptUserEntity::getUserId, userId)
+                .eq(ObjUtil.isNull(type), DeptUserEntity::getType, type)
+                .groupBy(DeptUserEntity::getDeptId)
+                .list(), DeptUserEntity::getDeptId);
+    }
+
+    /**
+     * 根据用户查询部门列表
+     *
+     * @param userId 用户id
+     */
+    public List<DeptEntity> getDeptListByUserId(@NotNull Long userId, Integer type) {
+        // 先获取id
+        List<Long> deptIdList = getDeptIdListByUserId(userId, type);
+        // 再用id查
+        return CollUtil.isEmpty(deptIdList) ? CollUtil.newArrayList() :lambdaQuery().in(DeptEntity::getId, deptIdList).list();
     }
 
     public DeptDTO getDtoByCode(String code) {

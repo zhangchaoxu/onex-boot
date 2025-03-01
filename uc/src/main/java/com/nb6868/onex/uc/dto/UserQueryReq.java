@@ -1,7 +1,9 @@
 package com.nb6868.onex.uc.dto;
 
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.jpa.Query;
 import com.nb6868.onex.common.pojo.PageReq;
+import com.nb6868.onex.common.validator.EnumValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,9 +31,9 @@ public class UserQueryReq extends PageReq {
     @Schema(description = "手机号")
     private String mobile;
 
-    @Query(type = Query.Type.LIKE_LEFT)
+    /*@Query(type = Query.Type.LIKE_LEFT)
     @Schema(description = "部门编码")
-    private String deptCode;
+    private String deptCode;*/
 
     @Query(type = Query.Type.LIKE_LEFT)
     @Schema(description = "区域编码")
@@ -60,7 +62,18 @@ public class UserQueryReq extends PageReq {
     @Schema(description = "角色id数组")
     private List<Long> roleIds;
 
-    @Schema(description = "角色编码数组")
-    private List<String> roleCodes;
+    @Schema(description = "需要角色信息, 0/1")
+    @EnumValue(message = "角色信息参数为0和1", enumClass = Const.BooleanEnum.class)
+    private Integer roleNeeded = 0;
+
+    /*@Schema(description = "角色编码数组")
+    private List<String> roleCodes;*/
+
+    @Schema(description = "部门id数组")
+    private List<Long> deptIds;
+
+    @Schema(description = "需要部门信息, 0/1")
+    @EnumValue(message = "部门信息参数为0和1", enumClass = Const.BooleanEnum.class)
+    private Integer deptNeeded = 0;
 
 }

@@ -1,24 +1,16 @@
 package com.nb6868.onex.uc.dto;
 
+import cn.hutool.core.collection.CollStreamUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nb6868.onex.common.pojo.BaseDTO;
-import com.nb6868.onex.common.validator.group.AddGroup;
-import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import jakarta.validation.constraints.NotBlank;
-
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * 用户
- *
- * @author Charles zhangchaoxu@gmail.com
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "用户")
@@ -78,17 +70,31 @@ public class UserDTO extends BaseDTO {
     @Schema(description = "租户编码")
     private String tenantCode;
 
-    @Schema(description = "部门链")
-    private List<DeptDTO> deptChain;
+    @Schema(description = "角色列表")
+    private List<RoleRes> roleList;
 
-    @Schema(description = "角色名称")
-    private String roleNames;
+    @Schema(description = "部门列表")
+    private List<DeptRes> deptList;
+
+    @Schema(description = "角色名称格式化")
+    public String getRoleNameFmt() {
+        return StrUtil.join(",", CollStreamUtil.toList(roleList, RoleRes::getName));
+    }
 
     @Schema(description = "角色ID列表")
-    private List<Long> roleIds;
+    public List<Long> getRoleIdList() {
+        return CollStreamUtil.toList(roleList, RoleRes::getId);
+    }
 
-    @Schema(description = "角色编码列表")
-    private List<String> roleCodes;
+    @Schema(description = "部门名称格式化")
+    public String getDeptNameFmt() {
+        return StrUtil.join(",", CollStreamUtil.toList(deptList, DeptRes::getName));
+    }
+
+    @Schema(description = "部门ID列表")
+    public List<Long> getDeptIdList() {
+        return CollStreamUtil.toList(deptList, DeptRes::getId);
+    }
 
     @Schema(description = "额外信息")
     private JSONObject extInfo;

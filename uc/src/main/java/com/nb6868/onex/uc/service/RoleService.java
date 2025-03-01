@@ -63,7 +63,7 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
     }
 
     /**
-     * 根据用户查询角色ID列表
+     * 根据用户ID查询角色ID列表
      *
      * @param userId 用户id
      */
@@ -73,6 +73,18 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
                 .eq(RoleUserEntity::getUserId, userId)
                 .groupBy(RoleUserEntity::getRoleId)
                 .list(), RoleUserEntity::getRoleId);
+    }
+
+    /**
+     * 根据用户查询角色Res列表
+     *
+     * @param userId 用户id
+     */
+    public List<RoleEntity> getRoleListByUserId(@NotNull Long userId) {
+        // 先获取id
+        List<Long> roleIdList = getRoleIdListByUserId(userId);
+        // 再用id查
+        return CollUtil.isEmpty(roleIdList) ? CollUtil.newArrayList() : lambdaQuery().in(RoleEntity::getId, roleIdList).list();
     }
 
     /**

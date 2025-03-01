@@ -5,9 +5,11 @@ import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
+import com.nb6868.onex.common.jpa.QueryWrapperHelper;
 import com.nb6868.onex.common.pojo.ChangeStateReq;
 import com.nb6868.onex.common.shiro.ShiroDao;
 import com.nb6868.onex.common.shiro.ShiroUser;
@@ -16,10 +18,9 @@ import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.UserDao;
-import com.nb6868.onex.uc.dto.UserDTO;
-import com.nb6868.onex.uc.dto.UserSaveOrUpdateReq;
-import com.nb6868.onex.uc.dto.UserUpdateDeptReq;
-import com.nb6868.onex.uc.dto.UserUpdateRoleReq;
+import com.nb6868.onex.uc.dto.*;
+import com.nb6868.onex.uc.entity.DeptUserEntity;
+import com.nb6868.onex.uc.entity.RoleUserEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,39 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     RoleUserService roleUserService;
     @Autowired
     DeptUserService deptUserService;
+
+    /**
+     * 构建条件查询器
+     */
+    public QueryWrapper<UserEntity> buildQueryWrapper(UserQueryReq req, String from) {
+        // 拼接查询条件
+        QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(req, from);
+        // 自定义条件
+        if (CollUtil.isNotEmpty(req.getDeptIds()) && CollUtil.isNotEmpty(req.getRoleIds())) {
+            // 查询条件带有部门或者角色
+            List<Long> userIds = new ArrayList<>();
+            if (CollUtil.isNotEmpty(req.getDeptIds())) {
+                userIds.addAll(CollStreamUtil.toList(deptUserService.lambdaQuery()
+                        .select(DeptUserEntity::getUserId)
+                        .in(DeptUserEntity::getDeptId, req.getDeptIds())
+                        .eq(DeptUserEntity::getType, UcConst.DeptUserTypeEnum.DEFAULT.getCode())
+                        .list(), DeptUserEntity::getUserId));
+            }
+            if (CollUtil.isNotEmpty(req.getRoleIds())) {
+                userIds.addAll(CollStreamUtil.toList(roleUserService.lambdaQuery()
+                        .select(RoleUserEntity::getUserId)
+                        .in(RoleUserEntity::getRoleId, req.getRoleIds())
+                        .eq(RoleUserEntity::getType, UcConst.RoleUserTypeEnum.DEFAULT.getCode())
+                        .list(), RoleUserEntity::getUserId));
+            }
+            // 部门和角色用户有重复，做去重
+            userIds = CollUtil.distinct(userIds);
+            // fixme 没有找到返回[]，而不应该报错
+            AssertUtils.isEmpty(userIds, "所选角色/部门内未找到用户");
+            queryWrapper.in("id", userIds);
+        }
+        return queryWrapper;
+    }
 
     /**
      * 更新用户角色关系

@@ -1,7 +1,10 @@
 package com.nb6868.onex.uc.controller;
 
-import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollStreamUtil;
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
@@ -15,6 +18,7 @@ import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
+import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.DeptService;
@@ -52,23 +56,19 @@ public class UserController {
     @Operation(summary = "分页")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<PageData<UserDTO>> page(@Validated({PageGroup.class}) @RequestBody UserQueryReq form) {
-        QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "page");
-        if (CollUtil.isNotEmpty(form.getRoleCodes())) {
-            List<Long> userIds = roleService.getUserIdListByRoleCodeList(form.getRoleCodes());
-            if (CollUtil.isEmpty(userIds)) {
-                return new Result<PageData<UserDTO>>().success(new PageData<>());
+    public Result<PageData<UserDTO>> page(@Validated({PageGroup.class}) @RequestBody UserQueryReq req) {
+        QueryWrapper<UserEntity> queryWrapper = userService.buildQueryWrapper(req, "page");
+        PageData<UserDTO> page = userService.pageDto(req, queryWrapper);
+        page.getList().forEach(userDTO -> {
+            if (ObjUtil.equal(req.getDeptNeeded(), Const.BooleanEnum.TRUE.getCode())) {
+                // 需要部门
+                userDTO.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
             }
-            queryWrapper.in("id", userIds);
-        } else if (CollUtil.isNotEmpty(form.getRoleIds())) {
-            List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
-            if (CollUtil.isEmpty(userIds)) {
-                return new Result<PageData<UserDTO>>().success(new PageData<>());
+            if (ObjUtil.equal(req.getRoleNeeded(), Const.BooleanEnum.TRUE.getCode())) {
+                // 需要角色
+                userDTO.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
             }
-            queryWrapper.in("id", userIds);
-        }
-        PageData<UserDTO> page = userService.pageDto(form, queryWrapper);
-
+        });
         return new Result<PageData<UserDTO>>().success(page);
     }
 
@@ -76,23 +76,19 @@ public class UserController {
     @Operation(summary = "列表")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<List<UserDTO>> list(@Validated @RequestBody UserQueryReq form) {
-        QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(form, "list");
-        if (CollUtil.isNotEmpty(form.getRoleCodes())) {
-            List<Long> userIds = roleService.getUserIdListByRoleCodeList(form.getRoleCodes());
-            if (CollUtil.isEmpty(userIds)) {
-                return new Result<List<UserDTO>>().success(CollUtil.newArrayList());
-            }
-            queryWrapper.in("id", userIds);
-        } else if (CollUtil.isNotEmpty(form.getRoleIds())) {
-            List<Long> userIds = roleService.getUserIdListByRoleIdList(form.getRoleIds());
-            if (CollUtil.isEmpty(userIds)) {
-                return new Result<List<UserDTO>>().success(CollUtil.newArrayList());
-            }
-            queryWrapper.in("id", userIds);
-        }
+    public Result<List<UserDTO>> list(@Validated @RequestBody UserQueryReq req) {
+        QueryWrapper<UserEntity> queryWrapper = userService.buildQueryWrapper(req, "page");
         List<UserDTO> list = userService.listDto(queryWrapper);
-
+        list.forEach(userDTO -> {
+            if (ObjUtil.equal(req.getDeptNeeded(), Const.BooleanEnum.TRUE.getCode())) {
+                // 需要部门
+                userDTO.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
+            }
+            if (ObjUtil.equal(req.getDeptNeeded(), Const.BooleanEnum.TRUE.getCode())) {
+                // 需要角色
+                userDTO.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
+            }
+        });
         return new Result<List<UserDTO>>().success(list);
     }
 
@@ -100,13 +96,13 @@ public class UserController {
     @Operation(summary = "信息")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:query"}, logical = Logical.OR)
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    public Result<UserDTO> info(@Validated @RequestBody IdReq form) {
-        UserDTO data = userService.oneDto(QueryWrapperHelper.getPredicate(form));
+    public Result<UserDTO> info(@Validated @RequestBody IdReq req) {
+        UserDTO data = userService.oneDto(QueryWrapperHelper.getPredicate(req));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
-        // 用户角色列表
-        data.setRoleIds(roleService.getRoleIdListByUserId(form.getId()));
-        // 部门树
-        data.setDeptChain(deptService.getParentChain(data.getDeptCode()));
+        // 需要部门
+        data.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(data.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
+        // 需要角色
+        data.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(data.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
         return new Result<UserDTO>().success(data);
     }
 
