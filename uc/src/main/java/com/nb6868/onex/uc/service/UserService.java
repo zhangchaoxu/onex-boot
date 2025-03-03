@@ -63,20 +63,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         if (CollUtil.isNotEmpty(req.getDeptIds()) || CollUtil.isNotEmpty(req.getRoleIds())) {
             // 查询条件带有部门或者角色
             List<Long> userIds = new ArrayList<>();
-            if (CollUtil.isNotEmpty(req.getDeptIds())) {
-                userIds.addAll(CollStreamUtil.toList(deptUserService.lambdaQuery()
-                        .select(DeptUserEntity::getUserId)
-                        .in(DeptUserEntity::getDeptId, req.getDeptIds())
-                        .eq(DeptUserEntity::getType, UcConst.DeptUserTypeEnum.DEFAULT.getCode())
-                        .list(), DeptUserEntity::getUserId));
-            }
-            if (CollUtil.isNotEmpty(req.getRoleIds())) {
-                userIds.addAll(CollStreamUtil.toList(roleUserService.lambdaQuery()
-                        .select(RoleUserEntity::getUserId)
-                        .in(RoleUserEntity::getRoleId, req.getRoleIds())
-                        .eq(RoleUserEntity::getType, UcConst.RoleUserTypeEnum.DEFAULT.getCode())
-                        .list(), RoleUserEntity::getUserId));
-            }
+            userIds.addAll(getUserIdListByDeptIds(req.getDeptIds(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()));
+            userIds.addAll(getUserIdListByRoleIds(req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode()));
             // 部门和角色用户有重复，做去重
             userIds = CollUtil.distinct(userIds);
             if (CollUtil.isEmpty(userIds)) {
@@ -88,6 +76,64 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
             }
         }
         return queryWrapper;
+    }
+
+    /**
+     * 通过部门id获得部门下的所有用户id
+     */
+    public List<Long> getUserIdListByDeptIds(List<Long> deptIds, Integer type) {
+        if (CollUtil.isEmpty(deptIds)) {
+            return CollUtil.newArrayList();
+        }
+        return CollStreamUtil.toList(deptUserService.lambdaQuery()
+                .select(DeptUserEntity::getUserId)
+                .in(DeptUserEntity::getDeptId, deptIds)
+                .eq(ObjUtil.isNotNull(type), DeptUserEntity::getType, type)
+                .groupBy(DeptUserEntity::getUserId)
+                .list(), DeptUserEntity::getUserId);
+    }
+
+    /**
+     * 通过角色id获得部门下的所有用户id
+     */
+    public List<Long> getUserIdListByRoleIds(List<Long> roleIds, Integer type) {
+        if (CollUtil.isEmpty(roleIds)) {
+            return CollUtil.newArrayList();
+        }
+        return CollStreamUtil.toList(roleUserService.lambdaQuery()
+                .select(RoleUserEntity::getUserId)
+                .in(RoleUserEntity::getRoleId, roleIds)
+                .eq(ObjUtil.isNotNull(type), RoleUserEntity::getType, type)
+                .groupBy(RoleUserEntity::getUserId)
+                .list(), RoleUserEntity::getUserId);
+    }
+
+    /**
+     * 通过部门id获得部门下的所有用户
+     */
+    public List<UserEntity> getUserListByDeptIds(List<Long> deptIds, Integer type) {
+        if (CollUtil.isEmpty(deptIds)) {
+            return CollUtil.newArrayList();
+        }
+        List<Long> userIdList = getUserIdListByDeptIds(deptIds, type);
+        if (CollUtil.isEmpty(userIdList)) {
+            return CollUtil.newArrayList();
+        }
+        return lambdaQuery().in(UserEntity::getId, userIdList).list();
+    }
+
+    /**
+     * 通过角色id获得部门下的所有用户
+     */
+    public List<UserEntity> getUserListByRoleIds(List<Long> roleIds, Integer type) {
+        if (CollUtil.isEmpty(roleIds)) {
+            return CollUtil.newArrayList();
+        }
+        List<Long> userIdList = getUserIdListByRoleIds(roleIds, type);
+        if (CollUtil.isEmpty(userIdList)) {
+            return CollUtil.newArrayList();
+        }
+        return lambdaQuery().in(UserEntity::getId, userIdList).list();
     }
 
     /**
