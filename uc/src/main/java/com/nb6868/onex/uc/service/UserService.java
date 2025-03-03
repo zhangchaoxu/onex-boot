@@ -6,6 +6,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -31,6 +32,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 用户
@@ -87,7 +89,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         }
         return CollStreamUtil.toList(deptUserService.lambdaQuery()
                 .select(DeptUserEntity::getUserId)
-                .in(DeptUserEntity::getDeptId, deptIds)
+                .in(deptIds.size() > 1, DeptUserEntity::getDeptId, deptIds)
+                .eq(deptIds.size() == 1, DeptUserEntity::getDeptId, deptIds.get(0))
                 .eq(ObjUtil.isNotNull(type), DeptUserEntity::getType, type)
                 .groupBy(DeptUserEntity::getUserId)
                 .list(), DeptUserEntity::getUserId);
@@ -103,6 +106,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         return CollStreamUtil.toList(roleUserService.lambdaQuery()
                 .select(RoleUserEntity::getUserId)
                 .in(RoleUserEntity::getRoleId, roleIds)
+                .in(roleIds.size() > 1, RoleUserEntity::getRoleId, roleIds)
+                .eq(roleIds.size() == 1, RoleUserEntity::getRoleId, roleIds.get(0))
                 .eq(ObjUtil.isNotNull(type), RoleUserEntity::getType, type)
                 .groupBy(RoleUserEntity::getUserId)
                 .list(), RoleUserEntity::getUserId);
@@ -119,7 +124,10 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         if (CollUtil.isEmpty(userIdList)) {
             return CollUtil.newArrayList();
         }
-        return lambdaQuery().in(UserEntity::getId, userIdList).list();
+        return lambdaQuery()
+                .in(userIdList.size() > 1, UserEntity::getId, userIdList)
+                .eq(userIdList.size() == 1, UserEntity::getId, userIdList.get(0))
+                .list();
     }
 
     /**
@@ -133,7 +141,10 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         if (CollUtil.isEmpty(userIdList)) {
             return CollUtil.newArrayList();
         }
-        return lambdaQuery().in(UserEntity::getId, userIdList).list();
+        return lambdaQuery()
+                .in(userIdList.size() > 1, UserEntity::getId, userIdList)
+                .eq(userIdList.size() == 1, UserEntity::getId, userIdList.get(0))
+                .list();
     }
 
     /**
