@@ -60,7 +60,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         // 拼接查询条件
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(req, from);
         // 自定义条件
-        if (CollUtil.isNotEmpty(req.getDeptIds()) && CollUtil.isNotEmpty(req.getRoleIds())) {
+        if (CollUtil.isNotEmpty(req.getDeptIds()) || CollUtil.isNotEmpty(req.getRoleIds())) {
             // 查询条件带有部门或者角色
             List<Long> userIds = new ArrayList<>();
             if (CollUtil.isNotEmpty(req.getDeptIds())) {
@@ -79,9 +79,13 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
             }
             // 部门和角色用户有重复，做去重
             userIds = CollUtil.distinct(userIds);
-            // fixme 没有找到返回[]，而不应该报错
-            AssertUtils.isEmpty(userIds, "所选角色/部门内未找到用户");
-            queryWrapper.in("id", userIds);
+            if (CollUtil.isEmpty(userIds)) {
+                // fixme 没有找到返回[]，而不应该报错
+                // AssertUtils.isEmpty(userIds, "所选角色/部门内未找到用户");
+                userIds.add(-1L); // 先塞一个-1来约束结果空
+            } else {
+                queryWrapper.in("id", userIds);
+            }
         }
         return queryWrapper;
     }

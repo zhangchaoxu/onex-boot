@@ -14,6 +14,10 @@ import java.util.stream.Stream;
 public interface UcConst {
 
     /**
+     * 部门根节点标识
+     */
+    Long DEPT_ROOT = 0L;
+    /**
      * 部门最大等级限制
      */
     int DEPT_HIERARCHY_MAX = 100;

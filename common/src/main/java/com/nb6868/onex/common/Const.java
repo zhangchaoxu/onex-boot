@@ -23,10 +23,7 @@ public interface Const {
     String MSG_LOGIN_EXPIRED = "请重新登录...";
 
     String AES_KEY = "1234567890adbcde";
-    /**
-     * 部门根节点标识
-     */
-    Long DEPT_ROOT = 0L;
+
     /**
      * 数据字典根节点标识
      */

@@ -23,10 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 部门管理
@@ -57,7 +54,7 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
     public DeptEntity saveOrUpdateByReq(DeptSaveOrUpdateReq req) {
         // 检查请求
         // 检查父菜单
-        if (req.getPid() != 0L) {
+        if (!Objects.equals(req.getPid(), UcConst.DEPT_ROOT)) {
             AssertUtils.isFalse(lambdaQuery().eq(DeptEntity::getId, req.getPid()).exists(), "上级不存在");
         }
         // 转换数据格式
@@ -119,10 +116,8 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
         if (user.getType() > UcConst.UserTypeEnum.DEPT_ADMIN.getCode()) {
             // params.put("deptIdList", getSubDeptIdList(user.getDeptId()));
         }
-
         // 查询部门列表
         List<DeptEntity> entityList = getBaseMapper().selectList(getWrapper("list", params));
-
         return ConvertUtils.sourceToTarget(entityList, DeptDTO.class);
     }
 

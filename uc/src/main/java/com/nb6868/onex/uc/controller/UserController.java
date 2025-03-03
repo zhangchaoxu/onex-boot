@@ -112,7 +112,6 @@ public class UserController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> updateRole(@RequestBody UserUpdateRoleReq req) {
         userService.updateRole(req);
-
         return new Result<>().success();
     }
 
@@ -122,7 +121,6 @@ public class UserController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> updateDept(@RequestBody UserUpdateDeptReq req) {
         userService.updateDept(req);
-
         return new Result<>().success();
     }
 
@@ -133,7 +131,6 @@ public class UserController {
     public Result<UserDTO> saveOrUpdate(@RequestBody UserSaveOrUpdateReq req) {
         UserEntity entity = userService.saveOrUpdateByReq(req);
         UserDTO dto = ConvertUtils.sourceToTarget(entity, UserDTO.class);
-
         return new Result<UserDTO>().success(dto);
     }
 
@@ -143,7 +140,6 @@ public class UserController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> changeState(@Validated(value = {DefaultGroup.class, ChangeStateReq.BoolStateGroup.class}) @RequestBody ChangeStateReq request) {
         userService.changeState(request);
-
         return new Result<>();
     }
 
@@ -153,7 +149,6 @@ public class UserController {
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> changeMenuScope(@RequestBody List<Long> menuIds) {
         userService.changeMenuScope(menuIds);
-
         return new Result<>();
     }
 
