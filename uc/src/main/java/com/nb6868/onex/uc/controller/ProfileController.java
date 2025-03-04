@@ -90,7 +90,6 @@ public class ProfileController {
         return new Result<>();
     }
 
-    @Deprecated
     @PostMapping("updateUserPassword")
     @Operation(summary = "用户修改密码")
     @LogOperation("用户修改密码")

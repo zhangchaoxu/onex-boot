@@ -143,22 +143,21 @@ public class UserController {
     @PostMapping("updatePassword")
     @Operation(summary = "更新密码")
     @LogOperation("更新密码")
-    public Result<?> updatePassword(@Validated @RequestBody UserUpdatePasswordReq form) {
+    public Result<?> updatePassword(@Validated @RequestBody UserUpdatePasswordReq req) {
         // 获得对应登录类型的登录参数
-        JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
-        AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]登录配置");
+        JSONObject loginParams = paramsService.getSystemPropsJson(req.getType());
+        AssertUtils.isNull(loginParams, "缺少[" + req.getType() + "]登录配置");
         // 先对密码做解密
-        String newPasswordPlaintext = PasswordUtils.aesDecode(form.getNewPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY));
+        String newPasswordPlaintext = PasswordUtils.aesDecode(req.getNewPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY));
         // 对新密码密码强度做校验
         // 密码复杂度正则
         AssertUtils.isTrue(StrUtil.isNotBlank(loginParams.getStr("passwordRegExp")) && !ReUtil.isMatch(loginParams.getStr("passwordRegExp"), newPasswordPlaintext), ErrorCode.ERROR_REQUEST, loginParams.getStr("passwordRegError", "密码不符合规则"));
         // 获取数据库中的用户
-        UserEntity data = userService.getById(ShiroUtils.getUserId());
-        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        AssertUtils.isFalse(userService.hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
         // 更新密码
-        userService.updatePassword(data.getId(), newPasswordPlaintext, authProps.getPasswordStoreKey());
+        userService.updatePassword(req.getId(), newPasswordPlaintext, authProps.getPasswordStoreKey());
         // 注销该用户所有token,提示用户重新登录
-        tokenService.deleteByUserIdList(Collections.singletonList(data.getId()));
+        tokenService.deleteByUserIdList(Collections.singletonList(req.getId()));
         return new Result<>();
     }
 
