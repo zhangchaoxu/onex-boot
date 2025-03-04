@@ -260,10 +260,11 @@ public class AuthController {
         return new Result<UserDTO>().success(data);
     }
 
+    @Deprecated
     @PostMapping("userChangePassword")
     @Operation(summary = "用户修改密码")
     @LogOperation("用户修改密码")
-    public Result<?> userChangePassword(@Validated @RequestBody ChangePasswordReq form) {
+    public Result<?> userChangePassword(@Validated @RequestBody UserUpdateMyPasswordReq form) {
         // 获得对应登录类型的登录参数
         JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]登录配置");

@@ -3,27 +3,27 @@ package com.nb6868.onex.uc.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
+import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.ChangeStateReq;
-import com.nb6868.onex.common.pojo.IdReq;
-import com.nb6868.onex.common.pojo.PageData;
-import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
+import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.UserEntity;
-import com.nb6868.onex.uc.service.DeptService;
-import com.nb6868.onex.uc.service.RoleService;
-import com.nb6868.onex.uc.service.UserService;
+import com.nb6868.onex.uc.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.Logical;
@@ -45,6 +45,12 @@ import java.util.Objects;
 @Tag(name = "用户管理")
 public class UserController {
 
+    @Autowired
+    AuthProps authProps;
+    @Autowired
+    ParamsService paramsService;
+    @Autowired
+    TokenService tokenService;
     @Autowired
     UserService userService;
     @Autowired
@@ -134,20 +140,33 @@ public class UserController {
         return new Result<UserDTO>().success(dto);
     }
 
+    @PostMapping("updatePassword")
+    @Operation(summary = "更新密码")
+    @LogOperation("更新密码")
+    public Result<?> updatePassword(@Validated @RequestBody UserUpdatePasswordReq form) {
+        // 获得对应登录类型的登录参数
+        JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
+        AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]登录配置");
+        // 先对密码做解密
+        String newPasswordPlaintext = PasswordUtils.aesDecode(form.getNewPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY));
+        // 对新密码密码强度做校验
+        // 密码复杂度正则
+        AssertUtils.isTrue(StrUtil.isNotBlank(loginParams.getStr("passwordRegExp")) && !ReUtil.isMatch(loginParams.getStr("passwordRegExp"), newPasswordPlaintext), ErrorCode.ERROR_REQUEST, loginParams.getStr("passwordRegError", "密码不符合规则"));
+        // 获取数据库中的用户
+        UserEntity data = userService.getById(ShiroUtils.getUserId());
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 更新密码
+        userService.updatePassword(data.getId(), newPasswordPlaintext, authProps.getPasswordStoreKey());
+        // 注销该用户所有token,提示用户重新登录
+        tokenService.deleteByUserIdList(Collections.singletonList(data.getId()));
+        return new Result<>();
+    }
+
     @PostMapping("changeState")
     @Operation(summary = "更新状态")
     @LogOperation("更新状态")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> changeState(@Validated(value = {DefaultGroup.class, ChangeStateReq.BoolStateGroup.class}) @RequestBody ChangeStateReq request) {
-        userService.changeState(request);
-        return new Result<>();
-    }
-
-    @PostMapping("changePassword")
-    @Operation(summary = "修改密码")
-    @LogOperation("修改密码")
-    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
-    public Result<?> changePassword(@Validated@RequestBody ChangeStateReq request) {
         userService.changeState(request);
         return new Result<>();
     }

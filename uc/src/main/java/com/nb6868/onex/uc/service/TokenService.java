@@ -110,7 +110,10 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
      * @return result
      */
     public boolean deleteByUserIdList(List<Long> userIds) {
-        return remove(lambdaQuery().in(TokenEntity::getUserId, userIds).getWrapper());
+        return remove(lambdaQuery()
+                .in(userIds.size() > 1, TokenEntity::getUserId, userIds)
+                .eq(userIds.size() == 1, TokenEntity::getUserId, userIds.get(0))
+                .getWrapper());
     }
 
 }
