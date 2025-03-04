@@ -1,6 +1,7 @@
 package com.nb6868.onex.uc.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -11,12 +12,12 @@ import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.UcConst;
-import com.nb6868.onex.uc.dto.ProfileParamQueryReq;
-import com.nb6868.onex.uc.dto.ProfileParamsSaveOrUpdateReq;
-import com.nb6868.onex.uc.dto.UserDTO;
+import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.ParamsEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
+import com.nb6868.onex.uc.service.DeptService;
 import com.nb6868.onex.uc.service.ParamsService;
+import com.nb6868.onex.uc.service.RoleService;
 import com.nb6868.onex.uc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,16 +40,21 @@ public class ProfileController {
     ParamsService paramsService;
     @Autowired
     UserService userService;
+    @Autowired
+    DeptService deptService;
+    @Autowired
+    RoleService roleService;
 
     @PostMapping("userInfo")
     @Operation(summary = "用户信息")
     public Result<UserDTO> userInfo(@Validated @RequestBody BaseReq req) {
         UserEntity user = userService.getById(ShiroUtils.getUserId());
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
-
         UserDTO data = ConvertUtils.sourceToTarget(user, UserDTO.class);
-        // todo 补上用户的其他信息
-        // data.setRoleCodes(userService.getUserRoleCodes());
+        // 需要部门
+        data.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(data.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
+        // 需要角色
+        data.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(data.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
         return new Result<UserDTO>().success(data);
     }
 

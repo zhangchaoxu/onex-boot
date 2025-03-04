@@ -31,7 +31,7 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
      *
      * @param userId  用户ID
      * @param deptIds 部门ID数组
-     * @param type 关系类型
+     * @param type    关系类型
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateByUserIdAndDeptIds(Long userId, List<Long> deptIds, Integer type) {
@@ -41,7 +41,10 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
             remove(lambdaQuery().eq(DeptUserEntity::getUserId, userId).eq(DeptUserEntity::getType, type).getWrapper());
         } else {
             // 判断传入的部门否存在
-            AssertUtils.isFalse(deptIds.size() == deptService.lambdaQuery().in(DeptEntity::getId, deptIds).count(), "请检查部门Id参数");
+            AssertUtils.isFalse(deptIds.size() == deptService.lambdaQuery()
+                    .in(deptIds.size() > 1, DeptEntity::getId, deptIds)
+                    .eq(deptIds.size() == 1, DeptEntity::getId, deptIds.get(0))
+                    .count(), "请检查部门Id参数");
             deptIds.forEach(deptId -> {
                 // 判断关系是否存在
                 if (!lambdaQuery().eq(DeptUserEntity::getUserId, userId).eq(DeptUserEntity::getDeptId, deptId).eq(DeptUserEntity::getType, type).exists()) {
@@ -54,7 +57,12 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
                 }
             });
             // 删除非指定范围内的其它的关系
-            remove(lambdaQuery().eq(DeptUserEntity::getUserId, userId).notIn(DeptUserEntity::getDeptId, deptIds).eq(DeptUserEntity::getType, type).getWrapper());
+            remove(lambdaQuery()
+                    .eq(DeptUserEntity::getUserId, userId)
+                    .notIn(deptIds.size() > 1, DeptUserEntity::getDeptId, deptIds)
+                    .ne(deptIds.size() == 1, DeptUserEntity::getDeptId, deptIds.get(0))
+                    .eq(DeptUserEntity::getType, type)
+                    .getWrapper());
         }
         return true;
     }
@@ -73,7 +81,10 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
             remove(lambdaQuery().eq(DeptUserEntity::getDeptId, deptId).eq(DeptUserEntity::getType, type).getWrapper());
         } else {
             // 判断传入的用户是否存在
-            AssertUtils.isFalse(userIds.size() == userService.lambdaQuery().in(UserEntity::getId, userIds).count(), "请检查用户Id参数");
+            AssertUtils.isFalse(userIds.size() == userService.lambdaQuery()
+                    .in(userIds.size() > 1, UserEntity::getId, userIds)
+                    .eq(userIds.size() == 1, UserEntity::getId, userIds.get(0))
+                    .count(), "请检查用户Id参数");
             userIds.forEach(userId -> {
                 // 判断关系是否存在
                 if (!lambdaQuery().eq(DeptUserEntity::getDeptId, deptId).eq(DeptUserEntity::getUserId, userId).eq(DeptUserEntity::getType, type).exists()) {
@@ -86,7 +97,11 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
                 }
             });
             // 删除非指定范围内的其它的关系
-            remove(lambdaQuery().eq(DeptUserEntity::getDeptId, deptId).notIn(DeptUserEntity::getUserId, userIds).eq(DeptUserEntity::getType, type).getWrapper());
+            remove(lambdaQuery().eq(DeptUserEntity::getDeptId, deptId)
+                    .notIn(userIds.size() > 1, DeptUserEntity::getUserId, userIds)
+                    .ne(userIds.size() == 1, DeptUserEntity::getUserId, userIds)
+                    .eq(DeptUserEntity::getType, type)
+                    .getWrapper());
         }
         return true;
     }
@@ -100,7 +115,10 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
         if (CollUtil.isEmpty(deptIds)) {
             return true;
         }
-        return remove(lambdaQuery().in(DeptUserEntity::getDeptId, deptIds).getWrapper());
+        return remove(lambdaQuery()
+                .in(deptIds.size() > 1, DeptUserEntity::getDeptId, deptIds)
+                .eq(deptIds.size() == 1, DeptUserEntity::getDeptId, deptIds.get(0))
+                .getWrapper());
     }
 
     /**
@@ -112,7 +130,10 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
         if (CollUtil.isEmpty(userIds)) {
             return true;
         }
-        return remove(lambdaQuery().in(DeptUserEntity::getUserId, userIds).getWrapper());
+        return remove(lambdaQuery()
+                .in(userIds.size() > 1, DeptUserEntity::getUserId, userIds)
+                .in(userIds.size() == 1, DeptUserEntity::getUserId, userIds.get(0))
+                .getWrapper());
     }
 
 }

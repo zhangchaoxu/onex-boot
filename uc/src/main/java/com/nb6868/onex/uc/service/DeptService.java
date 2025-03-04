@@ -98,7 +98,10 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
         // 先获取id
         List<Long> deptIdList = getDeptIdListByUserId(userId, type);
         // 再用id查
-        return CollUtil.isEmpty(deptIdList) ? CollUtil.newArrayList() :lambdaQuery().in(DeptEntity::getId, deptIdList).list();
+        return CollUtil.isEmpty(deptIdList) ? CollUtil.newArrayList() : lambdaQuery()
+                .in(deptIdList.size() > 1, DeptEntity::getId, deptIdList)
+                .eq(deptIdList.size() == 1, DeptEntity::getId, deptIdList.get(0))
+                .list();
     }
 
     public DeptDTO getDtoByCode(String code) {

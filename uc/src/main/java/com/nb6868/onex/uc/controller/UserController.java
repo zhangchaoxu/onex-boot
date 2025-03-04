@@ -143,6 +143,15 @@ public class UserController {
         return new Result<>();
     }
 
+    @PostMapping("changePassword")
+    @Operation(summary = "修改密码")
+    @LogOperation("修改密码")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
+    public Result<?> changePassword(@Validated@RequestBody ChangeStateReq request) {
+        userService.changeState(request);
+        return new Result<>();
+    }
+
     @PostMapping("changeMenuScope")
     @Operation(summary = "修改用户授权")
     @LogOperation("修改用户授权")

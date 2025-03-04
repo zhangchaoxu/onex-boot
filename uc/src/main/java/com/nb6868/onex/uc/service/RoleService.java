@@ -84,7 +84,10 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
         // 先获取id
         List<Long> roleIdList = getRoleIdListByUserId(userId);
         // 再用id查
-        return CollUtil.isEmpty(roleIdList) ? CollUtil.newArrayList() : lambdaQuery().in(RoleEntity::getId, roleIdList).list();
+        return CollUtil.isEmpty(roleIdList) ? CollUtil.newArrayList() : lambdaQuery()
+                .in(roleIdList.size() >1, RoleEntity::getId, roleIdList)
+                .eq(roleIdList.size() == 1, RoleEntity::getId, roleIdList.get(0))
+                .list();
     }
 
     /**

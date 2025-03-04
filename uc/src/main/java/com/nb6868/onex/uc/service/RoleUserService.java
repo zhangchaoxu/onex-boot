@@ -40,7 +40,10 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
             remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getType, type).getWrapper());
         } else {
             // 判断传入的角色是否存在
-            AssertUtils.isFalse(roleIds.size() == roleService.lambdaQuery().in(RoleEntity::getId, roleIds).count(), "请检查角色Id参数");
+            AssertUtils.isFalse(roleIds.size() == roleService.lambdaQuery()
+                    .in(roleIds.size() > 1, RoleEntity::getId, roleIds)
+                    .eq(roleIds.size() == 1, RoleEntity::getId, roleIds.get(0))
+                    .count(), "请检查角色Id参数");
             roleIds.forEach(roleId -> {
                 // 判断关系是否存在
                 if (!lambdaQuery().eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getRoleId, roleId).eq(RoleUserEntity::getType, type).exists()) {
@@ -53,7 +56,11 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
                 }
             });
             // 删除非指定范围内的其它的关系
-            remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId).notIn(RoleUserEntity::getRoleId, roleIds).eq(RoleUserEntity::getType, type).getWrapper());
+            remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId)
+                    .notIn(roleIds.size() > 1, RoleUserEntity::getRoleId, roleIds)
+                    .ne(roleIds.size() == 1, RoleUserEntity::getRoleId, roleIds.get(0))
+                    .eq(RoleUserEntity::getType, type)
+                    .getWrapper());
         }
         return true;
     }
@@ -72,7 +79,10 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
             remove(lambdaQuery().eq(RoleUserEntity::getRoleId, roleId).eq(RoleUserEntity::getType, type).getWrapper());
         } else {
             // 判断传入的用户是否存在
-            AssertUtils.isFalse(userIds.size() == userService.lambdaQuery().in(UserEntity::getId, userIds).count(), "请检查用户Id参数");
+            AssertUtils.isFalse(userIds.size() == userService.lambdaQuery()
+                    .in(userIds.size() > 1, UserEntity::getId, userIds)
+                    .eq(userIds.size() == 1, UserEntity::getId, userIds.get(0))
+                    .count(), "请检查用户Id参数");
             userIds.forEach(userId -> {
                 // 判断关系是否存在
                 if (!lambdaQuery().eq(RoleUserEntity::getRoleId, roleId).eq(RoleUserEntity::getUserId, userId).eq(RoleUserEntity::getType, type).exists()) {
@@ -85,7 +95,12 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
                 }
             });
             // 删除非指定范围内的其它的关系
-            remove(lambdaQuery().eq(RoleUserEntity::getRoleId, roleId).notIn(RoleUserEntity::getUserId, userIds).eq(RoleUserEntity::getType, type).getWrapper());
+            remove(lambdaQuery()
+                    .eq(RoleUserEntity::getRoleId, roleId)
+                    .notIn(userIds.size() > 1, RoleUserEntity::getUserId, userIds)
+                    .ne(userIds.size() == 1, RoleUserEntity::getUserId, userIds.get(0))
+                    .eq(RoleUserEntity::getType, type)
+                    .getWrapper());
         }
         return true;
     }
@@ -112,7 +127,10 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
         if (CollUtil.isEmpty(roleIds)) {
             return true;
         }
-        return remove(lambdaQuery().in(RoleUserEntity::getRoleId, roleIds).getWrapper());
+        return remove(lambdaQuery()
+                .in(roleIds.size() > 1, RoleUserEntity::getRoleId, roleIds)
+                .eq(roleIds.size() == 1, RoleUserEntity::getRoleId, roleIds.get(0))
+                .getWrapper());
     }
 
     /**
@@ -124,7 +142,10 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
         if (CollUtil.isEmpty(userIds)) {
             return true;
         }
-        return remove(lambdaQuery().in(RoleUserEntity::getUserId, userIds).getWrapper());
+        return remove(lambdaQuery()
+                .in(userIds.size() > 1, RoleUserEntity::getUserId, userIds)
+                .eq(userIds.size() == 1, RoleUserEntity::getUserId, userIds.get(0))
+                .getWrapper());
     }
 
 }
