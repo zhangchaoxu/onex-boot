@@ -2,6 +2,7 @@ package com.nb6868.onex.job.dto;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
+import com.nb6868.onex.job.JobConst;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,9 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "定时任务日志")
 public class JobLogDTO extends BaseDTO {
 
+    @Schema(description = "创建者名字")
+    private String createName;
+
     @Schema(description = "任务ID")
     private Long jobId;
 
@@ -27,6 +31,11 @@ public class JobLogDTO extends BaseDTO {
 
     @Schema(description = "日志状态")
     private Integer state;
+
+    @Schema(description = "日志状态名称")
+    public String getStateName() {
+        return JobConst.JobLogStateEnum.getTitleByCode(state);
+    }
 
     @Schema(description = "结果")
     private String result;

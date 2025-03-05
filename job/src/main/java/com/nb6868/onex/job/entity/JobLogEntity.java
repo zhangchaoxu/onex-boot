@@ -1,6 +1,7 @@
 package com.nb6868.onex.job.entity;
 
 import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
@@ -20,6 +21,8 @@ import org.apache.ibatis.type.Alias;
 @Alias("sys_job_log")
 public class JobLogEntity extends BaseTenantEntity {
 
+	@TableField(fill = FieldFill.INSERT)
+	private String createName;
     /**
      * 任务ID
      */
