@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.Const;
@@ -99,11 +100,15 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
     }
 
     public Long run(@NotNull JobEntity job, JSONObject runParams) {
+        return run(job, null, runParams);
+    }
+
+    public Long run(@NotNull JobEntity job, Long logId, JSONObject runParams) {
         log.debug("任务准备执行，任务ID：{}", job.getId());
         // 任务计时器
         TimeInterval timer = DateUtil.timer();
-        // 记录初始化日志
-        Long jobLogId = jobLogService.saveLog(job, 0L, JobConst.JobLogStateEnum.INIT.getCode(), null);
+        // 记录初始化日志,若没有指定logId,就生成一个
+        Long jobLogId = ObjUtil.defaultIfNull(logId, jobLogService.saveLog(job, 0L, JobConst.JobLogStateEnum.INIT.getCode(), null));
         // 通过bean获取实现Service
         JobRunResult runResult;
         AbstractJobRunService jobRunService;
@@ -115,10 +120,11 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
             log.error("任务执行失败，任务ID：{}", job.getId(), e);
             // 保存错误日志,发生错误
             if (jobLogId > 0) {
-                jobLogService.update().set("error", ExceptionUtil.stacktraceToString(e))
-                        .set("time_interval", timer.interval())
-                        .set("state", JobConst.JobLogStateEnum.ERROR.getCode())
-                        .eq("id", jobLogId)
+                jobLogService.lambdaUpdate()
+                        .eq(JobLogEntity::getId, jobLogId)
+                        .set(JobLogEntity::getError, ExceptionUtil.stacktraceToString(e))
+                        .set(JobLogEntity::getTimeInterval, timer.interval())
+                        .set(JobLogEntity::getState, JobConst.JobLogStateEnum.ERROR.getCode())
                         .update(new JobLogEntity());
             }
             return jobLogId;
@@ -128,11 +134,11 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
             job.setLogType("db");
             jobLogService.saveLog(job, timer.interval(), JobConst.JobLogStateEnum.COMPLETED.getCode(), runResult.getResult().toString());
         } else if (jobLogId > 0) {
-            jobLogService.update()
-                    .set("result", runResult.getResult().toString())
-                    .set("time_interval", timer.interval())
-                    .set("state", JobConst.JobLogStateEnum.COMPLETED.getCode())
-                    .eq("id", jobLogId)
+            jobLogService.lambdaUpdate()
+                    .eq(JobLogEntity::getId, jobLogId)
+                    .set(JobLogEntity::getResult, runResult.getResult().toString())
+                    .set(JobLogEntity::getTimeInterval, timer.interval())
+                    .set(JobLogEntity::getState, JobConst.JobLogStateEnum.COMPLETED.getCode())
                     .update(new JobLogEntity());
         }
         log.info("任务执行完毕，任务ID：{}", job.getId());
