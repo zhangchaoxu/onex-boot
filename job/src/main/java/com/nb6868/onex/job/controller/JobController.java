@@ -13,6 +13,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.job.dto.*;
 import com.nb6868.onex.job.entity.JobEntity;
+import com.nb6868.onex.job.service.JobItemService;
 import com.nb6868.onex.job.service.JobLogService;
 import com.nb6868.onex.job.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,13 +37,15 @@ public class JobController {
     JobService jobService;
     @Autowired
     JobLogService jobLogService;
+    @Autowired
+    JobItemService jobItemService;
 
     @PostMapping("page")
     @Operation(summary = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
-    public Result<PageData<JobDTO>> page(@Validated({PageGroup.class}) @RequestBody JobQueryReq form) {
-        PageData<JobDTO> page = jobService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<JobDTO>> page(@Validated({PageGroup.class}) @RequestBody JobQueryReq req) {
+        PageData<JobDTO> page = jobService.pageDto(req, QueryWrapperHelper.getPredicate(req, "page"));
 
         return new Result<PageData<JobDTO>>().success(page);
     }
@@ -51,8 +54,8 @@ public class JobController {
     @Operation(summary = "详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:query"}, logical = Logical.OR)
-    public Result<JobDTO> info(@Validated @RequestBody IdReq form) {
-        JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(form));
+    public Result<JobDTO> info(@Validated @RequestBody IdReq req) {
+        JobDTO data = jobService.oneDto(QueryWrapperHelper.getPredicate(req));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<JobDTO>().success(data);
@@ -87,8 +90,8 @@ public class JobController {
     @Operation(summary = "指定参数立即执行")
     @LogOperation("指定参数立即执行")
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:job:run"}, logical = Logical.OR)
-    public Result<?> runWithParams(@Validated @RequestBody JobRunWithParamsReq form) {
-        jobService.runWithParams(form);
+    public Result<?> runWithParams(@Validated @RequestBody JobRunWithParamsReq req) {
+        jobService.runWithParams(req);
 
         return new Result<>();
     }
@@ -97,8 +100,8 @@ public class JobController {
     @Operation(summary = "日志分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
-    public Result<PageData<JobLogDTO>> logPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryReq form) {
-        PageData<JobLogDTO> page = jobLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<JobLogDTO>> logPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryReq req) {
+        PageData<JobLogDTO> page = jobLogService.pageDto(req, QueryWrapperHelper.getPredicate(req, "page"));
 
         return new Result<PageData<JobLogDTO>>().success(page);
     }
@@ -107,8 +110,8 @@ public class JobController {
     @Operation(summary = "日志详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
-    public Result<JobLogDTO> logInfo(@Validated @RequestBody IdReq form) {
-        JobLogDTO data = jobLogService.getDtoById(form.getId());
+    public Result<JobLogDTO> logInfo(@Validated @RequestBody IdReq req) {
+        JobLogDTO data = jobLogService.getDtoById(req.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
         return new Result<JobLogDTO>().success(data);
@@ -120,37 +123,37 @@ public class JobController {
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:delete"}, logical = Logical.OR)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsReq req) {
         jobLogService.removeByIds(req.getIds());
-
+        // 删除明细
         return new Result<>();
     }
 
     @PostMapping("itemPage")
     @Operation(summary = "明细分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
-    public Result<PageData<JobLogDTO>> itemPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryReq form) {
-        PageData<JobLogDTO> page = jobLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobItem:query"}, logical = Logical.OR)
+    public Result<PageData<JobItemDTO>> itemPage(@Validated({PageGroup.class}) @RequestBody JobItemQueryReq req) {
+        PageData<JobItemDTO> page = jobItemService.pageDto(req, QueryWrapperHelper.getPredicate(req, "page"));
 
-        return new Result<PageData<JobLogDTO>>().success(page);
+        return new Result<PageData<JobItemDTO>>().success(page);
     }
 
-    @PostMapping("logInfo")
-    @Operation(summary = "日志详情")
+    @PostMapping("itemInfo")
+    @Operation(summary = "明细详情")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
-    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
-    public Result<JobLogDTO> logInfo(@Validated @RequestBody IdReq form) {
-        JobLogDTO data = jobLogService.getDtoById(form.getId());
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobItem:query"}, logical = Logical.OR)
+    public Result<JobItemDTO> itemInfo(@Validated @RequestBody IdReq req) {
+        JobItemDTO data = jobItemService.getDtoById(req.getId());
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
 
-        return new Result<JobLogDTO>().success(data);
+        return new Result<JobItemDTO>().success(data);
     }
 
-    @PostMapping("logDeleteBatch")
-    @Operation(summary = "日志批量删除")
-    @LogOperation("日志批量删除")
-    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:delete"}, logical = Logical.OR)
-    public Result<?> logDeleteBatch(@Validated @RequestBody IdsReq req) {
-        jobLogService.removeByIds(req.getIds());
+    @PostMapping("itemDeleteBatch")
+    @Operation(summary = "明细批量删除")
+    @LogOperation("明细批量删除")
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobItem:delete"}, logical = Logical.OR)
+    public Result<?> itemDeleteBatch(@Validated @RequestBody IdsReq req) {
+        jobItemService.removeByIds(req.getIds());
 
         return new Result<>();
     }
