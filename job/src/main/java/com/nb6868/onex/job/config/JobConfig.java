@@ -15,6 +15,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 @Configuration
 @EnableScheduling
@@ -37,9 +38,10 @@ public class JobConfig extends BaseJobConfig {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         // 从数据库中读取需要执行的任务列表,不区分状态,因为可能会修改状态
-        List<JobEntity> jobList = jobService.query()
-                .likeRight(StrUtil.isNotBlank(jobCodePrefix), "code", jobCodePrefix)
-                .select("id")
+        List<JobEntity> jobList = jobService
+                .lambdaQuery()
+                .select(JobEntity::getId)
+                .likeRight(StrUtil.isNotBlank(jobCodePrefix), JobEntity::getCode, jobCodePrefix)
                 .list();
         log.info("job run has [{}] jobs", jobList.size());
         if (CollUtil.isNotEmpty(jobList)) {

@@ -1,6 +1,5 @@
 package com.nb6868.onex.job.config;
 
-import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.job.JobConst;
 import com.nb6868.onex.job.entity.JobEntity;
 import com.nb6868.onex.job.service.JobService;
@@ -40,8 +39,6 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
             JobEntity job = jobService.getById(jobId);
             if (job == null) {
                 log.error("job trigger Id=[{}], not found", jobId);
-            } else if (StrUtil.isBlank(job.getCron())) {
-                log.error("job trigger Id=[{}], cron is empty", jobId);
             } else if (!CronExpression.isValidExpression(job.getCron())) {
                 log.error("job trigger Id=[{}], cron=[{}] is not valid", jobId, job.getCron());
             } else {
