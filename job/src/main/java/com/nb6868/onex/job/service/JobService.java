@@ -78,8 +78,9 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
      * 修改状态
      */
     public boolean changeState(List<Long> ids, int state) {
-        if (CollUtil.isEmpty(ids))
+        if (CollUtil.isEmpty(ids)) {
             return false;
+        }
         return lambdaUpdate().set(JobEntity::getState, state)
                 .in(ids.size() > 1, JobEntity::getId, ids)
                 .eq(ids.size() == 1, JobEntity::getId, ids.get(0))
@@ -90,14 +91,14 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
      * 立即执行
      */
     @Transactional(rollbackFor = Exception.class)
-    public void runWithParams(JobRunWithParamsReq form) {
+    public Long runWithParams(JobRunWithParamsReq form) {
         JobEntity job = getById(form.getId());
         AssertUtils.isNull(job, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 忽略是否停止
-        this.run(job, form.getParams());
+        return this.run(job, form.getParams());
     }
 
-    public void run(@NotNull JobEntity job, JSONObject runParams) {
+    public Long run(@NotNull JobEntity job, JSONObject runParams) {
         log.debug("任务准备执行，任务ID：{}", job.getId());
         // 任务计时器
         TimeInterval timer = DateUtil.timer();
@@ -120,7 +121,7 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
                         .eq("id", jobLogId)
                         .update(new JobLogEntity());
             }
-            return;
+            return jobLogId;
         }
         if (jobLogId == 0 && runResult.getLogToDb()) {
             // 执行结果要求存入数据库
@@ -135,6 +136,7 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
                     .update(new JobLogEntity());
         }
         log.info("任务执行完毕，任务ID：{}", job.getId());
+        return jobLogId;
     }
 
 }
