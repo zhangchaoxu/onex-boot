@@ -1,13 +1,13 @@
 package com.nb6868.onex.job.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -64,10 +64,26 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
     }
 
     /**
+     * 通过code获得job
+     *
+     * @param code jobcode
+     */
+    public JobEntity getByCode(@NotNull String code) {
+        return lambdaQuery().eq(JobEntity::getCode, code)
+                .last(Const.LIMIT_ONE)
+                .one();
+    }
+
+    /**
      * 修改状态
      */
     public boolean changeState(List<Long> ids, int state) {
-        return SqlHelper.retBool(getBaseMapper().update(new JobEntity(), new UpdateWrapper<JobEntity>().set("state", state).in("id", ids)));
+        if (CollUtil.isEmpty(ids))
+            return false;
+        return lambdaUpdate().set(JobEntity::getState, state)
+                .in(ids.size() > 1, JobEntity::getId, ids)
+                .eq(ids.size() == 1, JobEntity::getId, ids.get(0))
+                .update();
     }
 
     /**

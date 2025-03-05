@@ -122,7 +122,7 @@ public class ProfileController {
         // 先判断是否存在
         ParamsEntity entity = paramsService.lambdaQuery()
                 .eq(ParamsEntity::getType, UcConst.ParamsTypeEnum.USER.getCode())
-                .eq(ParamsEntity::getScope, UcConst.ParamsScopeEnum.PRIVATE.getCode())
+                //.eq(ParamsEntity::getScope, UcConst.ParamsScopeEnum.PRIVATE.getCode())
                 .eq(ParamsEntity::getUserId, currentUserId)
                 .eq(ParamsEntity::getCode, req.getCode())
                 .last(Const.LIMIT_ONE).one();
