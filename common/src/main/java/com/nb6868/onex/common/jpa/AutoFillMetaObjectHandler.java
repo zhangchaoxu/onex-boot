@@ -84,9 +84,9 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
             strictInsertFill(metaObject, TENANT_CODE, String.class, user.getTenantCode());
         }
         strictInsertFill(metaObject, CREATE_ID, Long.class, user.getId());
-        strictInsertFill(metaObject, CREATE_NAME, String.class, user.getUsername());
+        strictInsertFill(metaObject, CREATE_NAME, String.class, user.getNamePretty());
         strictInsertFill(metaObject, UPDATE_ID, Long.class, user.getId());
-        strictInsertFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
+        strictInsertFill(metaObject, UPDATE_NAME, String.class, user.getNamePretty());
     }
 
     /**
@@ -98,7 +98,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         Date now = new Date();
         strictUpdateFill(metaObject, UPDATE_TIME, Date.class, now);
         strictUpdateFill(metaObject, UPDATE_ID, Long.class, user.getId());
-        strictUpdateFill(metaObject, UPDATE_NAME, String.class, user.getUsername());
+        strictUpdateFill(metaObject, UPDATE_NAME, String.class, user.getNamePretty());
     }
 
 }

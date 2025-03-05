@@ -123,7 +123,7 @@ public class JobController {
     @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:delete"}, logical = Logical.OR)
     public Result<?> logDeleteBatch(@Validated @RequestBody IdsReq req) {
         jobLogService.removeByIds(req.getIds());
-        // 删除明细
+        // todo 删除明细
         return new Result<>();
     }
 

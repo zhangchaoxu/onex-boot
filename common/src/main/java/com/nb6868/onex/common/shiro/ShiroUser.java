@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.shiro;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import lombok.Data;
 
@@ -37,6 +38,13 @@ public class ShiroUser implements Serializable {
 
     public boolean isFullRoles() {
         return type == ShiroConst.USER_TYPE_SUPER_ADMIN || type == ShiroConst.USER_TYPE_TENANT_ADMIN;
+    }
+
+    /**
+     * 获得合适的显示用名称，先找realName,找不到用username
+     */
+    public String getNamePretty() {
+        return StrUtil.blankToDefault(realName, username);
     }
 
 }
