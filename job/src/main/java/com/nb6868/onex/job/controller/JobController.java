@@ -124,4 +124,35 @@ public class JobController {
         return new Result<>();
     }
 
+    @PostMapping("itemPage")
+    @Operation(summary = "明细分页")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
+    public Result<PageData<JobLogDTO>> itemPage(@Validated({PageGroup.class}) @RequestBody JobLogQueryReq form) {
+        PageData<JobLogDTO> page = jobLogService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+
+        return new Result<PageData<JobLogDTO>>().success(page);
+    }
+
+    @PostMapping("logInfo")
+    @Operation(summary = "日志详情")
+    @QueryDataScope(tenantFilter = true, tenantValidate = false)
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:query"}, logical = Logical.OR)
+    public Result<JobLogDTO> logInfo(@Validated @RequestBody IdReq form) {
+        JobLogDTO data = jobLogService.getDtoById(form.getId());
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+
+        return new Result<JobLogDTO>().success(data);
+    }
+
+    @PostMapping("logDeleteBatch")
+    @Operation(summary = "日志批量删除")
+    @LogOperation("日志批量删除")
+    @RequiresPermissions(value = {"admin:super", "admin:job", "sys:jobLog:delete"}, logical = Logical.OR)
+    public Result<?> logDeleteBatch(@Validated @RequestBody IdsReq req) {
+        jobLogService.removeByIds(req.getIds());
+
+        return new Result<>();
+    }
+
 }
