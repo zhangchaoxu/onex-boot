@@ -5,7 +5,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.util.ObjUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.Const;
@@ -103,12 +102,14 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
         return run(job, null, runParams);
     }
 
-    public Long run(@NotNull JobEntity job, Long logId, JSONObject runParams) {
+    public Long run(@NotNull JobEntity job, Long jobLogId, JSONObject runParams) {
         log.debug("任务准备执行，任务ID：{}", job.getId());
         // 任务计时器
         TimeInterval timer = DateUtil.timer();
         // 记录初始化日志,若没有指定logId,就生成一个
-        Long jobLogId = ObjUtil.defaultIfNull(logId, jobLogService.saveLog(job, 0L, JobConst.JobLogStateEnum.INIT.getCode(), null));
+        if (null == jobLogId || 0L == jobLogId) {
+            jobLogId = jobLogService.saveLog(job, 0L, JobConst.JobLogStateEnum.INIT.getCode(), null);
+        }
         // 通过bean获取实现Service
         JobRunResult runResult;
         AbstractJobRunService jobRunService;
