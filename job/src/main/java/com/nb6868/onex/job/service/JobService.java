@@ -19,7 +19,7 @@ import com.nb6868.onex.job.dto.JobSaveOrUpdateReq;
 import com.nb6868.onex.job.entity.JobEntity;
 import com.nb6868.onex.job.entity.JobLogEntity;
 import com.nb6868.onex.job.sched.AbstractJobRunService;
-import com.nb6868.onex.job.sched.JobRunResult;
+import com.nb6868.onex.job.sched.JobRunRes;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +111,7 @@ public class JobService extends DtoService<JobDao, JobEntity, JobDTO> {
             jobLogId = jobLogService.saveLog(job, 0L, JobConst.JobLogStateEnum.INIT.getCode(), null);
         }
         // 通过bean获取实现Service
-        JobRunResult runResult;
+        JobRunRes runResult;
         AbstractJobRunService jobRunService;
         try {
             // 通过bean获取实现Service

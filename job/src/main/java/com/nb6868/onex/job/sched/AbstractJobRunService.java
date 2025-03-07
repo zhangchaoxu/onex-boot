@@ -14,6 +14,6 @@ public abstract class AbstractJobRunService {
      * @param runParams 执行参数
      * @param jobLogId 记录id
      */
-    public abstract JobRunResult run(JSONObject runParams, Long jobLogId);
+    public abstract JobRunRes run(JSONObject runParams, Long jobLogId);
 
 }
