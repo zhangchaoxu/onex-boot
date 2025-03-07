@@ -2,7 +2,7 @@ package com.nb6868.onex.uc.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -13,7 +13,10 @@ import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.*;
+import com.nb6868.onex.common.pojo.ChangeStateReq;
+import com.nb6868.onex.common.pojo.IdReq;
+import com.nb6868.onex.common.pojo.PageData;
+import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
@@ -66,14 +69,10 @@ public class UserController {
         QueryWrapper<UserEntity> queryWrapper = userService.buildQueryWrapper(req, "page");
         PageData<UserDTO> page = userService.pageDto(req, queryWrapper);
         page.getList().forEach(userDTO -> {
-            if (ObjUtil.equal(req.getDeptNeeded(), Const.BooleanEnum.TRUE.getCode())) {
-                // 需要部门
-                userDTO.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
-            }
-            if (ObjUtil.equal(req.getRoleNeeded(), Const.BooleanEnum.TRUE.getCode())) {
-                // 需要角色
-                userDTO.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
-            }
+            // 需要部门
+            userDTO.setDeptList(req.isDeptNeeded() ? CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)) : CollUtil.newArrayList());
+            // 需要角色
+            userDTO.setRoleList(req.isRoleNeeded() ? CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)) : CollUtil.newArrayList());
         });
         return new Result<PageData<UserDTO>>().success(page);
     }
@@ -86,14 +85,10 @@ public class UserController {
         QueryWrapper<UserEntity> queryWrapper = userService.buildQueryWrapper(req, "page");
         List<UserDTO> list = userService.listDto(queryWrapper);
         list.forEach(userDTO -> {
-            if (ObjUtil.equal(req.getDeptNeeded(), Const.BooleanEnum.TRUE.getCode())) {
-                // 需要部门
-                userDTO.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
-            }
-            if (ObjUtil.equal(req.getDeptNeeded(), Const.BooleanEnum.TRUE.getCode())) {
-                // 需要角色
-                userDTO.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
-            }
+            // 需要部门
+            userDTO.setDeptList(req.isDeptNeeded() ? CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)) : CollUtil.newArrayList());
+            // 需要角色
+            userDTO.setRoleList(req.isRoleNeeded() ? CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)) : CollUtil.newArrayList());
         });
         return new Result<List<UserDTO>>().success(list);
     }
