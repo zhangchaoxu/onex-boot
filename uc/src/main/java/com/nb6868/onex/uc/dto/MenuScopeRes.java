@@ -20,7 +20,7 @@ public class MenuScopeRes extends BaseRes {
     private List<Tree<Long>> menuTree = new ArrayList<>();
 
     @Schema(description = "路由地址")
-    private List<MenuResult> urlList = new ArrayList<>();
+    private List<MenuRes> urlList = new ArrayList<>();
 
     @Schema(description = "权限列表")
     private List<String> permissions = new ArrayList<>();

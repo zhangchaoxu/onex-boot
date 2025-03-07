@@ -10,13 +10,13 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "权限范围请求")
 public class MenuScopeReq extends BaseReq {
 
-    @Schema(description = "是否包含角色编码信息", example = "false")
+    @Schema(description = "是否包含角色编码信息", defaultValue = "false")
     private boolean roleCodes = false;
 
-    @Schema(description = "是否包含角色ID信息", example = "false")
+    @Schema(description = "是否包含角色ID信息", defaultValue = "false")
     private boolean roleIds = false;
 
-    @Schema(description = "是否包含权限信息", example = "true")
+    @Schema(description = "是否包含权限信息", defaultValue = "true")
     private boolean permissions = true;
 
 }

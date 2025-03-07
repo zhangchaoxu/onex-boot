@@ -1,15 +1,14 @@
 package com.nb6868.onex.uc.dto;
 
+import com.nb6868.onex.common.pojo.BaseRes;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
-
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "菜单")
-public class MenuResult implements Serializable {
+public class MenuRes extends BaseRes {
 
     @Schema(description = "id")
     private Long id;
@@ -40,5 +39,8 @@ public class MenuResult implements Serializable {
 
     @Schema(description = "排序")
     private Integer sort;
+
+    @Schema(description = "组件名称")
+    private String component;
 
 }

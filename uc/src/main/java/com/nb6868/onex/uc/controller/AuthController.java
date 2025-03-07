@@ -1,8 +1,5 @@
 package com.nb6868.onex.uc.controller;
 
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -19,13 +16,17 @@ import com.nb6868.onex.common.msg.MsgLogBody;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.*;
-import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
-import com.nb6868.onex.common.util.*;
+import com.nb6868.onex.common.util.ConvertUtils;
+import com.nb6868.onex.common.util.DingTalkApi;
+import com.nb6868.onex.common.util.HttpContextUtils;
+import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
-import com.nb6868.onex.uc.dto.*;
+import com.nb6868.onex.uc.dto.CaptchaRes;
+import com.nb6868.onex.uc.dto.LoginRes;
+import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,10 +39,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 @RestController("UcAuth")
 @RequestMapping("/uc/auth/")
@@ -58,8 +57,6 @@ public class AuthController {
     CaptchaService captchaService;
     @Autowired
     TokenService tokenService;
-    @Autowired
-    MenuService menuService;
     @Autowired
     ParamsService paramsService;
     @Autowired
@@ -247,45 +244,6 @@ public class AuthController {
         return new Result<>();
     }
 
-    @Deprecated
-    @PostMapping("userInfo")
-    @Operation(summary = "用户信息(即将废弃,见profile)")
-    public Result<UserDTO> userInfo(@Validated @RequestBody BaseReq req) {
-        UserEntity user = userService.getById(ShiroUtils.getUserId());
-        AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
-
-        UserDTO data = ConvertUtils.sourceToTarget(user, UserDTO.class);
-        // todo 补上用户的其他信息
-        // data.setRoleCodes(userService.getUserRoleCodes());
-        return new Result<UserDTO>().success(data);
-    }
-
-    @Deprecated
-    @PostMapping("userChangePassword")
-    @Operation(summary = "用户修改密码")
-    @LogOperation("用户修改密码")
-    public Result<?> userChangePassword(@Validated @RequestBody UserUpdateMyPasswordReq form) {
-        // 获得对应登录类型的登录参数
-        JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
-        AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]登录配置");
-        // 先对密码做解密
-        String passwordPlaintext = PasswordUtils.aesDecode(form.getPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY));
-        String newPasswordPlaintext = PasswordUtils.aesDecode(form.getNewPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY));
-        // 对新密码密码强度做校验
-        // 密码复杂度正则
-        AssertUtils.isTrue(StrUtil.isNotBlank(loginParams.getStr("passwordRegExp")) && !ReUtil.isMatch(loginParams.getStr("passwordRegExp"), newPasswordPlaintext), ErrorCode.ERROR_REQUEST, loginParams.getStr("passwordRegError", "密码不符合规则"));
-        // 获取数据库中的用户
-        UserEntity data = userService.getById(ShiroUtils.getUserId());
-        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
-        // 校验原密码
-        AssertUtils.isFalse(PasswordUtils.verify(passwordPlaintext, data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
-        // 更新密码
-        userService.updatePassword(data.getId(), newPasswordPlaintext, authProps.getPasswordStoreKey());
-        // 注销该用户所有token,提示用户重新登录
-        tokenService.deleteByUserIdList(Collections.singletonList(data.getId()));
-        return new Result<>();
-    }
-
     @PostMapping("userResetPassword")
     // @AccessControl
     @Operation(summary = "用户重置密码(帐号找回)")
@@ -313,98 +271,6 @@ public class AuthController {
         // 注销该用户所有token,提示用户重新登录
         tokenService.deleteByUserIdList(Collections.singletonList(data.getId()));
         return new Result<>();
-    }
-
-    @PostMapping("userMenuScope")
-    @Operation(summary = "用户权限范围", description = "返回包括菜单、路由、权限、角色等所有内容")
-    public Result<MenuScopeRes> userMenuScope(@Validated @RequestBody MenuScopeReq form) {
-        ShiroUser user = ShiroUtils.getUser();
-        // 过滤出其中显示菜单
-        List<TreeNode<Long>> menuList = new ArrayList<>();
-        // 过滤出其中路由菜单
-        List<MenuResult> urlList = new ArrayList<>();
-        // 过滤出其中的权限
-        List<String> permissions = new ArrayList<>();
-        // 获取该用户所有menu
-        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), null, null).forEach(menu -> {
-            if (menu.getShowMenu() == 1 && menu.getType() == UcConst.MenuTypeEnum.MENU.getCode()) {
-                // 菜单需要显示 && 菜单类型为菜单
-                menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create()
-                        .set("component", menu.getComponent())
-                        .set("meta", menu.getMeta())
-                        .set("icon", menu.getIcon())
-                        .set("url", menu.getUrl())
-                        .set("urlNewBlank", menu.getUrlNewBlank())));
-            }
-            if (StrUtil.isNotBlank(menu.getUrl())) {
-                urlList.add(ConvertUtils.sourceToTarget(menu, MenuResult.class));
-            }
-            if (form.isPermissions() && StrUtil.isNotBlank(menu.getPermissions())) {
-                permissions.addAll(StrUtil.splitTrim(menu.getPermissions(), ','));
-            }
-        });
-        // 将菜单列表转成菜单树
-        List<Tree<Long>> menuTree = TreeNodeUtils.buildIdTree(menuList);
-        MenuScopeRes result = new MenuScopeRes()
-                .setMenuTree(menuTree)
-                .setUrlList(urlList);
-        // 塞入权限
-        if (form.isPermissions()) {
-            result.setPermissions(permissions);
-        }
-        // 塞入角色编码
-        if (form.isRoleCodes()) {
-            result.setRoleCodes(userService.getUserRoleCodes(user));
-        }
-        // 塞入角色id
-        if (form.isRoleIds()) {
-            result.setRoleIds(userService.getUserRoleIds(user));
-        }
-        return new Result<MenuScopeRes>().success(result);
-    }
-
-    @PostMapping("userMenuTree")
-    @Operation(summary = "用户菜单树", description = "用户左侧显示菜单")
-    public Result<List<Tree<Long>>> userMenuTree(@Validated @RequestBody BaseReq req) {
-        ShiroUser user = ShiroUtils.getUser();
-        List<TreeNode<Long>> menuList = new ArrayList<>();
-        // 获取该用户所有menu, 菜单需要显示 && 菜单类型为菜单
-        menuService.getListByUser(user.getType(), user.getTenantCode(), user.getId(), UcConst.MenuTypeEnum.MENU.getCode(), 1)
-                .forEach(menu -> menuList.add(new TreeNode<>(menu.getId(), menu.getPid(), menu.getName(), menu.getSort()).setExtra(Dict.create()
-                        .set("component", menu.getComponent())
-                        .set("meta", menu.getMeta())
-                        .set("icon", menu.getIcon())
-                        .set("url", menu.getUrl())
-                        .set("urlNewBlank", menu.getUrlNewBlank()))));
-        List<Tree<Long>> menuTree = TreeNodeUtils.buildIdTree(menuList);
-        return new Result<List<Tree<Long>>>().success(menuTree);
-    }
-
-    @PostMapping("userPermissions")
-    @Operation(summary = "用户授权编码", description = "用户具备的权限,可用于按钮等的控制")
-    public Result<List<String>> userPermissions(@Validated @RequestBody BaseReq req) {
-        ShiroUser user = ShiroUtils.getUser();
-        List<String> set = userService.getUserPermissions(user);
-
-        return new Result<List<String>>().success(set);
-    }
-
-    @PostMapping("userRoleIds")
-    @Operation(summary = "用户角色id", description = "用户具备的角色,可用于按钮等的控制")
-    public Result<List<Long>> userRoles(@Validated @RequestBody BaseReq req) {
-        ShiroUser user = ShiroUtils.getUser();
-        List<Long> set = userService.getUserRoleIds(user);
-
-        return new Result<List<Long>>().success(set);
-    }
-
-    @PostMapping("userRoleCodes")
-    @Operation(summary = "用户角色编码", description = "用户具备的角色,可用于按钮等的控制")
-    public Result<List<String>> userRoleCodes(@Validated @RequestBody BaseReq req) {
-        ShiroUser user = ShiroUtils.getUser();
-        List<String> set = userService.getUserRoleCodes(user);
-
-        return new Result<List<String>>().success(set);
     }
 
 }
