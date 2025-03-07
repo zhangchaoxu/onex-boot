@@ -70,13 +70,9 @@ public class ProfileController {
         AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
         UserDTO data = ConvertUtils.sourceToTarget(user, UserDTO.class);
         // 需要部门
-        if (req.isDeptNeeded()) {
-            data.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(data.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
-        }
+        data.setDeptList(req.isDeptNeeded() ? CollStreamUtil.toList(deptService.getDeptListByUserId(user.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)) : CollUtil.newArrayList());
         // 需要角色
-        if (req.isRoleNeeded()) {
-            data.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(data.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
-        }
+        data.setRoleList(req.isRoleNeeded() ? CollStreamUtil.toList(roleService.getRoleListByUserId(user.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)) : CollUtil.newArrayList());
         return new Result<UserDTO>().success(data);
     }
 
