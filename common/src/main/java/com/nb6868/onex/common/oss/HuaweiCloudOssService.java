@@ -94,11 +94,6 @@ public class HuaweiCloudOssService extends AbstractOssService {
     }
 
     @Override
-    public ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire) {
-        return new ApiResult<String>().error(ApiResult.ERROR_CODE_EXCEPTION, "huaweicloud oss getPreSignedUrl 未实现");
-    }
-
-    @Override
     public ApiResult<Boolean> isObjectKeyExisted(String bucketName, String objectKey) {
         // 给一个默认值，免得出错
         ApiResult<Boolean> apiResult = ApiResult.of(false);

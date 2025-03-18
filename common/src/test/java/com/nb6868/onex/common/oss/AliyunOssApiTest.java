@@ -58,7 +58,7 @@ public class AliyunOssApiTest {
     void getPreSignUrl() {
         Props props = new Props("confidential/oss.properties");
 
-        ApiResult<String> result = AliyunOssApi.getPreSignedUrl(props.getStr("accessKeyId"), props.getStr("accessKeySecret"), props.getStr("endPoint"), props.getStr("region"), props.getStr("bucketName"), "test/换行 ff2ad93956484509912dbe440f324551.txt", null, "put", 10 * 60);
+        ApiResult<String> result = AliyunOssApi.getPreSignedUrl(props.getStr("accessKeyId"), props.getStr("accessKeySecret"), props.getStr("endPoint"), props.getStr("region"), props.getStr("bucketName"), "test/换行 ff2ad93956484509912dbe440f324551.txt", null, null, "put", 10 * 60);
         log.error(result.toString());
         log.error(result.getData());
     }

@@ -41,8 +41,8 @@ public class AliyunApiOssService extends AbstractOssService {
     }
 
     @Override
-    public ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire) {
-        ApiResult<String> result = AliyunOssApi.getPreSignedUrl(this.config.getAccessKeyId(), this.config.getAccessKeySecret(), StrUtil.emptyToDefault(this.config.getEndPointPublic(), this.config.getEndPoint()), this.config.getRegion(), this.config.getBucketName(), objectKey, null, method, expire);
+    public ApiResult<String> getPreSignedUrl(String objectKey, String urlParams, String method, int expire) {
+        ApiResult<String> result = AliyunOssApi.getPreSignedUrl(this.config.getAccessKeyId(), this.config.getAccessKeySecret(), StrUtil.emptyToDefault(this.config.getEndPointPublic(), this.config.getEndPoint()), this.config.getRegion(), this.config.getBucketName(), objectKey, urlParams, null, method, expire);
         return result;
     }
 

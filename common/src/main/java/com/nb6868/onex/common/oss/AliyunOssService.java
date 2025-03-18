@@ -105,7 +105,7 @@ public class AliyunOssService extends AbstractOssService {
 
 
     @Override
-    public ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire) {
+    public ApiResult<String> getPreSignedUrl(String objectKey, String urlParams, String method, int expire) {
         ApiResult<String> apiResult = new ApiResult<>();
         try {
             // 设置URL过期时间。

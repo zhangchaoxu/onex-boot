@@ -27,6 +27,9 @@ public class OssPreSignedReq extends BaseReq {
     @EnumValue(strValues = {"put", "get", "post"}, message = "method只支持put get post")
     private String method = "post";
 
+    @Schema(description = "url请求参数")
+    private String urlParams;
+
     @Schema(description = "过期秒数")
     private int expire = 3600;
 

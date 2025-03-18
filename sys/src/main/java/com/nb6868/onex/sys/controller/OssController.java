@@ -226,38 +226,38 @@ public class OssController {
     @PostMapping("getSignedPostForm")
     @Operation(summary = "获得已签名的post表单参数")
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss"}, logical = Logical.OR)
-    public Result<?> getSignedPostForm(@Validated @RequestBody OssSignedPostReq form) {
-        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
+    public Result<?> getSignedPostForm(@Validated @RequestBody OssSignedPostReq req) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(req.getParamsCode(), OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        ApiResult<JSONObject> result = uploadService.getSignedPostForm(form.getConditions(), form.getExpire(), null);
+        ApiResult<JSONObject> result = uploadService.getSignedPostForm(req.getConditions(), req.getExpire(), null);
         AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
         return new Result<>().success(result.getData());
     }
 
     @PostMapping("getPreSignedPostForm")
     @Operation(summary = "获得已签名的post表单参数")
-    public Result<?> getPreSignedPostForm(@Validated @RequestBody OssPreSignedReq form) {
-        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(StrUtil.emptyToDefault(form.getParamsCode(), SysConst.OSS_PUBLIC), OssPropsConfig.class, null);
+    public Result<?> getPreSignedPostForm(@Validated @RequestBody OssPreSignedReq req) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(StrUtil.emptyToDefault(req.getParamsCode(), SysConst.OSS_PUBLIC), OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFileName());
-        ApiResult<JSONObject> result = uploadService.getSignedPostForm(null, form.getExpire(), objectKey);
+        String objectKey = uploadService.buildObjectKey(req.getPrefix(), req.getFileName());
+        ApiResult<JSONObject> result = uploadService.getSignedPostForm(null, req.getExpire(), objectKey);
         AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
         return new Result<>().success(result.getData());
     }
 
     @PostMapping("getPreSignedUrl")
     @Operation(summary = "获得授权访问地址")
-    public Result<?> getPreSignedUrl(@Validated @RequestBody OssPreSignedReq form) {
-        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(form.getParamsCode(), OssPropsConfig.class, null);
+    public Result<?> getPreSignedUrl(@Validated @RequestBody OssPreSignedReq req) {
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(req.getParamsCode(), OssPropsConfig.class, null);
         AbstractOssService uploadService = OssFactory.build(ossConfig);
         AssertUtils.isNull(uploadService, "未定义的上传方式");
 
-        String objectKey = uploadService.buildObjectKey(form.getPrefix(), form.getFileName());
-        ApiResult<String> result = uploadService.getPreSignedUrl(objectKey, form.getMethod(), form.getExpire());
+        String objectKey = uploadService.buildObjectKey(req.getPrefix(), req.getFileName());
+        ApiResult<String> result = uploadService.getPreSignedUrl(objectKey, req.getUrlParams(), req.getMethod(), req.getExpire());
         AssertUtils.isFalse(result.isSuccess(), result.getCodeMsg());
         return new Result<>().success(result.getData());
     }
@@ -266,8 +266,8 @@ public class OssController {
     @Operation(summary = "分页")
     @QueryDataScope(tenantFilter = true, tenantValidate = false)
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:oss", "sys:oss:query"}, logical = Logical.OR)
-    public Result<PageData<OssDTO>> page(@Validated({PageGroup.class}) @RequestBody OssQueryReq form) {
-        PageData<OssDTO> page = ossService.pageDto(form, QueryWrapperHelper.getPredicate(form, "page"));
+    public Result<PageData<OssDTO>> page(@Validated({PageGroup.class}) @RequestBody OssQueryReq req) {
+        PageData<OssDTO> page = ossService.pageDto(req, QueryWrapperHelper.getPredicate(req, "page"));
 
         return new Result<PageData<OssDTO>>().success(page);
     }

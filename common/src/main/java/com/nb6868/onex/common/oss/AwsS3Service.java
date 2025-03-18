@@ -138,7 +138,7 @@ public class AwsS3Service extends AbstractOssService {
      * see https://docs.aws.amazon.com/zh_cn/sdk-for-java/latest/developer-guide/examples-s3-presign.html
      */
     @Override
-    public ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire) {
+    public ApiResult<String> getPreSignedUrl(String objectKey, String urlParams, String method, int expire) {
         ApiResult<String> apiResult = new ApiResult<>();
         try {
             S3Presigner presigner = S3Presigner.create();

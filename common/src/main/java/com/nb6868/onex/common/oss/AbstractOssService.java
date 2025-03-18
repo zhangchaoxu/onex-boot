@@ -183,7 +183,9 @@ public abstract class AbstractOssService {
      *
      * @param expire 过期时间(单位秒)
      */
-    public abstract ApiResult<String> getPreSignedUrl(String objectKey, String method, int expire);
+    public ApiResult<String> getPreSignedUrl(String objectKey, String urlParams, String method, int expire) {
+        return new ApiResult<String>().error("暂未实现该方法");
+    }
 
     /**
      * 生成已签名的表单
