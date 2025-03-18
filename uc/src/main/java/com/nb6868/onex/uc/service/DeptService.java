@@ -147,6 +147,24 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
     }
 
     /**
+     * 通过部门ids获得部门名称列表
+     */
+    public List<String> getNameListByIds(List<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return CollUtil.newArrayList();
+        }
+        return CollStreamUtil.toList(lambdaQuery().select(DeptEntity::getName).in(DeptEntity::getId, ids).list(), DeptEntity::getName);
+    }
+
+    /**
+     * 通过部门ids获得部门名称Join
+     */
+    public String getNameJoinByIds(List<Long> ids, CharSequence conjunction) {
+        List<String> nameList = getNameListByIds(ids);
+        return StrUtil.join(conjunction, nameList);
+    }
+
+    /**
      * 根据部门ID，获取本部门及子部门ID列表
      * @param id   部门ID
      * @return 子部门列表

@@ -6,7 +6,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -32,7 +31,6 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * 用户
@@ -357,11 +355,19 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 通过用户ids获得用户真实姓名列表
      */
-    public List<String> getRealNameListByUserIds(List<Long> ids) {
+    public List<String> getRealNameListByIds(List<Long> ids) {
         if (CollUtil.isEmpty(ids)) {
             return CollUtil.newArrayList();
         }
         return CollStreamUtil.toList(lambdaQuery().select(UserEntity::getRealName).in(UserEntity::getId, ids).list(), UserEntity::getRealName);
+    }
+
+    /**
+     * 通过用户ids获得用户真实姓名Join
+     */
+    public String getRealNameJoinByIds(List<Long> ids, CharSequence conjunction) {
+        List<String> nameList = getRealNameListByIds(ids);
+        return StrUtil.join(conjunction, nameList);
     }
 
 }
