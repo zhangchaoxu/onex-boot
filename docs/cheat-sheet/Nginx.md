@@ -31,7 +31,7 @@ ll /proc/{pid}/exe
 wget http://nginx.org/download/nginx-1.22.1.tar.gz
 # 解压
 tar -zxvf nginx-1.22.1.tar.gz
-# 配置(进入解压目录)
+# 配置(进入解压目录),若需要stream模块，增加参数./configure --with-stream
 ./configure
 # 编译
 make
