@@ -107,8 +107,8 @@ public class ProfileController {
         MenuScopeRes result = new MenuScopeRes()
                 // 将菜单列表转成菜单树
                 .setMenuTree(TreeNodeUtils.buildIdTree(menuList))
-                // 塞入权限
-                .setPermissions(permissions)
+                // 塞入权限,去重
+                .setPermissions(CollUtil.distinct(permissions))
                 // 塞入角色编码
                 .setRoleCodes(req.isRoleCodes() ? userService.getUserRoleCodes(user) : CollUtil.newArrayList())
                 // 塞入角色id
