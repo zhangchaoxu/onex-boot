@@ -4,6 +4,9 @@ server:
     # 配置tomcat的临时目录,jar当前目录
     basedir: ./onex-temp
     uri-encoding: UTF-8
+    # 不限制tomcat的size，否则tomcat限制会优先max-request-size，导致controller异常捕捉不到
+    # 具体见https://stackoverflow.com/questions/2689989/how-to-handle-maxuploadsizeexceededexception
+    max-swallow-size: -1
     threads:
       max: 1000
       min-spare: 30
