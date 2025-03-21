@@ -52,6 +52,7 @@
         <module>job</module>
         <module>websocket</module>
         <module>tunnel</module>
+        <module>file-converter</module>
         <module>cms</module>
 		<module>coder</module>
     </modules>
