@@ -4,6 +4,20 @@
 ```shell
 cat /etc/redhat-release
 ```
+### 定时任务
+经常需要使用定时任务来完成[日志删除](../script/auth_delete.sh)、[数据备份](bak_db.sh)等工作          
+cron可使用
+```shell
+# 1. 编写需要执行的脚本，记得给执行的权限
+# 2. 将脚本和执行的cron规则加入crontab
+# 查看当前执行的定时任务
+crontab -l
+# 编辑cron规则
+crontab -e
+# 将需要执行的脚本加入,以下为每日2:30执行auth_delete.sh，并将日志输出到auth_delete.log
+30 2 * * * /data/cron/auth_delete.sh >> /data/cron/auth_delete.log
+# 退出crontab编辑
+```
 
 ### 删除大文件
 直接删除大文件,可能会因为文件被程序占用,文件被删除了,但是磁盘空间继续占用    
