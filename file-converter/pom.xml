@@ -40,6 +40,12 @@
             <artifactId>jodconverter-local</artifactId>
             <version>${jodconverter.version}</version>
         </dependency>
+        <!-- springboot支持，包括自动配置类 -->
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-spring-boot-starter</artifactId>
+            <version>${jodconverter.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
