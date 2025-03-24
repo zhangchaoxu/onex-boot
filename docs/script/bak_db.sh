@@ -7,5 +7,5 @@ export PATH
 mysqldump -u用户名 -p密码 库名 | gzip > /data/mysql-bak/`date +%Y-%m-%d_%H%M%S`.sql.gz
 echo "----------------------------------------------------------------------------"
 endDate=`date +"%Y-%m-%d %H:%M:%S"`
-echo "★[$endDate] rm file Successful"
+echo "★[$endDate] db bak Successful"
 echo "----------------------------------------------------------------------------"

@@ -5,8 +5,8 @@
 cat /etc/redhat-release
 ```
 ### 定时任务
-经常需要使用定时任务来完成[日志删除](../script/auth_delete.sh)、[数据备份](bak_db.sh)等工作          
-cron可使用
+经常需要使用定时任务来完成[日志删除](../script/auto_delete.sh)、[数据备份](bak_db.sh)等工作          
+cron规则可使用[Cron在线表达式生成器](https://cron.ciding.cc/)
 ```shell
 # 1. 编写需要执行的脚本，记得给执行的权限
 # 2. 将脚本和执行的cron规则加入crontab
@@ -14,8 +14,8 @@ cron可使用
 crontab -l
 # 编辑cron规则
 crontab -e
-# 将需要执行的脚本加入,以下为每日2:30执行auth_delete.sh，并将日志输出到auth_delete.log
-30 2 * * * /data/cron/auth_delete.sh >> /data/cron/auth_delete.log
+# 将需要执行的脚本加入,以下为每日2:30执行auto_delete.sh，并将日志输出到auto_delete.log
+30 2 * * * /data/cron/auto_delete.sh >> /data/cron/auto_delete.log
 # 退出crontab编辑
 ```
 
