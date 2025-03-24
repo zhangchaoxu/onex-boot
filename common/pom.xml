@@ -30,7 +30,7 @@
         <weixin.version>4.7.0</weixin.version>
         <aliyun-oss.version>3.18.1</aliyun-oss.version>
         <huaweicloud-obs.version>3.24.12</huaweicloud-obs.version>
-        <aws-s3.version>2.31.2</aws-s3.version>
+        <aws-s3.version>2.31.6</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <easyexcel.version>4.0.3</easyexcel.version>
     </properties>
@@ -94,7 +94,7 @@
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
-        <!-- 从3.5.9后，jsqlparser需单独引入 -->
+        <!-- MP3.5.9之后，jsqlparser需单独引入 -->
         <!-- 若使用jdk1.8,需要引入mybatis-plus-jsqlparser-4.9 -->
         <dependency>
             <groupId>com.baomidou</groupId>
