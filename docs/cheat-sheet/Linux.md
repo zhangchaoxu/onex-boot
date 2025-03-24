@@ -5,7 +5,7 @@
 cat /etc/redhat-release
 ```
 ### 定时任务
-经常需要使用定时任务来完成[日志删除](../script/auto_delete.sh)、[数据备份](bak_db.sh)等工作          
+经常需要使用定时任务来完成[日志删除](../../script/auto_delete.sh)、[数据备份](../../script/bak_db.sh)等工作          
 cron规则可使用[Cron在线表达式生成器](https://cron.ciding.cc/)
 ```shell
 # 1. 编写需要执行的脚本，记得给执行的权限
