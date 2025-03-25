@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController("UcUser")
@@ -193,8 +194,8 @@ public class UserController {
     @LogOperation("获得所有的锁定用户及时间")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> listLockUser(@Validated @RequestBody BaseReq req) {
-        authService.getAllUserLockKey();
-        return new Result<>();
+        Map<String, String> map = authService.getAllUserLockTime();
+        return new Result<>().success(map);
     }
 
     @PostMapping("removeLockUser")

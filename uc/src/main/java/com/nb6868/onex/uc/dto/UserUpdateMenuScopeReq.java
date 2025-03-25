@@ -14,7 +14,7 @@ import java.util.List;
 public class UserUpdateMenuScopeReq extends BaseIdReq {
 
     @Schema(description = "菜单ID列表")
-    @NotNull(message = "菜单id不能为null,若无部门请传空数组")
+    @NotNull(message = "菜单id不能为null,若无请传空数组")
     private List<Long> menuIds;
 
 }

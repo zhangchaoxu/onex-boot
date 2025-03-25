@@ -24,7 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * 授权服务
@@ -53,10 +56,12 @@ public class AuthService {
     }
 
     /**
-     * 获得所有用户锁定的key
+     * 获得所有用户锁定的数据
      */
-    public Set<String> getAllUserLockKey() {
-        return userLockTimeCache.keySet();
+    public Map<String, String> getAllUserLockTime() {
+        Map<String, String> map = new HashMap<>();
+        userLockTimeCache.keySet().forEach(key -> map.put(key, userLockTimeCache.get(key)));
+        return map;
     }
 
     /**
