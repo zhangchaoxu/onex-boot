@@ -41,8 +41,8 @@ public class PoiTlTest {
         bar.setChartTitle("我是统计标题");
         bar.setCategories(new String[]{"京东", "淘宝", "天猫", "阿里巴巴", "抖音", "快手"});
         List<SeriesRenderData> seriesRenderDatas = new ArrayList<>();
-        seriesRenderDatas.add(new SeriesRenderData("监测量（家)",new Number[]{1, 2, 3, 4, 5, 6}));
-        seriesRenderDatas.add(new SeriesRenderData("违法量（条）",new Number[]{1.2, 2.3, 3.2, 3, 5.2, 6.1}));
+        seriesRenderDatas.add(new SeriesRenderData("监测量（家)", new Number[]{1, 2, 3, 4, 5, 6}));
+        seriesRenderDatas.add(new SeriesRenderData("违法量（条）", new Number[]{1.2, 2.3, 3.2, 3, 5.2, 6.1}));
         bar.setSeriesDatas(seriesRenderDatas);
         sub1RenderModel.put("subChart", bar);
         // sub1RenderModel.put("subtitle", "我是subtitle");
@@ -97,6 +97,40 @@ public class PoiTlTest {
         // 自定义图片标签渲染策略
         XWPFTemplate template = XWPFTemplate.compile(rootPath + "poi/parent.docx", builder.build()).render(includesData);
         template.writeToFile(rootPath + "poi/chart_result.docx");
+    }
+
+    @Test
+    @DisplayName("带图片和图标的模板")
+    void testAnimal() throws Exception {
+        Map<String, Object> elephant = new HashMap<String, Object>() {
+            {
+                put("name", "大象");
+                put("chart",
+                        Charts.ofMultiSeries("大象生存现状", new String[]{"2018年", "2019年", "2020年"})
+                                .addSeries("成年象", new Integer[]{500, 600, 700})
+                                .addSeries("幼象", new Integer[]{200, 300, 400})
+                                .addSeries("全部", new Integer[]{700, 900, 1100})
+                                .create());
+            }
+        };
+        Map<String, Object> giraffe = new HashMap<String, Object>() {
+            {
+                put("name", "长颈鹿");
+                put("picture", Pictures.ofLocal("src/test/resources/poi/lu.png").size(100, 120).create());
+                put("chart",
+                        Charts.ofMultiSeries("长颈鹿生存现状", new String[]{"2018年", "2019年", "2020年"})
+                                .addSeries("成年鹿", new Integer[]{500, 600, 700})
+                                .addSeries("幼鹿", new Integer[]{200, 300, 400})
+                                .create());
+
+            }
+        };
+        List<Map<String, Object>> animals = Arrays.asList(elephant, giraffe);
+        XWPFTemplate.compile("src/test/resources/poi/animal.docx").render(new HashMap<String, Object>() {
+            {
+                put("animals", animals);
+            }
+        }).writeToFile("target/out_example_animal.docx");
     }
 
 }

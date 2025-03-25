@@ -9,10 +9,7 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.text.StrJoiner;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.expression.ExpressionEngine;
 import cn.hutool.extra.expression.engine.spel.SpELEngine;
@@ -336,6 +333,15 @@ public class StringTest {
         String ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
         UserAgent userAgent = UserAgentUtil.parse(ua);
         log.error("{} {}", userAgent.getOs().toString(), userAgent.getBrowser().toString());
+    }
+
+    @Test
+    @DisplayName("数据脱敏打码")
+    void dataMask() {
+        // 更多场景见https://doc.hutool.cn/pages/DesensitizedUtil
+        log.error(DesensitizedUtil.idCardNum("51343620000320711X", 1, 2));
+        log.error(DesensitizedUtil.mobilePhone("18049531999"));
+        log.error(DesensitizedUtil.password("1234567890"));
     }
 
 }

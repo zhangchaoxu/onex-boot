@@ -14,7 +14,7 @@
 
 ## onex使用姿势
 对于在实际项目中使用onex，建议使用以下两种方式。
-### 1. maven依赖(*推荐* )
+### 1. maven依赖(*推荐*)
 在自己的项目中将onex中需要的模块用maven依赖加进来，[onex-api](https://github.com/zhangchaoxu/onex-api)是一个实践demo，适用场景：onex的基础功能能基本满足需求  
 1.1 优点：可保持业务项目代码工程的简洁性，后续onex有升级或者bugfix，直接修改依赖的版本号即可。  
 1.2 缺点：若onex中的基础功能与业务需求有冲突，需要拆包重写接口或者服务。
