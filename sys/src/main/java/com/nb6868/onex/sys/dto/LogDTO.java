@@ -1,5 +1,8 @@
 package com.nb6868.onex.sys.dto;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,6 +30,21 @@ public class LogDTO extends BaseDTO {
 
     @Schema(description = "请求参数")
     private JSONObject requestParams;
+
+    @Schema(description = "请求IP")
+    private String requestIp;
+
+    @Schema(description = "请求IP位置")
+    private String requestIpRegion;
+
+    @Schema(description = "请求UA")
+    private String requestUa;
+
+    @Schema(description = "请求UA(格式化)")
+    public String getRequestUaFmt() {
+        UserAgent userAgent = UserAgentUtil.parse(requestUa);
+        return null == userAgent ? null : StrUtil.format("{} {}", userAgent.getOs().toString(), userAgent.getBrowser().toString());
+    }
 
     @Schema(description = "请求体")
     private String requestBody;

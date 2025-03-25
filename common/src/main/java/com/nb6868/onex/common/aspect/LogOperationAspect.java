@@ -80,7 +80,6 @@ public class LogOperationAspect {
     private void saveLog(ProceedingJoinPoint joinPoint, String params, long time, Integer state, Exception e) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         LogBody logEntity = new LogBody();
-
         // 日志记录类型
         String logStoreType = "db";
         String logType = "operation";
@@ -120,7 +119,7 @@ public class LogOperationAspect {
             }
         } else {
             // 操作日志
-            logEntity.setCreateName(ShiroUtils.getUserUsername());
+            logEntity.setCreateName(ShiroUtils.getUserNamePretty());
             logEntity.setTenantCode(ShiroUtils.getUserTenantCode());
         }
         logEntity.setStoreType(logStoreType);
@@ -136,9 +135,10 @@ public class LogOperationAspect {
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         if (null != request) {
             logEntity.setUri(request.getRequestURI());
+            logEntity.setRequestIp(HttpContextUtils.getIpAddr(request));
+            // 对ip所在位置做处理
+            logEntity.setRequestUa(request.getHeader(HttpHeaders.USER_AGENT));
             JSONObject requestParams = new JSONObject();
-            requestParams.set("ip", HttpContextUtils.getIpAddr(request));
-            requestParams.set("ua", request.getHeader(HttpHeaders.USER_AGENT));
             requestParams.set("queryString", request.getQueryString());
             requestParams.set("url", request.getRequestURL());
             requestParams.set("method", request.getMethod());

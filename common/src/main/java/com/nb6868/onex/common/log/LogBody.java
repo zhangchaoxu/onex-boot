@@ -48,6 +48,18 @@ public class LogBody implements Serializable {
      */
     private JSONObject requestParams;
     /**
+     * 请求IP
+     */
+    private String requestIp;
+    /**
+     * 请求IP位置
+     */
+    private String requestIpRegion;
+    /**
+     * 请求UA
+     */
+    private String requestUa;
+    /**
      * 请求体
      */
     private String requestBody;

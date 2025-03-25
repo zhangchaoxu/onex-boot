@@ -62,7 +62,7 @@ public class LogController {
     @RequiresPermissions(value = {"admin:super", "admin:sys", "admin:log", "sys:log:delete"}, logical = Logical.OR)
     public Result<?> deleteBatch(@Validated @RequestBody IdsReq req) {
         // 删除数据
-        logService.removeByIds(req.getIds());
+        logService.removeByIds(req.getIds(), false);
         return new Result<>();
     }
 
