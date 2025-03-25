@@ -26,6 +26,7 @@ public interface ErrorCode {
     int DB_RECORD_EXISTS = 10002;
     int PARAMS_GET_ERROR = 10003;
     int ACCOUNT_PASSWORD_ERROR = 10004;
+    int ACCOUNT_LOGIN_REJECT = 10009;
     int ACCOUNT_DISABLE = 10005;
     int IDENTIFIER_NOT_NULL = 10006;
     int TENANT_EMPTY = 10080;
@@ -33,8 +34,6 @@ public interface ErrorCode {
     int AREA_EMPTY = 10082;
     int TENANT_NOT_MATCH = 10083;
     int CAPTCHA_ERROR = 10007;
-    int SUB_MENU_EXIST = 10008;
-    int PASSWORD_ERROR = 10009;
     int ACCOUNT_NOT_EXIST = 10010;
     int UPLOAD_FILE_EMPTY = 10019;
     int TOKEN_NOT_EMPTY = 10020;

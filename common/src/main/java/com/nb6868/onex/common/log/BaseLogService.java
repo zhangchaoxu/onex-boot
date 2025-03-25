@@ -20,6 +20,6 @@ public interface BaseLogService {
     /**
      * 获得连续登录失败的次数
      */
-    int getContinuousLoginErrorTimes(String user, String tenantCode, int minuteOffset, int limit);
+    int getContinuousLoginErrorTimes(String user, String tenantCode, int minuteOffset);
 
 }

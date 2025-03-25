@@ -281,15 +281,11 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     /**
      * 修改状态
      */
-    public boolean changeState(ChangeStateReq form) {
-        boolean ret = update().set("state", form.getState()).eq("id", form.getId()).update(new UserEntity());
-        if (ret) {
-            if (form.getState() == UcConst.UserStateEnum.DISABLE.getCode()) {
-                // 锁定用户,将token注销
-                tokenService.deleteByUserIdList(Collections.singletonList(form.getId()));
-            } else if (form.getState() == UcConst.UserStateEnum.ENABLED.getCode()) {
-                // 激活用户
-            }
+    public boolean changeState(ChangeStateReq req) {
+        boolean ret = lambdaUpdate().set(UserEntity::getState, req.getState()).eq(UserEntity::getId, req.getId()).update(new UserEntity());
+        if (ret && ObjUtil.equal(req.getState(), UcConst.UserStateEnum.DISABLE.getCode())) {
+            // 锁定用户,将token注销
+            tokenService.deleteByUserIdList(Collections.singletonList(req.getId()));
         }
         return ret;
     }
