@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * 授权服务
@@ -43,6 +44,20 @@ public class AuthService {
     CaptchaService captchaService;
     // 用户锁定时间
     TimedCache<String, String> userLockTimeCache = CacheUtil.newTimedCache(15 * DateUnit.MINUTE.getMillis());
+
+    /**
+     * 清空指定用户的登录锁定
+     */
+    public void removeUserLockTime(String userKey) {
+        userLockTimeCache.remove(userKey);
+    }
+
+    /**
+     * 获得所有用户锁定的key
+     */
+    public Set<String> getAllUserLockKey() {
+        return userLockTimeCache.keySet();
+    }
 
     /**
      * 校验验证码

@@ -13,10 +13,7 @@ import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.pojo.ChangeStateReq;
-import com.nb6868.onex.common.pojo.IdReq;
-import com.nb6868.onex.common.pojo.PageData;
-import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
@@ -60,6 +57,8 @@ public class UserController {
     RoleService roleService;
     @Autowired
     DeptService deptService;
+    @Autowired
+    AuthService authService;
 
     @PostMapping("page")
     @Operation(summary = "分页")
@@ -169,8 +168,8 @@ public class UserController {
     @Operation(summary = "修改用户授权")
     @LogOperation("修改用户授权")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
-    public Result<?> changeMenuScope(@RequestBody List<Long> menuIds) {
-        userService.changeMenuScope(menuIds);
+    public Result<?> changeMenuScope(@Validated @RequestBody UserUpdateMenuScopeReq req) {
+        userService.changeMenuScope(req.getId(), req.getMenuIds());
         return new Result<>();
     }
 
@@ -186,6 +185,27 @@ public class UserController {
         AssertUtils.isTrue(Objects.equals(ShiroUtils.getUserId(), data.getId()), "无法删除当前登录用户");
         // 删除
         userService.deleteAllByIds(Collections.singletonList(data.getId()));
+        return new Result<>();
+    }
+
+    @PostMapping("listLockUser")
+    @Operation(summary = "获得所有的锁定用户及时间")
+    @LogOperation("获得所有的锁定用户及时间")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
+    public Result<?> listLockUser(@Validated @RequestBody BaseReq req) {
+        authService.getAllUserLockKey();
+        return new Result<>();
+    }
+
+    @PostMapping("removeLockUser")
+    @Operation(summary = "解除锁定用户")
+    @LogOperation("解除锁定用户")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
+    public Result<?> removeLockUser(@Validated @RequestBody IdReq req) {
+        // 判断数据是否存在
+        UserEntity data = userService.getOne(QueryWrapperHelper.getPredicate(req));
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        authService.removeUserLockTime(data.getUsername());
         return new Result<>();
     }
 

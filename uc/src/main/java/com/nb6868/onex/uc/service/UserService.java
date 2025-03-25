@@ -291,13 +291,11 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     }
 
     /**
-     * 合并帐号,将mergeFrom数据合并到mergeTo
+     * 修改用户的授权
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean changeMenuScope(List<Long> menuIds) {
-        // 保存用户菜单关系
-        Long userId = ShiroUtils.getUserId();
-        menuService.saveOrUpdateByUserIdAndMenuIds(userId, menuIds);
+    public boolean changeMenuScope(Long id, List<Long> menuIds) {
+        menuService.saveOrUpdateByUserIdAndMenuIds(id, menuIds);
         return true;
     }
 
