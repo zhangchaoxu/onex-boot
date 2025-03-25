@@ -70,7 +70,7 @@ spring:
     druid:
       # 管理面板
       stat-view-servlet:
-        enabled: true
+        enabled: false
         allow:
         url-pattern: /druid/*
         login-username: admin
