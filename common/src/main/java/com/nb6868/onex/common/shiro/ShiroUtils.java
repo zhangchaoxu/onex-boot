@@ -50,6 +50,20 @@ public class ShiroUtils {
     }
 
     /**
+     * 获得用户真实姓名
+     */
+    public static String getUserRealName() {
+        return getUser().getRealName();
+    }
+
+    /**
+     * 获得合适的显示用名称，先找realName,找不到用username
+     */
+    public static String getUserNamePretty() {
+        return getUser().getNamePretty();
+    }
+
+    /**
      * 获得用户租户编码
      */
     public static String getUserTenantCode() {

@@ -17,6 +17,8 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.expression.ExpressionEngine;
 import cn.hutool.extra.expression.engine.spel.SpELEngine;
 import cn.hutool.http.HtmlUtil;
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import com.nb6868.onex.common.filter.xss.XssUtils;
@@ -75,7 +77,7 @@ public class StringTest {
     @Test
     @DisplayName("aesDecode")
     void aesDecodeTest() {
-        String raw = "bqJOFdO/IlOCMHJ6V+BDpyVlY1N5opy5uOrww4u/6huTIK7XB5WVAGiYflVn5AmzeLCpaiXQxUorBW3P05kexppCz3Y8uSi7W7NpWWWc7wY3OOT4aLKLZwylNiorEz5S";
+        String raw = "";
         EncryptReq form = new EncryptReq();
         form.setBody(raw);
         String json = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(form.getBody());
@@ -106,7 +108,7 @@ public class StringTest {
     @Test
     @DisplayName("passwordEncode")
     void passwordEncode() {
-        String raw = "quanzhou@2024";
+        String raw = "";
         log.error("password={}", PasswordUtils.encode(raw));
         log.error("password={}", PasswordUtils.aesEncode(raw, Const.AES_KEY));
     }
@@ -129,7 +131,7 @@ public class StringTest {
     @Test
     @DisplayName("ase")
     void aes() {
-        String str = "0PxiZS8Xb8MO97iRQMsNIiQ6CE%2F4NMntbkGWexgySMVZSgUTvcIgynxMomNQE4vsxnEAL7cLcGPRm96NA1cR%2Bbek19dIl37P6M%2FTSeOogABXI70GxODX9WfiKrWEyU%2BE28apfsgyL0VHoMtzHH30SkpjhQ0upDMUDIo9WyxNpbieEsQ17RamHhWeDdQEK7Jsot0vxj%2F2F8sPUYdoyuz%2BCw%3D%3D";
+        String str = "";
         String str2 = SecureUtil.aes(Const.AES_KEY.getBytes()).decryptStr(URLUtil.decode(str));
         log.error(str2);
     }
@@ -148,11 +150,11 @@ public class StringTest {
     @DisplayName("接口签名")
     void signApi() {
         // 加密字符串
-        String secret = "znrlZErG74WKWv6VLLbKFmUQ93VebesE";
+        String secret = "";
         // 接口参数
         Map<String, Object> apiParams = new HashMap<>();
         apiParams.put("_t", System.currentTimeMillis());
-        apiParams.put("clientkey", "K3OWcL9PBqzavTdrmlUDmID0FTnbUvdN");
+        apiParams.put("clientkey", "");
         String apiParamSplit = ""; // "&"
         String apiParamJoin = ""; // "="
         // 接口Body
@@ -184,7 +186,7 @@ public class StringTest {
         // 3b9f4c773c7818b81d793ed4830401ab
         log.info("hutool最终结果32位16进制md5,sign={}", md5Hutool);
         log.info("java最终结果32位16进制md5,sign={}", md5Spring);
-        log.info("https://api.zillionsource.com/v1/devices?clientkey={}&_t={}&sign={}", MapUtil.getStr(apiParams, "clientkey"), MapUtil.getStr(apiParams, "_t"), md5Hutool);
+        log.info("https://api.xxx.com/v1/devices?clientkey={}&_t={}&sign={}", MapUtil.getStr(apiParams, "clientkey"), MapUtil.getStr(apiParams, "_t"), md5Hutool);
     }
 
     @Test
@@ -222,7 +224,7 @@ public class StringTest {
 
     @Test
     void jwtDecode() {
-        String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWQiOjExMTgwNzU1NjA3NTcwNjM2ODEsIm5hbWUiOiJsb29seSIsImFkbWluIjp0cnVlLCJleHAiOjE2NDg1MjQ3MzcsImlhdCI6MTY0ODUyMjkzOCwibmJmIjoxNjQ4NTIyOTM4fQ.kPJCrGFSVWpSicBpbplRH8tqlx-q_LVsLZX4xPyevuU";
+        String jwtToken = "";
         JWT jwt = JWT.of(jwtToken);
         System.out.println("Header=" + jwt.getHeader());
         System.out.println("Payload=" + jwt.getPayload());
@@ -254,7 +256,7 @@ public class StringTest {
     @DisplayName("xss过滤器测试")
     void xssTest() {
         String raw = "{\"id\":\"1567452017224237057\",\"type\":1,\"title\":\"<p>我国消防工作的原则是()<img src=\\\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\\\"></p>\",\"optionsA\":\"政府统一领导、部门依法监管、单位有限责任、公民广泛参与\",\"optionsB\":\"部门依法领导、政府统一监管、单位全面负责、公民积极参与\",\"optionsC\":\"政府统一领导、部门全面负责、单位依法管理、公民积极参与\",\"optionsD\":\"政府统一领导、部门依法监管、单位全面负责、公民积极参与\",\"optionsE\":null,\"optionsF\":null,\"optionsCorrect\":\"D\",\"content\":\"\",\"tags\":null,\"relType\":\"course\",\"relId\":\"1556192543100547074\",\"createId\":\"1510103618900885505\",\"createTime\":\"2022-09-07 17:57:37\",\"updateId\":\"1510103618900885505\",\"updateTime\":\"2022-11-03 12:07:28\",\"sort\":0,\"options\":null,\"score\":0,\"imgs\":null,\"remark\":null,\"tenantCode\":null,\"relName\":\"消防基础知识\"}";
-        String raw2 = "<p>我国消防工作的原则是()<img src=\\\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\\\"></p>";
+        String raw2 = "<p>我国消防工作的原则是()<img src=\\\"https://oos-cn.xxxx.cn/anbao-public/20221103/avatar.png\\\"></p>";
         String txt = XssUtils.filter(raw);
         String txt2 = XssUtils.filter(raw2);
         log.error("raw={}", raw);
@@ -266,7 +268,7 @@ public class StringTest {
     @DisplayName("xss过滤器测试")
     void hutoolXssTest() {
         String raw = "{\"id\":\"1567452017224237057\",\"type\":1,\"title\":\"<p>我国消防工作的原则是()<img src=\\\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\\\"></p>\",\"optionsA\":\"政府统一领导、部门依法监管、单位有限责任、公民广泛参与\",\"optionsB\":\"部门依法领导、政府统一监管、单位全面负责、公民积极参与\",\"optionsC\":\"政府统一领导、部门全面负责、单位依法管理、公民积极参与\",\"optionsD\":\"政府统一领导、部门依法监管、单位全面负责、公民积极参与\",\"optionsE\":null,\"optionsF\":null,\"optionsCorrect\":\"D\",\"content\":\"\",\"tags\":null,\"relType\":\"course\",\"relId\":\"1556192543100547074\",\"createId\":\"1510103618900885505\",\"createTime\":\"2022-09-07 17:57:37\",\"updateId\":\"1510103618900885505\",\"updateTime\":\"2022-11-03 12:07:28\",\"sort\":0,\"options\":null,\"score\":0,\"imgs\":null,\"remark\":null,\"tenantCode\":null,\"relName\":\"消防基础知识\"}";
-        String raw2 = "<p>我国消防工作的原则是()<img src=\"https://oos-cn.ctyunapi.cn/anbao-public/20221103/avatar.png\"></p><alert> sss</alert>";
+        String raw2 = "<p>我国消防工作的原则是()<img src=\"https://oos-cn.xxxx.cn/anbao-public/20221103/avatar.png\"></p><alert> sss</alert>";
         String txt = HtmlUtil.filter(raw);
         String txt2 = HtmlUtil.filter(raw2);
         log.error("raw={}", raw);
@@ -323,6 +325,17 @@ public class StringTest {
         log.error(encodeFragment);
         log.error(encodeAll);
         log.error(encode);
+    }
+
+    @Test
+    @DisplayName("uc格式化")
+    void uaFmt() {
+        // OSX Chrome
+        //String ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+        // Windows 10 or Windows Server 2016 Chrome
+        String ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
+        UserAgent userAgent = UserAgentUtil.parse(ua);
+        log.error("{} {}", userAgent.getOs().toString(), userAgent.getBrowser().toString());
     }
 
 }
