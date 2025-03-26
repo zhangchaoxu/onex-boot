@@ -13,7 +13,7 @@ public class LogService implements BaseLogService {
     }
 
     @Override
-    public int getContinuousLoginErrorTimes(String user, String tenantCode, int minuteOffset, int limit) {
+    public int getContinuousLoginErrorTimes(String user, String tenantCode, int minuteOffset) {
         return 0;
     }
 }

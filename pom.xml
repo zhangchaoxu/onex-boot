@@ -72,7 +72,7 @@
         <!-- libs -->
         <shiro.version>2.0.2</shiro.version>
         <poi.version>5.4.0</poi.version>
-        <onex.version>4.4.64</onex.version>
+        <onex.version>4.4.65</onex.version>
     </properties>
 
     <dependencies>
