@@ -144,6 +144,7 @@ public class UserController {
         AssertUtils.isNull(loginParams, "缺少[" + req.getType() + "]登录配置");
         // 先对密码做解密
         String newPasswordPlaintext = PasswordUtils.aesDecode(req.getNewPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY));
+        AssertUtils.isEmpty(newPasswordPlaintext, "密码传输请做加密处理");
         // 对新密码密码强度做校验
         // 密码复杂度正则
         AssertUtils.isTrue(StrUtil.isNotBlank(loginParams.getStr("passwordRegExp")) && !ReUtil.isMatch(loginParams.getStr("passwordRegExp"), newPasswordPlaintext), ErrorCode.ERROR_REQUEST, loginParams.getStr("passwordRegError", "密码不符合规则"));
