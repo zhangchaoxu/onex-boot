@@ -60,6 +60,9 @@ public class UserQueryReq extends PageReq {
     @Schema(description = "角色id数组")
     private List<Long> roleIds;
 
+    @Schema(description = "角色编码数组")
+    private List<String> roleCodes;
+
     @Schema(description = "需要角色信息", defaultValue = "false")
     private boolean roleNeeded = false;
 

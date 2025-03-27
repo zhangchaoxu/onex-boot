@@ -28,9 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 用户
@@ -49,6 +47,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     @Autowired
     TokenService tokenService;
     @Autowired
+    RoleService roleService;
+    @Autowired
     RoleUserService roleUserService;
     @Autowired
     DeptUserService deptUserService;
@@ -59,21 +59,55 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
     public QueryWrapper<UserEntity> buildQueryWrapper(UserQueryReq req, String from) {
         // 拼接查询条件
         QueryWrapper<UserEntity> queryWrapper = QueryWrapperHelper.getPredicate(req, from);
-        // 自定义条件
-        if (CollUtil.isNotEmpty(req.getDeptIds()) || CollUtil.isNotEmpty(req.getRoleIds())) {
+        // 自定义条件, fixme这里有bug，应该是并集，不是合集
+        if (CollUtil.isNotEmpty(req.getDeptIds()) || CollUtil.isNotEmpty(req.getRoleIds()) || CollUtil.isNotEmpty(req.getRoleCodes())) {
             // 查询条件带有部门或者角色
-            List<Long> userIds = new ArrayList<>();
-            userIds.addAll(getUserIdListByDeptIds(req.getDeptIds(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()));
-            userIds.addAll(getUserIdListByRoleIds(req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode()));
-            // 部门和角色用户有重复，做去重
-            userIds = CollUtil.distinct(userIds);
-            if (CollUtil.isEmpty(userIds)) {
-                // fixme 没有找到返回[]，而不应该报错
-                // AssertUtils.isEmpty(userIds, "所选角色/部门内未找到用户");
-                userIds.add(-1L); // 先塞一个-1来约束结果空
-            } else {
-                queryWrapper.in("id", userIds);
+            // 总的userId数组
+            Set<Long> userIds = new HashSet<>();
+            // 查询部门id匹配
+            if (CollUtil.isNotEmpty(req.getDeptIds())) {
+                List<Long> matchedUserIdList = getUserIdListByDeptIds(req.getDeptIds(), UcConst.DeptUserTypeEnum.DEFAULT.getCode());
+                if (CollUtil.isEmpty(matchedUserIdList)) {
+                    queryWrapper.eq("id", -1);
+                    return queryWrapper;
+                } else {
+                    if (CollUtil.isEmpty(userIds)) {
+                        userIds.addAll(matchedUserIdList);
+                    } else {
+                        userIds = CollUtil.unionDistinct(userIds, matchedUserIdList);
+                    }
+                }
             }
+            // 查询角色id匹配
+            if (CollUtil.isNotEmpty(req.getRoleIds())) {
+                List<Long> matchedUserIdList = getUserIdListByRoleIds(req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
+                if (CollUtil.isEmpty(matchedUserIdList)) {
+                    queryWrapper.eq("id", -1);
+                    return queryWrapper;
+                }  else {
+                    if (CollUtil.isEmpty(userIds)) {
+                        userIds.addAll(matchedUserIdList);
+                    } else {
+                        userIds = CollUtil.unionDistinct(userIds, matchedUserIdList);
+                    }
+                }
+            }
+            // 查询角色code匹配
+            if (CollUtil.isNotEmpty(req.getRoleCodes())) {
+                List<Long> matchedUserIdList = getUserIdListByRoleCodes(req.getRoleCodes(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
+                if (CollUtil.isEmpty(matchedUserIdList)) {
+                    queryWrapper.eq("id", -1);
+                    return queryWrapper;
+                } else {
+                    if (CollUtil.isEmpty(userIds)) {
+                        userIds.addAll(matchedUserIdList);
+                    } else {
+                        userIds = CollUtil.unionDistinct(userIds, matchedUserIdList);
+                    }
+                }
+            }
+            // 到这里，userIds不应该为空了
+            queryWrapper.in("id", userIds);
         }
         return queryWrapper;
     }
@@ -109,6 +143,14 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
                 .eq(ObjUtil.isNotNull(type), RoleUserEntity::getType, type)
                 .groupBy(RoleUserEntity::getUserId)
                 .list(), RoleUserEntity::getUserId);
+    }
+
+    /**
+     * 通过角色编码数组获得部门下的所有用户id
+     */
+    public List<Long> getUserIdListByRoleCodes(List<String> roleCodes, Integer type) {
+        List<Long> roleIds = roleService.getRoleIdListByRoleCodeList(roleCodes);
+        return getUserIdListByRoleIds(roleIds, type);
     }
 
     /**
