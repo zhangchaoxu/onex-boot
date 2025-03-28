@@ -66,7 +66,8 @@ public class DingTalkApi {
         // 将参数拼接到url上
         url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), false);
         try {
-            HttpRequest request = HttpRequest.get(url);
+            HttpRequest request = HttpRequest
+                    .get(url);
             log.debug(request.toString());
             request.then(httpResponse -> {
                 JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());

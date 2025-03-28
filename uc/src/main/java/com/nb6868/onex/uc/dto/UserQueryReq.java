@@ -17,15 +17,19 @@ public class UserQueryReq extends PageReq {
     @Schema(description = "关联表id")
     private Long relId;
 
-    @Query
-    @Schema(description = "用户名")
+    @Query(type = Query.Type.LIKE)
+    @Schema(description = "编码(模糊搜索)")
+    private String code;
+
+    @Query(type = Query.Type.LIKE)
+    @Schema(description = "用户名(模糊搜索)")
     private String username;
 
-    @Query
-    @Schema(description = "姓名")
+    @Query(type = Query.Type.LIKE)
+    @Schema(description = "姓名(模糊搜索)")
     private String realName;
 
-    @Query
+    @Query(type = Query.Type.LIKE)
     @Schema(description = "手机号")
     private String mobile;
 
@@ -65,9 +69,6 @@ public class UserQueryReq extends PageReq {
 
     @Schema(description = "需要角色信息", defaultValue = "false")
     private boolean roleNeeded = false;
-
-    /*@Schema(description = "角色编码数组")
-    private List<String> roleCodes;*/
 
     @Schema(description = "部门id数组")
     private List<Long> deptIds;
