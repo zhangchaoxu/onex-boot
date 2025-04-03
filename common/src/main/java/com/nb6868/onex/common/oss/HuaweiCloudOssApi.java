@@ -168,7 +168,7 @@ public class HuaweiCloudOssApi {
         String sign = signV4(request, date, bucketName, region, additionalHeaders, accessKeySecret);
         request.header("Authorization", buildAuthorization(date, accessKeyId, region, additionalHeaders, sign));
         try {
-            log.debug(request.toString());
+            // log.debug(request.toString());
             request.then(httpResponse -> {
                 if (httpResponse.isOk()) {
                     InputStream inputStream = IoUtil.toAvailableStream(httpResponse.bodyStream());
@@ -223,7 +223,7 @@ public class HuaweiCloudOssApi {
         String sign = signV4(request, date, bucketName, region, additionalHeaders, accessKeySecret);
         request.header("Authorization", buildAuthorization(date, accessKeyId, region, additionalHeaders, sign));
         try {
-            log.debug(request.toString());
+            // log.debug(request.toString());
             request.then(httpResponse -> {
                 if (httpResponse.isOk()) {
                     JSONObject result = new JSONObject();
@@ -282,7 +282,7 @@ public class HuaweiCloudOssApi {
         String sign = signV4(request, date, bucketName, region, additionalHeaders, accessKeySecret);
         request.header("Authorization", buildAuthorization(date, accessKeyId, region, additionalHeaders, sign));
         try {
-            log.debug(request.toString());
+            // log.debug(request.toString());
             request.then(httpResponse -> {
                 if (httpResponse.isOk()) {
                     JSONObject result = new JSONObject();
