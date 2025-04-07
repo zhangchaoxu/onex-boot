@@ -11,6 +11,8 @@ import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.pojo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.nio.charset.Charset;
 
 /**
@@ -22,9 +24,21 @@ import java.nio.charset.Charset;
 public class BaseApi {
 
     /**
+     * 通过参数格式化网络代理
+     *
+     * @param proxyParam 需包含type hostname和port
+     */
+    public static Proxy getProxy(JSONObject proxyParam) {
+        if (null == proxyParam || proxyParam.isEmpty() || StrUtil.hasBlank(proxyParam.getStr("type"), proxyParam.getStr("hostname"))) {
+            return null;
+        }
+        return new Proxy(Proxy.Type.valueOf(proxyParam.getStr("type").toUpperCase()), new InetSocketAddress(proxyParam.getStr("hostname"), proxyParam.getInt("port")));
+    }
+
+    /**
      * 公共基础调用方法
      *
-     * @param baseUrl 请求连接
+     * @param baseUrl  请求连接
      * @param paramMap 请求参数,会拼接到url中
      */
     public static ApiResult<JSONObject> baseCallApiGet(String baseUrl, JSONObject paramMap) {
@@ -59,7 +73,7 @@ public class BaseApi {
     /**
      * 公共基础调用方法
      *
-     * @param baseUrl 请求连接
+     * @param baseUrl  请求连接
      * @param paramMap 请求参数
      */
     public static ApiResult<JSONObject> baseCallApiPostJson(String baseUrl, JSONObject paramMap) {

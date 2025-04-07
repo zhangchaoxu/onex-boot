@@ -3,9 +3,7 @@ package com.nb6868.onex.uc.controller;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.AuthConst;
@@ -18,7 +16,6 @@ import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.ConvertUtils;
-import com.nb6868.onex.common.util.DingTalkApi;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -63,8 +60,6 @@ public class AuthController {
     AuthService authService;
     @Autowired
     BaseMsgService msgService;
-    @Autowired
-    RoleUserService roleUserService;
 
     @PostMapping("captcha")
     // @AccessControl
@@ -149,7 +144,7 @@ public class AuthController {
         return new Result<LoginRes>().success(loginResult);
     }
 
-    @PostMapping("userLoginByCode")
+    /*@PostMapping("userLoginByCode")
     // @AccessControl
     @Operation(summary = "授权code登录,如钉钉", description = "Anon")
     @LogOperation(value = "授权code登录", type = "login")
@@ -211,7 +206,7 @@ public class AuthController {
                 .setToken(token)
                 .setTokenKey(authProps.getTokenHeaderKey());
         return new Result<LoginRes>().success(loginResult);
-    }
+    }*/
 
     @PostMapping("sendMsgCode")
     // @AccessControl

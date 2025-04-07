@@ -7,6 +7,7 @@ import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.Const;
+import com.nb6868.onex.common.util.BaseApi;
 import com.nb6868.onex.common.util.DingTalkApi;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
@@ -54,8 +55,13 @@ public class DingtalkRobotMailService extends AbstractMailService {
         mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         mailLogService.save(mailLog);
 
+        // 实例化dingtalk接口
+        DingTalkApi dingTalkApi = DingTalkApi.of(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"))
+                .setBaseUrl(mailTpl.getParams().getStr("BaseUrl"))
+                .setBaseUrlV2(mailTpl.getParams().getStr("BaseUrlV2"))
+                .setProxy(BaseApi.getProxy(mailTpl.getParams().getJSONObject("Proxy")));
         // https://oapi.dingtalk.com/robot/send?access_token=xxxx
-        ApiResult<JSONObject> sendResponse = DingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("AccessToken"), request.getContentParams());
+        ApiResult<JSONObject> sendResponse = dingTalkApi.sendRobotMsg(mailTpl.getParams().getStr("AccessToken"), request.getContentParams());
         mailLog.setState(sendResponse.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.getCode() : MsgConst.MailSendStateEnum.FAIL.getCode());
         mailLog.setResult(sendResponse.getCodeMsg());
         mailLogService.updateById(mailLog);

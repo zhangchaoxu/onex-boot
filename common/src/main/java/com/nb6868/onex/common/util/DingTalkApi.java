@@ -17,9 +17,12 @@ import com.nb6868.onex.common.pojo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 
+import java.net.Proxy;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -33,10 +36,55 @@ import java.util.function.Function;
 public class DingTalkApi {
 
     // token 缓存,有效时间2小时
-    private static TimedCache<String, String> tokenCache = CacheUtil.newTimedCache(7200 * 1000);
+    private static final TimedCache<String, String> tokenCache = CacheUtil.newTimedCache(7200 * 1000);
     private static final String ACS_TOKEN_KEY = "x-acs-dingtalk-access-token";
-    private static final String BASE_URL = "https://oapi.dingtalk.com";
-    private static final String BASE_URL_V2 = "https://api.dingtalk.com";
+    private String BASE_URL = "https://oapi.dingtalk.com";
+    private String BASE_URL_V2 = "https://api.dingtalk.com";
+    private final String appKey;
+    private final String appSecret;
+    private Proxy proxy;
+
+    public static DingTalkApi of(String appKey, String appSecret) {
+        return new DingTalkApi(appKey, appSecret);
+    }
+
+    public DingTalkApi(String appKey, String appSecret) {
+        this.appKey = appKey;
+        this.appSecret = appSecret;
+    }
+
+    /**
+     * 设置代理
+     *
+     * @param proxy 代理
+     */
+    public DingTalkApi setProxy(Proxy proxy) {
+        if (null != proxy) {
+            this.proxy = proxy;
+        }
+        return this;
+    }
+
+    /**
+     * 设置基础地址
+     */
+    public DingTalkApi setBaseUrl(String baseUrl) {
+        if (StrUtil.isNotBlank(baseUrl)) {
+            this.BASE_URL = baseUrl;
+        }
+        return this;
+    }
+
+    /**
+     * 设置基础地址V2
+     */
+    public DingTalkApi setBaseUrlV2(String baseUrlV2) {
+        if (StrUtil.isNotBlank(baseUrlV2)) {
+            this.BASE_URL_V2 = baseUrlV2;
+        }
+        return this;
+    }
+
 
     /**
      * 清空token缓存
@@ -58,7 +106,7 @@ public class DingTalkApi {
      * @param url      请求连接
      * @param paramMap 请求参数,会拼接到url中
      */
-    public static ApiResult<JSONObject> baseCallApiGet(String url, JSONObject paramMap) {
+    public ApiResult<JSONObject> baseCallApiGet(String url, JSONObject paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
         if (StrUtil.isBlank(url)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
@@ -67,8 +115,9 @@ public class DingTalkApi {
         url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), false);
         try {
             HttpRequest request = HttpRequest
-                    .get(url);
-            log.debug(request.toString());
+                    .get(url)
+                    .setProxy(proxy);
+            //log.debug(request.toString());
             request.then(httpResponse -> {
                 JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
                 apiResult.setSuccess(resultJson.getInt("errcode") == 0)
@@ -92,7 +141,7 @@ public class DingTalkApi {
      * @param url      请求连接
      * @param paramMap 请求参数
      */
-    public static ApiResult<JSONObject> baseCallApiPostJson(String url, String accessToken, JSONObject paramMap) {
+    public ApiResult<JSONObject> baseCallApiPostForm(String url, String accessToken, Map<String, Object> paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
         if (StrUtil.isBlank(url)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
@@ -108,8 +157,51 @@ public class DingTalkApi {
         try {
             HttpRequest request = HttpRequest
                     .post(url)
-                    .body(paramMap.toString());
-            log.debug(request.toString());
+                    .form(paramMap)
+                    .setProxy(proxy);
+            //log.debug(request.toString());
+            request.then(httpResponse -> {
+                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
+                apiResult.setSuccess(resultJson.getInt("errcode") == 0)
+                        .setCode(resultJson.getStr("errcode"))
+                        .setMsg(resultJson.getStr("errmsg"))
+                        .setData(resultJson);
+            });
+            return apiResult;
+        } catch (HttpException he) {
+            return apiResult.error(ApiResult.ERROR_CODE_HTTP_EXCEPTION, url + "=>http exception=>" + he.getMessage()).setRetry(true);
+        } catch (JSONException je) {
+            return apiResult.error(ApiResult.ERROR_CODE_JSON_EXCEPTION, url + "=>http exception=>" + je.getMessage()).setRetry(true);
+        } catch (Exception e) {
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage()).setRetry(true);
+        }
+    }
+
+    /**
+     * 公共基础调用方法
+     *
+     * @param url      请求连接
+     * @param paramMap 请求参数
+     */
+    public ApiResult<JSONObject> baseCallApiPostJson(String url, String accessToken, JSONObject paramMap) {
+        ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
+        if (StrUtil.isBlank(url)) {
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
+        }
+        // 将accessToken参数拼接到url上
+        if (StrUtil.isNotBlank(accessToken)) {
+            if (StrUtil.contains(url, "?")) {
+                url += "&access_token=" + accessToken;
+            } else {
+                url += "?access_token=" + accessToken;
+            }
+        }
+        try {
+            HttpRequest request = HttpRequest
+                    .post(url)
+                    .body(paramMap.toString())
+                    .setProxy(proxy);
+            //log.debug(request.toString());
             request.then(httpResponse -> {
                 JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
                 apiResult.setSuccess(resultJson.getInt("errcode") == 0)
@@ -134,7 +226,7 @@ public class DingTalkApi {
      * @param url      请求连接
      * @param paramMap 请求参数
      */
-    public static ApiResult<JSONObject> baseCallApiPostJsonV2(String url, String accessToken, JSONObject paramMap) {
+    public ApiResult<JSONObject> baseCallApiPostJsonV2(String url, String accessToken, JSONObject paramMap) {
         ApiResult<JSONObject> apiResult = ApiResult.of(new JSONObject());
         if (StrUtil.isBlank(url)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
@@ -142,14 +234,14 @@ public class DingTalkApi {
         // 将参数拼接到url上
         url = HttpUtil.urlWithForm(url, paramMap, Charset.defaultCharset(), false);
         try {
-            HttpRequest request = HttpRequest.post(url);
+            HttpRequest request = HttpRequest.post(url).setProxy(proxy);
             if (StrUtil.isNotBlank(accessToken)) {
                 request.header(ACS_TOKEN_KEY, accessToken);
             }
             if (null != paramMap) {
                 request.body(paramMap.toString());
             }
-            log.debug(request.toString());
+            //log.debug(request.toString());
             request.then(httpResponse -> {
                 // 新版本接口遵循rest风格, 需要用内容或者httpStatus来区分是否成功
                 JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
@@ -173,7 +265,7 @@ public class DingTalkApi {
      * <a href="https://ding-doc.dingtalk.com/document/app/obtain-orgapp-token">...</a>
      */
     @Deprecated
-    public static ApiResult<String> getAccessToken(String appKey, String appSecret, boolean refresh) {
+    public ApiResult<String> getAccessToken(boolean refresh) {
         ApiResult<String> apiResult = ApiResult.of();
         if (StrUtil.isBlank(appKey)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -200,7 +292,7 @@ public class DingTalkApi {
      * 获取企业内部应用的access_token（新版本）
      * <a href="https://open.dingtalk.com/document/orgapp/obtain-the-access_token-of-an-internal-app">...</a>
      */
-    public static ApiResult<String> getOauth2AccessToken(String appKey, String appSecret, boolean refresh) {
+    public ApiResult<String> getOauth2AccessToken(boolean refresh) {
         ApiResult<String> apiResult = ApiResult.of();
         if (StrUtil.isBlank(appKey)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -227,7 +319,7 @@ public class DingTalkApi {
      * 获取用户token
      * <a href="https://open.dingtalk.com/document/isvapp/obtain-user-token">...</a>
      */
-    public static ApiResult<String> getUserAccessToken(String clientId, String clientSecret, String code) {
+    public ApiResult<String> getUserAccessToken(String clientId, String clientSecret, String code) {
         ApiResult<String> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(clientId, clientId, clientId)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -244,7 +336,7 @@ public class DingTalkApi {
      * 通过临时授权码获取授权用户的个人信息
      * <a href="https://ding-doc.dingtalk.com/document/app/obtain-the-user-information-based-on-the-sns-temporary-authorization">...</a>
      */
-    public static ApiResult<JSONObject> getUserInfoByCode(String appId, String appSecret, String code) {
+    public ApiResult<JSONObject> getUserInfoByCode(String appId, String appSecret, String code) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(appId, appSecret, code)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -265,7 +357,7 @@ public class DingTalkApi {
      * 1. <a href="https://developers.dingtalk.com/document/app/logon-free-process">...</a>
      * 2. <a href="https://developers.dingtalk.com/document/app/obtain-the-userid-of-a-user-by-using-the-log-free">...</a>
      */
-    public static ApiResult<JSONObject> getUserInfoV2ByCode(String accessToken, String code) {
+    public ApiResult<JSONObject> getUserInfoV2ByCode(String accessToken, String code) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, code)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -279,10 +371,27 @@ public class DingTalkApi {
     }
 
     /**
+     * 通过免登码获取用户信息
+     * 1. <a href="https://developers.dingtalk.com/document/app/logon-free-process">...</a>
+     * 2. <a href="https://developers.dingtalk.com/document/app/obtain-the-userid-of-a-user-by-using-the-log-free">...</a>
+     */
+    public ApiResult<JSONObject> getUserInfoV2ByCode(String code) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getUserInfoV2ByCode(accessTokenResult.getData(), code);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 获取用户通讯录个人信息
      * <a href="https://open.dingtalk.com/document/isvapp/dingtalk-retrieve-user-information">...</a>
      */
-    public static ApiResult<JSONObject> getUserContact(String accessToken, String unionId) {
+    public ApiResult<JSONObject> getUserContact(String accessToken, String unionId) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, unionId)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -295,12 +404,28 @@ public class DingTalkApi {
     }
 
     /**
+     * 获取用户通讯录个人信息
+     * <a href="https://open.dingtalk.com/document/isvapp/dingtalk-retrieve-user-information">...</a>
+     */
+    public ApiResult<JSONObject> getUserContact(String unionId) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getUserContact(accessTokenResult.getData(), unionId);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 根据unionid获取用户userid
      * <a href="https://ding-doc.dingtalk.com/document/app/query-a-user-by-the-union-id">...</a>
      */
-    public static ApiResult<JSONObject> getUserIdByUnionid(String accessToken, String unionid) {
+    public ApiResult<JSONObject> getUserIdByUnionId(String accessToken, String unionId) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
-        if (StrUtil.hasBlank(accessToken, unionid)) {
+        if (StrUtil.hasBlank(accessToken, unionId)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = BASE_URL + "/topapi/user/getbyunionid";
@@ -311,10 +436,26 @@ public class DingTalkApi {
     }
 
     /**
+     * 根据unionid获取用户userid
+     * <a href="https://ding-doc.dingtalk.com/document/app/query-a-user-by-the-union-id">...</a>
+     */
+    public ApiResult<JSONObject> getUserIdByUnionId(String unionId) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getUserIdByUnionId(accessTokenResult.getData(), unionId);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 根据userid获取用户详情
      * <a href="https://ding-doc.dingtalk.com/document/app/query-user-details">...</a>
      */
-    public static ApiResult<JSONObject> getUserDetailByUserId(String accessToken, String userid) {
+    public ApiResult<JSONObject> getUserDetailByUserId(String accessToken, String userid) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, userid)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -328,10 +469,27 @@ public class DingTalkApi {
     }
 
     /**
+     * 根据userid获取用户详情
+     * <a href="https://ding-doc.dingtalk.com/document/app/query-user-details">...</a>
+     */
+    public ApiResult<JSONObject> getUserDetailByUserId(String userid) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getUserDetailByUserId(accessTokenResult.getData(), userid);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 自定义机器人消息发送
      * <a href="https://developers.dingtalk.com/document/robots/custom-robot-access">...</a>
+     * 注意: accessToken不是授权的accessToken，而是单独授权的
      */
-    public static ApiResult<JSONObject> sendRobotMsg(String accessToken, JSONObject formBody) {
+    public ApiResult<JSONObject> sendRobotMsg(String accessToken, JSONObject formBody) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -344,10 +502,26 @@ public class DingTalkApi {
     }
 
     /**
+     * 自定义机器人消息发送
+     * <a href="https://developers.dingtalk.com/document/robots/custom-robot-access">...</a>
+     */
+    public ApiResult<JSONObject> sendRobotMsg(JSONObject formBody) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return sendRobotMsg(accessTokenResult.getData(), formBody);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 发送工作通知
      * <a href="https://open.dingtalk.com/document/orgapp-server/asynchronous-sending-of-enterprise-session-messages">...</a>
      */
-    public static ApiResult<JSONObject> sendNotifyMsg(String accessToken, JSONObject formBody) {
+    public ApiResult<JSONObject> sendNotifyMsg(String accessToken, JSONObject formBody) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -360,10 +534,26 @@ public class DingTalkApi {
     }
 
     /**
+     * 发送工作通知
+     * <a href="https://open.dingtalk.com/document/orgapp-server/asynchronous-sending-of-enterprise-session-messages">...</a>
+     */
+    public ApiResult<JSONObject> sendNotifyMsg(JSONObject formBody) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return sendNotifyMsg(accessTokenResult.getData(), formBody);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 注册回调事件
      * <a href="https://developers.dingtalk.com/document/app/registers-event-callback-interfaces">...</a>
      */
-    public static ApiResult<JSONObject> registerCallback(String accessToken, String aesKey, String token, String callbackUrl, String[] callbackTag) {
+    public ApiResult<JSONObject> registerCallback(String accessToken, String aesKey, String token, String callbackUrl, String[] callbackTag) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, aesKey, token)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -381,31 +571,53 @@ public class DingTalkApi {
     }
 
     /**
+     * 注册回调事件
+     * <a href="https://developers.dingtalk.com/document/app/registers-event-callback-interfaces">...</a>
+     */
+    public ApiResult<JSONObject> registerCallback(String aesKey, String token, String callbackUrl, String[] callbackTag) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return registerCallback(accessTokenResult.getData(), aesKey, token, callbackUrl, callbackTag);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 上传媒体文件
      * <a href="https://developers.dingtalk.com/document/app/upload-media-files">...</a>
      */
-    public static ApiResult<?> uploadMedia(String accessToken, String type, String filePath) {
+    public ApiResult<?> uploadMedia(String accessToken, String type, String filePath) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
         }
         String url = HttpUtil.urlWithForm(BASE_URL + "/media/upload", Dict.create().set("access_token", accessToken), Charset.defaultCharset(), false);
-        try {
-            HttpRequest request = HttpRequest
-                    .post(url)
-                    .form("type", type)
-                    .form("media", new FileSystemResource(filePath));
-            log.debug(request.toString());
-            request.then(httpResponse -> {
-                JSONObject resultJson = JSONUtil.parseObj(httpResponse.body());
-                apiResult.setSuccess(resultJson.getInt("errcode") == 0)
-                        .setCode(resultJson.getStr("errcode"))
-                        .setMsg(resultJson.getStr("errmsg"))
-                        .setData(resultJson.getJSONObject("result"));
-            });
+        Map<String, Object> formBody = new HashMap<>();
+        formBody.put("type", type);
+        formBody.put("media", new FileSystemResource(filePath));
+        // 调用接口
+        ApiResult<JSONObject> callApiResult = baseCallApiPostForm(url, accessToken, formBody);
+        apiResult.copy(callApiResult).setData(JSONUtil.getByPath(callApiResult.getData(), "result", new JSONObject()));
+        return apiResult;
+    }
+
+    /**
+     * 上传媒体文件
+     * <a href="https://developers.dingtalk.com/document/app/upload-media-files">...</a>
+     */
+    public ApiResult<?> uploadMedia(String type, String filePath) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return uploadMedia(accessTokenResult.getData(), type, filePath);
+        } else {
+            ApiResult<?> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
             return apiResult;
-        } catch (Exception e) {
-            return apiResult.error(ApiResult.ERROR_CODE_PARAMS, url + "=>exception=>" + e.getMessage());
         }
     }
 
@@ -413,7 +625,7 @@ public class DingTalkApi {
      * ASR 一句话语音识别
      * <a href="https://developers.dingtalk.com/document/app/asr-short-sentence-recognition">...</a>
      */
-    public static ApiResult<?> asrVoiceTranslate(String accessToken, String mediaId) {
+    public ApiResult<?> asrVoiceTranslate(String accessToken, String mediaId) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, mediaId)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -427,10 +639,26 @@ public class DingTalkApi {
     }
 
     /**
+     * ASR 一句话语音识别
+     * <a href="https://developers.dingtalk.com/document/app/asr-short-sentence-recognition">...</a>
+     */
+    public ApiResult<?> asrVoiceTranslate(String mediaId) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return asrVoiceTranslate(accessTokenResult.getData(), mediaId);
+        } else {
+            ApiResult<?> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * OCR文字识别
      * <a href="https://developers.dingtalk.com/document/app/structured-image-recognition-api">...</a>
      */
-    public static ApiResult<JSONObject> ocrStructuredRecognize(String accessToken, String type, String mediaUrl) {
+    public ApiResult<JSONObject> ocrStructuredRecognize(String accessToken, String type, String mediaUrl) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken, mediaUrl)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -446,11 +674,26 @@ public class DingTalkApi {
     }
 
     /**
+     * OCR文字识别
+     * <a href="https://developers.dingtalk.com/document/app/structured-image-recognition-api">...</a>
+     */
+    public ApiResult<JSONObject> ocrStructuredRecognize(String type, String mediaUrl) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return ocrStructuredRecognize(accessTokenResult.getData(), type, mediaUrl);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 根据部门id获得子部门id数组
      * <a href="https://open.dingtalk.com/document/orgapp/obtain-a-sub-department-id-list-v2">...</a>
      */
-    public static ApiResult<List<Integer>> getDeptIdList(String accessToken, Integer deptId) {
-        // 三元组结果
+    public ApiResult<List<Integer>> getDeptIdList(String accessToken, Integer deptId) {
         ApiResult<List<Integer>> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -464,17 +707,33 @@ public class DingTalkApi {
     }
 
     /**
+     * 根据部门id获得子部门id数组
+     * <a href="https://open.dingtalk.com/document/orgapp/obtain-a-sub-department-id-list-v2">...</a>
+     */
+    public ApiResult<List<Integer>> getDeptIdList(Integer deptId) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getDeptIdList(accessTokenResult.getData(), deptId);
+        } else {
+            ApiResult<List<Integer>> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 根据部门id获得子部门信息数组
-     *  {
-     *             "auto_add_user": true,
-     *             "create_dept_group": true,
-     *             "dept_id": 37xxxx95,
-     *             "name": "市场部",
-     *             "parent_id": 1
-     *         }
+     * {
+     * "auto_add_user": true,
+     * "create_dept_group": true,
+     * "dept_id": 37xxxx95,
+     * "name": "市场部",
+     * "parent_id": 1
+     * }
      * <a href="https://open.dingtalk.com/document/orgapp/obtain-the-department-list-v2">...</a>
      */
-    public static ApiResult<List<JSONObject>> getDeptList(String accessToken, Integer deptId) {
+    public ApiResult<List<JSONObject>> getDeptList(String accessToken, Integer deptId) {
         // 三元组结果
         ApiResult<List<JSONObject>> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
@@ -489,10 +748,33 @@ public class DingTalkApi {
     }
 
     /**
+     * 根据部门id获得子部门信息数组
+     * {
+     * "auto_add_user": true,
+     * "create_dept_group": true,
+     * "dept_id": 37xxxx95,
+     * "name": "市场部",
+     * "parent_id": 1
+     * }
+     * <a href="https://open.dingtalk.com/document/orgapp/obtain-the-department-list-v2">...</a>
+     */
+    public ApiResult<List<JSONObject>> getDeptList(Integer deptId) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getDeptList(accessTokenResult.getData(), deptId);
+        } else {
+            ApiResult<List<JSONObject>> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 根据部门id获取部门详情
      * <a href="https://open.dingtalk.com/document/orgapp/query-department-details0-v2">...</a>
      */
-    public static ApiResult<JSONObject> getDeptInfo(String accessToken, Integer deptId) {
+    public ApiResult<JSONObject> getDeptInfo(String accessToken, Integer deptId) {
         // 三元组结果
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
@@ -507,10 +789,26 @@ public class DingTalkApi {
     }
 
     /**
+     * 根据部门id获取部门详情
+     * <a href="https://open.dingtalk.com/document/orgapp/query-department-details0-v2">...</a>
+     */
+    public ApiResult<JSONObject> getDeptInfo(Integer deptId) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getDeptInfo(accessTokenResult.getData(), deptId);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 根据部门id获得用户列表
      * <a href="https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user">...</a>
      */
-    public static ApiResult<JSONObject> getUserListByDeptId(String accessToken, JSONObject formBody) {
+    public ApiResult<JSONObject> getUserListByDeptId(String accessToken, JSONObject formBody) {
         ApiResult<JSONObject> apiResult = ApiResult.of();
         if (StrUtil.hasBlank(accessToken)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -523,11 +821,27 @@ public class DingTalkApi {
     }
 
     /**
+     * 根据部门id获得用户列表
+     * <a href="https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user">...</a>
+     */
+    public ApiResult<JSONObject> getUserListByDeptId(JSONObject formBody) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getUserListByDeptId(accessTokenResult.getData(), formBody);
+        } else {
+            ApiResult<JSONObject> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 获得所有的部门id,钉钉sb接口不能一次性获取所有部门,也不支持级联获取。
      * 使用triple封装结果，避免异常的丢失，返回结果参考Result,分别是success、msg、deptIdList
      * <a href="https://open.dingtalk.com/document/orgapp/obtain-a-sub-department-id-list-v2">...</a>
      */
-    public static ApiResult<List<Integer>> getAllDeptIdList(String accessToken) {
+    public ApiResult<List<Integer>> getAllDeptIdList(String accessToken) {
         ApiResult<List<Integer>> apiResult = new ApiResult<List<Integer>>().success(); // 默认是success
         if (StrUtil.hasBlank(accessToken)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -559,9 +873,26 @@ public class DingTalkApi {
     }
 
     /**
+     * 获得所有的部门id,钉钉sb接口不能一次性获取所有部门,也不支持级联获取。
+     * 使用triple封装结果，避免异常的丢失，返回结果参考Result,分别是success、msg、deptIdList
+     * <a href="https://open.dingtalk.com/document/orgapp/obtain-a-sub-department-id-list-v2">...</a>
+     */
+    public ApiResult<List<Integer>> getAllDeptIdList() {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getAllDeptIdList(accessTokenResult.getData());
+        } else {
+            ApiResult<List<Integer>> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 获得所有的部门信息,逻辑同getAllDeptIdList
      */
-    public static ApiResult<List<JSONObject>> getAllDeptListList(String accessToken) {
+    public ApiResult<List<JSONObject>> getAllDeptListList(String accessToken) {
         ApiResult<List<JSONObject>> apiResult = new ApiResult<List<JSONObject>>().success(); // 默认是success
         if (StrUtil.hasBlank(accessToken)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -593,11 +924,26 @@ public class DingTalkApi {
     }
 
     /**
+     * 获得所有的部门信息,逻辑同getAllDeptIdList
+     */
+    public ApiResult<List<JSONObject>> getAllDeptListList() {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getAllDeptListList(accessTokenResult.getData());
+        } else {
+            ApiResult<List<JSONObject>> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
+    }
+
+    /**
      * 获得部门下所有用户列表，钉钉sb接口,用户挂在根部门上
      * 使用triple封装结果，避免异常的丢失
      * <a href="https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user">...</a>
      */
-    public static ApiResult<List<JSONObject>> getUserListByDeptIds(String accessToken, List<Integer> deptIds) {
+    public ApiResult<List<JSONObject>> getUserListByDeptIds(String accessToken, List<Integer> deptIds) {
         ApiResult<List<JSONObject>> apiResult = new ApiResult<List<JSONObject>>().success(); // 默认是success
         if (StrUtil.hasBlank(accessToken) || CollUtil.isEmpty(deptIds)) {
             return apiResult.error(ApiResult.ERROR_CODE_PARAMS, "参数不能为空");
@@ -623,6 +969,23 @@ public class DingTalkApi {
             }
         });
         return apiResult.setData(CollUtil.distinct(userList, (Function<JSONObject, Object>) entries -> entries.getStr("userid"), true));
+    }
+
+    /**
+     * 获得部门下所有用户列表，钉钉sb接口,用户挂在根部门上
+     * 使用triple封装结果，避免异常的丢失
+     * <a href="https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user">...</a>
+     */
+    public ApiResult<List<JSONObject>> getUserListByDeptIds(List<Integer> deptIds) {
+        // 先获得accessToken
+        ApiResult<String> accessTokenResult = getOauth2AccessToken(false);
+        if (accessTokenResult.isSuccess()) {
+            return getUserListByDeptIds(accessTokenResult.getData(), deptIds);
+        } else {
+            ApiResult<List<JSONObject>> apiResult = ApiResult.of();
+            apiResult.copy(accessTokenResult);
+            return apiResult;
+        }
     }
 
 }

@@ -4,9 +4,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.pojo.ApiResult;
-import com.nb6868.onex.common.Const;
+import com.nb6868.onex.common.util.BaseApi;
 import com.nb6868.onex.common.util.DingTalkApi;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
@@ -49,18 +50,16 @@ public class DingtalkNotifyMailService extends AbstractMailService {
         mailLog.setValidEndTime(validTimeLimit <= 0 ? DateUtil.offsetMonth(DateUtil.date(), 99 * 12) : DateUtil.offsetSecond(DateUtil.date(), validTimeLimit));
         mailLogService.save(mailLog);
 
-        ApiResult<String> accessTokenResult = DingTalkApi.getOauth2AccessToken(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), false);
-        if (accessTokenResult.isSuccess()) {
-            ApiResult<JSONObject> sendResult = DingTalkApi.sendNotifyMsg(accessTokenResult.getData(), params);
-            mailLog.setState(sendResult.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.getCode() : MsgConst.MailSendStateEnum.FAIL.getCode());
-            mailLog.setResult(sendResult.getCodeMsg());
-            mailLogService.updateById(mailLog);
-            return sendResult.isSuccess();
-        } else {
-            mailLog.setState(MsgConst.MailSendStateEnum.FAIL.getCode());
-            mailLog.setResult(accessTokenResult.getCodeMsg());
-            return false;
-        }
+        // 实例化dingtalk接口
+        DingTalkApi dingTalkApi = DingTalkApi.of(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"))
+                .setBaseUrl(mailTpl.getParams().getStr("BaseUrl"))
+                .setBaseUrlV2(mailTpl.getParams().getStr("BaseUrlV2"))
+                .setProxy(BaseApi.getProxy(mailTpl.getParams().getJSONObject("Proxy")));
+        ApiResult<JSONObject> sendResult = dingTalkApi.sendNotifyMsg(params);
+        mailLog.setState(sendResult.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.getCode() : MsgConst.MailSendStateEnum.FAIL.getCode());
+        mailLog.setResult(sendResult.getCodeMsg());
+        mailLogService.updateById(mailLog);
+        return sendResult.isSuccess();
     }
 
 }
