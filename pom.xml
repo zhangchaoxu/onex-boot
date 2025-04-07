@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>4.4.72</version>
+    <version>4.4.74</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -72,7 +72,7 @@
         <!-- libs -->
         <shiro.version>2.0.2</shiro.version>
         <poi.version>5.4.0</poi.version>
-        <onex.version>4.4.72</onex.version>
+        <onex.version>4.4.74</onex.version>
     </properties>
 
     <dependencies>
