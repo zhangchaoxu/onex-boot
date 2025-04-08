@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * mybatis-plus 基础 配置
- * see {https://baomidou.com/guide/interceptor.html}
+ * see {<a href="https://baomidou.com/guide/interceptor.html">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -46,17 +46,15 @@ public abstract class BaseMybatisPlusConfig {
      * 初始化动态表名拦截器
      */
     protected InnerInterceptor initDynamicTableNameInnerInterceptor() {
-        DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
-        dynamicTableNameInnerInterceptor.setTableNameHandler((sql, tableName) -> {
+        return new DynamicTableNameInnerInterceptor((sql, tableName) -> {
             switch (tableName) {
-                /*case xx:
-                    String batch_code = DynamicTableParamHelper.getParamData("batch_code", String.class);
-                    return tableName + "_" + batch_code;*/
+            /*case xx:
+                String batch_code = DynamicTableParamHelper.getParamData("batch_code", String.class);
+                return tableName + "_" + batch_code;*/
                 default:
                     return tableName;
             }
         });
-        return dynamicTableNameInnerInterceptor;
     }
 
     /**
