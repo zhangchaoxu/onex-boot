@@ -6,13 +6,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.slf4j.MDC;
 
 import java.io.Serializable;
 import java.time.Instant;
 
 /**
  * API 返回结果
- * 参考 {https://gitee.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/api/R.java}
+ * 参考 {<a href="https://gitee.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/api/R.java">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -34,6 +35,9 @@ public class Result<T> implements Serializable {
 
     @Schema(description = "消息Unix时间戳")
     private Long time = Instant.now().toEpochMilli();
+
+    @Schema(description = "链路id")
+    private String traceId = MDC.get("traceId");
 
     public boolean isSuccess() {
         return code == ErrorCode.SUCCESS;
