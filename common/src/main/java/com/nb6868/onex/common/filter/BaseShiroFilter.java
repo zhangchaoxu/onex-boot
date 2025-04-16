@@ -12,6 +12,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
+@Slf4j
 public abstract class BaseShiroFilter extends AuthenticatingFilter {
 
     @Override
@@ -38,6 +40,8 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
             subject.login(token);
             return onLoginSuccess(token, subject, request, response);
         } catch (AuthenticationException e) {
+            // 什么时候会出现?
+            log.error("shiro login error", e);
             return onLoginFailure(token, e, request, response);
         }
     }
@@ -76,7 +80,7 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
         // 处理登录失败的异常
         Result<?> result = new Result<>().error(ErrorCode.UNAUTHORIZED);
         if (ObjUtil.isNotNull(e)) {
-            String errorMsg = ExceptionUtil.getSimpleMessage(e);
+            String errorMsg = ExceptionUtil.getMessage(e); // getSimpleMessage
             if (StrUtil.isNotBlank(errorMsg)) {
                 result.setMsg(errorMsg);
             }
