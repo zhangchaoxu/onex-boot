@@ -37,12 +37,17 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
         }
         try {
             Subject subject = getSubject(request, response);
+            // 尝试登录,login方法最终交由Realm中doGetAuthenticationInfo进行认证
             subject.login(token);
             return onLoginSuccess(token, subject, request, response);
-        } catch (AuthenticationException e) {
-            // 什么时候会出现?
-            log.error("shiro login error", e);
-            return onLoginFailure(token, e, request, response);
+        } catch (AuthenticationException ae) {
+            // 在doGetAuthenticationInfo->doGetAuthorizationInfo过长中出现的异常，会在这里捕捉到
+            // 比如主动抛出的new AuthenticationException("登录信息已失效,请重新登录...")
+            // 比如数据库查询shiroDao.getUserTokenByToken(token)过程出现的其它异常信息
+            // 妈了个蛋，在AbstractAuthenticator对所有异常都封装成了AuthenticationException
+            // 因此需要对AuthenticationException做解构判断(放到responseUnauthorized处理)
+            log.error("shiro login exception", ae);
+            return onLoginFailure(token, ae, request, response);
         }
     }
 
@@ -68,23 +73,36 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
     }
 
     /**
-     * 响应未授权
+     * 响应未授权,处理此Filter中的禁止通行的情况
      */
     @SneakyThrows
     @SuppressWarnings("deprecation")
-    protected void responseUnauthorized(ServletRequest request, ServletResponse response, Exception e) {
+    protected void responseUnauthorized(ServletRequest request, ServletResponse response, AuthenticationException e) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
         httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, ((HttpServletRequest) request).getHeader(HttpHeaders.ORIGIN));
         // 处理登录失败的异常
-        Result<?> result = new Result<>().error(ErrorCode.UNAUTHORIZED);
-        if (ObjUtil.isNotNull(e)) {
-            String errorMsg = ExceptionUtil.getMessage(e); // getSimpleMessage
+        // 正常的AuthenticationException不带有cause
+        Result<?> result;
+        if (ObjUtil.isNotNull(e) && ObjUtil.isNotNull(e.getCause())) {
+            // 带有cause的实际是内部异常,而不是授权失败
+            result = new Result<>().error(ErrorCode.INTERNAL_SERVER_ERROR);
+            String errorMsg = ExceptionUtil.getSimpleMessage(e.getCause());
             if (StrUtil.isNotBlank(errorMsg)) {
                 result.setMsg(errorMsg);
             }
+        } else {
+            // 不带有cause的才是真正的授权异常
+            result = new Result<>().error(ErrorCode.UNAUTHORIZED);
+            if (ObjUtil.isNotNull(e)) {
+                String errorMsg = ExceptionUtil.getSimpleMessage(e);
+                if (StrUtil.isNotBlank(errorMsg)) {
+                    result.setMsg(errorMsg);
+                }
+            }
         }
+
         httpResponse.getWriter().print(JacksonUtils.pojoToJson(result));
     }
 
