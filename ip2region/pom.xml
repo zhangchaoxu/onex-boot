@@ -8,13 +8,16 @@
         <version>4.4.86</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tunnel</artifactId>
+    <artifactId>ip2region</artifactId>
     <packaging>jar</packaging>
-    <description>隧道</description>
+    <description>IP转位置</description>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
+        <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
+        <!-- version -->
+        <ip2region.version>2.7.0</ip2region.version>
     </properties>
 
     <dependencies>
@@ -24,6 +27,12 @@
             <artifactId>common</artifactId>
             <version>${onex.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- ip2region -->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+            <version>${ip2region.version}</version>
         </dependency>
     </dependencies>
 

@@ -14,6 +14,7 @@ import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.HttpContextUtils;
+import com.nb6868.onex.common.util.IpRegionUtil;
 import com.nb6868.onex.common.util.JacksonUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -136,8 +137,10 @@ public class LogOperationAspect {
         if (null != request) {
             logEntity.setUri(request.getRequestURI());
             logEntity.setRequestIp(HttpContextUtils.getIpAddr(request));
-            // 对ip所在位置做处理
-            logEntity.setRequestUa(request.getHeader(HttpHeaders.USER_AGENT));
+            // 对ip所在位置做处理,限制长度
+            logEntity.setRequestIpRegion(StrUtil.sub(IpRegionUtil.getRegion(logEntity.getRequestIp()), 0, 200));
+            // 对ua做处理，限制长度300
+            logEntity.setRequestUa(StrUtil.sub(request.getHeader(HttpHeaders.USER_AGENT), 0, 300));
             JSONObject requestParams = new JSONObject();
             requestParams.set("queryString", request.getQueryString());
             requestParams.set("url", request.getRequestURL());
