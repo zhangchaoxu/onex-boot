@@ -46,7 +46,7 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
             // 比如数据库查询shiroDao.getUserTokenByToken(token)过程出现的其它异常信息
             // 妈了个蛋，在AbstractAuthenticator对所有异常都封装成了AuthenticationException
             // 因此需要对AuthenticationException做解构判断(放到responseUnauthorized处理)
-            log.error("shiro login exception", ae);
+            // log.error("shiro login exception", ae);
             return onLoginFailure(token, ae, request, response);
         }
     }
@@ -92,6 +92,7 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
             if (StrUtil.isNotBlank(errorMsg)) {
                 result.setMsg(errorMsg);
             }
+            log.error("shiro login exception", e.getCause());
         } else {
             // 不带有cause的才是真正的授权异常
             result = new Result<>().error(ErrorCode.UNAUTHORIZED);
@@ -101,6 +102,7 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
                     result.setMsg(errorMsg);
                 }
             }
+            log.error("shiro login reject: {}", result.getMsg());
         }
 
         httpResponse.getWriter().print(JacksonUtils.pojoToJson(result));
