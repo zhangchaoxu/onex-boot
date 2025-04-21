@@ -36,8 +36,8 @@ public class Result<T> implements Serializable {
     @Schema(description = "消息Unix时间戳")
     private Long time = Instant.now().toEpochMilli();
 
-    @Schema(description = "链路id")
-    private String traceId = MDC.get("traceId");
+    // @Schema(description = "链路id")
+    // private String traceId = MDC.get("traceId");
 
     public boolean isSuccess() {
         return code == ErrorCode.SUCCESS;

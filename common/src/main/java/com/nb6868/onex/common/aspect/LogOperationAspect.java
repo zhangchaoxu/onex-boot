@@ -24,6 +24,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -50,6 +51,9 @@ public class LogOperationAspect {
 
     @Autowired
     BaseLogService logService;
+    // 环境变量，是否将ip转换为区域
+    @Value("${onex.log.ip2region:false}")
+    private boolean logIp2Region;
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.LogOperation)")
     public void pointcut() {
@@ -138,7 +142,7 @@ public class LogOperationAspect {
             logEntity.setUri(request.getRequestURI());
             logEntity.setRequestIp(HttpContextUtils.getIpAddr(request));
             // 对ip所在位置做处理,限制长度
-            logEntity.setRequestIpRegion(StrUtil.sub(IpRegionUtil.getRegion(logEntity.getRequestIp()), 0, 200));
+            logEntity.setRequestIpRegion(logIp2Region ? StrUtil.sub(IpRegionUtil.getRegion(logEntity.getRequestIp()), 0, 200) : null);
             // 对ua做处理，限制长度300
             logEntity.setRequestUa(StrUtil.sub(request.getHeader(HttpHeaders.USER_AGENT), 0, 300));
             JSONObject requestParams = new JSONObject();

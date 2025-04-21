@@ -16,6 +16,9 @@ import java.io.IOException;
 
 /**
  * 初初始化ip工具类
+ * 使用方法，在application中
+ * // 添加 日志监听器，使 log4j2-spring.xml 可以间接读取到配置文件的属性
+ * application.addListeners(new Ip2RegionListener());
  *
  * @author 1024创新实验室: zhuoda
  */
@@ -25,7 +28,7 @@ public class Ip2RegionListener implements ApplicationListener<ApplicationEnviron
 
     private static final String IP_FILE_NAME = "ip2region.xdb";
 
-    private static final String LOG_DIRECTORY = "project.log-directory";
+    private static final String LOG_DIRECTORY = "onex.log.ip2region.path";
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent applicationEvent) {
@@ -40,7 +43,7 @@ public class Ip2RegionListener implements ApplicationListener<ApplicationEnviron
         if (!logDirectoryFile.exists()) {
             logDirectoryFile.mkdirs();
         }
-        String tempFilePath = null;
+        String tempFilePath;
         if (logDirectoryPath.endsWith("/")) {
             tempFilePath = logDirectoryPath + IP_FILE_NAME;
         } else {
@@ -52,7 +55,7 @@ public class Ip2RegionListener implements ApplicationListener<ApplicationEnviron
             // 2、初始化
             IpRegionUtil.init(tempFilePath);
         } catch (IOException e) {
-            log.error("无法复制ip数据文件 ip2region.xdb", e);
+            log.error("无法复制ip数据文件ip2region.xdb", e);
             throw new ExceptionInInitializerError("无法复制ip数据文件");
         } finally {
             FileUtil.del(tempFile);

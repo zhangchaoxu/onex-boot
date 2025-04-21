@@ -165,6 +165,11 @@ onex:
     enable: false
     # 存储方式
     type: db
+    # ip转区域
+    ip2region:
+      enable: false
+      # 路径
+      path: ./onex-oss/ip2region/
   # 数据查询过滤
   data-query-filter:
     enable: false
