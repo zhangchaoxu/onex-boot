@@ -8,7 +8,11 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.lang.tree.parser.NodeParser;
 import cn.hutool.core.map.MapUtil;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * 树结构工具
@@ -34,6 +38,7 @@ public class TreeNodeUtils {
      */
     public static TreeNodeConfig getIdTreeNodeConfig() {
         return new TreeNodeConfig()
+                .setIdKey("id")
                 .setParentIdKey("pid")
                 .setWeightKey("sort");
     }
@@ -69,18 +74,111 @@ public class TreeNodeUtils {
      * 构建CODE格式的树结构
      */
     public static List<Tree<String>> buildCodeTree(List<TreeNode<String>> list, String rootNode) {
+        if (CollUtil.isEmpty(list)) {
+            return CollUtil.newArrayList();
+        }
         return TreeUtil.build(CollUtil.emptyIfNull(list), rootNode, getCodeTreeNodeConfig(), defaultNodeParser());
     }
 
     /**
-     * 构建编码格式的树结构
+     * 构建CODE格式的树结构,自动计算RootId
+     * rootId计算办法：使用集合获取id与parentId的交集，再从parentId中去除交集，剩下的作为rootId
+     * 每个rootId分别构建，最后添加到同一个集合中。
+     * <a href="https://github.com/chinabugotech/hutool/issues/3856">参考</a>
+     */
+    public static List<Tree<String>> buildCodeTreeAutoRoot(List<TreeNode<String>> list) {
+        if (CollUtil.isEmpty(list)) {
+            return CollUtil.newArrayList();
+        }
+        // 从list中提取id和pid的set
+        Set<String> idList = new HashSet<>();
+        Set<String> pidList = new HashSet<>();
+        list.forEach(treeNode -> {
+            if (null != treeNode.getId()) {
+                idList.add(treeNode.getId());
+            }
+            if (null != treeNode.getParentId()) {
+                pidList.add(treeNode.getParentId());
+            }
+        });
+        // 去重后的交集
+        Set<String> distinctIds = CollUtil.intersectionDistinct(idList, pidList);
+        // 从parentId中去除交集,剩下的应该是rootId
+        List<String> subtractIds = CollUtil.subtractToList(pidList, distinctIds);
+        if (CollUtil.isEmpty(subtractIds)) {
+            // 没有根节点
+            return CollUtil.newArrayList();
+        } else if (subtractIds.size() == 1) {
+            // 只有1个根节点
+            return buildCodeTree(list, subtractIds.get(0));
+        } else {
+            // 存在多个根节点,根节点数据有吗?
+            List<Tree<String>> resultList = new ArrayList<>();
+            subtractIds.forEach(aLong -> {
+                // 构建树结构
+                resultList.addAll(buildCodeTree(list, aLong));
+            });
+            return resultList;
+        }
+    }
+
+    /**
+     * 构建ID格式的树结构
      */
     public static List<Tree<Long>> buildIdTree(List<TreeNode<Long>> list) {
         return buildIdTree(list, ROOT_ID);
     }
 
+    /**
+     * 构建ID格式的树结构
+     */
     public static List<Tree<Long>> buildIdTree(List<TreeNode<Long>> list, Long rootNode) {
+        if (CollUtil.isEmpty(list)) {
+            return CollUtil.newArrayList();
+        }
         return TreeUtil.build(CollUtil.emptyIfNull(list), rootNode, getIdTreeNodeConfig(), defaultNodeParser());
+    }
+
+    /**
+     * 构建ID格式的树结构,自动计算RootId
+     * rootId计算办法：使用集合获取id与parentId的交集，再从parentId中去除交集，剩下的作为rootId
+     * 每个rootId分别构建，最后添加到同一个集合中。
+     * <a href="https://github.com/chinabugotech/hutool/issues/3856">参考</a>
+     */
+    public static List<Tree<Long>> buildIdTreeAutoRoot(List<TreeNode<Long>> list) {
+        if (CollUtil.isEmpty(list)) {
+            return CollUtil.newArrayList();
+        }
+        // 从list中提取id和pid的set
+        Set<Long> idList = new HashSet<>();
+        Set<Long> pidList = new HashSet<>();
+        list.forEach(treeNode -> {
+            if (null != treeNode.getId()) {
+                idList.add(treeNode.getId());
+            }
+            if (null != treeNode.getParentId()) {
+                pidList.add(treeNode.getParentId());
+            }
+        });
+        // 去重后的交集
+        Set<Long> distinctIds = CollUtil.intersectionDistinct(idList, pidList);
+        // 从parentId中去除交集,剩下的应该是rootId
+        List<Long> subtractIds = CollUtil.subtractToList(pidList, distinctIds);
+        if (CollUtil.isEmpty(subtractIds)) {
+            // 没有根节点
+            return CollUtil.newArrayList();
+        } else if (subtractIds.size() == 1) {
+            // 只有1个根节点
+            return buildIdTree(list, subtractIds.get(0));
+        } else {
+            // 存在多个根节点,根节点数据有吗?
+            List<Tree<Long>> resultList = new ArrayList<>();
+            subtractIds.forEach(aLong -> {
+                // 构建树结构
+                resultList.addAll(buildIdTree(list, aLong));
+            });
+            return resultList;
+        }
     }
 
 }

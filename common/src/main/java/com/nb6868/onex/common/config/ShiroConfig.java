@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Shiro配置
+ * <a href="https://shiro.apache.org/spring-boot.html">Integrating Apache Shiro into Spring-Boot Applications</a>
  *
  * @author Charles zhangchaoxu@gmail.com
  */
