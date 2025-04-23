@@ -52,7 +52,7 @@ public class LogOperationAspect {
     @Autowired
     BaseLogService logService;
     // 环境变量，是否将ip转换为区域
-    @Value("${onex.log.ip2region:false}")
+    @Value("${onex.log.ip2region.enable:false}")
     private boolean logIp2Region;
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.LogOperation)")
