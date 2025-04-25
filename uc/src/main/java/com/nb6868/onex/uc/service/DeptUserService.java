@@ -97,7 +97,8 @@ public class DeptUserService extends EntityService<DeptUserDao, DeptUserEntity> 
                 }
             });
             // 删除非指定范围内的其它的关系
-            remove(lambdaQuery().eq(DeptUserEntity::getDeptId, deptId)
+            remove(lambdaQuery()
+                    .eq(DeptUserEntity::getDeptId, deptId)
                     .notIn(userIds.size() > 1, DeptUserEntity::getUserId, userIds)
                     .ne(userIds.size() == 1, DeptUserEntity::getUserId, userIds.get(0))
                     .eq(DeptUserEntity::getType, type)

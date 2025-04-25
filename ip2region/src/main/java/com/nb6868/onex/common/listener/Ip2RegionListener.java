@@ -26,8 +26,9 @@ import java.io.IOException;
 @Slf4j
 public class Ip2RegionListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
+    // 默认文件名称
     private static final String IP_FILE_NAME = "ip2region.xdb";
-
+    // 路径配置
     private static final String LOG_DIRECTORY = "onex.log.ip2region.path";
 
     @Override
@@ -58,6 +59,7 @@ public class Ip2RegionListener implements ApplicationListener<ApplicationEnviron
             log.error("无法复制ip数据文件ip2region.xdb", e);
             throw new ExceptionInInitializerError("无法复制ip数据文件");
         } finally {
+            // 为什么要删除这个文件
             FileUtil.del(tempFile);
         }
     }

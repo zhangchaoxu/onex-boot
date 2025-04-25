@@ -56,7 +56,8 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
                 }
             });
             // 删除非指定范围内的其它的关系
-            remove(lambdaQuery().eq(RoleUserEntity::getUserId, userId)
+            remove(lambdaQuery()
+                    .eq(RoleUserEntity::getUserId, userId)
                     .notIn(roleIds.size() > 1, RoleUserEntity::getRoleId, roleIds)
                     .ne(roleIds.size() == 1, RoleUserEntity::getRoleId, roleIds.get(0))
                     .eq(RoleUserEntity::getType, type)
@@ -75,7 +76,7 @@ public class RoleUserService extends EntityService<RoleUserDao, RoleUserEntity> 
     public boolean updateByRoleIdAndUserIds(Long roleId, List<Long> userIds, Integer type) {
         AssertUtils.isFalse(roleService.hasIdRecord(roleId), "角色ID不存在");
         if (CollUtil.isEmpty(userIds)) {
-            // 删除部门所有该类型关系
+            // 删除该角色所有该类型关系
             remove(lambdaQuery().eq(RoleUserEntity::getRoleId, roleId).eq(RoleUserEntity::getType, type).getWrapper());
         } else {
             // 判断传入的用户是否存在
