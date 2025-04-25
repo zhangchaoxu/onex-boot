@@ -27,7 +27,7 @@ public class SystemController {
 
     @PostMapping("info")
     @Operation(summary = "系统信息")
-    @AccessControl(value = "/info", allowTokenName = "token-tunnel")
+    @AccessControl(value = "info", allowTokenName = "token-tunnel")
     public Result<?> info(@Validated @RequestBody BaseReq req) {
         Dict result = Dict.create()
                 .set("sysTime", DateUtil.now())
@@ -48,31 +48,30 @@ public class SystemController {
         return new Result<>().success(result);
     }
 
-
     @PostMapping("prop")
     @Operation(summary = "系统参数属性")
-    @AccessControl(value = "/prop", allowTokenName = "token-tunnel")
-    public Result<?> prop(@Validated @RequestBody SystemPropReq form) {
+    @AccessControl(value = "prop", allowTokenName = "token-tunnel")
+    public Result<?> prop(@Validated @RequestBody SystemPropReq req) {
         try {
-            String propValue = SystemUtil.get(form.getName(), form.isQuiet());
-            Dict result = Dict.create().set("quite", form.isQuiet()).set("name", form.getName()).set("value", propValue);
+            String propValue = SystemUtil.get(req.getName(), req.isQuiet());
+            Dict result = Dict.create().set("quite", req.isQuiet()).set("name", req.getName()).set("value", propValue);
             return new Result<>().success(result);
         } catch (Exception e) {
-            log.error("读取参数[" + form.getName() + "]失败", e);
+            log.error("读取参数[{}]失败", req.getName(), e);
             return new Result<>().error(e.getMessage());
         }
     }
 
     @PostMapping("runtime")
     @Operation(summary = "命令行")
-    @AccessControl(value = "/runtime", allowTokenName = "token-tunnel")
-    public Result<?> runtime(@Validated @RequestBody RuntimeExecCmdReq form) {
+    @AccessControl(value = "runtime", allowTokenName = "token-tunnel")
+    public Result<?> runtime(@Validated @RequestBody RuntimeExecCmdReq req) {
         try {
-            String runResult = RuntimeUtil.execForStr(form.getCmd());
-            Dict result = Dict.create().set("cmd", form.getCmd()).set("runResult", runResult);
+            String runResult = RuntimeUtil.execForStr(req.getCmd());
+            Dict result = Dict.create().set("cmd", req.getCmd()).set("runResult", runResult);
             return new Result<>().success(result);
         } catch (Exception e) {
-            log.error("执行命令[" + form.getCmd() + "]失败", e);
+            log.error("执行命令[{}]失败", req.getCmd(), e);
             return new Result<>().error(e.getMessage());
         }
     }
