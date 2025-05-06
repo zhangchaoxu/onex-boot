@@ -62,10 +62,11 @@ public class ExcelExportUtils {
     /**
      * 格式化列显示内容
      *
-     * @param bean   实体bean
-     * @param column 列定义
+     * @param bean               实体bean
+     * @param column             列定义
+     * @param cellFormatFunction cell格式化方法
      */
-    public static Object formatColumnValue(ExcelWriter excelWriter, Object bean, ExcelExportParams.ColumnParams column, int index, Function<Dict, String> function) {
+    public static Object formatColumnValue(ExcelWriter excelWriter, Object bean, ExcelExportParams.ColumnParams column, int index, Function<Dict, String> cellFormatFunction) {
         String fmt = column.getFmt();
         try {
             if (StrUtil.isBlank(fmt)) {
@@ -94,15 +95,15 @@ public class ExcelExportUtils {
                     // 反射,执行invokeMethod 若空，则执行getProperty
                     String invokeMethod = StrUtil.emptyToDefault(column.getInvokeMethod(), "get" + StrUtil.upperFirst(column.getProperty()));
                     pValue = ReflectUtil.invoke(bean, invokeMethod);
-                }  else if ("index".equalsIgnoreCase(fmt)) {
+                } else if ("index".equalsIgnoreCase(fmt)) {
                     // 序号
                     pValue = String.valueOf(index);
                 } else if ("enum".equalsIgnoreCase(fmt)) {
                     // 枚举
                     Object pObject = BeanUtil.getProperty(bean, column.getProperty());
                     return column.getEnmuMap().get(pObject.toString());
-                } else if (function != null) {
-                    pValue = function.apply(Dict.create().set("bean", bean).set("column", column));
+                } else if (cellFormatFunction != null) {
+                    pValue = cellFormatFunction.apply(Dict.create().set("bean", bean).set("column", column));
                 }
                 if (column.isLink()) {
                     // 链接
@@ -125,36 +126,53 @@ public class ExcelExportUtils {
      * bean export with params
      */
     @SuppressWarnings("unchecked")
-    public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams, Function<Dict, String> function, Function<ExcelWriter, ExcelWriter> writerFunction) {
+    public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams) {
+        return beanListExport(beanList, excelExportParams, null, null, null);
+    }
+
+    public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams, Function<Dict, String> cellFormatFunction, Function<ExcelWriter, ExcelWriter> beforeWriterFunction, Function<ExcelWriter, ExcelWriter> afterWriterFunction) {
         String fileName = OssLocalUtils.fmtXlsxFileName(excelExportParams.getFolderName(), excelExportParams.getFileName());
         BigExcelWriter writer = ExcelUtil.getBigWriter(getFileStoragePath(fileName));
+        int columnSize = 0;// 列数
         // 处理数据
         List<Map<String, Object>> mapList;
         if ("raw".equalsIgnoreCase(excelExportParams.getRenderType())) {
             mapList = (List<Map<String, Object>>) beanList;
+            if (!mapList.isEmpty()) {
+                columnSize = mapList.get(0).size();
+            }
         } else {
             mapList = new ArrayList<>();
             beanList.forEach(bean -> {
                 Map<String, Object> row = new LinkedHashMap<>();
                 excelExportParams.getColumns().forEach(columnParams -> {
                     // 按行插入内容
-                    row.put(columnParams.getTitle(), formatColumnValue(writer, bean, columnParams, mapList.size() + 1, function));
+                    row.put(columnParams.getTitle(), formatColumnValue(writer, bean, columnParams, mapList.size() + 1, cellFormatFunction));
                 });
                 mapList.add(row);
             });
             // 设置宽度
             for (int i = 0; i < excelExportParams.getColumns().size(); i++) {
-                int width =  excelExportParams.getColumns().get(i).getWidth();
+                int width = excelExportParams.getColumns().get(i).getWidth();
                 if (width > 0) {
                     writer.setColumnWidth(i, width);
                 }
             }
+            columnSize = excelExportParams.getColumns().size();
+        }
+        // 设置样式,在写入数据之前
+        if (StrUtil.isNotBlank(excelExportParams.getHeaderTitle()) && columnSize > 0) {
+            // 合并单元格后的标题行，使用默认标题样式
+            writer.merge(columnSize - 1, excelExportParams.getHeaderTitle());
+        }
+        if (null != beforeWriterFunction) {
+            beforeWriterFunction.apply(writer);
         }
         // 一次性写出内容，使用默认样式，强制输出标题
         writer.write(mapList, true);
         // 设置样式,在写入数据之后
-        if (null != writerFunction) {
-            writerFunction.apply(writer);
+        if (null != afterWriterFunction) {
+            afterWriterFunction.apply(writer);
         }
         // 设置行高,需要在write后，
         if (excelExportParams.getHeaderHeight() > 0 && writer.getRowCount() > 0) {
@@ -172,6 +190,7 @@ public class ExcelExportUtils {
 
     /**
      * 获得文件存储路径
+     *
      * @param fileName 文件名称
      */
     public static String getFileStoragePath(String fileName) {
@@ -180,6 +199,7 @@ public class ExcelExportUtils {
 
     /**
      * 获得文件请求路径
+     *
      * @param fileName 文件名称
      */
     public static String getFileRequestPath(String fileName) {

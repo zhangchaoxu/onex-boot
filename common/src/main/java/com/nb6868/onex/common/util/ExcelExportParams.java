@@ -31,6 +31,9 @@ public class ExcelExportParams {
     @Schema(description = "渲染方式")
     private String renderType;
 
+    @Schema(description = "表头大标题")
+    private String headerTitle;
+
     @Schema(description = "表头高度")
     private int headerHeight;
 
