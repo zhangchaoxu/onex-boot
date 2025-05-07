@@ -25,8 +25,7 @@ import java.util.Objects;
 /**
  * 基础服务实现类
  * 泛型：M 是 mapper 对象，T 是实体 ， PK 是主键泛型
- * see {https://gitee.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/impl/ServiceImpl.java}
- * see {https://mybatis.plus/guide/crud-interface.html#service-crud-%E6%8E%A5%E5%8F%A3}
+ * see {<a href="https://mybatis.plus/guide/crud-interface.html#service-crud-%E6%8E%A5%E5%8F%A3">...</a>}
  * <p>
  * 进一步封装 CRUD
  * 采用 get 查询单行 remove 删除 list 查询集合 page 分页
