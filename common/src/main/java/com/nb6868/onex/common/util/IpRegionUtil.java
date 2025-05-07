@@ -3,6 +3,7 @@ package com.nb6868.onex.common.util;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
+import org.springframework.core.io.ClassPathResource;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -14,6 +15,7 @@ import java.util.List;
 
 /**
  * IP工具类
+ * see <a href="https://github.com/lionsoul2014/ip2region/tree/master/binding/java">...</a>
  *
  * @author 1024创新实验室-主任:卓大
  */
@@ -27,7 +29,9 @@ public class IpRegionUtil {
      */
     public static void init(String filePath) {
         try {
+            // 缓存整个 xdb 数据,从dbPath加载整个 xdb 到内存
             byte[] cBuff = Searcher.loadContentFromFile(filePath);
+            // 使用上述的 cBuff 创建一个完全基于内存的查询对象
             IP_SEARCHER = Searcher.newWithBuffer(cBuff);
         } catch (Throwable e) {
             log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);
@@ -67,16 +71,16 @@ public class IpRegionUtil {
      */
     public static String getRegion(String ipStr) {
         if (StrUtil.isBlank(ipStr)) {
-            return "";
+            return null;
         }
         try {
             return IP_SEARCHER.search(ipStr.trim());
         } catch (Exception e) {
             log.error("解析ip地址出错", e);
-            return "";
+            return null;
         } catch (Throwable throwable) {
             log.error("请引入org.lionsoul.ip2region依赖", throwable);
-            return "";
+            return null;
         }
     }
 

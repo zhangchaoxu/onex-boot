@@ -82,7 +82,8 @@ public class OssLocalUtils {
      */
     @PostConstruct
     public void setExcelSXSSFWorkbookTmpPath() {
-        String excelSXSSFWorkbookTmpPath = getOssFileStorageAbsolutePath() + File.separator + "poifiles";
+        String ossPath = getOssFileStorageAbsolutePath();
+        String excelSXSSFWorkbookTmpPath = ossPath + (StrUtil.endWithAnyIgnoreCase(ossPath, "/", "\\") ? "poifiles" : (File.separator + "poifiles"));
         File dir = FileUtil.mkdir(excelSXSSFWorkbookTmpPath);
         TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(dir));
         log.info("setExcelSXSSFWorkbookTmpPath={}", excelSXSSFWorkbookTmpPath);

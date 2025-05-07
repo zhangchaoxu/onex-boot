@@ -168,8 +168,8 @@ onex:
     # ip转区域
     ip2region:
       enable: false
-      # 路径
-      path: ./onex-oss/ip2region/
+      # 路径,如./onex-oss/ip2region/ip2region.xdb
+      path:
   # 数据查询过滤
   data-query-filter:
     enable: false
