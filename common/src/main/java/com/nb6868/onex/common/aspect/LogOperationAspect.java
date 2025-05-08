@@ -3,6 +3,7 @@ package com.nb6868.onex.common.aspect;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -16,6 +17,7 @@ import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.IpRegionUtil;
 import com.nb6868.onex.common.util.JacksonUtils;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,8 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -51,9 +55,36 @@ public class LogOperationAspect {
 
     @Autowired
     BaseLogService logService;
+
     // 环境变量，是否将ip转换为区域
+    private static final String IP_FILE_NAME = "ip2region.xdb";
     @Value("${onex.log.ip2region.enable:false}")
-    private boolean logIp2Region;
+    private boolean logIp2RegionEnable;
+    @Value("${onex.log.ip2region.path}")
+    private String logIp2RegionFilePath;
+
+    @PostConstruct
+    public void init() {
+        log.info("onex.log.ip2region.enable={}", logIp2RegionEnable);
+        if (logIp2RegionEnable) {
+            if (StrUtil.isNotBlank(logIp2RegionFilePath)) {
+                // 从文件读取
+                if (FileUtil.exist(logIp2RegionFilePath) && FileUtil.isFile(logIp2RegionFilePath)) {
+                    TimeInterval timer = DateUtil.timer();
+                    logIp2RegionEnable = IpRegionUtil.initFromFile(logIp2RegionFilePath);
+                    log.info("ip2region init from file {}:{}", logIp2RegionFilePath, timer.intervalPretty());
+                } else {
+                    log.error("ip2region.xdb文件不存在{}", logIp2RegionFilePath);
+                    logIp2RegionEnable = false;
+                }
+            } else {
+                // 从resource读取
+                TimeInterval timer = DateUtil.timer();
+                logIp2RegionEnable = IpRegionUtil.initFromResource(IP_FILE_NAME);
+                log.info("ip2region init from resource {}:{}", IP_FILE_NAME, timer.intervalPretty());
+            }
+        }
+    }
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.LogOperation)")
     public void pointcut() {
@@ -142,7 +173,7 @@ public class LogOperationAspect {
             logEntity.setUri(request.getRequestURI());
             logEntity.setRequestIp(HttpContextUtils.getIpAddr(request));
             // 对ip所在位置做处理,限制长度
-            logEntity.setRequestIpRegion(logIp2Region ? StrUtil.sub(IpRegionUtil.getRegion(logEntity.getRequestIp()), 0, 200) : null);
+            logEntity.setRequestIpRegion(logIp2RegionEnable ? StrUtil.sub(IpRegionUtil.getRegion(logEntity.getRequestIp()), 0, 200) : null);
             // 对ua做处理，限制长度300
             logEntity.setRequestUa(StrUtil.sub(request.getHeader(HttpHeaders.USER_AGENT), 0, 300));
             JSONObject requestParams = new JSONObject();

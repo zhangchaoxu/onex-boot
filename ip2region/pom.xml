@@ -5,12 +5,12 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.4.96</version>
+        <version>4.4.99</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ip2region</artifactId>
     <packaging>jar</packaging>
-    <description>IP转位置</description>
+    <description>离线IP地址定位</description>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -21,13 +21,6 @@
     </properties>
 
     <dependencies>
-        <!-- common -->
-        <dependency>
-            <groupId>com.nb6868.onex</groupId>
-            <artifactId>common</artifactId>
-            <version>${onex.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- ip2region -->
         <dependency>
             <groupId>org.lionsoul</groupId>

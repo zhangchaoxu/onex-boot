@@ -15,7 +15,6 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 @Configuration
 @EnableScheduling
