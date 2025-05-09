@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.4.99</version>
+        <version>4.5.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -30,7 +30,7 @@
         <weixin.version>4.7.0</weixin.version>
         <aliyun-oss.version>3.18.2</aliyun-oss.version>
         <huaweicloud-obs.version>3.25.4</huaweicloud-obs.version>
-        <aws-s3.version>2.31.37</aws-s3.version>
+        <aws-s3.version>2.31.38</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <fastexcel.version>1.2.0</fastexcel.version>
     </properties>
@@ -60,12 +60,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
-        <!-- commons file upload
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>${commons-fileupload.version}</version>
-        </dependency> -->
         <!-- commons io -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -75,18 +69,8 @@
         <!-- druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
             <version>${druid.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun</groupId>
-                    <artifactId>tools</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun</groupId>
-                    <artifactId>jconsole</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- MybatisPlus -->
         <dependency>
@@ -230,7 +214,7 @@
             <version>${aws-s3.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- fastexcel -->
+        <!-- fastexcel(easyexcel) -->
         <dependency>
             <groupId>cn.idev.excel</groupId>
             <artifactId>fastexcel</artifactId>

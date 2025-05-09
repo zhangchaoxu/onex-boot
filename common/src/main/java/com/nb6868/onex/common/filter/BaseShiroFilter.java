@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 基础shiro过滤器
+ * 更多shiro用法见<a href="https://shiro.apache.org/tutorial.html">Apache Shiro Tutorial</a>
  *
  * @author Charles zhangchaoxu@gmail.com
  */
