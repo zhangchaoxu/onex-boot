@@ -216,7 +216,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         AssertUtils.isTrue(req.getType() == UcConst.UserTypeEnum.DEPT_ADMIN.getCode() && StrUtil.isEmpty(req.getDeptCode()), "单位管理员需指定所在单位");
         // AssertUtils.isTrue(user.getDeptId() != null && dto.getDeptId() == null, "需指定所在单位");
         AssertUtils.isTrue(hasDuplicated(req.getId(), "username", req.getUsername()), ErrorCode.ERROR_REQUEST, "用户名已存在");
-        AssertUtils.isTrue(hasDuplicated(req.getId(), "mobile", req.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已存在");
+        //AssertUtils.isTrue(hasDuplicated(req.getId(), "mobile", req.getMobile()), ErrorCode.ERROR_REQUEST, "手机号已存在");
         // 转换数据格式
         UserEntity entity;
         if (req.hasId()) {
@@ -236,7 +236,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         boolean ret = saveOrUpdateById(entity);
         AssertUtils.isFalse(ret, "数据更新保存失败");
         // 保存角色用户关系
-        roleUserService.updateByUserIdAndRoleIds(req.getId(), req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
+        roleUserService.updateByUserIdAndRoleIds(entity.getId(), req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
         return entity;
     }
 

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.5.5</version>
+        <version>4.5.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>coder</artifactId>
@@ -15,8 +15,8 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <druid.version>1.2.23</druid.version>
-        <commons-configuration.version>1.10</commons-configuration.version>
+        <druid.version>1.2.24</druid.version>
+       <!-- <commons-configuration.version>2.12.0</commons-configuration.version>-->
         <hutool.version>5.8.37</hutool.version>
         <velocity.version>2.4.1</velocity.version>
         <commons-collections.version>3.2.2</commons-collections.version>
@@ -37,11 +37,11 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
+        <!--<dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
             <version>${commons-configuration.version}</version>
-        </dependency>
+        </dependency>-->
         <!-- velocity -->
         <dependency>
             <groupId>org.apache.velocity</groupId>

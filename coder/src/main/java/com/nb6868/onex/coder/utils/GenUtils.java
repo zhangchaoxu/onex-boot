@@ -4,12 +4,10 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.db.Entity;
+import cn.hutool.setting.dialect.Props;
 import com.nb6868.onex.coder.entity.CodeGenerateConfig;
 import com.nb6868.onex.coder.entity.ColumnEntity;
 import com.nb6868.onex.coder.entity.TableEntity;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.Template;
@@ -62,7 +60,7 @@ public class GenUtils {
                                      CodeGenerateConfig codeGenerateConfig,
                                      ZipOutputStream zip) {
         //配置信息
-        Configuration config = getConfig();
+        Props config = getConfig();
         boolean hasBigDecimal = false;
         boolean hasJson = false;
         //表信息
@@ -89,7 +87,7 @@ public class GenUtils {
             columnEntity.setAttrname(StringUtils.uncapitalize(attrName));
 
             //列的数据类型，转换成Java类型
-            String attrType = config.getString(columnEntity.getDataType(), "unknowType");
+            String attrType = config.getStr(columnEntity.getDataType(), "unknowType");
             columnEntity.setAttrType(attrType);
             if (!hasBigDecimal && "BigDecimal".equals(attrType)) {
                 hasBigDecimal = true;
@@ -184,12 +182,8 @@ public class GenUtils {
     /**
      * 获取配置信息
      */
-    public static Configuration getConfig() {
-        try {
-            return new PropertiesConfiguration("generator.properties");
-        } catch (ConfigurationException e) {
-            throw new OnexException("获取配置文件失败，", e);
-        }
+    public static Props getConfig() {
+        return new Props("generator.properties");
     }
 
     /**
