@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.5.7</version>
+        <version>4.5.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -117,6 +117,13 @@
             <artifactId>shiro-core</artifactId>
             <classifier>jakarta</classifier>
             <version>${shiro.version}</version>
+            <!-- 排除 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk18on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -171,12 +178,11 @@
             <version>${poi-tl.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- bcprov -->
+        <!-- bcprov 用来支持国密 -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
             <version>${bcprov.version}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- jsoup -->
         <dependency>
