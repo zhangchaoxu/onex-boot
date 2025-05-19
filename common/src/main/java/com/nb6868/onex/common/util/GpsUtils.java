@@ -162,7 +162,7 @@ public class GpsUtils {
      * @param lngLat  经纬度
      * @return true 在多边形区域内，false 在多边形区域外
      */
-    private static boolean pointInPolygon(LngLat[] polygon, LngLat lngLat) {
+    public static boolean pointInPolygon(LngLat[] polygon, LngLat lngLat) {
         int i, j = polygon.length - 1;
         boolean oddNodes = false;
         for (i = 0; i < polygon.length; i++) {
@@ -180,7 +180,6 @@ public class GpsUtils {
         }
         return oddNodes;
     }
-
 
     /**
      * kmeans聚合

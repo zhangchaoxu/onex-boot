@@ -78,8 +78,8 @@ public class UserSaveOrUpdateReq extends BaseIdReq {
     @Schema(description = "租户编码")
     private String tenantCode;
 
-    @Schema(description = "部门链")
-    private List<DeptDTO> deptChain;
+    @Schema(description = "部门ID列表")
+    private List<Long> deptIds;
 
     @Schema(description = "角色名称")
     private String roleNames;

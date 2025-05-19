@@ -237,6 +237,8 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
         AssertUtils.isFalse(ret, "数据更新保存失败");
         // 保存角色用户关系
         roleUserService.updateByUserIdAndRoleIds(entity.getId(), req.getRoleIds(), UcConst.RoleUserTypeEnum.DEFAULT.getCode());
+        // 保存部门用户关系
+        deptUserService.updateByUserIdAndDeptIds(entity.getId(), req.getDeptIds(), UcConst.DeptUserTypeEnum.DEFAULT.getCode());
         return entity;
     }
 

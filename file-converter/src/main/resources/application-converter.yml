@@ -1,0 +1,17 @@
+jodconverter:
+  local:
+    enabled: true
+    # libreOffice根目录
+    # office-home: D:\LibreOffice
+    # OpenOffice安装地址
+    office-home: D:\OpenOffice 4
+    # 同时执行任务的个数,最大进程数
+    max-tasks-per-process: 10
+    # 开启多个进程，每个端口对应一个进程;设置端口号（任意设置）
+    port-numbers: 43000
+    # 任务执行的超时时间
+    taskExecutionTimeout: 120000
+    # 任务队列的超时时间
+    taskQueueTimeout: 30000
+    # 一个进程的超时时间
+    process-timeout: 120000
