@@ -75,7 +75,12 @@ public class ExcelExportUtils {
                 if (pObject == null || (pObject instanceof String && StrUtil.isEmpty(pObject.toString()))) {
                     return column.getEmptyToDefault();
                 } else {
-                    return pObject;
+                    if (pObject instanceof String) {
+                        // 限制长度32767
+                        return StrUtil.sub((String) pObject, 0, 32767);
+                    } else {
+                        return pObject;
+                    }
                 }
             } else {
                 String pValue = "";
@@ -106,13 +111,12 @@ public class ExcelExportUtils {
                     pValue = cellFormatFunction.apply(Dict.create().set("bean", bean).set("column", column));
                 }
                 if (column.isLink()) {
-                    // 链接
                     // 获得链接地址
                     String linkValue = ReflectUtil.invoke(bean, "get" + StrUtil.upperFirst(column.getLinkProperty()));
                     return excelWriter.createHyperlink(HyperlinkType.URL, linkValue, StrUtil.emptyToDefault(pValue, column.getEmptyToDefault()));
                 } else {
-                    // 非链接，直接输出文本
-                    return StrUtil.emptyToDefault(pValue, column.getEmptyToDefault());
+                    // 非链接，直接输出文本, 限制长度32767
+                    return StrUtil.sub(StrUtil.emptyToDefault(pValue, column.getEmptyToDefault()), 0, 32767);
                 }
             }
         } catch (Exception e) {
