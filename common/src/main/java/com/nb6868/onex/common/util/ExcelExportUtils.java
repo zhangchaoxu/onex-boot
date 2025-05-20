@@ -16,6 +16,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.common.usermodel.HyperlinkType;
+import org.apache.poi.ss.SpreadsheetVersion;
 import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
@@ -76,14 +77,14 @@ public class ExcelExportUtils {
                     return column.getEmptyToDefault();
                 } else {
                     if (pObject instanceof String) {
-                        // 限制长度32767
-                        return StrUtil.sub((String) pObject, 0, 32767);
+                        // 限制长度32767, 都已超过32767了，截断一点还有啥意义
+                        return StrUtil.sub((String) pObject, 0, SpreadsheetVersion.EXCEL2007.getMaxTextLength());
                     } else {
                         return pObject;
                     }
                 }
             } else {
-                String pValue = "";
+                String pValue = null;
                 if ("time".equalsIgnoreCase(fmt)) {
                     // 时间格式化
                     Object pObject = BeanUtil.getProperty(bean, column.getProperty());
@@ -112,11 +113,12 @@ public class ExcelExportUtils {
                 }
                 if (column.isLink()) {
                     // 获得链接地址
+                    // 注意链接内容经常会因为格式问题出错
                     String linkValue = ReflectUtil.invoke(bean, "get" + StrUtil.upperFirst(column.getLinkProperty()));
                     return excelWriter.createHyperlink(HyperlinkType.URL, linkValue, StrUtil.emptyToDefault(pValue, column.getEmptyToDefault()));
                 } else {
                     // 非链接，直接输出文本, 限制长度32767
-                    return StrUtil.sub(StrUtil.emptyToDefault(pValue, column.getEmptyToDefault()), 0, 32767);
+                    return StrUtil.sub(StrUtil.emptyToDefault(pValue, column.getEmptyToDefault()), 0, SpreadsheetVersion.EXCEL2007.getMaxTextLength());
                 }
             }
         } catch (Exception e) {
@@ -129,15 +131,16 @@ public class ExcelExportUtils {
     /**
      * bean export with params
      */
-    @SuppressWarnings("unchecked")
     public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams) {
         return beanListExport(beanList, excelExportParams, null, null, null);
     }
 
+    @SuppressWarnings("unchecked")
     public static String beanListExport(List<?> beanList, ExcelExportParams excelExportParams, Function<Dict, String> cellFormatFunction, Function<ExcelWriter, ExcelWriter> beforeWriterFunction, Function<ExcelWriter, ExcelWriter> afterWriterFunction) {
         String fileName = OssLocalUtils.fmtXlsxFileName(excelExportParams.getFolderName(), excelExportParams.getFileName());
         BigExcelWriter writer = ExcelUtil.getBigWriter(getFileStoragePath(fileName));
-        int columnSize = 0;// 列数
+        // 列数
+        int columnSize = 0;
         // 处理数据
         List<Map<String, Object>> mapList;
         if ("raw".equalsIgnoreCase(excelExportParams.getRenderType())) {
