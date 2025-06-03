@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.5.17</version>
+        <version>4.5.18</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -18,7 +18,7 @@
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
         <hibernate-validator.version>9.0.0.Final</hibernate-validator.version>
-        <druid.version>1.2.24</druid.version>
+        <druid.version>1.2.25</druid.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-io.version>2.19.0</commons-io.version>
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
@@ -32,7 +32,7 @@
         <weixin.version>4.7.5-20250516.201941</weixin.version>
         <aliyun-oss.version>3.18.2</aliyun-oss.version>
         <huaweicloud-obs.version>3.25.5</huaweicloud-obs.version>
-        <aws-s3.version>2.31.52</aws-s3.version>
+        <aws-s3.version>2.31.54</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <fastexcel.version>1.2.0</fastexcel.version>
     </properties>

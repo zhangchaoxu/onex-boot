@@ -22,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -100,6 +101,7 @@ public class ExcelExportUtils {
                 } else if ("invoke".equalsIgnoreCase(fmt)) {
                     // 反射,执行invokeMethod 若空，则执行getProperty
                     String invokeMethod = StrUtil.emptyToDefault(column.getInvokeMethod(), "get" + StrUtil.upperFirst(column.getProperty()));
+                    // Object invokeRes = ReflectUtil.invoke(bean, invokeMethod);
                     pValue = ReflectUtil.invoke(bean, invokeMethod);
                 } else if ("index".equalsIgnoreCase(fmt)) {
                     // 序号
