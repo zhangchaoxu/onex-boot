@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.filter;
 
+import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 /**
  * cros filter
+ * 跨域是漏扫很容易出问题的地方
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -37,13 +39,25 @@ public class CrosFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, crosProps.getAllowCredentials());
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,crosProps.getExposeHeaders());
+        // 检查请求头
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, crosProps.getAllowHeaders());
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, crosProps.getAllowMethods());
+        // 检查请求方法
+        if (!StrUtil.containsIgnoreCase(crosProps.getAllowMethods(), request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            return;
+        }
         // Access-Control-Allow-Origin和Access-Control-Allow-Credentials有约束;
         // Credentials true,Origin必须指定具体来源,不能用*通配;
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, request.getHeader(HttpHeaders.ORIGIN));
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, crosProps.getAllowCredentials());
+        // 检查请求来源
+        String headerOrigin = request.getHeader(HttpHeaders.ORIGIN);
+        // origin为空，或者不在范围内，则forbidden
+        if (StrUtil.isBlank(headerOrigin) || (StrUtil.isNotBlank(crosProps.getAllowOrigin()) && StrUtil.containsIgnoreCase(crosProps.getAllowOrigin(), headerOrigin))) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, headerOrigin);
         response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, crosProps.getMaxAge());
         //  直接放行Options,提高接口访问速度
         if (RequestMethod.OPTIONS.name().equalsIgnoreCase(request.getMethod())) {

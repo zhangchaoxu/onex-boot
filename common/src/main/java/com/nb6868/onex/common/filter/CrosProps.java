@@ -16,8 +16,9 @@ import org.springframework.stereotype.Component;
 public class CrosProps {
 
     String allowCredentials = "true";
+    String allowOrigin = "";
     String allowHeaders = HttpHeaders.CONTENT_TYPE + ",device,Authorization,token,auth-token,jwt-token,tunnel-token";
-    String allowMethods = "GET,POST,PUT,DELETE,OPTIONS";
+    String allowMethods = "GET,POST,OPTIONS";
     String maxAge = "3600";
     String exposeHeaders = "Content-Disposition";
 
