@@ -53,7 +53,7 @@ public class CrosFilter implements Filter {
         // 检查请求来源
         String headerOrigin = request.getHeader(HttpHeaders.ORIGIN);
         // origin为空，或者不在范围内，则forbidden
-        if (StrUtil.isBlank(headerOrigin) || (StrUtil.isNotBlank(crosProps.getAllowOrigin()) && StrUtil.containsIgnoreCase(crosProps.getAllowOrigin(), headerOrigin))) {
+        if (StrUtil.isNotBlank(headerOrigin) && (StrUtil.isNotBlank(crosProps.getAllowOrigin()) && StrUtil.containsIgnoreCase(crosProps.getAllowOrigin(), headerOrigin))) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
