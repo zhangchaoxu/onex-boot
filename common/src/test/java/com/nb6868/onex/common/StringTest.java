@@ -345,4 +345,15 @@ public class StringTest {
         log.error(DesensitizedUtil.password("1234567890"));
     }
 
+    @Test
+    @DisplayName("StrJoinTest")
+    void strJoinTest() {
+        StrJoiner sj = new StrJoiner(null);
+        sj.append("你好");
+        // 如果中间再sj.append(" "); 输出居然是你好nullnull张三
+        sj.append("张三");
+        log.error(sj.toString());
+        // 输出：你好null张三
+    }
+
 }
