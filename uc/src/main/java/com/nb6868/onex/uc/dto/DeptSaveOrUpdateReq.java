@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.dto;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.nb6868.onex.common.jpa.Jackson2TypeHandler;
 import com.nb6868.onex.common.pojo.BaseIdReq;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
@@ -44,7 +45,7 @@ public class DeptSaveOrUpdateReq extends BaseIdReq {
     private Integer sort;
 
     @Schema(description = "第三方部门信息")
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = Jackson2TypeHandler.class)
     private JSONObject oauthInfo;
 
     @Schema(description = "第三方部门id")

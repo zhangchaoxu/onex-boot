@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 #end
 #if(${hasJson})
 import cn.hutool.json.JSONObject;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.nb6868.onex.common.jpa.Jackson2TypeHandler;
 #end
 import java.util.Date;
 

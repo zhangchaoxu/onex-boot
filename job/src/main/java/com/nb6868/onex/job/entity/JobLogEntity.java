@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.nb6868.onex.common.jpa.Jackson2TypeHandler;
 import com.nb6868.onex.common.pojo.BaseTenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,7 +35,7 @@ public class JobLogEntity extends BaseTenantEntity {
     /**
      * 参数
      */
-	@TableField(typeHandler = JacksonTypeHandler.class)
+	@TableField(typeHandler = Jackson2TypeHandler.class)
 	private JSONObject params;
     /**
      * 日志状态

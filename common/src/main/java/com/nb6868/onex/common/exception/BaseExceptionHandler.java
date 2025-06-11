@@ -9,6 +9,7 @@ import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.log.LogBody;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.HttpContextUtils;
+import com.nb6868.onex.common.util.IpRegionUtil;
 import com.nb6868.onex.common.util.MessageUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,6 +57,11 @@ public abstract class BaseExceptionHandler {
      */
     @Value("${onex.exception-handler.detail-msg:false}")
     protected boolean detailMsg;
+    /**
+     * 是否记录ip区域
+     */
+    @Value("${onex.log.ip2region.enable:false}")
+    protected boolean logIp2RegionEnable;
 
     @Autowired
     protected BaseLogService logService;
@@ -344,25 +350,27 @@ public abstract class BaseExceptionHandler {
             request = HttpContextUtils.getHttpServletRequest();
         }
         if (null != request) {
-            logEntity.setUri(request.getRequestURI());
             // 记录内容
             JSONObject requestParams = new JSONObject()
-                    .set("ip", HttpContextUtils.getIpAddr(request))
-                    .set("ua", request.getHeader(HttpHeaders.USER_AGENT))
                     .set("url", request.getRequestURL())
+                    .set("queryString", request.getQueryString())
                     .set("method", request.getMethod())
                     .set("contentType", request.getContentType());
-            if (StrUtil.isNotBlank(request.getQueryString())) {
-                requestParams.set("queryString", request.getQueryString());
-            }
             if (HttpMethod.POST.name().equalsIgnoreCase(request.getMethod()) && StrUtil.equalsIgnoreCase(request.getContentType(), ContentType.JSON.getValue())) {
                 try {
-                    requestParams.set("params", IoUtil.read(request.getInputStream()).toString());
+                    logEntity.setRequestBody(IoUtil.read(request.getInputStream()).toString());
+                    // requestParams.set("params", IoUtil.read(request.getInputStream()).toString());
                 } catch (IOException e) {
                     log.error("读取流失败", e);
                 }
             }
             logEntity.setRequestParams(requestParams);
+            logEntity.setUri(request.getRequestURI());
+            logEntity.setRequestIp(HttpContextUtils.getIpAddr(request));
+            // 对ip所在位置做处理,限制长度
+            logEntity.setRequestIpRegion(logIp2RegionEnable ? StrUtil.sub(IpRegionUtil.getRegion(logEntity.getRequestIp()), 0, 200) : null);
+            // 对ua做处理，限制长度300
+            logEntity.setRequestUa(StrUtil.sub(request.getHeader(HttpHeaders.USER_AGENT), 0, 300));
         }
         // 保存
         try {
