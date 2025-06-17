@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.dto;
 import com.nb6868.onex.common.pojo.BaseIdReq;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
@@ -31,6 +32,11 @@ public class RoleSaveOrUpdateReq extends BaseIdReq {
     @Schema(description = "排序")
     @Range(min = 0, max = 99999, message = "排序取值0-99999")
     private Integer sort;
+
+    @Schema(description = "状态")
+    @NotNull(message = "状态不能为空")
+    @Range(min = 0, max = 1, message = "状态取值0或者1")
+    private Integer state;
 
     @Schema(description = "备注")
     private String remark;

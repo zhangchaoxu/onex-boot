@@ -22,6 +22,9 @@ public class RoleRes extends BaseRes {
     @Schema(description = "排序")
     private Integer sort;
 
+    @Schema(description = "状态")
+    private Integer state;
+
     @Schema(description = "备注")
     private String remark;
 

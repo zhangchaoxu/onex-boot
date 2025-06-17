@@ -35,6 +35,10 @@ public class RoleDTO extends BaseDTO {
     @NotNull(message = "排序不能为空", groups = DefaultGroup.class)
     private Integer sort;
 
+    @Schema(description = "状态")
+    @NotNull(message = "状态不能为空", groups = DefaultGroup.class)
+    private Integer state;
+
     @Schema(description = "备注")
     private String remark;
 

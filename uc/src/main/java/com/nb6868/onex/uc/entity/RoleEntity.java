@@ -34,6 +34,10 @@ public class RoleEntity extends BaseEntity {
      */
     private Integer sort;
     /**
+     * 状态
+     */
+    private Integer state;
+    /**
      * 租户编码
      */
 	private String tenantCode;

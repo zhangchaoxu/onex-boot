@@ -15,6 +15,10 @@ import java.util.List;
 @Schema(name = "角色查询")
 public class RoleQueryReq extends PageReq {
 
+    @Query
+    @Schema(description = "状态")
+    private Integer state;
+
     @Query(blurryType = Query.BlurryType.OR, type = Query.Type.LIKE, column = "code,name,remark")
     @Schema(description = "搜索关键词")
     private String search;
