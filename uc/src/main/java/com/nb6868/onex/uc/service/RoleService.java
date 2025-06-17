@@ -48,7 +48,6 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
             // 编辑数据
             entity = getById(req.getId());
             AssertUtils.isNull(entity, ErrorCode.DB_RECORD_NOT_EXISTED);
-
             BeanUtil.copyProperties(req, entity);
         } else {
             // 新增数据
@@ -56,6 +55,9 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
         }
         // 处理数据
         boolean ret = saveOrUpdateById(entity);
+        // 解释一下为什么不在role状态disable的时候，将关系表都删除
+        // 因为一旦删除了，后续角色重新激活，关系数据就丢了需要重新配置，这与用户操作体验不符合
+        // 所以在shiro过滤器中加入了对角色状态的过滤逻辑
         AssertUtils.isFalse(ret, "数据更新保存失败");
         // 重新保存角色和菜单关系表
         menuService.saveOrUpdateByRoleIdAndMenuIds(entity.getId(), req.getMenuIdList());
