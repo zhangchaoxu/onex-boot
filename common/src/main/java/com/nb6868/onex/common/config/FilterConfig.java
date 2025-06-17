@@ -64,7 +64,9 @@ public class FilterConfig {
         registration.setFilter(new DelegatingFilterProxy("shiroFilter"));
         // 该值缺省为false，表示生命周期由SpringApplicationContext管理，设置为true则表示由ServletContainer管理
         registration.addInitParameter("targetFilterLifecycle", "true");
-        registration.setEnabled(true);
+        // shiro filter过重复过两次
+        // 见https://zhuanlan.zhihu.com/p/634674299
+        registration.setEnabled(false);
         registration.addUrlPatterns("/*");
         // 这里如果shiroFilter会导致和ShiroConfig中的shiroFilter冲突
         //registration.setName("shiroFilterRegistration");
