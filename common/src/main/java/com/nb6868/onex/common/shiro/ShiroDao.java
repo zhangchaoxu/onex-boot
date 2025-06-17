@@ -58,8 +58,8 @@ public interface ShiroDao {
      * 通过用户id，获得用户权限列表
      * 在menu_scope中的用户权限，叠加该用户角色在menu_scope中的角色权限
      * <p>
-     * SELECT uc_menu_scope.menu_id AS menu_id FROM uc_menu_scope WHERE uc_menu_scope.deleted = 0 AND ((uc_menu_scope.type = 1 AND uc_menu_scope.role_id IN ( SELECT role_id FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = ?)) OR (uc_menu_scope.type = 2 AND uc_menu_scope.user_id = ?)) GROUP BY uc_menu_scope.menu_id
-     */
+     * SELECT DISTINCT(uc_menu_scope.menu_permissions) AS permissions FROM uc_menu_scope WHERE uc_menu_scope.deleted = 0 AND uc_menu_scope.menu_permissions != '' AND uc_menu_scope.menu_permissions is not null AND ((uc_menu_scope.type = 1 AND uc_menu_scope.role_id IN ( SELECT DISTINCT(uc_role_user.role_id) FROM uc_role_user LEFT JOIN uc_role on uc_role_user.role_id = uc_role.id WHERE uc_role_user.user_id = ? AND uc_role.state = 1 AND uc_role.deleted = 0 AND uc_role_user.deleted = 0)) OR (uc_menu_scope.type = 2 AND uc_menu_scope.user_id = ?))
+     *      */
     @Select("SELECT DISTINCT(uc_menu_scope.menu_permissions) AS permissions FROM uc_menu_scope" +
             " WHERE uc_menu_scope.deleted = 0 AND uc_menu_scope.menu_permissions != '' AND uc_menu_scope.menu_permissions is not null" +
             " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_id IN " +
