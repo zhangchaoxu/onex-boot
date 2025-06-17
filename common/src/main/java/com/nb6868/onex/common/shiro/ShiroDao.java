@@ -63,7 +63,7 @@ public interface ShiroDao {
     @Select("SELECT DISTINCT(uc_menu_scope.menu_permissions) AS permissions FROM uc_menu_scope" +
             " WHERE uc_menu_scope.deleted = 0 AND uc_menu_scope.menu_permissions != '' AND uc_menu_scope.menu_permissions is not null" +
             " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_id IN " +
-            "( SELECT DISTINCT(role_id) FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
+            "( SELECT DISTINCT(uc_role_user.role_id) FROM uc_role_user LEFT JOIN uc_role on uc_role_user.role_id = uc_role.id WHERE uc_role_user.user_id = #{userId} AND uc_role.state = 1 AND uc_role.deleted = 0 AND uc_role_user.deleted = 0)) OR " +
             "(uc_menu_scope.type = 2 AND uc_menu_scope.user_id = #{userId}))")
     List<String> getPermissionsListByUserId(@Param("userId") Long userId);
 
@@ -74,7 +74,7 @@ public interface ShiroDao {
             "SELECT DISTINCT(uc_menu_scope.menu_id) AS menu_id FROM uc_menu_scope" +
             " WHERE uc_menu_scope.deleted = 0" +
             " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_id IN " +
-            "( SELECT DISTINCT(role_id) FROM uc_role_user WHERE uc_role_user.deleted = 0 AND uc_role_user.user_id = #{userId})) OR " +
+            "( SELECT DISTINCT(uc_role_user.role_id) FROM uc_role_user LEFT JOIN uc_role on uc_role_user.role_id = uc_role.id WHERE uc_role_user.user_id = #{userId} AND uc_role.state = 1 AND uc_role.deleted = 0 AND uc_role_user.deleted = 0)) OR " +
             "(uc_menu_scope.type = 2 ANDuc_menu_scope.user_id = #{userId}))" +
             "</script>")
     List<Long> getMenuIdListByUserId(@Param("userId") Long userId);
