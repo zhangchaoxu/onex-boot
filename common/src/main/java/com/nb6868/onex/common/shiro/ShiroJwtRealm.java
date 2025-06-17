@@ -54,12 +54,12 @@ public class ShiroJwtRealm extends BaseShiroRealm {
         Assert.isTrue(StrUtil.isNotBlank(token), ()-> new AuthenticationException(Const.MSG_LOGIN_REQUIRED));
         // 尝试解析为jwt
         JWT jwt = JwtUtils.parseToken(token);
-        Assert.isTrue(ObjUtil.isNotNull(jwt) && ObjUtil.isNotNull(jwt.getPayload()) && ObjUtil.isNotNull(jwt.getPayload().getClaimsJson()), ()-> new AuthenticationException("登录信息错误,请重新登录..."));
+        Assert.isTrue(ObjUtil.isNotNull(jwt) && ObjUtil.isNotNull(jwt.getPayload()) && ObjUtil.isNotNull(jwt.getPayload().getClaimsJson()), ()-> new AuthenticationException(ShiroConst.MSG_LOGIN_TOKEN_ERROR));
         // 获取jwt中的登录配置
         String loginType = jwt.getPayload().getClaimsJson().getStr(authProps.getTokenJwtKey());
-        Assert.isTrue(StrUtil.isNotBlank(loginType), ()-> new AuthenticationException("登录信息缺少key,请重新登录..."));
+        Assert.isTrue(StrUtil.isNotBlank(loginType), ()-> new AuthenticationException(ShiroConst.MSG_LOGIN_TOKEN_ERROR));
         JSONObject loginConfig = paramsService.getSystemPropsJson(loginType);
-        Assert.notNull(loginConfig, ()-> new AuthenticationException("缺少登录信息配置,请重新登录..."));
+        Assert.notNull(loginConfig, ()-> new AuthenticationException(ShiroConst.MSG_LOGIN_PARAMS_MISS));
         // 获取用户id
         Long userId;
         if ("db".equalsIgnoreCase(loginConfig.getStr(AuthConst.TOKEN_STORE_TYPE_KEY, AuthConst.TOKEN_STORE_TYPE_VALUE))) {
@@ -68,16 +68,16 @@ public class ShiroJwtRealm extends BaseShiroRealm {
             userId = MapUtil.getLong(tokenEntity, "user_id");
         } else {
             // token没有持久化，直接用jwt验证
-            Assert.isTrue(JwtUtils.verifyKeyAndExp(jwt, loginConfig.getStr(AuthConst.TOKEN_JWT_KEY_KEY, AuthConst.TOKEN_JWT_KEY_VALUE)), ()-> new AuthenticationException("登录信息已失效,请重新登录..."));
+            Assert.isTrue(JwtUtils.verifyKeyAndExp(jwt, loginConfig.getStr(AuthConst.TOKEN_JWT_KEY_KEY, AuthConst.TOKEN_JWT_KEY_VALUE)), ()-> new AuthenticationException(ShiroConst.MSG_LOGIN_EXPIRED));
             userId = NumberUtil.parseLong(jwt.getPayload().getClaimsJson().getStr("id"));
         }
-        Assert.notNull(userId, ()-> new AuthenticationException("缺少登录用户信息,请重新登录..."));
+        Assert.notNull(userId, ()-> new AuthenticationException(ShiroConst.MSG_LOGIN_USER_MISS));
         // 验证用户是否还存在
         Map<String, Object> userEntity = shiroDao.getUserById(userId);
         // 账号不存在
-        Assert.notNull(userEntity, ()-> new AuthenticationException("缺少登录账号信息,请重新登录..."));
+        Assert.notNull(userEntity, ()-> new AuthenticationException(ShiroConst.MSG_LOGIN_USER_MISS));
         // 账号锁定
-        Assert.isTrue(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ()-> new AuthenticationException("账号已锁定,请联系管理员..."));
+        Assert.isTrue(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, ()-> new AuthenticationException(ShiroConst.MSG_LOGIN_USER_LOCKED));
         // 转换成UserDetail对象,setIgnoreError保证过程不出错，但可能会吞掉异常问题
         ShiroUser shiroUser = BeanUtil.toBean(userEntity, ShiroUser.class, CopyOptions.create()
                 .setAutoTransCamelCase(true)

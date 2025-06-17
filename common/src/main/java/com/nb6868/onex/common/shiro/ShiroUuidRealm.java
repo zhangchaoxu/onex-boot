@@ -45,21 +45,21 @@ public class ShiroUuidRealm extends BaseShiroRealm {
         Assert.isTrue(StrUtil.isNotBlank(token), () -> new AuthenticationException(Const.MSG_LOGIN_REQUIRED));
         // token存在数据库/缓存中
         Map<String, Object> tokenEntity = shiroDao.getUserTokenByToken(token);
-        Assert.notNull(tokenEntity, () -> new AuthenticationException("登录信息已失效,请重新登录..."));
+        Assert.notNull(tokenEntity, () -> new AuthenticationException(ShiroConst.MSG_LOGIN_EXPIRED));
         // 检查账号id信息
         Long userId = MapUtil.getLong(tokenEntity, "user_id");
-        Assert.notNull(userId, () -> new AuthenticationException("缺少登录用户信息,请重新登录..."));
+        Assert.notNull(userId, () -> new AuthenticationException(ShiroConst.MSG_LOGIN_USER_MISS));
         // 验证用户是否还存在
         Map<String, Object> userEntity = shiroDao.getUserById(userId);
         // 账号不存在
-        Assert.notNull(userEntity, () -> new AuthenticationException("缺少登录账号信息,请重新登录..."));
+        Assert.notNull(userEntity, () -> new AuthenticationException(ShiroConst.MSG_LOGIN_USER_MISS));
         // 账号锁定
-        Assert.isTrue(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, () -> new AuthenticationException("账号已锁定,请联系管理员..."));
+        Assert.isTrue(MapUtil.getInt(userEntity, "state", -1) == ShiroConst.USER_STATE_ENABLED, () -> new AuthenticationException(ShiroConst.MSG_LOGIN_USER_LOCKED));
 
         String loginType = MapUtil.getStr(tokenEntity, "type");
         // 获取jwt中的登录配置
         JSONObject loginConfig = paramsService.getSystemPropsJson(loginType);
-        Assert.notNull(loginConfig, () -> new AuthenticationException("缺少登录信息配置,请重新登录..."));
+        Assert.notNull(loginConfig, () -> new AuthenticationException(ShiroConst.MSG_LOGIN_USER_MISS));
         // 转换成UserDetail对象
         ShiroUser shiroUser = BeanUtil.toBean(userEntity, ShiroUser.class, CopyOptions.create().setAutoTransCamelCase(true).setIgnoreCase(true));
         shiroUser.setLoginType(loginType);
