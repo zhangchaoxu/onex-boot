@@ -75,7 +75,7 @@ public interface ShiroDao {
             " WHERE uc_menu_scope.deleted = 0" +
             " AND ((uc_menu_scope.type = 1  AND uc_menu_scope.role_id IN " +
             "( SELECT DISTINCT(uc_role_user.role_id) FROM uc_role_user LEFT JOIN uc_role on uc_role_user.role_id = uc_role.id WHERE uc_role_user.user_id = #{userId} AND uc_role.state = 1 AND uc_role.deleted = 0 AND uc_role_user.deleted = 0)) OR " +
-            "(uc_menu_scope.type = 2 ANDuc_menu_scope.user_id = #{userId}))" +
+            "(uc_menu_scope.type = 2 AND uc_menu_scope.user_id = #{userId}))" +
             "</script>")
     List<Long> getMenuIdListByUserId(@Param("userId") Long userId);
 
