@@ -18,6 +18,7 @@ import com.nb6868.onex.uc.dto.DeptDTO;
 import com.nb6868.onex.uc.dto.DeptSaveOrUpdateReq;
 import com.nb6868.onex.uc.entity.DeptEntity;
 import com.nb6868.onex.uc.entity.DeptUserEntity;
+import com.nb6868.onex.uc.entity.RoleEntity;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,29 +80,67 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
      * 根据用户ID查询部门ID列表
      *
      * @param userId 用户id
+     * @param type   用户部门关系
      */
     public List<Long> getDeptIdListByUserId(@NotNull Long userId, Integer type) {
+        return getDeptIdListByUserId(userId, type, null);
+    }
+
+    /**
+     * 根据用户ID查询部门ID列表
+     *
+     * @param userId    用户id
+     * @param type      用户部门关系
+     * @param deptState 部门状态
+     */
+    public List<Long> getDeptIdListByUserId(@NotNull Long userId, Integer type, Integer deptState) {
         List<DeptUserEntity> list = deptUserService.lambdaQuery()
                 .select(DeptUserEntity::getDeptId)
                 .eq(DeptUserEntity::getUserId, userId)
                 .eq(ObjUtil.isNotNull(type), DeptUserEntity::getType, type)
                 .groupBy(DeptUserEntity::getDeptId)
                 .list();
-        return CollStreamUtil.toList(list, DeptUserEntity::getDeptId);
+        List<Long> relDeptIdList = CollStreamUtil.toList(list, DeptUserEntity::getDeptId);
+        // 判断deptId是否还有效
+        if (ObjUtil.isNull(deptState)) {
+            return relDeptIdList;
+        } else {
+            List<DeptEntity> deptList = lambdaQuery()
+                    .select(DeptEntity::getId)
+                    .in(relDeptIdList.size() > 1, DeptEntity::getId, relDeptIdList)
+                    .eq(relDeptIdList.size() == 1, DeptEntity::getId, relDeptIdList.get(0))
+                    .eq(DeptEntity::getState, deptState)
+                    .list();
+            return CollStreamUtil.toList(deptList, DeptEntity::getId);
+        }
     }
 
     /**
      * 根据用户查询部门列表
      *
      * @param userId 用户id
+     * @param type   用户部门关系
      */
     public List<DeptEntity> getDeptListByUserId(@NotNull Long userId, Integer type) {
-        // 先获取id
+        return getDeptListByUserId(userId, type, null);
+    }
+
+    /**
+     * 根据用户查询部门列表
+     *
+     * @param userId    用户id
+     * @param type      用户部门关系
+     * @param deptState 部门状态
+     */
+    public List<DeptEntity> getDeptListByUserId(@NotNull Long userId, Integer type, Integer deptState) {
+        // 先获取id，为什么不在这里过滤state?因为下面还会过滤的
         List<Long> deptIdList = getDeptIdListByUserId(userId, type);
         // 再用id查
         return CollUtil.isEmpty(deptIdList) ? CollUtil.newArrayList() : lambdaQuery()
                 .in(deptIdList.size() > 1, DeptEntity::getId, deptIdList)
                 .eq(deptIdList.size() == 1, DeptEntity::getId, deptIdList.get(0))
+                // 状态过滤
+                .eq(ObjUtil.isNotNull(deptState), DeptEntity::getState, deptState)
                 .list();
     }
 

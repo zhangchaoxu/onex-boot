@@ -70,9 +70,9 @@ public class UserController {
         PageData<UserDTO> page = userService.pageDto(req, queryWrapper);
         page.getList().forEach(userDTO -> {
             // 需要部门
-            userDTO.setDeptList(req.isDeptNeeded() ? CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)) : CollUtil.newArrayList());
+            userDTO.setDeptList(req.isDeptNeeded() ? CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode(), UcConst.DeptStateEnum.ENABLED.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)) : CollUtil.newArrayList());
             // 需要角色
-            userDTO.setRoleList(req.isRoleNeeded() ? CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)) : CollUtil.newArrayList());
+            userDTO.setRoleList(req.isRoleNeeded() ? CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId(), UcConst.RoleStateEnum.ENABLED.getCode()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)) : CollUtil.newArrayList());
         });
         return new Result<PageData<UserDTO>>().success(page);
     }
@@ -86,9 +86,9 @@ public class UserController {
         List<UserDTO> list = userService.listDto(queryWrapper);
         list.forEach(userDTO -> {
             // 需要部门
-            userDTO.setDeptList(req.isDeptNeeded() ? CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)) : CollUtil.newArrayList());
+            userDTO.setDeptList(req.isDeptNeeded() ? CollStreamUtil.toList(deptService.getDeptListByUserId(userDTO.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode(), UcConst.DeptStateEnum.ENABLED.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)) : CollUtil.newArrayList());
             // 需要角色
-            userDTO.setRoleList(req.isRoleNeeded() ? CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)) : CollUtil.newArrayList());
+            userDTO.setRoleList(req.isRoleNeeded() ? CollStreamUtil.toList(roleService.getRoleListByUserId(userDTO.getId(), UcConst.RoleStateEnum.ENABLED.getCode()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)) : CollUtil.newArrayList());
         });
         return new Result<List<UserDTO>>().success(list);
     }
@@ -101,9 +101,9 @@ public class UserController {
         UserDTO data = userService.oneDto(QueryWrapperHelper.getPredicate(req));
         AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
         // 需要部门
-        data.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(data.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
+        data.setDeptList(CollStreamUtil.toList(deptService.getDeptListByUserId(data.getId(), UcConst.DeptUserTypeEnum.DEFAULT.getCode(), UcConst.DeptStateEnum.ENABLED.getCode()), entity -> BeanUtil.copyProperties(entity, DeptRes.class)));
         // 需要角色
-        data.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(data.getId()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
+        data.setRoleList(CollStreamUtil.toList(roleService.getRoleListByUserId(data.getId(), UcConst.RoleStateEnum.ENABLED.getCode()), entity -> BeanUtil.copyProperties(entity, RoleRes.class)));
         return new Result<UserDTO>().success(data);
     }
 

@@ -3,6 +3,7 @@ package com.nb6868.onex.uc.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.DtoService;
@@ -17,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 角色
@@ -70,11 +73,34 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
      * @param userId 用户id
      */
     public List<Long> getRoleIdListByUserId(@NotNull Long userId) {
-        return CollStreamUtil.toList(roleUserService.lambdaQuery()
+        return getRoleIdListByUserId(userId, null);
+    }
+
+    /**
+     * 根据用户ID查询角色ID列表
+     *
+     * @param userId    用户id
+     * @param roleState 角色状态，null表示不处理
+     */
+    public List<Long> getRoleIdListByUserId(@NotNull Long userId, Integer roleState) {
+        List<RoleUserEntity> list = roleUserService.lambdaQuery()
                 .select(RoleUserEntity::getRoleId)
                 .eq(RoleUserEntity::getUserId, userId)
                 .groupBy(RoleUserEntity::getRoleId)
-                .list(), RoleUserEntity::getRoleId);
+                .list();
+        List<Long> relRoleIdList = CollStreamUtil.toList(list, RoleUserEntity::getRoleId);
+        // 判断roleId是否还有效
+        if (ObjUtil.isNull(roleState)) {
+            return relRoleIdList;
+        } else {
+            List<RoleEntity> roleList = lambdaQuery()
+                    .select(RoleEntity::getId)
+                    .in(relRoleIdList.size() > 1, RoleEntity::getId, relRoleIdList)
+                    .eq(relRoleIdList.size() == 1, RoleEntity::getId, relRoleIdList.get(0))
+                    .eq(RoleEntity::getState, roleState)
+                    .list();
+            return CollStreamUtil.toList(roleList, RoleEntity::getId);
+        }
     }
 
     /**
@@ -83,12 +109,24 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
      * @param userId 用户id
      */
     public List<RoleEntity> getRoleListByUserId(@NotNull Long userId) {
-        // 先获取id
+        return getRoleListByUserId(userId, null);
+    }
+
+    /**
+     * 根据用户查询角色Res列表
+     *
+     * @param userId    用户id
+     * @param roleState 角色状态，null表示不处理
+     */
+    public List<RoleEntity> getRoleListByUserId(@NotNull Long userId, Integer roleState) {
+        // 先获取id，为什么不在这里过滤state?因为下面还会过滤的
         List<Long> roleIdList = getRoleIdListByUserId(userId);
         // 再用id查
         return CollUtil.isEmpty(roleIdList) ? CollUtil.newArrayList() : lambdaQuery()
-                .in(roleIdList.size() >1, RoleEntity::getId, roleIdList)
+                .in(roleIdList.size() > 1, RoleEntity::getId, roleIdList)
                 .eq(roleIdList.size() == 1, RoleEntity::getId, roleIdList.get(0))
+                // 状态过滤
+                .eq(ObjUtil.isNotNull(roleState), RoleEntity::getState, roleState)
                 .list();
     }
 
