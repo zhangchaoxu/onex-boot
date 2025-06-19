@@ -88,11 +88,7 @@ public class RoleController {
     @LogOperation("更新状态")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:edit"}, logical = Logical.OR)
     public Result<?> updateState(@Validated @RequestBody RoleUpdateStateReq req) {
-        // 判断数据是否存在
-        AssertUtils.isFalse(roleService.hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
-        // 状态变更
-        boolean ret = roleService.lambdaUpdate().eq(RoleEntity::getId, req.getId()).set(RoleEntity::getState, req.getState()).update(new RoleEntity());
-        // 返回结果
+        boolean ret = roleService.updateState(req);
         return new Result<>().bool(ret);
     }
 

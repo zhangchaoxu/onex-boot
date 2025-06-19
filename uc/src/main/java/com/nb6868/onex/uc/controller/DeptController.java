@@ -112,10 +112,7 @@ public class DeptController {
     @LogOperation("更新状态")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:edit"}, logical = Logical.OR)
     public Result<?> updateState(@Validated @RequestBody DeptUpdateStateReq req) {
-        // 判断数据是否存在
-        AssertUtils.isFalse(deptService.hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
-        // 状态变更
-        boolean ret = deptService.lambdaUpdate().eq(DeptEntity::getId, req.getId()).set(DeptEntity::getState, req.getState()).update(new DeptEntity());
+        boolean ret = deptService.updateState(req);
         return new Result<>().bool(ret);
     }
 

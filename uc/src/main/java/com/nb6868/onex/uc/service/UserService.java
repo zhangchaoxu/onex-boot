@@ -20,6 +20,7 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.UserDao;
 import com.nb6868.onex.uc.dto.*;
 import com.nb6868.onex.uc.entity.DeptUserEntity;
+import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import com.nb6868.onex.uc.entity.UserEntity;
 import jakarta.validation.constraints.NotNull;
@@ -326,8 +327,26 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 修改状态
      */
     public boolean changeState(ChangeStateReq req) {
-        boolean ret = lambdaUpdate().set(UserEntity::getState, req.getState()).eq(UserEntity::getId, req.getId()).update(new UserEntity());
-        if (ret && ObjUtil.equal(req.getState(), UcConst.UserStateEnum.DISABLE.getCode())) {
+        // 判断数据是否存在
+        AssertUtils.isFalse(hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 状态变更
+        boolean ret = lambdaUpdate().eq(UserEntity::getId, req.getId()).set(UserEntity::getState, req.getState()).update(new UserEntity());
+        if (ret && ObjUtil.notEqual(req.getState(), UcConst.UserStateEnum.ENABLED.getCode())) {
+            // 锁定用户,将token注销
+            tokenService.deleteByUserIdList(Collections.singletonList(req.getId()));
+        }
+        return ret;
+    }
+
+    /**
+     * 修改状态
+     */
+    public boolean updateState(UserUpdateStateReq req) {
+        // 判断数据是否存在
+        AssertUtils.isFalse(hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 状态变更
+        boolean ret = lambdaUpdate().eq(UserEntity::getId, req.getId()).set(UserEntity::getState, req.getState()).update(new UserEntity());
+        if (ret && ObjUtil.notEqual(req.getState(), UcConst.UserStateEnum.ENABLED.getCode())) {
             // 锁定用户,将token注销
             tokenService.deleteByUserIdList(Collections.singletonList(req.getId()));
         }
@@ -338,7 +357,7 @@ public class UserService extends DtoService<UserDao, UserEntity, UserDTO> {
      * 修改用户的授权
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean changeMenuScope(Long id, List<Long> menuIds) {
+    public boolean updateMenuScope(Long id, List<Long> menuIds) {
         menuService.saveOrUpdateByUserIdAndMenuIds(id, menuIds);
         return true;
     }

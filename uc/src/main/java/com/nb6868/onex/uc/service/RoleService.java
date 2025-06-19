@@ -11,6 +11,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.dao.RoleDao;
 import com.nb6868.onex.uc.dto.RoleDTO;
 import com.nb6868.onex.uc.dto.RoleSaveOrUpdateReq;
+import com.nb6868.onex.uc.dto.RoleUpdateStateReq;
 import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.entity.RoleUserEntity;
 import jakarta.validation.constraints.NotNull;
@@ -65,6 +66,16 @@ public class RoleService extends DtoService<RoleDao, RoleEntity, RoleDTO> {
         // 重新保存角色和菜单关系表
         menuService.saveOrUpdateByRoleIdAndMenuIds(entity.getId(), req.getMenuIdList());
         return entity;
+    }
+
+    /**
+     * 更新状态
+     */
+    public boolean updateState(RoleUpdateStateReq req) {
+        // 判断数据是否存在
+        AssertUtils.isFalse(hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 状态变更
+        return lambdaUpdate().eq(RoleEntity::getId, req.getId()).set(RoleEntity::getState, req.getState()).update(new RoleEntity());
     }
 
     /**

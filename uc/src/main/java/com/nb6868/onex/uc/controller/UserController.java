@@ -157,6 +157,7 @@ public class UserController {
         return new Result<>();
     }
 
+    @Deprecated
     @PostMapping("changeState")
     @Operation(summary = "更新状态")
     @LogOperation("更新状态")
@@ -166,12 +167,31 @@ public class UserController {
         return new Result<>();
     }
 
+    @Operation(summary = "更新状态")
+    @LogOperation("更新状态")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
+    public Result<?> updateState(@Validated @RequestBody UserUpdateStateReq req) {
+        boolean ret = userService.updateState(req);
+        return new Result<>().bool(ret);
+    }
+
+    @Deprecated
     @PostMapping("changeMenuScope")
     @Operation(summary = "修改用户授权")
     @LogOperation("修改用户授权")
     @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
     public Result<?> changeMenuScope(@Validated @RequestBody UserUpdateMenuScopeReq req) {
-        userService.changeMenuScope(req.getId(), req.getMenuIds());
+        userService.updateMenuScope(req.getId(), req.getMenuIds());
+        return new Result<>();
+    }
+
+    @Deprecated
+    @PostMapping("updateMenuScope")
+    @Operation(summary = "更新用户授权")
+    @LogOperation("更新用户授权")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:user:edit"}, logical = Logical.OR)
+    public Result<?> updateMenuScope(@Validated @RequestBody UserUpdateMenuScopeReq req) {
+        userService.updateMenuScope(req.getId(), req.getMenuIds());
         return new Result<>();
     }
 

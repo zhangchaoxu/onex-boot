@@ -16,6 +16,7 @@ import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dao.DeptDao;
 import com.nb6868.onex.uc.dto.DeptDTO;
 import com.nb6868.onex.uc.dto.DeptSaveOrUpdateReq;
+import com.nb6868.onex.uc.dto.DeptUpdateStateReq;
 import com.nb6868.onex.uc.entity.DeptEntity;
 import com.nb6868.onex.uc.entity.DeptUserEntity;
 import com.nb6868.onex.uc.entity.RoleEntity;
@@ -74,6 +75,16 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
         // 因为一旦删除了，后续dept重新激活，关系数据就丢了需要重新配置
         AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
+    }
+
+    /**
+     * 更新状态
+     */
+    public boolean updateState(DeptUpdateStateReq req) {
+        // 判断数据是否存在
+        AssertUtils.isFalse(hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 状态变更
+        return lambdaUpdate().eq(DeptEntity::getId, req.getId()).set(DeptEntity::getState, req.getState()).update(new DeptEntity());
     }
 
     /**
