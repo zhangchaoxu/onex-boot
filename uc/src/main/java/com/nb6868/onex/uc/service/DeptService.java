@@ -83,12 +83,13 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
      * @param userId 用户id
      */
     public List<Long> getDeptIdListByUserId(@NotNull Long userId, Integer type) {
-        return CollStreamUtil.toList(deptUserService.lambdaQuery()
+        List<DeptUserEntity> list = deptUserService.lambdaQuery()
                 .select(DeptUserEntity::getDeptId)
                 .eq(DeptUserEntity::getUserId, userId)
-                .eq(ObjUtil.isNull(type), DeptUserEntity::getType, type)
+                .eq(ObjUtil.isNotNull(type), DeptUserEntity::getType, type)
                 .groupBy(DeptUserEntity::getDeptId)
-                .list(), DeptUserEntity::getDeptId);
+                .list();
+        return CollStreamUtil.toList(list, DeptUserEntity::getDeptId);
     }
 
     /**
