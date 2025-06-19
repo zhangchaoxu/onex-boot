@@ -1,6 +1,8 @@
 package com.nb6868.onex.uc.dto;
 
 import com.nb6868.onex.common.pojo.BaseIdReq;
+import com.nb6868.onex.common.validator.EnumValue;
+import com.nb6868.onex.uc.UcConst;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,8 +36,7 @@ public class RoleSaveOrUpdateReq extends BaseIdReq {
     private Integer sort;
 
     @Schema(description = "状态")
-    @NotNull(message = "状态不能为空")
-    @Range(min = 0, max = 1, message = "状态取值0或者1")
+    @EnumValue(enumClass = UcConst.RoleStateEnum.class, message = "状态传参错误")
     private Integer state;
 
     @Schema(description = "备注")

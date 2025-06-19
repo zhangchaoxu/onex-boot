@@ -5,12 +5,15 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.nb6868.onex.common.jpa.Jackson2TypeHandler;
 import com.nb6868.onex.common.pojo.BaseIdReq;
+import com.nb6868.onex.common.validator.EnumValue;
+import com.nb6868.onex.uc.UcConst;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Range;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -43,6 +46,10 @@ public class DeptSaveOrUpdateReq extends BaseIdReq {
     @Schema(description = "排序")
     @Min(value = 0, message = "{sort.number}")
     private Integer sort;
+
+    @Schema(description = "状态")
+    @EnumValue(enumClass = UcConst.DeptStateEnum.class, message = "状态传参错误")
+    private Integer state;
 
     @Schema(description = "第三方部门信息")
     @TableField(typeHandler = Jackson2TypeHandler.class)

@@ -10,9 +10,8 @@ import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.group.PageGroup;
-import com.nb6868.onex.uc.dto.RoleDTO;
-import com.nb6868.onex.uc.dto.RoleQueryReq;
-import com.nb6868.onex.uc.dto.RoleSaveOrUpdateReq;
+import com.nb6868.onex.uc.dto.*;
+import com.nb6868.onex.uc.entity.DeptEntity;
 import com.nb6868.onex.uc.entity.RoleEntity;
 import com.nb6868.onex.uc.service.MenuScopeService;
 import com.nb6868.onex.uc.service.RoleService;
@@ -82,6 +81,19 @@ public class RoleController {
         RoleDTO dto = ConvertUtils.sourceToTarget(entity, RoleDTO.class);
 
         return new Result<>().success(dto);
+    }
+
+    @PostMapping("updateState")
+    @Operation(summary = "更新状态")
+    @LogOperation("更新状态")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:role:edit"}, logical = Logical.OR)
+    public Result<?> updateState(@Validated @RequestBody RoleUpdateStateReq req) {
+        // 判断数据是否存在
+        AssertUtils.isFalse(roleService.hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 状态变更
+        boolean ret = roleService.lambdaUpdate().eq(RoleEntity::getId, req.getId()).set(RoleEntity::getState, req.getState()).update(new RoleEntity());
+        // 返回结果
+        return new Result<>().bool(ret);
     }
 
     @PostMapping("delete")

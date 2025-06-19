@@ -19,6 +19,7 @@ import com.nb6868.onex.common.validator.group.PageGroup;
 import com.nb6868.onex.uc.dto.DeptDTO;
 import com.nb6868.onex.uc.dto.DeptQueryReq;
 import com.nb6868.onex.uc.dto.DeptSaveOrUpdateReq;
+import com.nb6868.onex.uc.dto.DeptUpdateStateReq;
 import com.nb6868.onex.uc.entity.DeptEntity;
 import com.nb6868.onex.uc.service.DeptService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -104,6 +105,18 @@ public class DeptController {
         DeptDTO dto = ConvertUtils.sourceToTarget(entity, DeptDTO.class);
 
         return new Result<DeptDTO>().success(dto);
+    }
+
+    @PostMapping("updateState")
+    @Operation(summary = "更新状态")
+    @LogOperation("更新状态")
+    @RequiresPermissions(value = {"admin:super", "admin:uc", "uc:dept:edit"}, logical = Logical.OR)
+    public Result<?> updateState(@Validated @RequestBody DeptUpdateStateReq req) {
+        // 判断数据是否存在
+        AssertUtils.isFalse(deptService.hasIdRecord(req.getId()), ErrorCode.DB_RECORD_NOT_EXISTED);
+        // 状态变更
+        boolean ret = deptService.lambdaUpdate().eq(DeptEntity::getId, req.getId()).set(DeptEntity::getState, req.getState()).update(new DeptEntity());
+        return new Result<>().bool(ret);
     }
 
     @PostMapping("delete")

@@ -34,8 +34,6 @@ import java.util.*;
 public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
 
     @Autowired
-    UserService userService;
-    @Autowired
     DeptUserService deptUserService;
 
     /**
