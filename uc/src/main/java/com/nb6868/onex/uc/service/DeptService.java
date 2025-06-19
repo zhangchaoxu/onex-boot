@@ -71,6 +71,8 @@ public class DeptService extends DtoService<DeptDao, DeptEntity, DeptDTO> {
         }
         // 处理数据
         boolean ret = saveOrUpdateById(entity);
+        // 解释一下为什么不在dept状态disable的时候，将关系表都删除
+        // 因为一旦删除了，后续dept重新激活，关系数据就丢了需要重新配置
         AssertUtils.isFalse(ret, "数据更新保存失败");
         return entity;
     }

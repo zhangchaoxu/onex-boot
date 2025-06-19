@@ -59,6 +59,10 @@ public class DeptEntity extends BaseEntity {
      * 排序
      */
 	private Integer sort;
+	/**
+	 * 状态
+	 */
+	private Integer state;
     /**
      * 租户编码
      */

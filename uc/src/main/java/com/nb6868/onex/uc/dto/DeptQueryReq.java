@@ -16,6 +16,10 @@ public class DeptQueryReq extends PageReq {
     private Integer type;
 
     @Query
+    @Schema(description = "状态")
+    private Integer state;
+
+    @Query
     @Schema(description = "编码")
     private String code;
 

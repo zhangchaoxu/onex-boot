@@ -2,7 +2,9 @@ package com.nb6868.onex.uc.dto;
 
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.BaseDTO;
+import com.nb6868.onex.common.validator.group.DefaultGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -31,6 +33,9 @@ public class DeptDTO extends BaseDTO {
 
     @Schema(description = "排序")
     private Integer sort;
+
+    @Schema(description = "状态")
+    private Integer state;
 
     @Schema(description = "第三方部门信息")
     private JSONObject oauthInfo;

@@ -89,6 +89,39 @@ public interface UcConst {
     }
 
     /**
+     * 部门状态
+     */
+    @Getter
+    @AllArgsConstructor
+    enum DeptStateEnum {
+
+        /**
+         * 详见name
+         */
+        DISABLE(0, "停用"),
+        ENABLED(1, "正常");
+
+        private int code;
+        private String title;
+
+        public static DeptStateEnum findByCode(Integer codeValue) {
+            return Stream.of(values())
+                    .filter(p -> ObjUtil.equal(codeValue, p.getCode()))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        public static String getTitleByCode(Integer codeValue) {
+            DeptStateEnum r = findByCode(codeValue);
+            return ObjUtil.isNull(r) ? "未定义" + codeValue : r.getTitle();
+        }
+
+        public static boolean isValid(Integer codeValue) {
+            return findByCode(codeValue) != null;
+        }
+    }
+
+    /**
      * 参数类型
      */
     @Getter

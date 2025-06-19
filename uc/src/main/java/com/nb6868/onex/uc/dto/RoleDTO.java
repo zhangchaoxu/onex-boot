@@ -24,19 +24,15 @@ public class RoleDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "角色编码")
-    @Length(max = 50, message = "请限制编码50字以内", groups = DefaultGroup.class)
     private String code;
 
     @Schema(description = "名称")
-    @NotBlank(message = "{name.require}", groups = DefaultGroup.class)
     private String name;
 
     @Schema(description = "排序")
-    @NotNull(message = "排序不能为空", groups = DefaultGroup.class)
     private Integer sort;
 
     @Schema(description = "状态")
-    @NotNull(message = "状态不能为空", groups = DefaultGroup.class)
     private Integer state;
 
     @Schema(description = "备注")
