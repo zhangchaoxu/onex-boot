@@ -16,7 +16,6 @@ public interface BaseLogService {
      */
     void saveLog(LogBody log);
 
-
     /**
      * 获得连续登录失败的次数
      */

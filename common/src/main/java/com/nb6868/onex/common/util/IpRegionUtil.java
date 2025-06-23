@@ -65,7 +65,7 @@ public class IpRegionUtil {
      * 自定义解析ip地址
      *
      * @param ipStr ipStr
-     * @return 返回结果例 [河南省, 洛阳市, 洛龙区]
+     * @return 返回结果例 国家|区域|省份|城市|ISP，缺省的地域信息默认是0
      */
     public static List<String> getRegionList(String ipStr) {
         List<String> regionList = new ArrayList<>();
@@ -89,7 +89,7 @@ public class IpRegionUtil {
      * 自定义解析ip地址
      *
      * @param ipStr ipStr
-     * @return 返回结果例 河南省|洛阳市|洛龙区
+     * @return 返回结果例 国家|区域|省份|城市|ISP，缺省的地域信息默认是0
      */
     public static String getRegion(String ipStr) {
         if (StrUtil.isBlank(ipStr)) {

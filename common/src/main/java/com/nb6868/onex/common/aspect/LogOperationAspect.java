@@ -6,6 +6,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -190,6 +191,8 @@ public class LogOperationAspect {
                 }
             }*/
         }
+        // 发布事件保存数据库
+        // SpringUtil.getApplicationContext().publishEvent(operLog);
         logService.saveLog(logEntity);
     }
 
