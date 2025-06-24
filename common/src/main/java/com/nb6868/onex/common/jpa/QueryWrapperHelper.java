@@ -261,30 +261,27 @@ public class QueryWrapperHelper {
                                 }
                                 break;
                             case NOT_BETWEEN:
-                                if (val instanceof List) {
-                                    List<?> list = (List<?>) val;
+                                if (val instanceof List<?> list) {
                                     if (CollUtil.emptyIfNull(list).size() == 2) {
                                         queryWrapper.notBetween(column, list.get(0), list.get(1));
                                     }
                                 }
                                 break;
                             case BETWEEN:
-                                if (val instanceof List) {
-                                    List<?> list = (List<?>) val;
+                                if (val instanceof List<?> list) {
                                     if (CollUtil.emptyIfNull(list).size() == 2) {
                                         queryWrapper.between(column, list.get(0), list.get(1));
                                     } else {
-                                        log.error("QueryType.BETWEEN传参个数需为2个");
+                                        // log.error("QueryType.BETWEEN传参个数需为2个");
                                     }
                                 }
                                 break;
                             case BETWEEN_TIME:
-                                if (val instanceof List) {
-                                    List<?> list = (List<?>) val;
+                                if (val instanceof List<?> list) {
                                     if (CollUtil.emptyIfNull(list).size() == 2) {
                                         queryWrapper.between(column, DateUtil.parse(list.get(0).toString()), DateUtil.parse(list.get(1).toString()));
                                     } else {
-                                        log.error("QueryType.BETWEEN_TIME传参个数需为2个");
+                                        // log.error("QueryType.BETWEEN_TIME传参个数需为2个");
                                     }
                                 }
                                 break;
