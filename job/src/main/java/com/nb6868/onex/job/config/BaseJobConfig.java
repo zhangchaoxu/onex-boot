@@ -27,9 +27,9 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
             // 真正执行的时候,再从数据库判断一遍
             JobEntity job = jobService.getById(jobId);
             if (job == null) {
-                log.error("job run Id=[{}], not found", jobId);
+                log.info("job run Id=[{}], not found", jobId);
             } else if (job.getState() != JobConst.JobStateEnum.NORMAL.getCode()) {
-                log.error("job run Id=[{}], state=[{}] abnormal", jobId, job.getState());
+                log.info("job run Id=[{}], state=[{}] abnormal", jobId, job.getState());
             } else {
                 log.info("job run Id=[{}], go start", jobId);
                 jobService.run(job, job.getParams());
@@ -38,9 +38,9 @@ public abstract class BaseJobConfig implements SchedulingConfigurer {
             // 配置参数要再从数据库读一遍，否则不会变更
             JobEntity job = jobService.getById(jobId);
             if (job == null) {
-                log.error("job trigger Id=[{}], not found", jobId);
+                log.info("job trigger Id=[{}], not found", jobId);
             } else if (!CronExpression.isValidExpression(job.getCron())) {
-                log.error("job trigger Id=[{}], cron=[{}] is not valid", jobId, job.getCron());
+                log.info("job trigger Id=[{}], cron=[{}] is not valid", jobId, job.getCron());
             } else {
                 // 不管是否有效，加入下一个trigger
                 log.info("job trigger Id=[{}], cron=[{}] add next execution", jobId, job.getCron());

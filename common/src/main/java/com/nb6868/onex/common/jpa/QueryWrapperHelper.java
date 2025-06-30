@@ -287,11 +287,13 @@ public class QueryWrapperHelper {
                                 break;
                             // 分页接口中,需要过滤掉order和limit
                             case ORDER_BY:
-                                if (val instanceof List) {
-                                    // 注意要将参数驼峰转下划线
-                                    CollUtil.emptyIfNull((List<SortItem>) val).forEach(sortItem -> queryWrapper.orderByAsc(StrUtil.isNotBlank(sortItem.getColumn()) && sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())).orderByDesc(StrUtil.isNotBlank(sortItem.getColumn()) && !sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())));
-                                } else {
-                                    log.error("QueryType.ORDER_BY参数需为List");
+                                if (val != null) {
+                                    if (val instanceof List) {
+                                        // 注意要将参数驼峰转下划线
+                                        CollUtil.emptyIfNull((List<SortItem>) val).forEach(sortItem -> queryWrapper.orderByAsc(StrUtil.isNotBlank(sortItem.getColumn()) && sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())).orderByDesc(StrUtil.isNotBlank(sortItem.getColumn()) && !sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())));
+                                    } else {
+                                        log.error("QueryType.ORDER_BY参数需为List");
+                                    }
                                 }
                                 break;
                             case LIMIT:
