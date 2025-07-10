@@ -5,10 +5,11 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.5.41</version>
+        <version>4.5.58</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ip2region</artifactId>
+    <name>ip2region</name>
     <packaging>jar</packaging>
     <description>离线IP地址定位</description>
 

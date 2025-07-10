@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <groupId>com.nb6868.onex</groupId>
     <artifactId>onex-boot</artifactId>
-    <version>4.5.41</version>
+    <version>4.5.58</version>
     <name>onex-boot</name>
     <description>OneX Admin Boot</description>
     <url>https://onex.nb6868.com/</url>
@@ -64,7 +64,7 @@
         <java.version>17</java.version>
         <!-- maven build libs -->
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
+        <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
         <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
@@ -72,7 +72,7 @@
         <!-- libs -->
         <shiro.version>2.0.5</shiro.version>
         <poi.version>5.4.1</poi.version>
-        <onex.version>4.5.41</onex.version>
+        <onex.version>4.5.58</onex.version>
     </properties>
 
     <dependencies>
@@ -94,31 +94,6 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-    <!-- aliyun maven repo
-    <repositories>
-        <repository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-    -->
 
     <profiles>
         <profile>
@@ -134,26 +109,21 @@
             </properties>
             <distributionManagement>
                 <snapshotRepository>
-                    <id>ossrh</id>
+                    <id>central</id>
                     <url>https://central.sonatype.com/repository/maven-snapshots/</url>
                 </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
-                </repository>
             </distributionManagement>
             <build>
                 <plugins>
-                    <!--将组件部署到OSSRH并将其发布到Central Repository-->
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus-staging-maven-plugin.version}</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central-publishing-maven-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://ossrh-staging-api.central.sonatype.com/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
+                            <waitUntil>published</waitUntil>
+                            <autoPublish>true</autoPublish>
                         </configuration>
                     </plugin>
                     <!-- 源码 -->
