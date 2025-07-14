@@ -40,6 +40,13 @@ public class ApiResult<T> implements Serializable {
     @Schema(description = "消息数据")
     private T data;
 
+    /**
+     * 数据是否成功
+     */
+    public boolean isDataSuccess() {
+        return success && data != null;
+    }
+
     public static <T> ApiResult<T> of() {
        /* @SuppressWarnings("unchecked") final ApiResult<T> t = (ApiResult<T>) EMPTY;
         return t;*/
