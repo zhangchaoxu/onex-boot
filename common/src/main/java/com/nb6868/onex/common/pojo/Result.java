@@ -1,5 +1,6 @@
 package com.nb6868.onex.common.pojo;
 
+import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.util.MessageUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,49 +37,56 @@ public class Result<T> implements Serializable {
     @Schema(description = "消息Unix时间戳")
     private Long time = Instant.now().toEpochMilli();
 
-    // @Schema(description = "链路id")
-    // private String traceId = MDC.get("traceId");
+    @Schema(description = "链路id")
+    private String traceId;
 
     public boolean isSuccess() {
         return code == ErrorCode.SUCCESS;
     }
 
     public Result<T> success() {
+        this.setTraceId(MDC.get(Const.TRACE_ID));
         return this;
     }
 
     public Result<T> success(T data) {
+        this.setTraceId(MDC.get(Const.TRACE_ID));
         this.setData(data);
         return this;
     }
 
     public Result<T> success(String msg, T data) {
-        this.msg = msg;
+        this.setTraceId(MDC.get(Const.TRACE_ID));
+        this.setMsg(msg);
         this.setData(data);
         return this;
     }
 
     public Result<T> error() {
-        this.code = ErrorCode.INTERNAL_SERVER_ERROR;
-        this.msg = MessageUtils.getMessage(this.code);
+        this.setTraceId(MDC.get(Const.TRACE_ID));
+        this.setCode(ErrorCode.INTERNAL_SERVER_ERROR);
+        this.setMsg(MessageUtils.getMessage(this.code));
         return this;
     }
 
     public Result<T> error(int code) {
-        this.code = code;
-        this.msg = MessageUtils.getMessage(this.code);
+        this.setTraceId(MDC.get(Const.TRACE_ID));
+        this.setCode(code);
+        this.setMsg(MessageUtils.getMessage(this.code));
         return this;
     }
 
     public Result<T> error(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
+        this.setTraceId(MDC.get(Const.TRACE_ID));
+        this.setCode(code);
+        this.setMsg(msg);
         return this;
     }
 
     public Result<T> error(String msg) {
-        this.code = ErrorCode.INTERNAL_SERVER_ERROR;
-        this.msg = msg;
+        this.setTraceId(MDC.get(Const.TRACE_ID));
+        this.setCode(ErrorCode.INTERNAL_SERVER_ERROR);
+        this.setMsg(msg);
         return this;
     }
 
