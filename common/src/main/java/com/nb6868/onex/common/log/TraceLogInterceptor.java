@@ -1,7 +1,6 @@
 package com.nb6868.onex.common.log;
 
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.Const;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,12 +10,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 /**
  * 链路日志拦截器
  * 注意：主线程中，如果使用了线程池，会导致线程池中丢失MDC信息；需要我们自己重写线程池，在调用线程跳动run之前，获取到主线程的MDC信息，重新put到子线程中的。
- * see https://blog.csdn.net/yangyanping20108/article/details/130410286
+ * see <a href="https://blog.csdn.net/yangyanping20108/article/details/130410286">...</a>
+ *
  * @author Charles zhangchaoxu@gmail.com
  */
 public class TraceLogInterceptor implements HandlerInterceptor {
-
-    public final static String TRACE_ID = "TRACE_ID";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
