@@ -77,9 +77,16 @@ config.externals({ jquery: 'jQuery' })
 
 ## 6. 报错`java.io.IOException: The temporary upload location [/tmp/tomcat.x.x/work/Tomcat/localhost/xxx] is not valid`
 
-对于Multipart上传内容,Springboot会先把文件缓存在tmp文件夹中,然而在CentOS有一个定期清空tmp的机制,因此会导致文件上传功能长时间不用的时候缓存文件夹被清空掉,然后上传失败的问题。    
-注意该问题暴露在前端是错误`No 'Access-Control-Allow-Origin' header is present on the requested resource.`,比较容易误导人。   
-最简单的解决办法是配置文件中加上tomcat.basedir的路径 [参考](https://blog.csdn.net/qq_21383435/article/details/91891664)
+原因分析：在Multipart上传文件时候，Linux环境小红会先将文件缓存在系统临时目录tmp文件夹中,然而在CentOS有一个定期清空tmp的机制,因此会导致文件上传功能长时间不用的时候缓存文件夹被清空掉,然后上传失败的问题。    
+注意该问题暴露在前端是错误`No 'Access-Control-Allow-Origin' header is present on the requested resource.`,比较容易迷惑人。
+解决办法：手动指定一个临时目录，不使用系统的临时目录，配置如下:
+```yaml
+server:
+  tomcat:
+    # 配置tomcat的临时目录
+    basedir: /home/java-service/dc-boot-portal/temp
+```
+[参考](https://blog.csdn.net/qq_21383435/article/details/91891664)
 
 ## 7. 启动报错
 ```
