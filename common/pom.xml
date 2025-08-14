@@ -43,6 +43,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <!-- 排除仍使用了javax.servlet的依赖 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate.validator</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
         </dependency>
         <!-- spring-boot-aop -->
         <dependency>
@@ -53,11 +66,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
         <!-- freemarker -->
         <dependency>
@@ -83,9 +91,9 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
         <!-- MP3.5.9之后，jsqlparser需单独引入 -->
-        <!-- 若使用jdk1.8,需要引入mybatis-plus-jsqlparser-4.9 -->
         <dependency>
             <groupId>com.baomidou</groupId>
+            <!-- 若使用jdk1.8,需要引入mybatis-plus-jsqlparser-4.9 -->
             <artifactId>mybatis-plus-jsqlparser</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
