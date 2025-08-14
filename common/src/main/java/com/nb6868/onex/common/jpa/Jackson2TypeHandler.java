@@ -16,6 +16,9 @@ import java.lang.reflect.Field;
 /**
  * Jackson 实现 JSON 字段类型处理器
  * 重写以实现hutool json中JSONNull的转换
+ * 具体见 [自定义类型处理器](https://baomidou.com/guides/type-handler/)
+ *
+ * @author Charles zhangchaoxu@gmail.com
  */
 @MappedTypes({Object.class})
 @MappedJdbcTypes(JdbcType.VARCHAR)
