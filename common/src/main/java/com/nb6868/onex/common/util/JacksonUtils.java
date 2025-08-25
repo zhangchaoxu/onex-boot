@@ -1,10 +1,10 @@
 package com.nb6868.onex.common.util;
 
 import cn.hutool.core.date.DatePattern;
+import cn.hutool.json.JSONNull;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -62,6 +62,13 @@ public class JacksonUtils {
             SimpleModule simpleModule = new SimpleModule();
             simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
             simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+            // 对hutool的JSONNull做处理
+            simpleModule.addSerializer(JSONNull.class, new JsonSerializer<>() {
+                @Override
+                public void serialize(JSONNull jsonNull, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+                    jsonGenerator.writeNull();
+                }
+            });
             JacksonUtils.mapperBuilder.addModule(simpleModule);
             // 设置
             JacksonUtils.mapperBuilder.disable(MapperFeature.USE_ANNOTATIONS);
