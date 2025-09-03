@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.5.80</version>
+        <version>4.5.82</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -22,18 +22,18 @@
         <druid.version>1.2.27</druid.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-io.version>2.20.0</commons-io.version>
-        <mybatis-plus.version>3.5.12</mybatis-plus.version>
+        <mybatis-plus.version>3.5.14</mybatis-plus.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <hutool.version>5.8.40</hutool.version>
         <ip2region.version>2.7.0</ip2region.version>
         <bcprov.version>1.81</bcprov.version>
         <jsoup.version>1.21.2</jsoup.version>
         <knife4j.version>4.5.0</knife4j.version>
-        <springdoc.version>2.8.11</springdoc.version>
+        <springdoc.version>2.8.12</springdoc.version>
         <weixin.version>4.7.0</weixin.version>
         <aliyun-oss.version>3.18.3</aliyun-oss.version>
         <huaweicloud-obs.version>3.25.7</huaweicloud-obs.version>
-        <aws-s3.version>2.32.30</aws-s3.version>
+        <aws-s3.version>2.33.0</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <fastexcel.version>1.3.0</fastexcel.version>
     </properties>
