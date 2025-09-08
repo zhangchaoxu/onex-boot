@@ -43,6 +43,7 @@
   * [ElasticSearch](boot/ElasticSearch.md)
   * [MongDB](boot/MongoDB.md)
   * [Office支持](boot/Office.md)
+  * [向量数据库](boot/Vector.md)
 
 * 前端
   * [前端](ui/portal.md)
