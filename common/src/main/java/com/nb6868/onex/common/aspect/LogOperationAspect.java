@@ -6,7 +6,6 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -26,14 +25,13 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.lionsoul.ip2region.xdb.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -63,16 +61,24 @@ public class LogOperationAspect {
     private boolean logIp2RegionEnable;
     @Value("${onex.log.ip2region.path}")
     private String logIp2RegionFilePath;
+    @Value("${onex.log.ip2region.version:IPV4}")
+    private String logIp2RegionVersion;
 
     @PostConstruct
     public void init() {
         log.info("onex.log.ip2region.enable={}", logIp2RegionEnable);
+        Version version;
+        try {
+            version = Version.fromName(logIp2RegionVersion);
+        } catch (Exception e) {
+            version = Version.IPv4;
+        }
         if (logIp2RegionEnable) {
             if (StrUtil.isNotBlank(logIp2RegionFilePath)) {
                 // 从文件读取
                 if (FileUtil.exist(logIp2RegionFilePath) && FileUtil.isFile(logIp2RegionFilePath)) {
                     TimeInterval timer = DateUtil.timer();
-                    logIp2RegionEnable = IpRegionUtil.initFromFile(logIp2RegionFilePath);
+                    logIp2RegionEnable = IpRegionUtil.initFromFile(logIp2RegionFilePath, version);
                     log.info("ip2region init from file {}:{}", logIp2RegionFilePath, timer.intervalPretty());
                 } else {
                     log.error("ip2region.xdb文件不存在{}", logIp2RegionFilePath);
@@ -81,7 +87,7 @@ public class LogOperationAspect {
             } else {
                 // 从resource读取
                 TimeInterval timer = DateUtil.timer();
-                logIp2RegionEnable = IpRegionUtil.initFromResource(IP_FILE_NAME);
+                logIp2RegionEnable = IpRegionUtil.initFromResource(IP_FILE_NAME, version);
                 log.info("ip2region init from resource {}:{}", IP_FILE_NAME, timer.intervalPretty());
             }
         }

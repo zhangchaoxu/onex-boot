@@ -1,10 +1,12 @@
 package com.nb6868.onex.common.util;
 
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.stream.StreamUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.lionsoul.ip2region.xdb.LongByteArray;
 import org.lionsoul.ip2region.xdb.Searcher;
+import org.lionsoul.ip2region.xdb.Version;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.InputStream;
@@ -30,12 +32,21 @@ public class IpRegionUtil {
     /**
      * 初始化数据
      */
-    public static boolean initFromFile(String filePath) {
+    public static boolean initFromFile(String filePath, Version version) {
         try {
-            // 缓存整个 xdb 数据,从dbPath加载整个 xdb 到内存
-            byte[] cBuff = Searcher.loadContentFromFile(filePath);
+            Searcher.verifyFromFile(filePath);
+        } catch (Exception e) {
+            // 适用性验证失败！！！
+            // 当前查询客户端实现不适用于 dbPath 指定的 xdb 文件的查询.
+            // 应该停止启动服务，使用合适的 xdb 文件或者升级到适合 dbPath 的 Searcher 实现。
+            log.error("初始化ip2region.xdb文件失败,当前查询客户端实现不适用于 dbPath 指定的 xdb 文件的查询.");
+            return false;
+        }
+        try {
+            // 缓存整个 xdb 数据,从dbPath加载整个 xdb 到内存, 使用 LongByteArray 来存储，避免 xdb 文件过大的时候 int 类型的溢出
+            LongByteArray cBuff = Searcher.loadContentFromFile(filePath);
             // 使用上述的 cBuff 创建一个完全基于内存的查询对象
-            IP_SEARCHER = Searcher.newWithBuffer(cBuff);
+            IP_SEARCHER = Searcher.newWithBuffer(version, cBuff);
             return true;
         } catch (Throwable e) {
             log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);
@@ -46,14 +57,12 @@ public class IpRegionUtil {
     /**
      * 初始化数据
      */
-    public static boolean initFromResource(String resourcePath) {
+    public static boolean initFromResource(String resourcePath, Version version) {
         try {
             // 从classpath的resource中读取stream=>byte[]
-            ClassPathResource classPathResource = new ClassPathResource(resourcePath);
-            InputStream inputStream = classPathResource.getInputStream();
-            byte[] cBuff = IoUtil.readBytes(inputStream);
-            // 使用上述的 cBuff 创建一个完全基于内存的查询对象
-            IP_SEARCHER = Searcher.newWithBuffer(cBuff);
+            byte[] cBuff = ResourceUtil.readBytes(resourcePath);
+            // 使用上述的cBuff创建一个完全基于内存的查询对象
+            IP_SEARCHER = Searcher.newWithBuffer(version, new LongByteArray(cBuff));
             return true;
         } catch (Throwable e) {
             log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);
