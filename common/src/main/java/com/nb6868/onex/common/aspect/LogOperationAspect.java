@@ -25,7 +25,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.lionsoul.ip2region.xdb.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -67,18 +66,13 @@ public class LogOperationAspect {
     @PostConstruct
     public void init() {
         log.info("onex.log.ip2region.enable={}", logIp2RegionEnable);
-        Version version;
-        try {
-            version = Version.fromName(logIp2RegionVersion);
-        } catch (Exception e) {
-            version = Version.IPv4;
-        }
+
         if (logIp2RegionEnable) {
             if (StrUtil.isNotBlank(logIp2RegionFilePath)) {
                 // 从文件读取
                 if (FileUtil.exist(logIp2RegionFilePath) && FileUtil.isFile(logIp2RegionFilePath)) {
                     TimeInterval timer = DateUtil.timer();
-                    logIp2RegionEnable = IpRegionUtil.initFromFile(logIp2RegionFilePath, version);
+                    logIp2RegionEnable = IpRegionUtil.initFromFile(logIp2RegionFilePath, logIp2RegionVersion);
                     log.info("ip2region init from file {}:{}", logIp2RegionFilePath, timer.intervalPretty());
                 } else {
                     log.error("ip2region.xdb文件不存在{}", logIp2RegionFilePath);
@@ -87,7 +81,7 @@ public class LogOperationAspect {
             } else {
                 // 从resource读取
                 TimeInterval timer = DateUtil.timer();
-                logIp2RegionEnable = IpRegionUtil.initFromResource(IP_FILE_NAME, version);
+                logIp2RegionEnable = IpRegionUtil.initFromResource(IP_FILE_NAME, logIp2RegionVersion);
                 log.info("ip2region init from resource {}:{}", IP_FILE_NAME, timer.intervalPretty());
             }
         }

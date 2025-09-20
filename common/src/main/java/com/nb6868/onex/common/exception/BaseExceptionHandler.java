@@ -336,8 +336,7 @@ public abstract class BaseExceptionHandler {
         logEntity.setRequestTime(0L);
         logEntity.setOperation("exception");
         // 保存异常信息
-        if (ex instanceof OnexException) {
-            OnexException onexE = (OnexException) ex;
+        if (ex instanceof OnexException onexE) {
             logEntity.setState(onexE.getCode());
             logEntity.setContent(onexE.getMsg());
         } else {
