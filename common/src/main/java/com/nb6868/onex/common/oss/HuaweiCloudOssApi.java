@@ -31,8 +31,9 @@ import java.util.*;
 
 /**
  * 华为云OBS Rest接口
- *
  * <a href="https://support.huaweicloud.com/api-obs/obs_04_0005.html">使用REST API向OSS发起请求</a>
+ *
+ * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
 public class HuaweiCloudOssApi {

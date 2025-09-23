@@ -5,7 +5,6 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONObject;
-import com.aliyun.oss.OSSException;
 import com.nb6868.onex.common.pojo.ApiResult;
 import com.obs.services.ObsClient;
 import com.obs.services.exception.ObsException;
@@ -99,7 +98,7 @@ public class HuaweiCloudOssService extends AbstractOssService {
         ApiResult<Boolean> apiResult = ApiResult.of(false);
         try {
             apiResult.setData(s3Client.doesObjectExist(bucketName, objectKey));
-        } catch (OSSException | com.aliyun.oss.ClientException e) {
+        } catch (ObsException e) {
             apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, "doesObjectExist exception:" + e.getMessage());
         }
         return apiResult;
