@@ -10,7 +10,7 @@ ALTER TABLE `sys_log` ADD COLUMN `request_ip` varchar(50) NULL COMMENT '请求IP
 # 定时任务日志表加入创建人
 ALTER TABLE `sys_job_log` ADD COLUMN `create_name` varchar(100) NULL COMMENT '创建者名字' AFTER `create_id`;
 
-# 部门表加入第三方关联信息h和PID
+# 部门表加入第三方关联信息和PID
 ALTER TABLE `uc_dept` ADD COLUMN `pid` bigint NOT NULL DEFAULT 0 COMMENT 'PID' AFTER `id`, ADD COLUMN `oauth_deptid` varchar(200) NULL COMMENT '第三方部门id' AFTER `sort`, ADD COLUMN `oauth_info` json NULL COMMENT '第三方部门信息' AFTER `oauth_deptid`;
 
 # 新建部门用户关系表
