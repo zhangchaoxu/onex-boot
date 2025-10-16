@@ -1,5 +1,7 @@
 # MySQL Cheat Sheet
 
+## 常用MySQ配置和操作
+
 ### 大小写敏感
 mysql设置为大小写不敏感 
 方法：修改/etc/my.cnf文件,在[mysqld]节点加入配置`lower_case_table_names = 1`,然后重启mysql(`service mysqld restart`)
@@ -56,4 +58,26 @@ SQLException; SQL state [HY000]; error code [1114]; The table '/tmp/#sql40d5_e_1
 ```
 [mysqld]
 internal_tmp_mem_storage_engine = MEMORY
+```
+
+## MySQL版本更新
+内网环境基于rpm的小版本更新
+1. 下载最新版本[mysql-8.0.43-1.el7.x86_64.rpm-bundle.tar](https://dev.mysql.com/downloads/mysql/)，并上传到服务器/data/mysql-rpm/8.0.37上
+2. 解压tar文件
+```shell
+cd /data/mysql-rpm/8.0.37
+tar xf mysql-8.0.xx-1.el7.x86_64.rpm-bundle.tar
+```
+3. 备份MySQL数据与配置，并关停MySQL服务
+```shell
+systemctl stop mysqld
+```
+4. 更新已安装的rpm,并等待执行完成
+```shell
+yum update mysql-community-*-8.0.43-1.el7.x86_64.rpm
+```
+5. 重启MySQL服务，并校验已安装版本
+```shell
+systemctl start mysqld
+mysql -V
 ```
