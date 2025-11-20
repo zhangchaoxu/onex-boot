@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.util;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -30,9 +31,9 @@ public class SignUtils {
      * @param data 明文
      * @return 密文
      */
-    public static String signMd5(String data) {
+    /*public static String signMd5(String data) {
         return SecureUtil.md5(data);
-    }
+    }*/
 
     /**
      * 加密
@@ -42,19 +43,19 @@ public class SignUtils {
      * @param algorithm 算法 如:HmacSHA1/HmacSHA256
      * @return 密文
      */
-    public static String signToBase64(String data, String key, String algorithm) {
+    /*public static String signToBase64(String data, String key, String algorithm) {
         try {
             // 加密
             javax.crypto.Mac mac = javax.crypto.Mac.getInstance(algorithm);
-            mac.init(new javax.crypto.spec.SecretKeySpec(key.getBytes(StandardCharsets.UTF_8.name()), algorithm));
-            byte[] signData = mac.doFinal(data.getBytes(StandardCharsets.UTF_8.name()));
+            mac.init(new javax.crypto.spec.SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), algorithm));
+            byte[] signData = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
             // base64
             return java.util.Base64.getEncoder().encodeToString(signData);
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             log.error("SignUtils sign error", e);
             return null;
         }
-    }
+    }*/
 
     public static String paramToQueryString(Map<String, Object> params) {
         return paramToQueryString(params, "&", "=", true);
@@ -78,7 +79,7 @@ public class SignUtils {
         MapUtil.sort(params).forEach((key, value) -> {
             if (!(value instanceof File)) {
                 if (urlEncode) {
-                    stringJoiner.append(urlEncode(key) + keyValueDelimiter + urlEncode(ObjectUtil.defaultIfNull(value, "").toString()));
+                    stringJoiner.append(URLEncodeUtil.encodeAll(key) + keyValueDelimiter + URLEncodeUtil.encodeAll(ObjectUtil.defaultIfNull(value, "").toString()));
                 } else {
                     stringJoiner.append(key + keyValueDelimiter + ObjectUtil.defaultIfNull(value, "").toString());
                 }
@@ -90,15 +91,15 @@ public class SignUtils {
     /**
      * 特殊urlEncode
      */
-    @SneakyThrows
+    /*@SneakyThrows
     public static String urlEncode(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8.name())
+        // RFC3986
+        return URLEncoder.encode(value, StandardCharsets.UTF_8)
                 .replace("+", "%20")
                 .replace("*", "%2A")
                 .replace("~", "%7E")
                 .replace("/", "%2F");
-    }
-
+    }*/
 
     public static <T> T decodeAES(String body, String aesKey, Class<T> pojoClass) {
         return decodeAES(body, aesKey, pojoClass, null);
@@ -115,6 +116,5 @@ public class SignUtils {
         String json = SecureUtil.aes(aesKey.getBytes()).decryptStr(body);
         return JacksonUtils.jsonToPojo(json, pojoClass, defaultVal);
     }
-
 
 }

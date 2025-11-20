@@ -5,7 +5,10 @@ import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.HMac;
+import cn.hutool.crypto.digest.HmacAlgorithm;
 import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpStatus;
@@ -343,8 +346,8 @@ public class DingTalkApi {
         }
         // 处理参数
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String signature = SignUtils.signToBase64(timestamp, appSecret, "HmacSHA256");
-        String url = HttpUtil.urlWithForm(BASE_URL + "/sns/getuserinfo_bycode", Dict.create().set("accessKey", appId).set("timestamp", timestamp).set("signature", SignUtils.urlEncode(signature)), Charset.defaultCharset(), false);
+        String signature = new HMac(HmacAlgorithm.HmacSHA256, appSecret.getBytes()).digestBase64(timestamp, false);
+        String url = HttpUtil.urlWithForm(BASE_URL + "/sns/getuserinfo_bycode", Dict.create().set("accessKey", appId).set("timestamp", timestamp).set("signature", URLEncodeUtil.encodeAll(signature)), Charset.defaultCharset(), false);
         JSONObject formBody = new JSONObject().set("tmp_auth_code", code);
         // 调用接口
         ApiResult<JSONObject> callApiResult = baseCallApiPostJson(url, null, formBody);

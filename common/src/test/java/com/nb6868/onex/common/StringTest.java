@@ -11,6 +11,8 @@ import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.HMac;
+import cn.hutool.crypto.digest.HmacAlgorithm;
 import cn.hutool.extra.expression.ExpressionEngine;
 import cn.hutool.extra.expression.engine.spel.SpELEngine;
 import cn.hutool.http.HtmlUtil;
@@ -313,7 +315,8 @@ public class StringTest {
     @Test
     @DisplayName("urlEncode")
     void urlEncode() {
-        String url = "https://oss.xxx.xxx.com/xxx/xxx/26755/xxx/27B9F59F-4CAD-4275-8A1A-0114CEED6C8E.jpg?x-oss-process=image/resize,l_1920/watermark,image_c21qY193YXRlcm1hcmsucG5n,g_ne/watermark,text_MjAyNS0wMS0yMyAyMjo0ODo0OA,color_ffffff,size_28,g_sw,shadow_50,x_30,y_115/watermark,text_5LyN5a625bKX5Yy65aS36Zm15aSn6YGTNDIz5Y-35ruo5rGf6aao6IuR,color_ffffff,size_28,g_sw,shadow_50,x_30,y_70/watermark,text_MTExLjM0Njg2NSAzMC42NDc1Njg,color_ffffff,size_28,g_sw,shadow_50,x_30,y_30";
+        //String url = "https://oss.xxx.xxx.com/xxx/xxx/26755/xxx/27B9F59F-4CAD-4275-8A1A-0114CEED6C8E.jpg?x-oss-process=image/resize,l_1920/watermark,image_c21qY193YXRlcm1hcmsucG5n,g_ne/watermark,text_MjAyNS0wMS0yMyAyMjo0ODo0OA,color_ffffff,size_28,g_sw,shadow_50,x_30,y_115/watermark,text_5LyN5a625bKX5Yy65aS36Zm15aSn6YGTNDIz5Y-35ruo5rGf6aao6IuR,color_ffffff,size_28,g_sw,shadow_50,x_30,y_70/watermark,text_MTExLjM0Njg2NSAzMC42NDc1Njg,color_ffffff,size_28,g_sw,shadow_50,x_30,y_30";
+        String url = "Zjha自己按模糊S/+*~";
         String encodeQuery = URLEncodeUtil.encodeQuery(url);
         String encodeFragment = URLEncodeUtil.encodeFragment(url);
         String encodeAll = URLEncodeUtil.encodeAll(url);
@@ -354,6 +357,16 @@ public class StringTest {
         sj.append("张三");
         log.error(sj.toString());
         // 输出：你好null张三
+    }
+
+    @Test
+    @DisplayName("hmacsha1")
+    void hnacsha1() {
+        String plainText = "";
+        String sign = new HMac(HmacAlgorithm.HmacSHA1, ("123456" + "&").getBytes()).digestBase64(plainText, false);
+        // String sign2 = URLEncodeUtil.encodeAll(SignUtils.signToBase64(plainText, "123456" + "&", "HmacSHA1"));
+        log.error(sign);
+        //log.error(sign2);
     }
 
 }

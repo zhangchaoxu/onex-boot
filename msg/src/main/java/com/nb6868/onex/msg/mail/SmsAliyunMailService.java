@@ -2,9 +2,12 @@ package com.nb6868.onex.msg.mail;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.HMac;
+import cn.hutool.crypto.digest.HmacAlgorithm;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
@@ -28,6 +31,7 @@ import java.util.Map;
 /**
  * 短信 阿里云 消息服务
  * see {<a href="https://help.aliyun.com/document_detail/59210.html">...</a>}
+ * see {<a href="https://help.aliyun.com/zh/sms/developer-reference/api-dysmsapi-2017-05-25-sendsms">...</a>}
  *
  * @author Charles zhangchaoxu@gmail.com
  */
@@ -68,7 +72,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         // 封装阿里云接口参数
         Map<String, Object> paras = new HashMap<>();
         paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", IdUtil.fastUUID());
+        paras.put("SignatureNonce", IdUtil.fastSimpleUUID());
         paras.put("AccessKeyId", mailTpl.getParams().getStr("AppKeyId"));
         paras.put("RegionId", mailTpl.getParams().getStr("RegionId", "cn-hangzhou"));
         paras.put("SignName", mailTpl.getParams().getStr("SignName"));
@@ -80,19 +84,20 @@ public class SmsAliyunMailService extends AbstractMailService {
         paras.put("Action", "SendSms");
         paras.put("Version", "2017-05-25");
         paras.put("PhoneNumbers", request.getMailTo());
-        paras.put("TemplateParam", request.getContentParams());
+        paras.put("TemplateParam", request.getContentParams().toString());
         // 外部流水扩展字段
         paras.put("OutId", String.valueOf(mailLog.getId()));
         // 去除签名关键字Key
         paras.remove("Signature");
         String sortedQueryString = SignUtils.paramToQueryString(paras);
         // 参数签名
-        String sign = SignUtils.urlEncode(SignUtils.signToBase64("GET" + "&" + SignUtils.urlEncode("/") + "&" + SignUtils.urlEncode(sortedQueryString), mailTpl.getParams().getStr("AppKeySecret") + "&", "HmacSHA1"));
+        String plainText = "GET" + "&" + URLEncodeUtil.encodeAll("/") + "&" + URLEncodeUtil.encodeAll(sortedQueryString);
+        String sign = new HMac(HmacAlgorithm.HmacSHA1, (mailTpl.getParams().getStr("AppKeySecret") + "&").getBytes()).digestBase64(plainText, false);
         // 签名加回去
-        paras.put("Signature", sign);
+        paras.put("Signature", URLEncodeUtil.encodeQuery(sign));
         // 调用接口发送
         try {
-            String url = HttpUtil.urlWithForm("http://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset(), false);
+            String url = HttpUtil.urlWithForm("https://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset(), false);
             String result = HttpUtil.get(url);
             JSONObject resultJson = JSONUtil.parseObj(result);
             mailLog.setResult(result);
