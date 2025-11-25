@@ -94,7 +94,8 @@ public class SmsAliyunMailService extends AbstractMailService {
         String plainText = "GET" + "&" + URLEncodeUtil.encodeAll("/") + "&" + URLEncodeUtil.encodeAll(sortedQueryString);
         String sign = new HMac(HmacAlgorithm.HmacSHA1, (mailTpl.getParams().getStr("AppKeySecret") + "&").getBytes()).digestBase64(plainText, false);
         // 签名加回去
-        paras.put("Signature", URLEncodeUtil.encodeQuery(sign));
+        //paras.put("Signature", URLEncodeUtil.encodeAll(sign));
+        paras.put("Signature", sign);
         // 调用接口发送
         try {
             String url = HttpUtil.urlWithForm("https://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset(), false);

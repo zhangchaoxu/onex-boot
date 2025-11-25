@@ -30,6 +30,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.DigestUtils;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -363,10 +365,14 @@ public class StringTest {
     @DisplayName("hmacsha1")
     void hnacsha1() {
         String plainText = "";
-        String sign = new HMac(HmacAlgorithm.HmacSHA1, ("123456" + "&").getBytes()).digestBase64(plainText, false);
-        // String sign2 = URLEncodeUtil.encodeAll(SignUtils.signToBase64(plainText, "123456" + "&", "HmacSHA1"));
+        String sign = new HMac(HmacAlgorithm.HmacSHA1, ("" + "&").getBytes()).digestBase64(plainText, false);
+        // 签名加回去
         log.error(sign);
-        //log.error(sign2);
+        log.error(URLEncodeUtil.encode(sign));
+        log.error(URLEncodeUtil.encodeQuery(sign));
+        log.error(URLEncodeUtil.encodePathSegment(sign));
+        log.error(URLEncodeUtil.encodeAll(sign));
+        log.error(URLEncoder.encode(sign, StandardCharsets.UTF_8));
     }
 
 }
