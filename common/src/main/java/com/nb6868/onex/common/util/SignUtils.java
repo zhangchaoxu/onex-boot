@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -89,17 +90,18 @@ public class SignUtils {
     }
 
     /**
-     * 特殊urlEncode
+     * 阿里云的弱智urlEncode
      */
-    /*@SneakyThrows
-    public static String urlEncode(String value) {
-        // RFC3986
-        return URLEncoder.encode(value, StandardCharsets.UTF_8)
-                .replace("+", "%20")
-                .replace("*", "%2A")
-                .replace("~", "%7E")
-                .replace("/", "%2F");
-    }*/
+    public static String fuckAliyunUrlEncode(String value, boolean ignoreSlashes) {
+        String encoded = URLEncoder.encode(value, Charset.defaultCharset());
+        encoded = StrUtil.replace(encoded, "+", "%20");
+        encoded = StrUtil.replace(encoded, "*", "%2A");
+        encoded = StrUtil.replace(encoded, "%7E", "~");
+        if (ignoreSlashes) {
+            encoded = StrUtil.replace(encoded, "%2F", "/");
+        }
+        return encoded;
+    }
 
     public static <T> T decodeAES(String body, String aesKey, Class<T> pojoClass) {
         return decodeAES(body, aesKey, pojoClass, null);

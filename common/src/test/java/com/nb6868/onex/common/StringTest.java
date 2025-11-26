@@ -373,6 +373,9 @@ public class StringTest {
         log.error(URLEncodeUtil.encodePathSegment(sign));
         log.error(URLEncodeUtil.encodeAll(sign));
         log.error(URLEncoder.encode(sign, StandardCharsets.UTF_8));
+        log.error("-----");
+        log.error(SecureUtil.sha256(""));
+        log.error(SecureUtil.sha256("{}"));
     }
 
 }

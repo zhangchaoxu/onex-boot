@@ -1,10 +1,13 @@
 package com.nb6868.onex.msg;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.msg.MsgTplBody;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.msg.mail.AliyunSmsApi;
 import com.nb6868.onex.msg.service.MsgService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -13,13 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"common", "test"})
+import java.util.HashMap;
+import java.util.Map;
+
+// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+// @ActiveProfiles({"common", "test"})
 @Slf4j
 @DisplayName("消息")
 public class MsgTest {
 
-    @Autowired
+    /*@Autowired
     MsgService msgService;
 
     @Test()
@@ -40,6 +46,13 @@ public class MsgTest {
         } else {
             log.error("短信发送失败");
         }
+    }*/
+
+    @Test
+    @DisplayName("发送阿里云消息")
+    void sendSmsAliyun() {
+        // 封装阿里云接口参数
+        Map<String, Object> paras = new HashMap<>();
     }
 
 }

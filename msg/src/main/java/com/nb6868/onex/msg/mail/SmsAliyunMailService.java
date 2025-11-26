@@ -1,20 +1,13 @@
 package com.nb6868.onex.msg.mail;
 
-import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.net.URLEncodeUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.HMac;
-import cn.hutool.crypto.digest.HmacAlgorithm;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.msg.MsgSendForm;
 import com.nb6868.onex.common.Const;
-import com.nb6868.onex.common.util.SignUtils;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
 import com.nb6868.onex.msg.entity.MsgLogEntity;
@@ -23,8 +16,6 @@ import com.nb6868.onex.msg.service.MsgLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.Charset;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +62,16 @@ public class SmsAliyunMailService extends AbstractMailService {
 
         // 封装阿里云接口参数
         Map<String, Object> paras = new HashMap<>();
-        paras.put("SignatureMethod", "HMAC-SHA1");
+        paras.put("PhoneNumbers", request.getMailTo());
+        paras.put("SignName", mailTpl.getParams().getStr("SignName"));
+        paras.put("TemplateCode", mailTpl.getParams().getStr("TemplateId"));
+        paras.put("TemplateParam", request.getContentParams().toString());
+        ApiResult<JSONObject> resultJson = AliyunSmsApi.sendSms(mailTpl.getParams().getStr("AppKeyId"), mailTpl.getParams().getStr("AppKeySecret"), mailTpl.getParams().getStr("endPoint", "https://dysmsapi.aliyuncs.com/"), paras);
+        mailLog.setResult(resultJson.getData().toString());
+        mailLog.setState(resultJson.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.getCode() : MsgConst.MailSendStateEnum.FAIL.getCode());
+        mailLogService.updateById(mailLog);
+        return mailLog.getState() == MsgConst.MailSendStateEnum.SUCCESS.getCode();
+      /*  paras.put("SignatureMethod", "HMAC-SHA1");
         paras.put("SignatureNonce", IdUtil.fastSimpleUUID());
         paras.put("AccessKeyId", mailTpl.getParams().getStr("AppKeyId"));
         paras.put("RegionId", mailTpl.getParams().getStr("RegionId", "cn-hangzhou"));
@@ -92,10 +92,10 @@ public class SmsAliyunMailService extends AbstractMailService {
         String sortedQueryString = SignUtils.paramToQueryString(paras);
         // 参数签名
         String plainText = "GET" + "&" + URLEncodeUtil.encodeAll("/") + "&" + URLEncodeUtil.encodeAll(sortedQueryString);
-        String sign = new HMac(HmacAlgorithm.HmacSHA1, (mailTpl.getParams().getStr("AppKeySecret") + "&").getBytes()).digestBase64(plainText, false);
+        // String sign = new HMac(HmacAlgorithm.HmacSHA1, (mailTpl.getParams().getStr("AppKeySecret") + "&").getBytes()).digestBase64(plainText, false);
         // 签名加回去
         //paras.put("Signature", URLEncodeUtil.encodeAll(sign));
-        paras.put("Signature", sign);
+        paras.put("Signature", SignUtils.fuckAliyunUrlEncode(plainText, true));
         // 调用接口发送
         try {
             String url = HttpUtil.urlWithForm("https://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset(), false);
@@ -108,9 +108,7 @@ public class SmsAliyunMailService extends AbstractMailService {
             log.error("AliyunSms", e);
             mailLog.setState(MsgConst.MailSendStateEnum.FAIL.getCode());
             mailLog.setResult(e.getMessage());
-        }
-        mailLogService.updateById(mailLog);
-        return mailLog.getState() == MsgConst.MailSendStateEnum.SUCCESS.getCode();
+        }*/
     }
 
 }
