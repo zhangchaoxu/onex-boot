@@ -230,7 +230,7 @@ public abstract class BaseExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
-        log.error("MethodArgumentNotValidException", e);
+        // log.error("MethodArgumentNotValidException", e);
         Locale.setDefault(LocaleContextHolder.getLocale());
         String errorMsg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
         // 保存日志
