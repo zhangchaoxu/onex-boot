@@ -60,7 +60,7 @@ public class SmsAliyunMailService extends AbstractMailService {
         // 先保存获得id,后续再更新状态和内容
         mailLogService.save(mailLog);
 
-        // 封装阿里云接口参数
+        // 封装阿里云接口参数,V2签名中对于sign字段的传参一致抽风，换V3了
         Map<String, Object> paras = new HashMap<>();
         paras.put("PhoneNumbers", request.getMailTo());
         paras.put("SignName", mailTpl.getParams().getStr("SignName"));
@@ -71,44 +71,6 @@ public class SmsAliyunMailService extends AbstractMailService {
         mailLog.setState(resultJson.isSuccess() ? MsgConst.MailSendStateEnum.SUCCESS.getCode() : MsgConst.MailSendStateEnum.FAIL.getCode());
         mailLogService.updateById(mailLog);
         return mailLog.getState() == MsgConst.MailSendStateEnum.SUCCESS.getCode();
-      /*  paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", IdUtil.fastSimpleUUID());
-        paras.put("AccessKeyId", mailTpl.getParams().getStr("AppKeyId"));
-        paras.put("RegionId", mailTpl.getParams().getStr("RegionId", "cn-hangzhou"));
-        paras.put("SignName", mailTpl.getParams().getStr("SignName"));
-        paras.put("TemplateCode", mailTpl.getParams().getStr("TemplateId"));
-        paras.put("SignatureVersion", "1.0");
-        // "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        paras.put("Timestamp", DateUtil.format(new Date(), DatePattern.UTC_FORMAT));
-        paras.put("Format", "JSON");
-        paras.put("Action", "SendSms");
-        paras.put("Version", "2017-05-25");
-        paras.put("PhoneNumbers", request.getMailTo());
-        paras.put("TemplateParam", request.getContentParams().toString());
-        // 外部流水扩展字段
-        paras.put("OutId", String.valueOf(mailLog.getId()));
-        // 去除签名关键字Key
-        paras.remove("Signature");
-        String sortedQueryString = SignUtils.paramToQueryString(paras);
-        // 参数签名
-        String plainText = "GET" + "&" + URLEncodeUtil.encodeAll("/") + "&" + URLEncodeUtil.encodeAll(sortedQueryString);
-        // String sign = new HMac(HmacAlgorithm.HmacSHA1, (mailTpl.getParams().getStr("AppKeySecret") + "&").getBytes()).digestBase64(plainText, false);
-        // 签名加回去
-        //paras.put("Signature", URLEncodeUtil.encodeAll(sign));
-        paras.put("Signature", SignUtils.fuckAliyunUrlEncode(plainText, true));
-        // 调用接口发送
-        try {
-            String url = HttpUtil.urlWithForm("https://dysmsapi.aliyuncs.com/", paras, Charset.defaultCharset(), false);
-            String result = HttpUtil.get(url);
-            JSONObject resultJson = JSONUtil.parseObj(result);
-            mailLog.setResult(result);
-            mailLog.setState("OK".equalsIgnoreCase(resultJson.getStr("Code")) ? MsgConst.MailSendStateEnum.SUCCESS.getCode() : MsgConst.MailSendStateEnum.FAIL.getCode());
-        } catch (Exception e) {
-            // 接口调用失败
-            log.error("AliyunSms", e);
-            mailLog.setState(MsgConst.MailSendStateEnum.FAIL.getCode());
-            mailLog.setResult(e.getMessage());
-        }*/
     }
 
 }
