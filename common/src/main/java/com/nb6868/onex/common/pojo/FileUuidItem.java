@@ -23,6 +23,6 @@ public class FileUuidItem extends UuidReq {
     private String url;
 
     @Schema(description = "文件大小")
-    private int size;
+    private long size;
 
 }

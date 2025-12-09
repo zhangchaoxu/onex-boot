@@ -30,3 +30,6 @@ CREATE TABLE `uc_dept_user`  (
 
 # 菜单表加入component和meta
 ALTER TABLE `uc_menu` ADD COLUMN `component` varchar(200) NULL COMMENT '组件' AFTER `show_menu`, ADD COLUMN `meta` json NULL COMMENT '元数据' AFTER `component`;
+
+# oss表加入数据
+ALTER TABLE `sys_oss` ADD COLUMN `uuid` varchar(32) NOT NULL COMMENT 'uuid' AFTER `id`, ADD COLUMN `type` varchar(50) NULL COMMENT '类型' AFTER `uuid`, DROP PRIMARY KEY, ADD PRIMARY KEY (`id`, `uuid`) USING BTREE;
