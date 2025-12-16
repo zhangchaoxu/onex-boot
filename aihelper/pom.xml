@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>onex-boot</artifactId>
+        <groupId>com.nb6868.onex</groupId>
+        <version>4.6.20</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>aihelper</artifactId>
+    <name>aihelper</name>
+    <packaging>jar</packaging>
+    <description>AI助手</description>
+
+    <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <skipTests>true</skipTests>
+        <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-log</artifactId>
+            <version>${hutool.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-json</artifactId>
+            <version>${hutool.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>

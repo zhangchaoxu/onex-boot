@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.6.17</version>
+        <version>4.6.20</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>coder</artifactId>
@@ -19,7 +19,6 @@
         <!-- version -->
         <druid.version>1.2.24</druid.version>
        <!-- <commons-configuration.version>2.12.0</commons-configuration.version>-->
-        <hutool.version>5.8.41</hutool.version>
         <velocity.version>2.4.1</velocity.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <screw.version>1.0.5</screw.version>
@@ -61,6 +60,13 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
+            <!-- 排除AI，免得和onexai混淆 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.hutool</groupId>
+                    <artifactId>ai</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- [screw](https://github.com/pingfangushi/screw) -->
         <dependency>

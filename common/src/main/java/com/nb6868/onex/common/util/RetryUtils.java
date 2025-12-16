@@ -46,17 +46,17 @@ public class RetryUtils {
      * @return 执行结果
      */
     public static <T> ApiResult<T> retryApi(Supplier<ApiResult<T>> supplier, int maxAttempts) {
-        ApiResult<T> laststResult = null;
+        ApiResult<T> latestResult = null;
         while (maxAttempts-- > 0) {
-            laststResult = supplier.get();
-            if (laststResult.isSuccess() || !laststResult.isRetry()) {
+            latestResult = supplier.get();
+            if (latestResult.isSuccess() || !latestResult.isRetry()) {
                 // 执行结果表示不许需要再重试了
-                return laststResult;
+                return latestResult;
             } else {
                 // 重试
             }
         }
-        return laststResult;
+        return latestResult;
     }
 
     public static <T> T retryDo(Supplier<T> supplier, Supplier<T> recover, int maxAttempts, Class<? extends Throwable> value) {
