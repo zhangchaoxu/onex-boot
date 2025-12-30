@@ -59,7 +59,9 @@ public class IpRegionUtil {
             // 从classpath的resource中读取stream=>byte[]
             byte[] cBuff = ResourceUtil.readBytes(resourcePath);
             // 使用上述的cBuff创建一个完全基于内存的查询对象
-            IP_SEARCHER = Searcher.newWithBuffer(Version.fromName(version), new LongByteArray(cBuff));
+            LongByteArray longByteArray = new LongByteArray();
+            longByteArray.append(cBuff);
+            IP_SEARCHER = Searcher.newWithBuffer(Version.fromName(version), longByteArray);
             return true;
         } catch (Throwable e) {
             log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);
