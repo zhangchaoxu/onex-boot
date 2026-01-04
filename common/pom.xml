@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.6.27</version>
+        <version>4.6.28</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -26,13 +26,13 @@
         <dynamic-datasource.version>4.5.0</dynamic-datasource.version>
         <ip2region.version>3.3.3</ip2region.version>
         <bcprov.version>1.83</bcprov.version>
-        <jsoup.version>1.21.2</jsoup.version>
+        <jsoup.version>1.22.1</jsoup.version>
         <knife4j.version>4.5.0</knife4j.version>
         <springdoc.version>2.8.14</springdoc.version>
         <weixin.version>4.7.0</weixin.version>
         <aliyun-oss.version>3.18.4</aliyun-oss.version>
         <huaweicloud-obs.version>3.25.10</huaweicloud-obs.version>
-        <aws-s3.version>2.40.16</aws-s3.version>
+        <aws-s3.version>2.41.0</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <fastexcel.version>1.3.0</fastexcel.version>
     </properties>
