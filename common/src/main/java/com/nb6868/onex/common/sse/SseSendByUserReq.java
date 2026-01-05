@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Data
-@Accessors
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "sse发送给用户请求")
 public class SseSendByUserReq extends BaseReq {
