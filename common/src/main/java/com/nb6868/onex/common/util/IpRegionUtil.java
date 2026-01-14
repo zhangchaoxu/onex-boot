@@ -33,36 +33,46 @@ public class IpRegionUtil {
      */
     public static boolean init(String v4File, String v6File) {
         try {
-            InputStream v4Stream = ResourceUtil.getStreamSafe(v4File);
-            InputStream v6Stream = ResourceUtil.getStreamSafe(v6File);
-            ConfigBuilder v4ConfigBuilder = Config.custom()
-                    .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
-                    .setSearchers(15);                       // 设置初始化的查询器数量
-            // .setCacheSliceBytes(int)             // 设置缓存的分片字节数，默认为 50MiB
-            if (null == v4Stream) {
-                if (FileUtil.exist(v4File)) {
-                    v4ConfigBuilder.setXdbPath(v4File);
+            Config v4Config = null;
+            Config v6Config = null;
+            // v4
+            if (StrUtil.isNotBlank(v4File)) {
+                InputStream v4Stream = ResourceUtil.getStreamSafe(v4File);
+                ConfigBuilder v4ConfigBuilder = Config.custom()
+                        .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
+                        .setSearchers(15);                       // 设置初始化的查询器数量
+                // .setCacheSliceBytes(int)             // 设置缓存的分片字节数，默认为 50MiB
+                if (null == v4Stream) {
+                    if (FileUtil.exist(v4File)) {
+                        v4ConfigBuilder.setXdbPath(v4File);
+                    } else {
+                        return false;
+                    }
                 } else {
-                    return false;
+                    v4ConfigBuilder.setXdbInputStream(v4Stream);
                 }
-            } else {
-                v4ConfigBuilder.setXdbInputStream(v4Stream);
+                v4Config = v4ConfigBuilder.asV4();
             }
-
-            ConfigBuilder v6ConfigBuilder = Config.custom()
-                    .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
-                    .setSearchers(15);                       // 设置初始化的查询器数量
-            if (null == v6Stream) {
-                if (FileUtil.exist(v6File)) {
-                    v6ConfigBuilder.setXdbPath(v6File);
+            // v6
+            if (StrUtil.isNotBlank(v6File)) {
+                InputStream v6Stream = ResourceUtil.getStreamSafe(v6File);
+                ConfigBuilder v6ConfigBuilder = Config.custom()
+                        .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
+                        .setSearchers(15);                       // 设置初始化的查询器数量
+                // .setCacheSliceBytes(int)             // 设置缓存的分片字节数，默认为 50MiB
+                if (null == v6Stream) {
+                    if (FileUtil.exist(v6File)) {
+                        v6ConfigBuilder.setXdbPath(v6File);
+                    } else {
+                        return false;
+                    }
                 } else {
-                    return false;
+                    v6ConfigBuilder.setXdbInputStream(v6Stream);
                 }
-            } else {
-                v6ConfigBuilder.setXdbInputStream(v6Stream);
+                v6Config = v6ConfigBuilder.asV6();
             }
             // 3，通过上述配置创建 Ip2Region 查询服务
-            ip2Region = Ip2Region.create(v4ConfigBuilder.asV4(), v6ConfigBuilder.asV6());
+            ip2Region = Ip2Region.create(v4Config, v6Config);
             return true;
         } catch (Throwable e) {
             log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);

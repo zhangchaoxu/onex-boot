@@ -64,7 +64,9 @@ public class LogOperationAspect {
     @PostConstruct
     public void init() {
         log.info("onex.log.ip2region.enable={}", logIp2RegionEnable);
-        if (logIp2RegionEnable) {
+        log.info("onex.log.ip2region.pathv4={}", logIp2RegionFilePathV4);
+        log.info("onex.log.ip2region.pathv6={}", logIp2RegionFilePathV6);
+        if (logIp2RegionEnable && !StrUtil.isAllBlank(logIp2RegionFilePathV4, logIp2RegionFilePathV6)) {
             TimeInterval timer = DateUtil.timer();
             logIp2RegionEnable = IpRegionUtil.init(logIp2RegionFilePathV4, logIp2RegionFilePathV6);
             log.info("ip2region init {}", timer.intervalPretty());
