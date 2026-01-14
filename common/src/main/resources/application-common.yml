@@ -169,7 +169,8 @@ onex:
     ip2region:
       enable: false
       # 路径,如./onex-oss/ip2region/ip2region.xdb
-      path:
+      pathv4: ip2region_v4.xdb
+      pathv6: ip2region_v6.xdb
   # 数据查询过滤
   data-query-filter:
     enable: false

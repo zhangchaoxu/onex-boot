@@ -3,7 +3,6 @@ package com.nb6868.onex.common.aspect;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -55,34 +54,20 @@ public class LogOperationAspect {
     BaseLogService logService;
 
     // 环境变量，是否将ip转换为区域
-    private static final String IP_FILE_NAME = "ip2region.xdb";
     @Value("${onex.log.ip2region.enable:false}")
     private boolean logIp2RegionEnable;
-    @Value("${onex.log.ip2region.path}")
-    private String logIp2RegionFilePath;
-    @Value("${onex.log.ip2region.version:IPV4}")
-    private String logIp2RegionVersion;
+    @Value("${onex.log.ip2region.pathv4}")
+    private String logIp2RegionFilePathV4;
+    @Value("${onex.log.ip2region.pathv6}")
+    private String logIp2RegionFilePathV6;
 
     @PostConstruct
     public void init() {
         log.info("onex.log.ip2region.enable={}", logIp2RegionEnable);
         if (logIp2RegionEnable) {
-            if (StrUtil.isNotBlank(logIp2RegionFilePath)) {
-                // 从文件读取
-                if (FileUtil.exist(logIp2RegionFilePath) && FileUtil.isFile(logIp2RegionFilePath)) {
-                    TimeInterval timer = DateUtil.timer();
-                    logIp2RegionEnable = IpRegionUtil.initFromFile(logIp2RegionFilePath, logIp2RegionVersion);
-                    log.info("ip2region init from file {}:{}", logIp2RegionFilePath, timer.intervalPretty());
-                } else {
-                    log.error("ip2region.xdb文件不存在{}", logIp2RegionFilePath);
-                    logIp2RegionEnable = false;
-                }
-            } else {
-                // 从resource读取
-                TimeInterval timer = DateUtil.timer();
-                logIp2RegionEnable = IpRegionUtil.initFromResource(IP_FILE_NAME, logIp2RegionVersion);
-                log.info("ip2region init from resource {}:{}", IP_FILE_NAME, timer.intervalPretty());
-            }
+            TimeInterval timer = DateUtil.timer();
+            logIp2RegionEnable = IpRegionUtil.init(logIp2RegionFilePathV4, logIp2RegionFilePathV6);
+            log.info("ip2region init {}", timer.intervalPretty());
         }
     }
 

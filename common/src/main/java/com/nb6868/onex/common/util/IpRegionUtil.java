@@ -1,12 +1,14 @@
 package com.nb6868.onex.common.util;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.lionsoul.ip2region.xdb.LongByteArray;
-import org.lionsoul.ip2region.xdb.Searcher;
-import org.lionsoul.ip2region.xdb.Version;
+import org.lionsoul.ip2region.service.Config;
+import org.lionsoul.ip2region.service.ConfigBuilder;
+import org.lionsoul.ip2region.service.Ip2Region;
 
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -24,44 +26,43 @@ import java.util.List;
 @Slf4j
 public class IpRegionUtil {
 
-    private static Searcher IP_SEARCHER;
+    private static Ip2Region ip2Region;
 
     /**
      * 初始化数据
      */
-    public static boolean initFromFile(String filePath, String version) {
+    public static boolean init(String v4File, String v6File) {
         try {
-            Searcher.verifyFromFile(filePath);
-        } catch (Exception e) {
-            // 适用性验证失败！！！
-            // 当前查询客户端实现不适用于 dbPath 指定的 xdb 文件的查询.
-            // 应该停止启动服务，使用合适的 xdb 文件或者升级到适合 dbPath 的 Searcher 实现。
-            log.error("初始化ip2region.xdb文件失败,当前查询客户端实现不适用于 dbPath 指定的 xdb 文件的查询.");
-            return false;
-        }
-        try {
-            // 缓存整个 xdb 数据,从dbPath加载整个 xdb 到内存, 使用 LongByteArray 来存储，避免 xdb 文件过大的时候 int 类型的溢出
-            LongByteArray cBuff = Searcher.loadContentFromFile(filePath);
-            // 使用上述的 cBuff 创建一个完全基于内存的查询对象
-            IP_SEARCHER = Searcher.newWithBuffer(Version.fromName(version), cBuff);
-            return true;
-        } catch (Throwable e) {
-            log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);
-            return false;
-        }
-    }
+            InputStream v4Stream = ResourceUtil.getStreamSafe(v4File);
+            InputStream v6Stream = ResourceUtil.getStreamSafe(v6File);
+            ConfigBuilder v4ConfigBuilder = Config.custom()
+                    .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
+                    .setSearchers(15);                       // 设置初始化的查询器数量
+            // .setCacheSliceBytes(int)             // 设置缓存的分片字节数，默认为 50MiB
+            if (null == v4Stream) {
+                if (FileUtil.exist(v4File)) {
+                    v4ConfigBuilder.setXdbPath(v4File);
+                } else {
+                    return false;
+                }
+            } else {
+                v4ConfigBuilder.setXdbInputStream(v4Stream);
+            }
 
-    /**
-     * 初始化数据
-     */
-    public static boolean initFromResource(String resourcePath, String version) {
-        try {
-            // 从classpath的resource中读取stream=>byte[]
-            byte[] cBuff = ResourceUtil.readBytes(resourcePath);
-            // 使用上述的cBuff创建一个完全基于内存的查询对象
-            LongByteArray longByteArray = new LongByteArray();
-            longByteArray.append(cBuff);
-            IP_SEARCHER = Searcher.newWithBuffer(Version.fromName(version), longByteArray);
+            ConfigBuilder v6ConfigBuilder = Config.custom()
+                    .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
+                    .setSearchers(15);                       // 设置初始化的查询器数量
+            if (null == v6Stream) {
+                if (FileUtil.exist(v6File)) {
+                    v6ConfigBuilder.setXdbPath(v6File);
+                } else {
+                    return false;
+                }
+            } else {
+                v6ConfigBuilder.setXdbInputStream(v6Stream);
+            }
+            // 3，通过上述配置创建 Ip2Region 查询服务
+            ip2Region = Ip2Region.create(v4ConfigBuilder.asV4(), v6ConfigBuilder.asV6());
             return true;
         } catch (Throwable e) {
             log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);
@@ -82,7 +83,7 @@ public class IpRegionUtil {
                 return regionList;
             }
             ipStr = ipStr.trim();
-            String region = IP_SEARCHER.search(ipStr);
+            String region = ip2Region.search(ipStr);
             String[] split = region.split("\\|");
             regionList.addAll(Arrays.asList(split));
         } catch (Exception e) {
@@ -104,7 +105,7 @@ public class IpRegionUtil {
             return null;
         }
         try {
-            return IP_SEARCHER.search(ipStr.trim());
+            return ip2Region.search(ipStr.trim());
         } catch (Exception e) {
             log.error("解析ip地址出错", e);
             return null;
