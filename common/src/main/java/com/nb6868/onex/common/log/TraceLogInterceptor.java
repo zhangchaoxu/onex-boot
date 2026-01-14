@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.log;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.nb6868.onex.common.Const;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +19,12 @@ public class TraceLogInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        MDC.put(Const.TRACE_ID, IdUtil.fastSimpleUUID());
+        // 若请求伪造trace_id，怎么处理?
+        String traceId = request.getHeader(Const.TRACE_ID);
+        if (StrUtil.isBlank(traceId)) {
+            traceId = IdUtil.fastSimpleUUID();
+        }
+        MDC.put(Const.TRACE_ID, traceId);
         return true;
     }
 

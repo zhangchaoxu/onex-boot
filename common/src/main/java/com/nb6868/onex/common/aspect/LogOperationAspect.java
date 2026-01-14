@@ -66,7 +66,6 @@ public class LogOperationAspect {
     @PostConstruct
     public void init() {
         log.info("onex.log.ip2region.enable={}", logIp2RegionEnable);
-
         if (logIp2RegionEnable) {
             if (StrUtil.isNotBlank(logIp2RegionFilePath)) {
                 // 从文件读取
