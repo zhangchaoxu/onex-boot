@@ -6,16 +6,11 @@ import cn.hutool.core.text.StrJoiner;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 /**
@@ -25,38 +20,6 @@ import java.util.Map;
  */
 @Slf4j
 public class SignUtils {
-
-    /**
-     * MD5加密
-     *
-     * @param data 明文
-     * @return 密文
-     */
-    /*public static String signMd5(String data) {
-        return SecureUtil.md5(data);
-    }*/
-
-    /**
-     * 加密
-     *
-     * @param data      明文
-     * @param key       密钥
-     * @param algorithm 算法 如:HmacSHA1/HmacSHA256
-     * @return 密文
-     */
-    /*public static String signToBase64(String data, String key, String algorithm) {
-        try {
-            // 加密
-            javax.crypto.Mac mac = javax.crypto.Mac.getInstance(algorithm);
-            mac.init(new javax.crypto.spec.SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), algorithm));
-            byte[] signData = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            // base64
-            return java.util.Base64.getEncoder().encodeToString(signData);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            log.error("SignUtils sign error", e);
-            return null;
-        }
-    }*/
 
     public static String paramToQueryString(Map<String, Object> params) {
         return paramToQueryString(params, "&", "=", true);
