@@ -8,12 +8,15 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.log.BaseLogService;
 import com.nb6868.onex.common.msg.BaseMsgService;
+import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.pojo.CaptchaReq;
 import com.nb6868.onex.common.pojo.ChangeStateReq;
+import com.nb6868.onex.common.util.AliyunCaptchaApi;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.common.validator.ValidatorUtils;
@@ -75,6 +78,22 @@ public class AuthService {
         ValidatorUtils.validateEntity(req, CaptchaGroup.class);
         // 再校验验证码与魔术验证码不同，并且 校验失败
         AssertUtils.isTrue(!StrUtil.equalsIgnoreCase(req.getCaptchaValue(), magicCaptcha) && !captchaService.validate(req.getCaptchaUuid(), req.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
+    }
+
+    /**
+     * 校验阿里云验证码
+     * https://www.aliyun.com/product/security/captcha
+     * @param req 带有验证码的请求
+     */
+    public void checkCaptchaAliyun(CaptchaReq req, JSONObject captchaParams) {
+        // 先检验验证码表单
+        ValidatorUtils.validateEntity(req, CaptchaGroup.class);
+        Map<String, Object> paras = new HashMap<>();
+        paras.put("SceneId", req.getCaptchaUuid());
+        paras.put("CaptchaVerifyParam", req.getCaptchaValue());
+        ApiResult<JSONObject> verifyResult = AliyunCaptchaApi.verifyIntelligentCaptcha(captchaParams.getStr("AppKeyId"), captchaParams.getStr("AppKeySecret"), captchaParams.getStr("endPoint", "https://captcha.cn-shanghai.aliyuncs.com/"), paras);
+        AssertUtils.isFalse(verifyResult.isSuccess(), "验证码校验失败:" + verifyResult.getCodeMsg());
+        AssertUtils.isFalse(JSONUtil.getByPath(verifyResult.getData(), "Result.VerifyResult", false), "验证码校验未通过:" + JSONUtil.getByPath(verifyResult.getData(), "Result.VerifyCode", ""));
     }
 
     /**

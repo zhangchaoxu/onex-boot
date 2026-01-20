@@ -93,7 +93,12 @@ public class AuthController {
         AssertUtils.isNull(loginParams, "缺少登录配置");
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
+            // 图形验证码
             authService.checkCaptcha(req, loginParams.getStr("magicCaptcha"));
+        } else if (loginParams.getBool("captchaAliyun", false)) {
+            // 阿里云验证码
+            JSONObject captchaParams = paramsService.getSystemPropsJson(StrUtil.blankToDefault(req.getType(), "LOGIN_ALIYUN_CAPTCHA"));
+            authService.checkCaptchaAliyun(req, captchaParams);
         }
         // 先从加密密码中解密获取，若无则从明文密码获取
         String passwordPlaintext = StrUtil.isNotBlank(req.getPasswordEncrypted()) ? PasswordUtils.aesDecode(req.getPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY)) : req.getPassword();
