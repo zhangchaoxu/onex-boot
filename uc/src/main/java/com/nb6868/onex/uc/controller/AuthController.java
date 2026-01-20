@@ -97,7 +97,8 @@ public class AuthController {
             authService.checkCaptcha(req, loginParams.getStr("magicCaptcha"));
         } else if (loginParams.getBool("captchaAliyun", false)) {
             // 阿里云验证码
-            JSONObject captchaParams = paramsService.getSystemPropsJson(StrUtil.blankToDefault(req.getType(), "LOGIN_ALIYUN_CAPTCHA"));
+            JSONObject captchaParams = paramsService.getSystemPropsJson("LOGIN_CAPTCHA_ALIYUN");
+            AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
             authService.checkCaptchaAliyun(req, captchaParams);
         }
         // 先从加密密码中解密获取，若无则从明文密码获取

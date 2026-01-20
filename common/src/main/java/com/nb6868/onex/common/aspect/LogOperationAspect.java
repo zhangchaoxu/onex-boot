@@ -56,9 +56,9 @@ public class LogOperationAspect {
     // 环境变量，是否将ip转换为区域
     @Value("${onex.log.ip2region.enable:false}")
     private boolean logIp2RegionEnable;
-    @Value("${onex.log.ip2region.pathv4}")
+    @Value("${onex.log.ip2region.pathv4:}")
     private String logIp2RegionFilePathV4;
-    @Value("${onex.log.ip2region.pathv6}")
+    @Value("${onex.log.ip2region.pathv6:}")
     private String logIp2RegionFilePathV6;
 
     @PostConstruct
