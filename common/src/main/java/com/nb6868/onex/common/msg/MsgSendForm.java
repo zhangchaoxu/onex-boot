@@ -22,11 +22,11 @@ public class MsgSendForm extends CaptchaReq {
     private String tenantCode;
 
     @Schema(description = "模板编码", example = "CODE_LOGIN")
-    @NotEmpty(message = "模板编码不能为空", groups = DefaultGroup.class)
+    @NotEmpty(message = "模板编码不能为空")
     private String tplCode;
 
     @Schema(description = "收件人")
-    @NotEmpty(message = "收件人不能为空", groups = DefaultGroup.class)
+    @NotEmpty(message = "收件人不能为空")
     private String mailTo;
 
     @Schema(description = "抄送人")

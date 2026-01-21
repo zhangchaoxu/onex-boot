@@ -19,7 +19,6 @@ import com.nb6868.onex.common.util.ConvertUtils;
 import com.nb6868.onex.common.util.HttpContextUtils;
 import com.nb6868.onex.common.util.PasswordUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.CaptchaRes;
 import com.nb6868.onex.uc.dto.LoginRes;
@@ -132,6 +131,11 @@ public class AuthController {
         // 验证验证码
         if (loginParams.getBool("captcha", false)) {
             authService.checkCaptcha(req, loginParams.getStr("magicCaptcha"));
+        } else if (loginParams.getBool("captchaAliyun", false)) {
+            // 阿里云验证码
+            JSONObject captchaParams = paramsService.getSystemPropsJson("LOGIN_CAPTCHA_ALIYUN");
+            AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
+            authService.checkCaptchaAliyun(req, captchaParams);
         }
         // 执行登录操作
         UserEntity user = authService.loginByMobileSms(req.getTenantCode(), req.getMobile(), req.getSms(), loginParams);
@@ -218,17 +222,28 @@ public class AuthController {
     // @AccessControl
     @Operation(summary = "发送验证码消息", description = "Anon")
     @LogOperation("发送验证码消息")
-    public Result<?> sendMsgCode(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm form) {
-        MsgTplBody mailTpl = msgService.getTplByCode(form.getTenantCode(), form.getTplCode());
+    public Result<?> sendMsgCode(@Validated @RequestBody MsgSendForm req) {
+        MsgTplBody mailTpl = msgService.getTplByCode(req.getTenantCode(), req.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
+        AssertUtils.isNull(mailTpl.getParams(), ErrorCode.ERROR_REQUEST, "消息模板未做参数配置");
+        // 验证验证码
+        if (mailTpl.getParams().getBool("captcha", false)) {
+            authService.checkCaptcha(req, mailTpl.getParams().getStr("magicCaptcha"));
+        } else if (mailTpl.getParams().getBool("captchaAliyun", false)) {
+            // 阿里云验证码
+            JSONObject captchaParams = paramsService.getSystemPropsJson("SMS_CAPTCHA_ALIYUN");
+            AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
+            authService.checkCaptchaAliyun(req, captchaParams);
+        }
+
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
-            UserEntity user = userService.getByMobile(form.getTenantCode(), form.getMailTo());
+            UserEntity user = userService.getByMobile(req.getTenantCode(), req.getMailTo());
             AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.getCode(), ErrorCode.ACCOUNT_DISABLE);
         }
         // 结果标记
-        boolean flag = msgService.sendMail(form);
+        boolean flag = msgService.sendMail(req);
         if (flag) {
             return new Result<>().success("短信发送成功", null);
         } else {
