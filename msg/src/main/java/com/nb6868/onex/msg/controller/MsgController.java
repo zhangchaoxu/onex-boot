@@ -4,7 +4,7 @@ import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.annotation.QueryDataScope;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.jpa.QueryWrapperHelper;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.pojo.IdReq;
 import com.nb6868.onex.common.pojo.IdsReq;
 import com.nb6868.onex.common.pojo.PageData;
@@ -112,7 +112,7 @@ public class MsgController {
     @Operation(summary = "发送消息")
     @LogOperation("发送消息")
     @RequiresPermissions(value = {"admin:super", "admin:msg", "sys:msg:send"}, logical = Logical.OR)
-    public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendForm req) {
+    public Result<?> send(@Validated(value = {DefaultGroup.class}) @RequestBody MsgSendReq req) {
         boolean flag = msgService.sendMail(req);
         return new Result<>().bool(flag);
     }

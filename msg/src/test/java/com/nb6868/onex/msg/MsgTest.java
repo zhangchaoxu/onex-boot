@@ -1,20 +1,8 @@
 package com.nb6868.onex.msg;
 
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.exception.ErrorCode;
-import com.nb6868.onex.common.msg.MsgSendForm;
-import com.nb6868.onex.common.msg.MsgTplBody;
-import com.nb6868.onex.common.pojo.ApiResult;
-import com.nb6868.onex.common.validator.AssertUtils;
-import com.nb6868.onex.msg.mail.AliyunSmsApi;
-import com.nb6868.onex.msg.service.MsgService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;

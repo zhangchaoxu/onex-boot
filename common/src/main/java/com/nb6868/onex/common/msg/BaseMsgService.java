@@ -28,7 +28,7 @@ public interface BaseMsgService {
     /**
      * 发送消息
      */
-    boolean sendMail(MsgSendForm form);
+    boolean sendMail(MsgSendReq form);
 
     /**
      * 验证消息验证码

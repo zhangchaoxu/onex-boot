@@ -6,7 +6,7 @@ import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
@@ -31,7 +31,7 @@ import java.util.List;
 public class WxMaSubscribeMailService extends AbstractMailService {
 
     @Override
-    public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+    public boolean sendMail(MsgTplEntity mailTpl, MsgSendReq request) {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("AppId"),
                 mailTpl.getParams().getStr("AppSecret"),

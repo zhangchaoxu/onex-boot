@@ -12,7 +12,7 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.msg.BaseMsgService;
 import com.nb6868.onex.common.msg.MsgLogBody;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.util.ConvertUtils;
@@ -82,7 +82,7 @@ public class MsgService implements BaseMsgService {
      * 发送消息
      */
     @Override
-    public boolean sendMail(MsgSendForm sendForm) {
+    public boolean sendMail(MsgSendReq sendForm) {
         MsgTplEntity mailTpl = msgTplService.getByCode(sendForm.getTenantCode(), sendForm.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
 
@@ -126,7 +126,7 @@ public class MsgService implements BaseMsgService {
     /**
      * 发送消息
      */
-    public boolean send(MsgTplEntity mailTpl, MsgSendForm sendForm) {
+    public boolean send(MsgTplEntity mailTpl, MsgSendReq sendForm) {
         // 检查消息模板是否有时间限制
         JSONObject tplParams = mailTpl.getParams();
         AssertUtils.isNull(tplParams, "模板配置参数不能为空");

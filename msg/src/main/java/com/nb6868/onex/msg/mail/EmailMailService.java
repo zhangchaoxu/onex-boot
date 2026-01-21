@@ -8,7 +8,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.Const;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.util.MultipartFileUtils;
 import com.nb6868.onex.common.util.TemplateUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
@@ -57,7 +57,7 @@ public class EmailMailService extends AbstractMailService {
     }
 
     @Override
-    public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+    public boolean sendMail(MsgTplEntity mailTpl, MsgSendReq request) {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("Host"),
                 mailTpl.getParams().getStr("Username"),

@@ -82,7 +82,7 @@ public class AuthService {
 
     /**
      * 校验阿里云验证码
-     * https://www.aliyun.com/product/security/captcha
+     * <a href="https://www.aliyun.com/product/security/captcha">...</a>
      * @param req 带有验证码的请求
      */
     public void checkCaptchaAliyun(CaptchaReq req, JSONObject captchaParams) {

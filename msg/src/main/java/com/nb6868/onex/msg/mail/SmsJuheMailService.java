@@ -9,7 +9,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
@@ -33,7 +33,7 @@ public class SmsJuheMailService extends AbstractMailService {
     private static final String BASE_URL = "http://v.juhe.cn";
 
     @Override
-    public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+    public boolean sendMail(MsgTplEntity mailTpl, MsgSendReq request) {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("AppKeyId"),
                 mailTpl.getParams().getStr("TemplateId")

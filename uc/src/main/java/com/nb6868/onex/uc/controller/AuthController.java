@@ -11,7 +11,7 @@ import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.msg.BaseMsgService;
 import com.nb6868.onex.common.msg.MsgLogBody;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.*;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -222,7 +222,7 @@ public class AuthController {
     // @AccessControl
     @Operation(summary = "发送验证码消息", description = "Anon")
     @LogOperation("发送验证码消息")
-    public Result<?> sendMsgCode(@Validated @RequestBody MsgSendForm req) {
+    public Result<?> sendMsgCode(@Validated @RequestBody MsgSendReq req) {
         MsgTplBody mailTpl = msgService.getTplByCode(req.getTenantCode(), req.getTplCode());
         AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
         AssertUtils.isNull(mailTpl.getParams(), ErrorCode.ERROR_REQUEST, "消息模板未做参数配置");
@@ -239,7 +239,7 @@ public class AuthController {
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
             UserEntity user = userService.getByMobile(req.getTenantCode(), req.getMailTo());
-            AssertUtils.isNull(user, ErrorCode.ACCOUNT_NOT_EXIST);
+            AssertUtils.isNull(user, StrUtil.format("手机号[{}]未找到关联的用户", req.getMailTo()));
             AssertUtils.isFalse(user.getState() == UcConst.UserStateEnum.ENABLED.getCode(), ErrorCode.ACCOUNT_DISABLE);
         }
         // 结果标记

@@ -11,7 +11,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.msg.MsgConst;
@@ -42,7 +42,7 @@ public class SmsHwcloudMailService extends AbstractMailService {
     private static final String AUTH_HEADER_VALUE = "WSSE realm=\"SDP\",profile=\"UsernameToken\",type=\"Appkey\"";
 
     @Override
-    public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+    public boolean sendMail(MsgTplEntity mailTpl, MsgSendReq request) {
         // 检查模板参数
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("AppKeyId"),

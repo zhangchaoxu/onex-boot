@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import com.nb6868.onex.common.msg.MsgSendForm;
+import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.pojo.ApiResult;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.util.BaseApi;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 public class DingtalkRobotMailService extends AbstractMailService {
 
     @Override
-    public boolean sendMail(MsgTplEntity mailTpl, MsgSendForm request) {
+    public boolean sendMail(MsgTplEntity mailTpl, MsgSendReq request) {
         AssertUtils.isTrue(null == mailTpl.getParams() || StrUtil.hasBlank(
                 mailTpl.getParams().getStr("AccessToken")
         ), MsgConst.MAIL_TPL_PARAMS_ERROR);

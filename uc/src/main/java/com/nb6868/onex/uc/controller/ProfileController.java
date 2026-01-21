@@ -7,6 +7,7 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -14,6 +15,9 @@ import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.annotation.LogOperation;
 import com.nb6868.onex.common.auth.AuthProps;
 import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.msg.BaseMsgService;
+import com.nb6868.onex.common.msg.MsgSendReq;
+import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.BaseReq;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUser;
@@ -51,6 +55,8 @@ public class ProfileController {
     @Autowired
     AuthProps authProps;
     @Autowired
+    AuthService authService;
+    @Autowired
     ParamsService paramsService;
     @Autowired
     UserService userService;
@@ -62,6 +68,8 @@ public class ProfileController {
     TokenService tokenService;
     @Autowired
     MenuService menuService;
+    @Autowired
+    BaseMsgService msgService;
 
     @PostMapping("userInfo")
     @Operation(summary = "用户信息")
@@ -159,6 +167,57 @@ public class ProfileController {
         List<String> set = userService.getUserRoleCodes(user);
 
         return new Result<List<String>>().success(set);
+    }
+
+    @PostMapping("sendUserUpdateMobileCode")
+    @Operation(summary = "发送绑定手机号验证码")
+    @LogOperation("发送绑定手机号验证码")
+    public Result<?> sendUserUpdateMobileCode(@Validated @RequestBody MsgSendReq req) {
+        MsgTplBody mailTpl = msgService.getTplByCode(req.getTenantCode(), req.getTplCode());
+        AssertUtils.isNull(mailTpl, ErrorCode.ERROR_REQUEST, "消息模板不存在");
+        AssertUtils.isNull(mailTpl.getParams(), ErrorCode.ERROR_REQUEST, "消息模板未做参数配置");
+        AssertUtils.isFalse(PhoneUtil.isMobile(req.getMailTo()), ErrorCode.ERROR_REQUEST, "手机号码格式错误");
+        AssertUtils.isFalse(StrUtil.equalsIgnoreCase(req.getTplCode(), "USER_UPDATE_MOBILE"), ErrorCode.ERROR_REQUEST, "模板编码错误");
+        // 验证验证码
+        if (mailTpl.getParams().getBool("captcha", false)) {
+            authService.checkCaptcha(req, mailTpl.getParams().getStr("magicCaptcha"));
+        } else if (mailTpl.getParams().getBool("captchaAliyun", false)) {
+            // 阿里云验证码
+            JSONObject captchaParams = paramsService.getSystemPropsJson("SMS_CAPTCHA_ALIYUN");
+            AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
+            authService.checkCaptchaAliyun(req, captchaParams);
+        }
+        // 检查手机号是不是自己的
+        ShiroUser user = ShiroUtils.getUser();
+        AssertUtils.isTrue(StrUtil.equalsIgnoreCase(user.getMobile(), req.getMailTo()), StrUtil.format("手机号[{}]已绑定当前用户,无法重复绑定",req.getMailTo()));
+        // 检查手机号是不是已经被其它用户绑定
+        AssertUtils.isTrue(userService.getByMobile(req.getTenantCode(), req.getMailTo()) != null, StrUtil.format("手机号[{}]已绑定其它用户,无法重复绑定",req.getMailTo()));
+        boolean flag = msgService.sendMail(req);
+        if (flag) {
+            return new Result<>().success("短信发送成功", null);
+        } else {
+            return new Result<>().error("短信发送失败");
+        }
+    }
+
+    @PostMapping("updateUserMobile")
+    @Operation(summary = "更新用户手机号")
+    @LogOperation(value = "更新用户手机号")
+    public Result<?> updateUserMobile(@Validated @RequestBody ProfileUpdateUserMobileReq req) {
+        // 这里要做二次检查，因为发送短信和更新会有时差
+        // 检查手机号是不是自己的
+        ShiroUser user = ShiroUtils.getUser();
+        AssertUtils.isTrue(StrUtil.equalsIgnoreCase(user.getMobile(), req.getMobile()), StrUtil.format("手机号[{}]已绑定当前用户,无法重复绑定", req.getMobile()));
+        // 检查手机号是不是已经被其它用户绑定
+        AssertUtils.isTrue(userService.getByMobile(user.getTenantCode(), req.getMobile()) != null, StrUtil.format("手机号[{}]已绑定其它用户,无法重复绑定",req.getMobile()));
+        // 验证并将短信消费掉
+        msgService.verifyMailCode(user.getTenantCode(), "USER_UPDATE_MOBILE", req.getMobile(), req.getSms());
+        // 先判断是否存在
+        userService.lambdaUpdate()
+                .eq(UserEntity::getId, user.getId())
+                .set(UserEntity::getMobile, req.getMobile())
+                .update(new UserEntity());
+        return new Result<>();
     }
 
     @PostMapping("updateUserParams")
