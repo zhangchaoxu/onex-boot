@@ -3,7 +3,6 @@ package com.nb6868.onex.common.msg;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.pojo.CaptchaReq;
 import com.nb6868.onex.common.pojo.FileBase64Req;
-import com.nb6868.onex.common.validator.group.DefaultGroup;
 import com.nb6868.onex.common.validator.group.TenantGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,7 +14,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Schema(name = "消息发送请求")
-public class MsgSendForm extends CaptchaReq {
+public class MsgSendReq extends CaptchaReq {
 
     @Schema(description = "租户编码")
     @NotEmpty(message = "租户编码不能为空", groups = {TenantGroup.class})
