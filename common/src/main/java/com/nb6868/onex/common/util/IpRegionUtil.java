@@ -39,17 +39,21 @@ public class IpRegionUtil {
             if (StrUtil.isNotBlank(v4File)) {
                 InputStream v4Stream = ResourceUtil.getStreamSafe(v4File);
                 ConfigBuilder v4ConfigBuilder = Config.custom()
-                        .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
+                        // .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
                         .setSearchers(15);                       // 设置初始化的查询器数量
                 // .setCacheSliceBytes(int)             // 设置缓存的分片字节数，默认为 50MiB
                 if (null == v4Stream) {
                     if (FileUtil.exist(v4File)) {
-                        v4ConfigBuilder.setXdbPath(v4File);
+                        v4ConfigBuilder
+                                .setCachePolicy(Config.VIndexCache)
+                                .setXdbPath(v4File);
                     } else {
                         return false;
                     }
                 } else {
-                    v4ConfigBuilder.setXdbInputStream(v4Stream);
+                    v4ConfigBuilder
+                            .setCachePolicy(Config.BufferCache)
+                            .setXdbInputStream(v4Stream);
                 }
                 v4Config = v4ConfigBuilder.asV4();
             }
@@ -57,17 +61,21 @@ public class IpRegionUtil {
             if (StrUtil.isNotBlank(v6File)) {
                 InputStream v6Stream = ResourceUtil.getStreamSafe(v6File);
                 ConfigBuilder v6ConfigBuilder = Config.custom()
-                        .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
+                       // .setCachePolicy(Config.VIndexCache)     // 指定缓存策略:  NoCache / VIndexCache / BufferCache
                         .setSearchers(15);                       // 设置初始化的查询器数量
                 // .setCacheSliceBytes(int)             // 设置缓存的分片字节数，默认为 50MiB
                 if (null == v6Stream) {
                     if (FileUtil.exist(v6File)) {
-                        v6ConfigBuilder.setXdbPath(v6File);
+                        v6ConfigBuilder
+                                .setCachePolicy(Config.VIndexCache)
+                                .setXdbPath(v6File);
                     } else {
                         return false;
                     }
                 } else {
-                    v6ConfigBuilder.setXdbInputStream(v6Stream);
+                    v6ConfigBuilder
+                            .setCachePolicy(Config.BufferCache)
+                            .setXdbInputStream(v6Stream);
                 }
                 v6Config = v6ConfigBuilder.asV6();
             }

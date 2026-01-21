@@ -30,7 +30,6 @@ public class BaseAliyunApi {
     public static final String ISO8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String ACS3_HMAC_SHA256 = "ACS3-HMAC-SHA256";
 
-
     /**
      * V3签名
      * <a href="https://help.aliyun.com/zh/sdk/product-overview/v3-request-structure-and-signature">V3版本签名</a>

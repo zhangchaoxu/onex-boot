@@ -36,9 +36,15 @@ public class AliyunCaptchaApi extends BaseAliyunApi {
         }
         Date date = DateUtil.date();
         String nonce = IdUtil.fastSimpleUUID();
-        String url = HttpUtil.urlWithForm(endPoint, paras, Charset.defaultCharset(), false);
+        String url = endPoint;//
+        // 手动补全，以/结尾
+        if (StrUtil.endWith(url, "/")) {
+            url += "/";
+        }
         HttpRequest request = HttpRequest.of(url)
                 .method(Method.POST)
+                // API请求参数以application/x-www-form-urlencoded表单形式
+                .form(paras)
                 .header("x-acs-action", "VerifyIntelligentCaptcha")
                 .header("x-acs-version", "2023-03-05")
                 .header("x-acs-signature-nonce", nonce)

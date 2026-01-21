@@ -6,9 +6,15 @@ import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.ShearCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.lang.Console;
+import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.pojo.ApiResult;
+import com.nb6868.onex.common.util.AliyunCaptchaApi;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @DisplayName("验证码测试")
 @Slf4j
@@ -51,6 +57,19 @@ public class CaptchaTest {
         captcha2.getImageBase64Data();
         //验证图形验证码的有效性，返回boolean值
         captcha2.verify("1234");
+    }
+
+
+    @Test
+    @DisplayName("verifyAliyun")
+    void verifyAliyun() {
+        Map<String, Object> paras = new HashMap<>();
+        paras.put("CaptchaVerifyParam", "");
+        paras.put("SceneId", "");
+        ApiResult<JSONObject> result = AliyunCaptchaApi.verifyIntelligentCaptcha("", "", "https://captcha.cn-shanghai.aliyuncs.com/", paras);
+        log.error(result.getData().toString());
+        log.error(result.getData().getStr("Message"));
+
     }
 
 }
