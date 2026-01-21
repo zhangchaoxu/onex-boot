@@ -235,7 +235,6 @@ public class AuthController {
             AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
             authService.checkCaptchaAliyun(req, captchaParams);
         }
-
         if (mailTpl.getParams().getBool("verifyUserExist", false)) {
             // 是否先验证用户是否存在
             UserEntity user = userService.getByMobile(req.getTenantCode(), req.getMailTo());
