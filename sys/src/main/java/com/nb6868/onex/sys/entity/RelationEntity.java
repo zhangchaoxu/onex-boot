@@ -29,6 +29,10 @@ public class RelationEntity extends BaseEntity {
      */
     private Long rightId;
     /**
+     * 右表名称(冗余用)
+     */
+    private String rightName;
+    /**
      * 排序
      */
     private Integer sort;
