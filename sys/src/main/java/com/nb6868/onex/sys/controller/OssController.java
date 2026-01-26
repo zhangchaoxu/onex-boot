@@ -87,6 +87,35 @@ public class OssController {
         return new Result<FileUuidItem>().success(result);
     }
 
+    @PostMapping(value = "uploadAnon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "匿名上传文件(文件形式)")
+    public Result<FileUuidItem> uploadAnon(@RequestParam(required = false, defaultValue = SysConst.OSS_PUBLIC) String paramsCode,
+                                       @RequestParam(required = false) String prefix,
+                                       @RequestPart MultipartFile file) {
+        AssertUtils.isTrue(file.isEmpty(), ErrorCode.UPLOAD_FILE_EMPTY);
+        OssPropsConfig ossConfig = paramsService.getSystemPropsObject(paramsCode, OssPropsConfig.class, null);
+        AbstractOssService uploadService = OssFactory.build(ossConfig);
+        AssertUtils.isNull(uploadService, "未定义的上传方式");
+        String objectKey = uploadService.buildObjectKey(prefix, file.getOriginalFilename());
+        ApiResult<JSONObject> uploadResult = uploadService.upload(objectKey, file);
+        AssertUtils.isFalse(uploadResult.isSuccess(), uploadResult.getCodeMsg());
+        FileUuidItem result = new FileUuidItem().setUrl(ossConfig.getDomain() + objectKey).setName(file.getOriginalFilename());
+        if (ossConfig.getSaveDb()) {
+            //保存文件信息
+            OssEntity oss = new OssEntity();
+            oss.setUrl(ossConfig.getDomain() + objectKey);
+            oss.setFilename(file.getOriginalFilename());
+            oss.setSize(file.getSize());
+            oss.setContentType(file.getContentType());
+            oss.setType(prefix);
+            oss.setPath(objectKey);
+            oss.setUuid(IdUtil.fastUUID());
+            ossService.save(oss);
+            result.setUuid(oss.getUuid());
+        }
+        return new Result<FileUuidItem>().success(result);
+    }
+
     @GetMapping("download/{uuid}")
     // @AccessControl("download/**")
     @Operation(summary = "文件下载", description = "Anon")

@@ -19,7 +19,7 @@ public class MsgTest {
     @Test()
     @DisplayName("消息发送")
     void sendWxMpTemplateMsg() {
-        MsgSendForm form = new MsgSendForm();
+        MsgSendReq form = new MsgSendReq();
         form.setTplCode("WX_TEMPLATE_NOTIFY");
         form.setMailTo("");
         JSONObject content = new JSONObject().set("thing1", "thing1").set("character_string9","ABC1234").set("thing3", "thing3");
