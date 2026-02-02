@@ -25,8 +25,8 @@ import java.util.Map;
  * @author Charles zhangchaoxu@gmail.com
  */
 @Slf4j
-@Service("SmsSubmailService")
-public class SmsSubmailService extends AbstractMailService {
+@Service("SmsSubmailMailService")
+public class SmsSubmailMailService extends AbstractMailService {
 
     private static final String BASE_URL = "https://api-v4.mysubmail.com";
 
@@ -63,7 +63,7 @@ public class SmsSubmailService extends AbstractMailService {
             paramMap.put("signature", mailTpl.getParams().getStr("AppKeySecret"));
             paramMap.put("to", request.getMailTo());
             paramMap.put("project", mailTpl.getParams().getStr("TemplateId"));
-            paramMap.put("vars", request.getContentParams());
+            paramMap.put("vars", request.getContentParams().toString());
             String result = HttpUtil.post(url, paramMap);
             JSONObject resultJson = JSONUtil.parseObj(result);
             mailLog.setResult(result);
