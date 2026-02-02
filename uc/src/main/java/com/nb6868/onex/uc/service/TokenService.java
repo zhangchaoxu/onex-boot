@@ -61,6 +61,7 @@ public class TokenService extends EntityService<TokenDao, TokenEntity> {
                 .sign() : IdUtil.fastSimpleUUID();
         // 判断一下token是否已存在
         if ("db".equalsIgnoreCase(tokenStoreType) && !query().eq("token", token).exists()) {
+            // 这里限制多端的方式有点问题，如何算一端(账号密码和短信验证码登录的pc算一端吗？)
             // 在数据库中
             if (1 == tokenLimit) {
                 // 同type只允许一个

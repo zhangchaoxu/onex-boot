@@ -1,7 +1,33 @@
 package com.nb6868.onex.uc.controller;
 
-/*
-@Deprecated
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.annotation.AccessControl;
+import com.nb6868.onex.common.auth.AuthConst;
+import com.nb6868.onex.common.auth.AuthProps;
+import com.nb6868.onex.common.exception.ErrorCode;
+import com.nb6868.onex.common.pojo.Result;
+import com.nb6868.onex.common.util.ConvertUtils;
+import com.nb6868.onex.common.validator.AssertUtils;
+import com.nb6868.onex.common.validator.group.DefaultGroup;
+import com.nb6868.onex.uc.UcConst;
+import com.nb6868.onex.uc.dto.UserDTO;
+import com.nb6868.onex.uc.entity.UserEntity;
+import com.nb6868.onex.uc.service.ParamsService;
+import com.nb6868.onex.uc.service.QrcodeService;
+import com.nb6868.onex.uc.service.TokenService;
+import com.nb6868.onex.uc.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 @RequestMapping("/uc/auth/qrcode/")
 @AccessControl
@@ -21,9 +47,12 @@ public class AuthQrcodeController {
     @Autowired
     private ParamsService paramsService;
 
-    @PostMapping("create")
+   /* @PostMapping("create")
     @Operation(summary = "生成二维码", description = "Anon")
     public Result<?> create() {
+        String type = "ADMIN_QRCODE";
+        JSONObject loginParams = paramsService.getSystemPropsJson(type);
+        AssertUtils.isNull(loginParams, "缺少扫码登录配置");
         // 生成随机码
         String uuid = IdUtil.fastSimpleUUID();
         // 保存
@@ -33,7 +62,7 @@ public class AuthQrcodeController {
 
     @PostMapping("userLogin")
     @Operation(summary = "通过二维码登录", description = "Anon")
-    public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginForm form) {
+    public Result<?> userLogin(@Validated(value = {DefaultGroup.class}) @RequestBody CodeLoginReq form) {
         // 获得对应登录类型的登录参数
         JSONObject loginParams = paramsService.getSystemPropsJson(form.getType());
         AssertUtils.isNull(loginParams, "缺少[" + form.getType() + "]对应的登录配置");
@@ -95,6 +124,6 @@ public class AuthQrcodeController {
         } else {
             return new Result<>().error("二维码已扫描,请刷新后重试");
         }
-    }
+    }*/
 
-}*/
+}

@@ -6,10 +6,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.util.ObjUtil;
-import cn.hutool.core.util.PhoneUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.json.JSONObject;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.annotation.LogOperation;
@@ -19,6 +16,7 @@ import com.nb6868.onex.common.msg.BaseMsgService;
 import com.nb6868.onex.common.msg.MsgSendReq;
 import com.nb6868.onex.common.msg.MsgTplBody;
 import com.nb6868.onex.common.pojo.BaseReq;
+import com.nb6868.onex.common.pojo.CodeReq;
 import com.nb6868.onex.common.pojo.Result;
 import com.nb6868.onex.common.shiro.ShiroUser;
 import com.nb6868.onex.common.shiro.ShiroUtils;
@@ -280,6 +278,16 @@ public class ProfileController {
                 .eq(ParamsEntity::getCode, req.getCode())
                 .last(Const.LIMIT_ONE).one();
         return new Result<String>().success(entity == null ? null : entity.getContent());
+    }
+
+    @PostMapping("createOauthBindCode")
+    @Operation(summary = "生成第三方平台绑定代码")
+    @LogOperation(value = "生成第三方平台绑定代码")
+    public Result<?> createOauthBindCode(@Validated @RequestBody CodeReq req) {
+        JSONObject params = paramsService.getSystemPropsJson(req.getCode());
+        String id = IdUtil.fastSimpleUUID();
+
+        return new Result<>();
     }
 
 }
