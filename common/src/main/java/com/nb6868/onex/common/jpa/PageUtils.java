@@ -26,7 +26,7 @@ public class PageUtils {
      *
      * @param pageForm 分页查询表单
      */
-    public static <T> IPage<T> getPageByForm(PageReq pageForm) {
+    public static <T> IPage<T> getPageFromReq(PageReq pageForm) {
         // 分页对象 参数,当前页和每页数
         Page<T> page = Page.of(Opt.ofNullable(pageForm.getPageNo()).orElse(Const.DEFAULT_PAGE_NO), Opt.ofNullable(pageForm.getPageSize()).orElse(Const.DEFAULT_PAGE_SIZE));
         // 排序

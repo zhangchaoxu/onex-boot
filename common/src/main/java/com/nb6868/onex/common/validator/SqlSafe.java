@@ -6,19 +6,19 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 格式检查
+ * SQL注入检查
  *
  * @author Charles zhangchaoxu@gmail.com
  */
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = {JsonValueValidator.class})
-@Repeatable(JsonValue.List.class)
-public @interface JsonValue {
+@Constraint(validatedBy = {SqlSafeValidator.class})
+@Repeatable(SqlSafe.List.class)
+public @interface SqlSafe {
 
     // 默认错误消息
-    String message() default "必须为json格式内容";
+    String message() default "请检查传入参数内容";
 
     // 分组
     Class<?>[] groups() default {};
@@ -31,7 +31,6 @@ public @interface JsonValue {
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        JsonValue[] value();
+        SqlSafe[] value();
     }
-
 }

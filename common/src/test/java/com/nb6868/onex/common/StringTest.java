@@ -20,6 +20,7 @@ import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
 import com.nb6868.onex.common.filter.xss.XssUtils;
 import com.nb6868.onex.common.pojo.EncryptReq;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -376,6 +377,14 @@ public class StringTest {
         log.error("-----");
         log.error(SecureUtil.sha256(""));
         log.error(SecureUtil.sha256("{}"));
+    }
+
+    @Test
+    @DisplayName("checkSqlSafe")
+    void checkSqlSafe() {
+        String plainText = "IF(1=2,1,sleep(4))";
+        boolean result = SqlInjectionUtils.check(plainText);
+        log.error(String.valueOf(result));
     }
 
 }

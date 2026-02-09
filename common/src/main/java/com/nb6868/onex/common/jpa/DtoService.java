@@ -54,7 +54,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      * @return 分页数据
      */
     public PageData<D> pageDto(PageReq pageForm) {
-        return pageDto(PageUtils.getPageByForm(pageForm), getWrapper("page", pageForm));
+        return pageDto(PageUtils.getPageFromReq(pageForm), getWrapper("page", pageForm));
     }
 
     /**
@@ -64,7 +64,7 @@ public class DtoService<M extends BaseDao<T>, T, D> extends EntityService<M, T> 
      * @return 分页数据
      */
     public PageData<D> pageDto(PageReq pageForm, Wrapper<T> queryWrapper) {
-        return pageDto(PageUtils.getPageByForm(pageForm), queryWrapper);
+        return pageDto(PageUtils.getPageFromReq(pageForm), queryWrapper);
     }
 
     /**

@@ -1,21 +1,20 @@
 package com.nb6868.onex.common.validator;
 
-import cn.hutool.json.JSON;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
+import com.nb6868.onex.common.pojo.SortItem;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * JsonValue校验方法
+ * sql 安全检查
+ * https://baomidou.com/reference/about-cve/
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class JsonValueValidator implements ConstraintValidator<JsonValue, Object> {
+public class SqlSafeValidator implements ConstraintValidator<SqlSafe, Object> {
 
     @Override
-    public void initialize(JsonValue constraintAnnotation) {
+    public void initialize(SqlSafe constraintAnnotation) {
     }
 
     @Override
@@ -25,9 +24,9 @@ public class JsonValueValidator implements ConstraintValidator<JsonValue, Object
             return true;
         }
         if (value instanceof String) {
-            return JSONUtil.isTypeJSON(value.toString());
-        } else if (value instanceof JSON) {
-            return true;
+            return SqlInjectionUtils.check(value.toString());
+        } else if (value instanceof SortItem) {
+            return SqlInjectionUtils.check(((SortItem) value).getColumn());
         }
         return false;
     }

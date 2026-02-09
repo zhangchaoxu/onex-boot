@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,7 @@ public class SortItem implements Serializable {
     }
 
     @Schema(description = "排序字段")
+    @NotBlank
     private String column;
 
     @Schema(description = "升序true/倒序false")

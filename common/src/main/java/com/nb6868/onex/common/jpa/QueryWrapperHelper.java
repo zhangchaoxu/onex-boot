@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlInjectionUtils;
 import com.nb6868.onex.common.Const;
 import com.nb6868.onex.common.pojo.SortItem;
 import lombok.extern.slf4j.Slf4j;
@@ -290,7 +291,14 @@ public class QueryWrapperHelper {
                                 if (val != null) {
                                     if (val instanceof List) {
                                         // 注意要将参数驼峰转下划线
-                                        CollUtil.emptyIfNull((List<SortItem>) val).forEach(sortItem -> queryWrapper.orderByAsc(StrUtil.isNotBlank(sortItem.getColumn()) && sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())).orderByDesc(StrUtil.isNotBlank(sortItem.getColumn()) && !sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn())));
+                                        CollUtil.emptyIfNull((List<SortItem>) val).forEach(sortItem -> {
+                                            // 做排序
+                                            // 检查sql注入
+                                            // SqlInjectionUtils.check(sortItem.getColumn());
+                                            queryWrapper
+                                                    .orderByAsc(StrUtil.isNotBlank(sortItem.getColumn()) && sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn()))
+                                                    .orderByDesc(StrUtil.isNotBlank(sortItem.getColumn()) && !sortItem.getAsc(), StrUtil.toUnderlineCase(sortItem.getColumn()));
+                                        });
                                     } else {
                                         log.error("QueryType.ORDER_BY参数需为List");
                                     }

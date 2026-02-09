@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(validatedBy = {PageValidator.class})
+@Repeatable(Page.List.class)
 public @interface Page {
 
     // 默认错误消息
@@ -19,4 +20,11 @@ public @interface Page {
     // 负载
     Class<? extends Payload>[] payload() default {};
 
+    // 指定多个时使用
+    @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @interface List {
+        Page[] value();
+    }
 }
