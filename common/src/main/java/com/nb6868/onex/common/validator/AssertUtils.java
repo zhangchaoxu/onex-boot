@@ -6,7 +6,6 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.exception.OnexException;
 import com.nb6868.onex.common.util.MessageUtils;
 
-
 /**
  * 校验工具类
  * 参考 cn.hutool.lang.Assert
