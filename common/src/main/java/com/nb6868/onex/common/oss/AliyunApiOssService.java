@@ -3,6 +3,14 @@ package com.nb6868.onex.common.oss;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.auth.sts.AssumeRoleRequest;
+import com.aliyuncs.auth.sts.AssumeRoleResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.http.ProtocolType;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
 import com.nb6868.onex.common.pojo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +52,13 @@ public class AliyunApiOssService extends AbstractOssService {
     public ApiResult<String> getPreSignedUrl(String objectKey, String urlParams, String method, int expire) {
         ApiResult<String> result = AliyunOssApi.getPreSignedUrl(this.config.getAccessKeyId(), this.config.getAccessKeySecret(), StrUtil.emptyToDefault(this.config.getEndPointPublic(), this.config.getEndPoint()), this.config.getRegion(), this.config.getBucketName(), objectKey, urlParams, null, method, expire);
         return result;
+    }
+
+    /**
+     * 异步处理
+     */
+    public ApiResult<JSONObject> asyncProcessObject(String objectKey, String params) {
+        return AliyunOssApi.asyncProcessObject(this.config.getAccessKeyId(), this.config.getAccessKeySecret(), this.config.getEndPoint(), this.config.getRegion(), this.config.getBucketName(), objectKey, null, params);
     }
 
     @Override

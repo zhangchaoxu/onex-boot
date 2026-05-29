@@ -52,7 +52,7 @@ public class AliyunOssApi {
      * <a href="https://help.aliyun.com/zh/oss/use-cases/uploading-objects-to-oss-directly-from-clients">在客户端直接上传文件到OSS</a>
      * <a href="https://help.aliyun.com/zh/oss/developer-reference/add-signatures-to-urls">在URL中包含V4签名</a>
      *
-     * @param expire 签名URL的有效时长，单位为秒（s）。最小值为1，最大值为 604800
+     * @param expire    签名URL的有效时长，单位为秒（s）。最小值为1，最大值为 604800
      * @param urlParams url自带参数，比如处理样式?x-oss-process=style/stylename
      */
     public static ApiResult<String> getPreSignedUrl(String accessKeyId, String accessKeySecret, String endPoint, String region, String bucketName, String objectKey, String urlParams, Map<String, Object> objectMetadataMap, String method, int expire) {
@@ -99,6 +99,7 @@ public class AliyunOssApi {
     /**
      * 获得预授权PostForm,支持post
      * 前端调用注意跨域,补充的file需要在参数第最后一个
+     *
      * @return 会返回整个请求的表单
      */
     public static ApiResult<JSONObject> getSignedPostForm(String accessKeyId, String accessKeySecret, String endPoint, String region, String bucketName, String objectKey, JSONArray conditions, int expire, String domain) {
@@ -123,7 +124,7 @@ public class AliyunOssApi {
         // 访问地址
         result.set("domain", domain);
         // 不带协议，让前端自己补充协议
-        result.set("host",  StrUtil.format("{}.{}", bucketName, endPoint));
+        result.set("host", StrUtil.format("{}.{}", bucketName, endPoint));
         // header
         JSONObject form = new JSONObject();
         form.set("policy", Base64.encode(policy.toString()));
@@ -232,6 +233,7 @@ public class AliyunOssApi {
                         }
                     });
                     result.set("objectKey", objectKey);
+                    result.set("objectUrl", url);
                     apiResult.setSuccess(true)
                             .setCode("ok")
                             .setMsg("ok")
@@ -290,6 +292,68 @@ public class AliyunOssApi {
                             result.set(key, CollUtil.join(values, ";"));
                         }
                     });
+                    apiResult.setSuccess(true)
+                            .setCode("ok")
+                            .setMsg("ok")
+                            .setData(result);
+                } else {
+                    JSONObject result = getErrorInfo(httpResponse);
+                    apiResult.setSuccess(false)
+                            .setCode(JSONUtil.getByPath(result, "Error.Code", ""))
+                            .setMsg(JSONUtil.getByPath(result, "Error.Message", ""))
+                            .setData(result);
+                }
+            });
+            return apiResult;
+        } catch (HttpException he) {
+            log.error("aliyun oss api headObject http exception", he);
+            return apiResult.error(ApiResult.ERROR_CODE_HTTP_EXCEPTION, url + "=>http exception=>" + he.getMessage()).setRetry(true);
+        } catch (JSONException je) {
+            log.error("aliyun oss api headObject json exception", je);
+            return apiResult.error(ApiResult.ERROR_CODE_JSON_EXCEPTION, url + "=>http exception=>" + je.getMessage()).setRetry(true);
+        } catch (Exception e) {
+            log.error("aliyun oss api headObject error", e);
+            return apiResult.error(ApiResult.ERROR_CODE_EXCEPTION, url + "=>exception=>" + e.getMessage()).setRetry(true);
+        }
+    }
+
+    /**
+     * 异步处理文件,比如文件格式换砖
+     * https://help.aliyun.com/zh/oss/user-guide/document-conversion
+     * 记得给ak添加权限：AliyunIMMFullAccess
+     */
+    public static ApiResult<JSONObject> asyncProcessObject(String accessKeyId, String accessKeySecret, String endPoint, String region, String bucketName, String objectKey, Map<String, Object> objectMetadataMap, String processParams) {
+        ApiResult<JSONObject> apiResult = ApiResult.of(null);
+        if (StrUtil.hasBlank(accessKeyId, accessKeySecret, bucketName, objectKey)) {
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
+        }
+        Date date = DateUtil.date();
+        String url = StrUtil.format("http://{}.{}/{}?x-oss-async-process", bucketName, endPoint, objectKey);
+        HttpRequest request = HttpRequest.of(url)
+                .method(Method.POST)
+                .header(Header.CONTENT_TYPE, ContentType.FORM_URLENCODED.getValue())
+                .header("x-oss-content-sha256", "UNSIGNED-PAYLOAD")
+                .header("x-oss-date", DateUtil.format(date, FastDateFormat.getInstance(ISO8601_DATETIME_FORMAT, TimeZone.getTimeZone("GMT"))))
+                .form("x-oss-async-process", processParams);
+        ObjUtil.defaultIfNull(objectMetadataMap, new HashMap<String, Object>()).forEach((key, value) -> {
+            // 从传参获取header值
+            request.header(key, String.valueOf(value));
+        });
+        List<String> additionalHeaders = new ArrayList<>();
+        additionalHeaders.add("host");
+        String sign = signV4(request, date, bucketName, region, additionalHeaders, accessKeySecret);
+        request.header("Authorization", buildAuthorization(date, accessKeyId, region, additionalHeaders, sign));
+        try {
+            // log.debug(request.toString());
+            request.then(httpResponse -> {
+                if (httpResponse.isOk()) {
+                    //  {"EventId":"1C7-2NeZ1G6P6NW6uxwhJLB8V33ex76","RequestId":"83308B4D-8E31-59EA-9E3F-77A7928296B0","TaskId":"OfficeConversion-7adb0608-2eac-458f-90e6-7bb899a8b806"}
+                    JSONObject result = JSONUtil.parseObj(httpResponse.body());
+                   /* httpResponse.headers().forEach((key, values) -> {
+                        if (StrUtil.isNotBlank(key) && CollUtil.isNotEmpty(values)) {
+                            result.set(key, CollUtil.join(values, ";"));
+                        }
+                    });*/
                     apiResult.setSuccess(true)
                             .setCode("ok")
                             .setMsg("ok")
@@ -439,7 +503,13 @@ public class AliyunOssApi {
         Map<String, String> filterMap = new HashMap<>();
         MapUtil.defaultIfEmpty(map, new HashMap<>()).forEach((key, strings) -> filterMap.put(URLEncodeUtil.encode(StrUtil.nullToEmpty(key)), URLEncodeUtil.encodeAll(StrUtil.nullToEmpty(strings))));
         StrJoiner result = new StrJoiner("&");
-        MapUtil.sort(filterMap).forEach((key, value) -> result.append(key + "=" + value));
+        MapUtil.sort(filterMap).forEach((key, value) -> {
+            if (StrUtil.isNotBlank(value)) {
+                result.append(StrUtil.format("{}={}", key, value));
+            } else {
+                result.append(key);
+            }
+        });
         return result.toString();
     }
 
