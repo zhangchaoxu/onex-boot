@@ -55,6 +55,56 @@ public class AliyunOssApi {
      * @param expire    签名URL的有效时长，单位为秒（s）。最小值为1，最大值为 604800
      * @param urlParams url自带参数，比如处理样式?x-oss-process=style/stylename
      */
+    public static ApiResult<String> getWebOfficeUrl(String accessKeyId, String accessKeySecret, String domain, String region, String bucketName, String objectKey, String urlParams, Map<String, Object> objectMetadataMap, String method, int expire) {
+        ApiResult<String> apiResult = ApiResult.of(null);
+        if (StrUtil.hasBlank(accessKeyId, accessKeySecret, bucketName, objectKey)) {
+            return apiResult.error(ApiResult.ERROR_CODE_PARAMS);
+        }
+        Date date = DateUtil.date();
+        // 时间格式化
+        String dateFmt1 = DateUtil.format(date, FastDateFormat.getInstance(ISO8601_DATETIME_FORMAT, TimeZone.getTimeZone("GMT")));
+        String dateFmt2 = DateUtil.format(date, FastDateFormat.getInstance(ISO8601_DATE_FORMAT, TimeZone.getTimeZone("GMT")));
+
+        List<String> additionalHeaders = new ArrayList<>();
+        additionalHeaders.add("host");
+        // https://examplebucket.oss-cn-hangzhou.aliyuncs.com/exampleobject
+        // ?x-oss-signature-version=OSS4-HMAC-SHA256
+        // &x-oss-credential=<AccessKeyId>/20231203/cn-hangzhou/oss/aliyun_v4_request
+        // &x-oss-date=20231203T121212Z
+        // &x-oss-expires=86400
+        // &x-oss-additional-headers=host
+        // &x-oss-signature=<signature-to-be-calculated>
+        StrJoiner queryStringJoin = new StrJoiner("&");
+        if (StrUtil.isNotBlank(urlParams)) {
+            queryStringJoin.append(urlParams);
+        }
+        queryStringJoin.append(StrUtil.format("x-oss-additional-headers={}", StrUtil.join(";", ListUtil.sort(additionalHeaders, String::compareTo))));
+        queryStringJoin.append(StrUtil.format("x-oss-credential={}%2F{}%2F{}%2Foss%2F{}", accessKeyId, dateFmt2, region, TERMINATOR));
+        queryStringJoin.append(StrUtil.format("x-oss-date={}", dateFmt1));
+        queryStringJoin.append(StrUtil.format("x-oss-expires={}", expire));
+        queryStringJoin.append(StrUtil.format("x-oss-signature-version={}", OSS4_HMAC_SHA256));
+        String url = StrUtil.format("{}{}", domain, objectKey);
+        HttpRequest request = HttpRequest.of(url + "?" + queryStringJoin).method(Method.valueOf(method.toUpperCase()));
+        ObjUtil.defaultIfNull(objectMetadataMap, new HashMap<String, Object>()).forEach((key, value) -> {
+            // 从传参获取header值
+            request.header(key, String.valueOf(value));
+        });
+       /* if (StrUtil.isBlank(request.header(Header.CONTENT_TYPE))) {
+            request.contentType(StrUtil.emptyToDefault(FileUtil.getMimeType(objectKey), ContentType.OCTET_STREAM.getValue()));
+        }*/
+        String sign = signV4(request, date, bucketName, region, additionalHeaders, accessKeySecret);
+        return apiResult.success(URLEncodeUtil.encode(url) + "?" + queryStringJoin + "&x-oss-signature=" + sign);
+    }
+
+    /**
+     * 获得预授权地址,支持put和get
+     * 在URL中包含V4签名
+     * <a href="https://help.aliyun.com/zh/oss/use-cases/uploading-objects-to-oss-directly-from-clients">在客户端直接上传文件到OSS</a>
+     * <a href="https://help.aliyun.com/zh/oss/developer-reference/add-signatures-to-urls">在URL中包含V4签名</a>
+     *
+     * @param expire    签名URL的有效时长，单位为秒（s）。最小值为1，最大值为 604800
+     * @param urlParams url自带参数，比如处理样式?x-oss-process=style/stylename
+     */
     public static ApiResult<String> getPreSignedUrl(String accessKeyId, String accessKeySecret, String endPoint, String region, String bucketName, String objectKey, String urlParams, Map<String, Object> objectMetadataMap, String method, int expire) {
         ApiResult<String> apiResult = ApiResult.of(null);
         if (StrUtil.hasBlank(accessKeyId, accessKeySecret, bucketName, objectKey)) {
@@ -83,15 +133,15 @@ public class AliyunOssApi {
         queryStringJoin.append(StrUtil.format("x-oss-date={}", dateFmt1));
         queryStringJoin.append(StrUtil.format("x-oss-expires={}", expire));
         queryStringJoin.append(StrUtil.format("x-oss-signature-version={}", OSS4_HMAC_SHA256));
-        String url = StrUtil.format("http://{}.{}/{}", bucketName, endPoint, objectKey);
+        String url = StrUtil.format("https://{}.{}/{}", bucketName, endPoint, objectKey);
         HttpRequest request = HttpRequest.of(url + "?" + queryStringJoin).method(Method.valueOf(method.toUpperCase()));
         ObjUtil.defaultIfNull(objectMetadataMap, new HashMap<String, Object>()).forEach((key, value) -> {
             // 从传参获取header值
             request.header(key, String.valueOf(value));
         });
-        if (StrUtil.isBlank(request.header(Header.CONTENT_TYPE))) {
+       /* if (StrUtil.isBlank(request.header(Header.CONTENT_TYPE))) {
             request.contentType(StrUtil.emptyToDefault(FileUtil.getMimeType(objectKey), ContentType.OCTET_STREAM.getValue()));
-        }
+        }*/
         String sign = signV4(request, date, bucketName, region, additionalHeaders, accessKeySecret);
         return apiResult.success(URLEncodeUtil.encode(url) + "?" + queryStringJoin + "&x-oss-signature=" + sign);
     }

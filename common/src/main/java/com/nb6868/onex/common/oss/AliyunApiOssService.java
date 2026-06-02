@@ -54,6 +54,11 @@ public class AliyunApiOssService extends AbstractOssService {
         return result;
     }
 
+    public ApiResult<String> getWebOfficeUrl(String objectKey, String urlParams, String method, int expire) {
+        ApiResult<String> result = AliyunOssApi.getWebOfficeUrl(this.config.getAccessKeyId(), this.config.getAccessKeySecret(), this.config.getDomain(), this.config.getRegion(), this.config.getBucketName(), objectKey, urlParams, null, method, expire);
+        return result;
+    }
+
     /**
      * 异步处理
      */
