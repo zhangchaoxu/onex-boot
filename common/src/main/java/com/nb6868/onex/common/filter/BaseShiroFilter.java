@@ -80,7 +80,8 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
     @SuppressWarnings("deprecation")
     protected void responseUnauthorized(ServletRequest request, ServletResponse response, AuthenticationException e) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        //httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
         httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
         httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, ((HttpServletRequest) request).getHeader(HttpHeaders.ORIGIN));
         // 处理登录失败的异常

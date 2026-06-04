@@ -25,6 +25,10 @@ spring:
       max-file-size: 512MB
       max-request-size: 512MB
       enabled: true
+  threads:
+    virtual:
+      # 开启虚拟线程
+      enabled: true
   mvc:
     # 404时,不跳error页面, 直接抛出异常
     # throw-exception-if-no-handler-found: true
@@ -228,8 +232,8 @@ knife4j:
     ## 自定义首页
     enable-home-custom: true
     home-custom-path: classpath:README.md
-  #production: false
-  #basic:
+    #production: false
+    #basic:
     #enable: true
     #username: onex
     #password: onex@2025

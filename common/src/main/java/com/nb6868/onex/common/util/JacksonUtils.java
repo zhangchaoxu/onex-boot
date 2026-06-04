@@ -2,15 +2,18 @@ package com.nb6868.onex.common.util;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.json.JSONNull;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.util.ObjectUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.json.JsonReadFeature;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.*;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.std.ToStringSerializer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -54,7 +57,7 @@ public class JacksonUtils {
             // 设置忽略属性
             JacksonUtils.mapperBuilder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             // 设置允许转义字符,比如CTRL-CHAR
-            JacksonUtils.mapperBuilder.configure(com.fasterxml.jackson.core.json.JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS, true);
+            JacksonUtils.mapperBuilder.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS, true);
             // 设置时间格式
             JacksonUtils.mapperBuilder.defaultDateFormat(new SimpleDateFormat(DatePattern.NORM_DATETIME_PATTERN));
             JacksonUtils.mapperBuilder.defaultTimeZone(TimeZone.getTimeZone("GMT+8"));
@@ -63,10 +66,16 @@ public class JacksonUtils {
             simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
             simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
             // 对hutool的JSONNull做处理
-            simpleModule.addSerializer(JSONNull.class, new JsonSerializer<>() {
+            simpleModule.addSerializer(JSONNull.class, new ValueSerializer<>() {
                 @Override
-                public void serialize(JSONNull jsonNull, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-                    jsonGenerator.writeNull();
+                public void serialize(JSONNull value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
+                    gen.writeNull();
+                }
+            });
+            simpleModule.addDeserializer(JSONNull.class, new ValueDeserializer<>() {
+                @Override
+                public JSONNull deserialize(JsonParser jsonParser, DeserializationContext deserializationContext){
+                    return null;
                 }
             });
             JacksonUtils.mapperBuilder.addModule(simpleModule);
@@ -87,11 +96,7 @@ public class JacksonUtils {
         if (pojo == null) {
             return null;
         }
-        try {
-            return JacksonUtils.getMapperBuilder().build().writeValueAsString(pojo);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to convert Object2JSONString. ", e);
-        }
+        return JacksonUtils.getMapperBuilder().build().writeValueAsString(pojo);
     }
 
     /**
@@ -105,12 +110,7 @@ public class JacksonUtils {
         if (pojo == null) {
             return defaultVal;
         }
-        try {
-            return JacksonUtils.getMapperBuilder().build().writeValueAsString(pojo);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            return defaultVal;
-        }
+        return JacksonUtils.getMapperBuilder().build().writeValueAsString(pojo);
     }
 
     /**
@@ -259,12 +259,7 @@ public class JacksonUtils {
         if (ObjectUtils.isEmpty(map)) {
             return defaultVal;
         }
-        try {
-            return JacksonUtils.getMapperBuilder().build().writeValueAsString(map);
-        } catch (final IOException e) {
-            log.error(e.getMessage());
-            return defaultVal;
-        }
+        return JacksonUtils.getMapperBuilder().build().writeValueAsString(map);
     }
 
     /**
@@ -298,12 +293,7 @@ public class JacksonUtils {
         if (ObjectUtils.isEmpty(json)) {
             return null;
         }
-        try {
-            return JacksonUtils.getMapperBuilder().build().readTree(json);
-        } catch (final IOException e) {
-            log.error(e.getMessage());
-            return null;
-        }
+        return JacksonUtils.getMapperBuilder().build().readTree(json);
     }
 
     /**
@@ -326,12 +316,7 @@ public class JacksonUtils {
         if (ObjectUtils.isEmpty(json)) {
             return defaultValue;
         }
-        try {
-            return JacksonUtils.getMapperBuilder().build().readValue(json, typeReference);
-        } catch (final IOException e) {
-            log.error(e.getMessage());
-            return defaultValue;
-        }
+        return JacksonUtils.getMapperBuilder().build().readValue(json, typeReference);
     }
 
     /**

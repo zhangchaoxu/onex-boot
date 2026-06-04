@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [5.0.2] 2026.06.04
+- upgrade: springboot to 4.0.6
+
 ## [4.4.7] 2025.01.24
 - upgrade: remove pageSize in BaseIdReq
 - enhance: add FileItem

@@ -2,8 +2,6 @@ package com.nb6868.onex.common.config;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.nb6868.onex.common.log.TraceLogInterceptor;
 import com.nb6868.onex.common.oss.OssLocalUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
@@ -16,12 +14,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.ResourceHttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
+import org.springframework.http.converter.*;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator;
@@ -32,6 +26,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import jakarta.validation.Validation;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.json.JsonMapper;
+
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
@@ -144,27 +141,23 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new ByteArrayHttpMessageConverter());
-        converters.add(new StringHttpMessageConverter());
-        converters.add(new ResourceHttpMessageConverter());
-        converters.add(new AllEncompassingFormHttpMessageConverter());
-        converters.add(new StringHttpMessageConverter());
-        converters.add(jackson2HttpMessageConverter());
+    public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
+        builder.withStringConverter(new StringHttpMessageConverter());
+        builder.withJsonConverter(jackson2HttpMessageConverter());
+        // 4. 调用父类方法确保默认行为被保留
+        WebMvcConfigurer.super.configureMessageConverters(builder);
     }
 
     /**
      * 选用jackson实现json的序列化
      */
     @Bean
-    public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+    public JacksonJsonHttpMessageConverter jackson2HttpMessageConverter() {
         JsonMapper.builder().enable(MapperFeature.USE_ANNOTATIONS);
-        JsonMapper.Builder builder = JacksonUtils.getMapperBuilder();
+        tools.jackson.databind.json.JsonMapper.Builder builder = JacksonUtils.getMapperBuilder();
         // enable USE_ANNOTATIONS,否则swagger ApiModelProperty中的内容会无法解析,导致页面上无法显示
         builder.enable(MapperFeature.USE_ANNOTATIONS);
-        converter.setObjectMapper(builder.build());
-        return converter;
+        return new JacksonJsonHttpMessageConverter(builder);
     }
 
 }

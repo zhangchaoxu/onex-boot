@@ -1,10 +1,9 @@
 package com.nb6868.onex.common.pojo.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 /**
  * long转long
@@ -12,10 +11,10 @@ import java.io.IOException;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class LongToLongSerializer extends JsonSerializer<Long> {
+public class LongToLongSerializer extends ValueSerializer<Long> {
 
     @Override
-    public void serialize(Long value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(Long value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
         if (value == null) {
             gen.writeNumber(0);
         } else {

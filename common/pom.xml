@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>4.6.88</version>
+        <version>5.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -60,7 +60,7 @@
         <!-- spring-boot-aop -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
         <!-- validation is needed for springboot 2.3.0+  -->
         <dependency>
@@ -72,6 +72,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
+        <!-- security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!-- commons io -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -81,13 +86,13 @@
         <!-- druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-3-starter</artifactId>
+            <artifactId>druid-spring-boot-4-starter</artifactId>
             <version>${druid.version}</version>
         </dependency>
         <!-- MybatisPlus -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
         <!-- MP3.5.9之后，jsqlparser需单独引入 -->
@@ -100,7 +105,7 @@
         <!-- dynamic.datasource -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+            <artifactId>dynamic-datasource-spring-boot4-starter</artifactId>
             <version>${dynamic-datasource.version}</version>
             <scope>provided</scope>
         </dependency>

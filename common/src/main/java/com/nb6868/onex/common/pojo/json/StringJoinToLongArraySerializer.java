@@ -1,10 +1,11 @@
 package com.nb6868.onex.common.pojo.json;
 
 import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.*;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -12,15 +13,14 @@ import java.util.List;
  *
  * @author Charles zhangchaoxu@gmail.com
  */
-public class StringJoinToLongArraySerializer extends JsonSerializer<List<Long>> {
+public class StringJoinToLongArraySerializer extends ValueSerializer<List<Long>> {
 
     @Override
-    public void serialize(List<Long> value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(List<Long> value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
         if (value == null || value.isEmpty()) {
             gen.writeString("");
         } else {
             gen.writeString(StrUtil.join(",", value));
         }
     }
-
 }
