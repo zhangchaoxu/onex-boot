@@ -26,7 +26,7 @@
         <dynamic-datasource.version>4.5.0</dynamic-datasource.version>
         <ip2region.version>3.3.7</ip2region.version>
         <!-- 临时降级使用1.83 -->
-        <bcprov.version>1.83</bcprov.version>
+        <bcprov.version>1.84</bcprov.version>
         <jsoup.version>1.22.2</jsoup.version>
         <knife4j.version>4.5.0</knife4j.version>
         <springdoc.version>2.8.14</springdoc.version>
