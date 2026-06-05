@@ -5,11 +5,10 @@ import com.nb6868.onex.common.util.SpringBeanNameGenerator;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication(exclude = {})
 @MapperScan(nameGenerator = SpringBeanNameGenerator.class, basePackages = {
         "com.nb6868.onex.common.shiro",
         "com.nb6868.onex.**.dao"
