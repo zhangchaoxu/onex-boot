@@ -15,6 +15,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.UnknownSessionException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.springframework.http.HttpHeaders;
@@ -36,8 +38,17 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
         if (token == null) {
             return onLoginFailure(token, new AuthenticationException(Const.MSG_LOGIN_REQUIRED), request, response);
         }
+        Subject subject = getSubject(request, response);
+        // 兜底处理
         try {
-            Subject subject = getSubject(request, response);
+            Session session = subject.getSession(false);
+            if (session != null) {
+                session.stop();
+            }
+        } catch (UnknownSessionException ignored) {
+            // 旧 session 不存在，忽略
+        }
+        try {
             // 尝试登录,login方法最终交由Realm中doGetAuthenticationInfo进行认证
             subject.login(token);
             return onLoginSuccess(token, subject, request, response);
@@ -78,7 +89,7 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
      */
     @SneakyThrows
     @SuppressWarnings("deprecation")
-    protected void responseUnauthorized(ServletRequest request, ServletResponse response, AuthenticationException e) {
+    protected void responseUnauthorized(ServletRequest request, ServletResponse response, Exception e) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         //httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
