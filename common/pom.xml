@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>5.0.7</version>
+        <version>5.0.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -29,11 +29,11 @@
         <!-- 解决办法：排除1.84版本后手动引入1.83。或者是使用Adoptium等发布的未加证书校验的OpenJDK -->
         <bcprov.version>1.84</bcprov.version>
         <jsoup.version>1.22.2</jsoup.version>
-        <knife4j.version>5.0.7</knife4j.version>
-        <weixin.version>4.8.3-20260601.221544</weixin.version>
+        <knife4j.version>5.0.8</knife4j.version>
+        <weixin.version>4.8.3-20260606.203133</weixin.version>
         <aliyun-oss.version>3.18.5</aliyun-oss.version>
         <huaweicloud-obs.version>3.25.10</huaweicloud-obs.version>
-        <aws-s3.version>2.46.3</aws-s3.version>
+        <aws-s3.version>2.46.5</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <fesod.version>2.0.2-incubating</fesod.version>
     </properties>
