@@ -88,7 +88,6 @@ public abstract class BaseShiroFilter extends AuthenticatingFilter {
      * 响应未授权,处理此Filter中的禁止通行的情况
      */
     @SneakyThrows
-    @SuppressWarnings("deprecation")
     protected void responseUnauthorized(ServletRequest request, ServletResponse response, Exception e) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         //httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE); 不强制指定utf8，输出中文会乱码

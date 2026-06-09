@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>5.0.9</version>
+        <version>5.0.10</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -18,7 +18,6 @@
         <skipTests>true</skipTests>
         <destDir>${project.build.outputDirectory}/META-INF/resources/</destDir>
         <!-- version -->
-        <hibernate-validator.version>9.1.0.Final</hibernate-validator.version>
         <druid.version>1.2.28</druid.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-io.version>2.22.0</commons-io.version>
@@ -43,19 +42,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <!-- 排除仍使用了javax.servlet的依赖 -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate.validator</groupId>
-                    <artifactId>hibernate-validator</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- hibernate-validator -->
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
         <!-- spring-boot-aop -->
         <dependency>
