@@ -7,6 +7,8 @@ import com.nb6868.onex.common.oss.OssLocalUtils;
 import com.nb6868.onex.common.util.JacksonUtils;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -14,6 +16,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.ResolvableType;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.*;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.validation.Validator;
@@ -44,6 +48,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Value("${onex.oss.enable:false}")
     private boolean ossEnable;
+    /**
+     * 文件路径在yml配置文件中定义
+     * 自定义路径,默认resources/ValidationMessages.properties
+     */
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * 链路日志拦截器
@@ -108,13 +118,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 文件路径在yml配置文件中定义
-     * 自定义路径,默认resources/ValidationMessages.properties
-     */
-    @Autowired
-    private MessageSource messageSource;
-
-    /**
      * 为MethodArgumentNotValidException提供Validator
      */
     @Override
@@ -142,21 +145,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
-        builder.withStringConverter(new StringHttpMessageConverter());
-        builder.withJsonConverter(jackson2HttpMessageConverter());
-        // 4. 调用父类方法确保默认行为被保留
+        builder.withJsonConverter(jacksonJsonHttpMessageConverter());
+        // 调用父类方法确保默认行为被保留
         WebMvcConfigurer.super.configureMessageConverters(builder);
     }
 
     /**
      * 选用jackson实现json的序列化
      */
-    @Bean
-    public JacksonJsonHttpMessageConverter jackson2HttpMessageConverter() {
+    public JacksonJsonHttpMessageConverter jacksonJsonHttpMessageConverter() {
         JsonMapper.builder().enable(MapperFeature.USE_ANNOTATIONS);
         tools.jackson.databind.json.JsonMapper.Builder builder = JacksonUtils.getMapperBuilder();
         // enable USE_ANNOTATIONS,否则swagger ApiModelProperty中的内容会无法解析,导致页面上无法显示
         builder.enable(MapperFeature.USE_ANNOTATIONS);
+        // 尝试修复返回数据被编码成base64的问题 参考 https://github.com/springdoc/springdoc-openapi/issues/2143
         return new JacksonJsonHttpMessageConverter(builder);
     }
 
