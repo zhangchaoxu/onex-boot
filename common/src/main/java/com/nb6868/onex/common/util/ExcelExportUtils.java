@@ -80,6 +80,8 @@ public class ExcelExportUtils {
                     if (pObject instanceof String) {
                         // 限制长度32767, 都已超过32767了，截断一点还有啥意义
                         return StrUtil.sub((String) pObject, 0, SpreadsheetVersion.EXCEL2007.getMaxTextLength());
+                    } else if (pObject.toString().length() > SpreadsheetVersion.EXCEL2007.getMaxTextLength()) {
+                        return StrUtil.sub(pObject.toString(), 0, SpreadsheetVersion.EXCEL2007.getMaxTextLength());
                     } else {
                         return pObject;
                     }
