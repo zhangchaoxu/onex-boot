@@ -179,6 +179,7 @@ public class ExcelExportUtils {
         if (null != beforeWriterFunction) {
             beforeWriterFunction.apply(writer);
         }
+        // 这里容易出错，比如java.lang.IllegalArgumentException: The maximum length of cell contents (text) is 32767 characters
         // 一次性写出内容，使用默认样式，强制输出标题
         writer.write(mapList, true);
         // 设置样式,在写入数据之后
