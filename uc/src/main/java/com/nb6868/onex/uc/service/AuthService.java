@@ -81,6 +81,18 @@ public class AuthService {
     }
 
     /**
+     * 校验TAC验证码
+     *
+     * @param req          带有验证码的请求
+     */
+    public void checkTACCaptcha(CaptchaReq req) {
+        // 先检验验证码表单
+        ValidatorUtils.validateEntity(req, CaptchaGroup.class);
+        // 再校验验证码与魔术验证码不同，并且 校验失败
+        AssertUtils.isTrue(!captchaService.validate(req.getCaptchaUuid(), req.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
+    }
+
+    /**
      * 校验阿里云验证码
      * <a href="https://www.aliyun.com/product/security/captcha">...</a>
      * @param req 带有验证码的请求

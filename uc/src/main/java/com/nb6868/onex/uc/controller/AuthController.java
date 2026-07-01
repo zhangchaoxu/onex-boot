@@ -1,6 +1,11 @@
 package com.nb6868.onex.uc.controller;
 
+import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
+import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
+import cloud.tianai.captcha.common.response.ApiResponse;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -22,6 +27,7 @@ import com.nb6868.onex.common.validator.AssertUtils;
 import com.nb6868.onex.uc.UcConst;
 import com.nb6868.onex.uc.dto.CaptchaRes;
 import com.nb6868.onex.uc.dto.LoginRes;
+import com.nb6868.onex.uc.dto.TianaiCaptchaTrackReq;
 import com.nb6868.onex.uc.dto.UserDTO;
 import com.nb6868.onex.uc.entity.UserEntity;
 import com.nb6868.onex.uc.service.*;
@@ -35,8 +41,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @RestController("UcAuth")
 @RequestMapping("/uc/auth/")
@@ -80,6 +88,34 @@ public class AuthController {
         return new Result<CaptchaRes>().success(captchaRes);
     }
 
+    @PostMapping("createTACaptcha")
+    // @AccessControl
+    @Operation(summary = "生成TAC验证码", description = "Anon")
+    public Result<?> createTACaptcha(@Validated @RequestBody BaseReq req) {
+        // 获得登录验证码配置,设置默认杜绝空信息
+        JSONObject captchaParams = paramsService.getSystemPropsObject("TAC_CAPTCHA", JSONObject.class, new JSONObject());
+        List<String> captchaTypeList = captchaParams.getBeanList("captchaType", String.class);
+        captchaTypeList = CollUtil.defaultIfEmpty(captchaTypeList, Arrays.asList(CaptchaTypeConstant.SLIDER, CaptchaTypeConstant.WORD_IMAGE_CLICK));
+        ApiResponse<ImageCaptchaVO> res = captchaService.createTACCaptcha(RandomUtil.randomEle(captchaTypeList));
+        return new Result<>()
+                // 按照前端要求成功的时候传回code=200
+                .setCode(res.getCode())
+                .setMsg(res.getMsg())
+                .setData(res.getData());
+    }
+
+    @PostMapping("matchAdaptiveCaptcha")
+    // @AccessControl
+    @Operation(summary = "验证行为验证码", description = "Anon")
+    public Result<?> matchingTACCaptcha(@Validated @RequestBody TianaiCaptchaTrackReq req) {
+        ApiResponse<?> res = captchaService.matchingTACCaptcha(req.getId(), req.getData());
+        return new Result<>()
+                // 按照前端要求成功的时候传回code=200
+                .setCode(res.getCode())
+                .setMsg(res.getMsg())
+                .setData(res.getData());
+    }
+
     @PostMapping("userLoginByUsernamePassword")
     // @AccessControl
     @Operation(summary = "用户账号密码登录", description = "Anon")
@@ -99,6 +135,9 @@ public class AuthController {
             JSONObject captchaParams = paramsService.getSystemPropsJson("LOGIN_CAPTCHA_ALIYUN");
             AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
             authService.checkCaptchaAliyun(req, captchaParams);
+        } else if (loginParams.getBool("captchaTAC", false)) {
+            // TAC验证码 https://github.com/dromara/tianai-captcha
+            authService.checkTACCaptcha(req);
         }
         // 先从加密密码中解密获取，若无则从明文密码获取
         String passwordPlaintext = StrUtil.isNotBlank(req.getPasswordEncrypted()) ? PasswordUtils.aesDecode(req.getPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY)) : req.getPassword();
@@ -136,6 +175,9 @@ public class AuthController {
             JSONObject captchaParams = paramsService.getSystemPropsJson("LOGIN_CAPTCHA_ALIYUN");
             AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
             authService.checkCaptchaAliyun(req, captchaParams);
+        } else if (loginParams.getBool("captchaTAC", false)) {
+            // TAC验证码 https://github.com/dromara/tianai-captcha
+            authService.checkTACCaptcha(req);
         }
         // 执行登录操作
         UserEntity user = authService.loginByMobileSms(req.getTenantCode(), req.getMobile(), req.getSms(), loginParams);
