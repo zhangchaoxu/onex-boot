@@ -12,6 +12,8 @@ public interface ErrorCode {
 
     int SUCCESS = 0;
 
+    int STATUS_OK = 200;
+
     int INTERNAL_SERVER_ERROR = 500;
     int ERROR_REQUEST = 400;
     int UNAUTHORIZED = 401;

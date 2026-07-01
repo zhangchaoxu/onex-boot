@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.slf4j.MDC;
 
+import java.awt.color.ICC_Profile;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -41,7 +42,7 @@ public class Result<T> implements Serializable {
     private String traceId;
 
     public boolean isSuccess() {
-        return code == ErrorCode.SUCCESS;
+        return code == ErrorCode.SUCCESS || code == ErrorCode.STATUS_OK;
     }
 
     public Result<T> success() {
@@ -102,4 +103,7 @@ public class Result<T> implements Serializable {
         return bool ? success() : error(msg);
     }
 
+    public ICC_Profile setMe() {
+        return null;
+    }
 }

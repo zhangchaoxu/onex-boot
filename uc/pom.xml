@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>5.0.20</version>
+        <version>5.0.21</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>uc</artifactId>
@@ -17,7 +17,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <captcha.version>2.2.2</captcha.version>
+        <tianai-captcha.version>1.5.5</tianai-captcha.version>
     </properties>
 
     <dependencies>
@@ -28,11 +28,11 @@
             <version>${onex.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- captcha -->
+        <!-- tianai captcha -->
         <dependency>
-            <groupId>com.pig4cloud.plugin</groupId>
-            <artifactId>captcha-core</artifactId>
-            <version>${captcha.version}</version>
+            <groupId>cloud.tianai.captcha</groupId>
+            <artifactId>tianai-captcha</artifactId>
+            <version>${tianai-captcha.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- dynamic datasource -->

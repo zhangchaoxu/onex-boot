@@ -210,6 +210,13 @@ onex:
     password-store-key:
     # 内容传输aesKey,128/192/256bit,即16/24/32
     transfer-key:
+  # 验证码
+  captcha:
+    # 行为验证码
+    adaptive:
+      enable: false
+      # 有效时长
+      timeout: 60000
 
 ## swagger
 knife4j:
