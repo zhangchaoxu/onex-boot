@@ -96,7 +96,7 @@ public class AuthController {
         JSONObject captchaParams = paramsService.getSystemPropsObject("TAC_CAPTCHA", JSONObject.class, new JSONObject());
         List<String> captchaTypeList = captchaParams.getBeanList("captchaType", String.class);
         captchaTypeList = CollUtil.defaultIfEmpty(captchaTypeList, Arrays.asList(CaptchaTypeConstant.SLIDER, CaptchaTypeConstant.WORD_IMAGE_CLICK));
-        ApiResponse<ImageCaptchaVO> res = captchaService.createTACCaptcha(RandomUtil.randomEle(captchaTypeList));
+        ApiResponse<ImageCaptchaVO> res = captchaService.createTACaptcha(RandomUtil.randomEle(captchaTypeList));
         return new Result<>()
                 // 按照前端要求成功的时候传回code=200
                 .setCode(res.getCode())
@@ -104,11 +104,11 @@ public class AuthController {
                 .setData(res.getData());
     }
 
-    @PostMapping("matchAdaptiveCaptcha")
+    @PostMapping("matchingTACaptcha")
     // @AccessControl
     @Operation(summary = "验证行为验证码", description = "Anon")
-    public Result<?> matchingTACCaptcha(@Validated @RequestBody TianaiCaptchaTrackReq req) {
-        ApiResponse<?> res = captchaService.matchingTACCaptcha(req.getId(), req.getData());
+    public Result<?> matchingTACaptcha(@Validated @RequestBody TianaiCaptchaTrackReq req) {
+        ApiResponse<?> res = captchaService.matchingTACaptcha(req.getId(), req.getData());
         return new Result<>()
                 // 按照前端要求成功的时候传回code=200
                 .setCode(res.getCode())

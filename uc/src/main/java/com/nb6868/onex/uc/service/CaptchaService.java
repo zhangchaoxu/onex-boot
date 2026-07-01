@@ -30,8 +30,8 @@ public class CaptchaService {
 
     @Value("${onex.auth.captcha-timeout:900000}")
     private long captchaTimeout;
-    @Value("${onex.auth.captcha-tac:false}")
-    private boolean captchaTac;
+    @Value("${onex.auth.captcha-ta:false}")
+    private boolean captchaTa;
 
     // 定时缓存,有效期默认15分钟
     TimedCache<String, String> captchaCache = CacheUtil.newTimedCache(captchaTimeout);
@@ -42,7 +42,7 @@ public class CaptchaService {
     @PostConstruct
     void init() {
         // 设置application
-        if (captchaTac) {
+        if (captchaTa) {
             // 给滑块验证码 添加背景图片，宽高为600*360, Resource 参数1为 classpath/file/url , 参数2 为具体url
             Resource res1 = new Resource("classpath", "tac/bg1.png");
             Resource res2 = new Resource("classpath", "tac/bg2.png");
@@ -70,7 +70,7 @@ public class CaptchaService {
      *
      * @return 生成的图片base64内容
      */
-    public ApiResponse<ImageCaptchaVO> createTACCaptcha(String captchaType) {
+    public ApiResponse<ImageCaptchaVO> createTACaptcha(String captchaType) {
         // 根据验证码类型生成不同的验证码
         if (tacApplication == null) {
             return ApiResponse.ofError("TAC未初始化");
@@ -85,7 +85,7 @@ public class CaptchaService {
      * @param track 行为轨迹
      * @return 验证结果
      */
-    public ApiResponse<String> matchingTACCaptcha(String id, ImageCaptchaTrack track) {
+    public ApiResponse<String> matchingTACaptcha(String id, ImageCaptchaTrack track) {
         if (tacApplication == null) {
             return ApiResponse.ofError("TAC未初始化");
         }
