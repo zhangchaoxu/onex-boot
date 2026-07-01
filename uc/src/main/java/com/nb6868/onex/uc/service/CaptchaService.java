@@ -1,13 +1,5 @@
 package com.nb6868.onex.uc.service;
 
-import cloud.tianai.captcha.application.ImageCaptchaApplication;
-import cloud.tianai.captcha.application.TACBuilder;
-import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
-import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
-import cloud.tianai.captcha.common.response.ApiResponse;
-import cloud.tianai.captcha.resource.common.model.dto.Resource;
-import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
-import cloud.tianai.captcha.validator.common.model.dto.MatchParam;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.captcha.AbstractCaptcha;
@@ -15,7 +7,10 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import jakarta.annotation.PostConstruct;
+import cn.hutool.json.JSONObject;
+import com.nb6868.onex.common.pojo.ApiResult;
+import com.nb6868.onex.common.validator.AssertUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,54 +23,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class CaptchaService {
 
+    @Autowired(required = false)
+    TACaptchaService taCaptchaService;
+
     @Value("${onex.auth.captcha-timeout:900000}")
     private long captchaTimeout;
-    @Value("${onex.auth.captcha-ta:false}")
-    private boolean captchaTa;
-
     // 定时缓存,有效期默认15分钟
     TimedCache<String, String> captchaCache = CacheUtil.newTimedCache(captchaTimeout);
-
-    // TAC相关
-    ImageCaptchaApplication tacApplication;
-
-    @PostConstruct
-    void init() {
-        // 设置application
-        if (captchaTa) {
-            // 给滑块验证码 添加背景图片，宽高为600*360, Resource 参数1为 classpath/file/url , 参数2 为具体url
-            Resource res1 = new Resource("classpath", "tac/bg1.png");
-            Resource res2 = new Resource("classpath", "tac/bg2.png");
-            Resource res3 = new Resource("classpath", "tac/bg3.png");
-            tacApplication = TACBuilder.builder()
-                    .addDefaultTemplate() // 添加默认模板
-                    .addResource(CaptchaTypeConstant.SLIDER, res1)
-                    .addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, res1)
-                    .addResource(CaptchaTypeConstant.ROTATE, res1)
-                    .addResource(CaptchaTypeConstant.CONCAT, res1)
-                    .addResource(CaptchaTypeConstant.SLIDER, res1)
-                    .addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, res2)
-                    .addResource(CaptchaTypeConstant.ROTATE, res2)
-                    .addResource(CaptchaTypeConstant.CONCAT, res2)
-                    .addResource(CaptchaTypeConstant.SLIDER, res3)
-                    .addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, res3)
-                    .addResource(CaptchaTypeConstant.ROTATE, res2)
-                    .addResource(CaptchaTypeConstant.CONCAT, res2)
-                    .build();
-        }
-    }
 
     /**
      * 生成验证码
      *
      * @return 生成的图片base64内容
      */
-    public ApiResponse<ImageCaptchaVO> createTACaptcha(String captchaType) {
-        // 根据验证码类型生成不同的验证码
-        if (tacApplication == null) {
-            return ApiResponse.ofError("TAC未初始化");
-        }
-        return tacApplication.generateCaptcha(captchaType);
+    public ApiResult<JSONObject> createTACaptcha(String captchaType) {
+        AssertUtils.isNull(taCaptchaService, "TAC初始化失败");
+        return taCaptchaService.createCaptcha(captchaType);
     }
 
     /**
@@ -85,19 +48,17 @@ public class CaptchaService {
      * @param track 行为轨迹
      * @return 验证结果
      */
-    public ApiResponse<String> matchingTACaptcha(String id, ImageCaptchaTrack track) {
-        if (tacApplication == null) {
-            return ApiResponse.ofError("TAC未初始化");
-        }
+    public ApiResult<String> matchingTACaptcha(String id, JSONObject track) {
+        AssertUtils.isNull(taCaptchaService, "TAC初始化失败");
+        ApiResult<?> res = taCaptchaService.matching(id, track);
         // 从缓存获取验证码,不更新时间
-        ApiResponse<?> res = tacApplication.matching(id, new MatchParam(track));
         if (res.isSuccess()) {
             // 将验证码内容保存到缓存
             String value = IdUtil.fastSimpleUUID();
             captchaCache.put(id, value);
-            return ApiResponse.ofSuccess(value);
+            return ApiResult.of(value);
         } else {
-            return ApiResponse.of(res.getCode(), res.getMsg(), null);
+            return ApiResult.of("").setCode(res.getCode()).setMsg(res.getMsg());
         }
     }
 
