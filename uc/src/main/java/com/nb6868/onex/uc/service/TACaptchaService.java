@@ -8,12 +8,17 @@ import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.resource.common.model.dto.Resource;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import cloud.tianai.captcha.validator.common.model.dto.MatchParam;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.nb6868.onex.common.pojo.ApiResult;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TA验证码服务
@@ -24,31 +29,30 @@ import org.springframework.stereotype.Service;
 @ConditionalOnClass(name = "cloud.tianai.captcha.application.ImageCaptchaApplication")
 public class TACaptchaService {
 
+    @Value("${onex.auth.captcha-ta-bg}")
+    private String captchaTABg; // 天爱验证码背景图
     // TAC应用
     ImageCaptchaApplication tacApplication;
 
     @PostConstruct
     void init() {
-        // 设置application
-        // 给滑块验证码 添加背景图片，宽高为600*360, Resource 参数1为 classpath/file/url , 参数2 为具体url
-        Resource res1 = new Resource("classpath", "tac/bg1.png");
-        Resource res2 = new Resource("classpath", "tac/bg2.png");
-        Resource res3 = new Resource("classpath", "tac/bg3.png");
-        tacApplication = TACBuilder.builder()
-                .addDefaultTemplate() // 添加默认模板
-                .addResource(CaptchaTypeConstant.SLIDER, res1)
-                .addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, res1)
-                .addResource(CaptchaTypeConstant.ROTATE, res1)
-                .addResource(CaptchaTypeConstant.CONCAT, res1)
-                .addResource(CaptchaTypeConstant.SLIDER, res1)
-                .addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, res2)
-                .addResource(CaptchaTypeConstant.ROTATE, res2)
-                .addResource(CaptchaTypeConstant.CONCAT, res2)
-                .addResource(CaptchaTypeConstant.SLIDER, res3)
-                .addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, res3)
-                .addResource(CaptchaTypeConstant.ROTATE, res2)
-                .addResource(CaptchaTypeConstant.CONCAT, res2)
-                .build();
+        // 从配置文件读取背景图
+        List<Resource> resList = new ArrayList<>();
+        StrUtil.split(captchaTABg, ",").forEach(path -> {
+            // 给滑块验证码 添加背景图片，宽高为600*360, Resource 参数1为 classpath/file/url , 参数2 为具体url
+            resList.add(new Resource("classpath", path));
+        });
+        TACBuilder tacBuilder = TACBuilder.builder()
+                .addDefaultTemplate();
+        // 添加默认模板
+        resList.forEach(resource -> {
+            tacBuilder.addResource(CaptchaTypeConstant.SLIDER, resource);
+            tacBuilder.addResource(CaptchaTypeConstant.WORD_IMAGE_CLICK, resource);
+            tacBuilder.addResource(CaptchaTypeConstant.ROTATE, resource);
+            tacBuilder.addResource(CaptchaTypeConstant.CONCAT, resource);
+            tacBuilder.addResource(CaptchaTypeConstant.SLIDER, resource);
+        });
+        tacApplication = tacBuilder.build();
     }
 
     /**
@@ -80,7 +84,7 @@ public class TACaptchaService {
     /**
      * 校验行为
      *
-     * @param id    id
+     * @param id        id
      * @param trackJson 行为轨迹
      * @return 验证结果
      */

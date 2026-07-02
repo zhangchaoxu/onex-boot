@@ -204,8 +204,8 @@ onex:
     captcha-timeout: 900000
     # 验证码类型
     captcha-type: spec
-    # 是否启用ta验证码
-    captcha-ta: false
+    # ta验证码背景
+    captcha-ta-bg: ta/bg1.png,ta/bg2.png,ta/bg3.png
     # 二维码有效期
     qrcode-timeout: 300000
     # 密码存储aeskey,空表示不存,128/192/256bit,即16/24/32
