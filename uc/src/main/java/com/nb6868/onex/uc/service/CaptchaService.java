@@ -56,7 +56,7 @@ public class CaptchaService {
             // 将验证码内容保存到缓存
             String value = IdUtil.fastSimpleUUID();
             captchaCache.put(id, value);
-            return ApiResult.of(value);
+            return ApiResult.of(value).setCode("200").setMsg("OK");
         } else {
             return ApiResult.of("").setCode(res.getCode()).setMsg(res.getMsg());
         }

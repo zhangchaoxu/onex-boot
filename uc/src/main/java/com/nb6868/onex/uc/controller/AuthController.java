@@ -132,9 +132,9 @@ public class AuthController {
             JSONObject captchaParams = paramsService.getSystemPropsJson("LOGIN_CAPTCHA_ALIYUN");
             AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
             authService.checkCaptchaAliyun(req, captchaParams);
-        } else if (loginParams.getBool("captchaTAC", false)) {
-            // TAC验证码 https://github.com/dromara/tianai-captcha
-            authService.checkTACCaptcha(req);
+        }else if (loginParams.getBool("captchaTA", false)) {
+            // TA验证码 https://github.com/dromara/tianai-captcha
+            authService.checkTACaptcha(req, loginParams.getStr("magicCaptcha"));
         }
         // 先从加密密码中解密获取，若无则从明文密码获取
         String passwordPlaintext = StrUtil.isNotBlank(req.getPasswordEncrypted()) ? PasswordUtils.aesDecode(req.getPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY)) : req.getPassword();
@@ -172,9 +172,9 @@ public class AuthController {
             JSONObject captchaParams = paramsService.getSystemPropsJson("LOGIN_CAPTCHA_ALIYUN");
             AssertUtils.isNull(captchaParams, "缺少阿里云验证码配置");
             authService.checkCaptchaAliyun(req, captchaParams);
-        } else if (loginParams.getBool("captchaTAC", false)) {
-            // TAC验证码 https://github.com/dromara/tianai-captcha
-            authService.checkTACCaptcha(req);
+        } else if (loginParams.getBool("captchaTA", false)) {
+            // TA验证码 https://github.com/dromara/tianai-captcha
+            authService.checkTACaptcha(req, loginParams.getStr("magicCaptcha"));
         }
         // 执行登录操作
         UserEntity user = authService.loginByMobileSms(req.getTenantCode(), req.getMobile(), req.getSms(), loginParams);

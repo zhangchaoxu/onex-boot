@@ -81,15 +81,13 @@ public class AuthService {
     }
 
     /**
-     * 校验TAC验证码
+     * 校验TA验证码
      *
-     * @param req          带有验证码的请求
+     * @param req 带有验证码的请求
+     * @param magicCaptcha 魔术验证码
      */
-    public void checkTACCaptcha(CaptchaReq req) {
-        // 先检验验证码表单
-        ValidatorUtils.validateEntity(req, CaptchaGroup.class);
-        // 再校验验证码与魔术验证码不同，并且 校验失败
-        AssertUtils.isTrue(!captchaService.validate(req.getCaptchaUuid(), req.getCaptchaValue()), ErrorCode.CAPTCHA_ERROR);
+    public void checkTACaptcha(CaptchaReq req, String magicCaptcha) {
+        this.checkCaptcha(req, magicCaptcha);
     }
 
     /**
