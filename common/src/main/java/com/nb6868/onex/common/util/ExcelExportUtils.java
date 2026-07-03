@@ -103,8 +103,8 @@ public class ExcelExportUtils {
                 } else if ("invoke".equalsIgnoreCase(fmt)) {
                     // 反射,执行invokeMethod 若空，则执行getProperty
                     String invokeMethod = StrUtil.emptyToDefault(column.getInvokeMethod(), "get" + StrUtil.upperFirst(column.getProperty()));
-                    // Object invokeRes = ReflectUtil.invoke(bean, invokeMethod);
-                    pValue = ReflectUtil.invoke(bean, invokeMethod);
+                    Object invokeRes = ReflectUtil.invoke(bean, invokeMethod);
+                    pValue = invokeRes == null ? "" : invokeRes.toString();
                 } else if ("index".equalsIgnoreCase(fmt)) {
                     // 序号
                     pValue = String.valueOf(index);
