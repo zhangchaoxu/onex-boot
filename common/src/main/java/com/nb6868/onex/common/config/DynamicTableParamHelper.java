@@ -27,6 +27,26 @@ public class DynamicTableParamHelper {
     }
 
     /**
+     * 设置单个请求参数
+     */
+    public static void addParamDataSingle(String key, Object value) {
+        Map<String, Object> paramData = getParamData();
+        paramData.put(key, value);
+        PARAM_DATA.set(paramData);
+    }
+
+    /**
+     * 设置请求参数
+     *
+     * @param requestData 请求参数 MAP 对象
+     */
+    public static void addParamData(Map<String, Object> requestData) {
+        Map<String, Object> paramData = getParamData();
+        paramData.putAll(requestData);
+        PARAM_DATA.set(paramData);
+    }
+
+    /**
      * 设置请求参数
      *
      * @param requestData 请求参数 MAP 对象
