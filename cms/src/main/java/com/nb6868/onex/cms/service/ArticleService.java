@@ -17,6 +17,11 @@ import java.util.Map;
  * 文章
  *
  * @author Charles zhangchaoxu@gmail.com
+ @Select("SELECT cms_article.*, cms_article_category.name as article_category_name " +
+ "FROM cms_article LEFT JOIN cms_article_category ON cms_article.article_category_id = cms_article_category.id " +
+ "${ew.customSqlSegment}")
+ @Override
+ <E extends IPage<ArticleEntity>> E selectPage(@Param(Const.PAGE) E page, Wrapper<ArticleEntity> ew);
  */
 @Service
 public class ArticleService extends DtoService<ArticleDao, ArticleEntity, ArticleDTO> {
