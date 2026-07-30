@@ -314,7 +314,7 @@ public class QueryWrapperHelper {
                 }
                 entry.getValue().setAccessible(accessible);
             } catch (Exception e) {
-                log.error("QueryWrapperHelper", e);
+                log.error("QueryWrapperHelper,entry={}", entry.getKey(), e);
             }
         }
         return queryWrapper;
