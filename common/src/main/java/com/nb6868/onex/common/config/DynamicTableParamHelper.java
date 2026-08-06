@@ -1,6 +1,7 @@
 package com.nb6868.onex.common.config;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class DynamicTableParamHelper {
      */
     public static void addParamDataSingle(String key, Object value) {
         Map<String, Object> paramData = getParamData();
+        paramData = ObjUtil.defaultIfNull(paramData, new HashMap<String, Object>());
         paramData.put(key, value);
         PARAM_DATA.set(paramData);
     }
@@ -42,6 +44,7 @@ public class DynamicTableParamHelper {
      */
     public static void addParamData(Map<String, Object> requestData) {
         Map<String, Object> paramData = getParamData();
+        paramData = ObjUtil.defaultIfNull(paramData, new HashMap<String, Object>());
         paramData.putAll(requestData);
         PARAM_DATA.set(paramData);
     }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>5.0.41</version>
+        <version>5.0.42</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -27,8 +27,8 @@
         <!-- 因Oracle JDK的证书校验问题，会出现JCE cannot authenticate the provider BC -->
         <!-- 解决办法：排除1.84版本后手动引入1.83。或者是使用Adoptium等发布的未加证书校验的OpenJDK -->
         <bcprov.version>1.84</bcprov.version>
-        <jsoup.version>1.22.2</jsoup.version>
-        <knife4j.version>5.0.18</knife4j.version>
+        <jsoup.version>1.23.1</jsoup.version>
+        <knife4j.version>5.2.2</knife4j.version>
         <weixin.version>4.8.5-20260720.111348</weixin.version>
         <aliyun-oss.version>3.18.5</aliyun-oss.version>
         <huaweicloud-obs.version>3.26.6</huaweicloud-obs.version>
