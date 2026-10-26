@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>5.0.59</version>
+        <version>5.0.60</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>uc</artifactId>
@@ -17,7 +17,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <skipTests>true</skipTests>
         <!-- version -->
-        <tianai-captcha.version>1.5.5</tianai-captcha.version>
+        <tianai-captcha.version>1.5.6</tianai-captcha.version>
     </properties>
 
     <dependencies>

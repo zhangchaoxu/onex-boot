@@ -5,7 +5,7 @@
     <parent>
         <artifactId>onex-boot</artifactId>
         <groupId>com.nb6868.onex</groupId>
-        <version>5.0.59</version>
+        <version>5.0.60</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
@@ -21,7 +21,7 @@
         <druid.version>1.2.28</druid.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-io.version>2.22.0</commons-io.version>
-        <mybatis-plus.version>3.5.17</mybatis-plus.version>
+        <mybatis-plus.version>3.5.18</mybatis-plus.version>
         <dynamic-datasource.version>4.6.0</dynamic-datasource.version>
         <ip2region.version>3.3.7</ip2region.version>
         <!-- 因Oracle JDK的证书校验问题，会出现JCE cannot authenticate the provider BC -->
@@ -31,11 +31,11 @@
         <knife4j.version>5.7.9</knife4j.version>
         <weixin.version>4.8.6.B</weixin.version>
         <aliyun-oss.version>3.18.5</aliyun-oss.version>
-        <huaweicloud-obs.version>3.26.6</huaweicloud-obs.version>
-        <aws-s3.version>2.56.0</aws-s3.version>
+        <huaweicloud-obs.version>3.26.9</huaweicloud-obs.version>
+        <aws-s3.version>2.57.3</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <fesod.version>2.1.0-incubating</fesod.version>
-        <tianai-captcha.version>1.5.5</tianai-captcha.version>
+        <tianai-captcha.version>1.5.6</tianai-captcha.version>
     </properties>
 
     <dependencies>
