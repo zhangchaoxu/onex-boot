@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-            <version>3.6.1</version>
+            <version>${dynamic-datasource.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- mysql driver -->

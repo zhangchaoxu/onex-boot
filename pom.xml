@@ -70,6 +70,7 @@
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
         <!-- third part libs -->
+        <dynamic-datasource.version>4.6.0</dynamic-datasource.version>
         <shiro.version>2.2.1</shiro.version>
         <poi.version>5.4.1</poi.version>
         <hutool.version>5.8.48</hutool.version>
