@@ -31,7 +31,7 @@
         <weixin.version>4.8.6.B</weixin.version>
         <aliyun-oss.version>3.18.5</aliyun-oss.version>
         <huaweicloud-obs.version>3.26.9</huaweicloud-obs.version>
-        <aws-s3.version>2.57.8</aws-s3.version>
+        <aws-s3.version>2.57.11</aws-s3.version>
         <poi-tl.version>1.12.2</poi-tl.version>
         <fesod.version>2.1.0-incubating</fesod.version>
         <tianai-captcha.version>1.5.6</tianai-captcha.version>

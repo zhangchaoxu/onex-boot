@@ -199,7 +199,7 @@ onex:
     # 访问白名单,若有需要将file-request-path也加入
     # 框架内所有接口都不再提供@AccessControl,需手动加入white-list
     # /uc/auth/captcha,/uc/auth/userLoginByUsernamePassword,/uc/params/infoByCode
-    white-list: /favicon.ico,/static/**,/webjars/**,/ws/**,/druid/**,/doc.html,/swagger-resources,/v3/api-docs/**,/v2/api-docs/**,/oss/**
+    white-list: /favicon.ico,/static/**,/webjars/**,/ws/**,/druid/**,/doc.html,/swagger-resources,/v3/api-docs/**,/oss/**
     # 验证码有效期
     captcha-timeout: 900000
     # 验证码类型
@@ -213,10 +213,14 @@ onex:
     # 内容传输aesKey,128/192/256bit,即16/24/32
     transfer-key:
 
-## swagger
+## [knife4j](https://knife4jnext.com/reference/configuration)
 knife4j:
   # 增强
   enable: true
+  # banner
+  banner: false
+  # 默认开启production，避免安全隐患
+  production: true
   # 标题
   title: 'OneX-API'
   # 描述
