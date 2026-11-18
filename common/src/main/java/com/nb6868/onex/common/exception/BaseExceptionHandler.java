@@ -91,7 +91,7 @@ public abstract class BaseExceptionHandler {
     }
 
     /**
-     * 处理HttpMediaTypeNotSupportedException类型错误
+     * 处理HttpMediaTypeNotSupportedException类型错误, 比如约定了提交json，但是提交了一个application/xml
      *
      * @param e exception
      * @return result
@@ -254,7 +254,7 @@ public abstract class BaseExceptionHandler {
 
     /**
      * HttpMessageNotReadableException
-     * RequestBody中的内容不符合json定义
+     * RequestBody中的内容不符合json定义,比如提交内容为空或非json
      * RequestBody中的数据格式转换失败报错,比如定义的int传值是string
      *
      * @param e exception
