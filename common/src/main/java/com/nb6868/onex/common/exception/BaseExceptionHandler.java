@@ -34,6 +34,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -151,6 +152,20 @@ public abstract class BaseExceptionHandler {
     @ExceptionHandler(MissingServletRequestPartException.class)
     public Object handleMissingServletRequestPartException(HttpServletRequest request, MissingServletRequestPartException e) {
         log.error("MissingServletRequestPartException", e);
+        saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
+        return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
+    }
+
+  /**
+     * 处理参数错误,针对multi-part
+     * 传的不是文件，比如是一个json
+     *
+     * @param e exception
+     * @return result
+     */
+    @ExceptionHandler(MultipartException.class)
+    public Object handleMultipartException(HttpServletRequest request, MultipartException e) {
+        log.error("handleMultipartException", e);
         saveLog(request, new OnexException(ErrorCode.ERROR_REQUEST, e.getMessage()));
         return handleExceptionResult(request, ErrorCode.ERROR_REQUEST, e.getMessage());
     }
