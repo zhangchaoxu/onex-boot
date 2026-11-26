@@ -251,14 +251,13 @@ public class ProfileController {
         String newPasswordPlaintext = PasswordUtils.aesDecode(req.getNewPasswordEncrypted(), StrUtil.emptyToDefault(authProps.getTransferKey(), Const.AES_KEY));
         AssertUtils.isEmpty(passwordPlaintext, "原密码传输请做加密处理");
         AssertUtils.isEmpty(newPasswordPlaintext, "新密码传输请做加密处理");
-        // 对新密码密码强度做校验
-        // 密码复杂度正则
+        // 对新密码密码强度做校验，密码复杂度正则
         AssertUtils.isTrue(StrUtil.isNotBlank(loginParams.getStr("passwordRegExp")) && !ReUtil.isMatch(loginParams.getStr("passwordRegExp"), newPasswordPlaintext), ErrorCode.ERROR_REQUEST, loginParams.getStr("passwordRegError", "密码不符合规则"));
         // 获取数据库中的用户
         UserEntity data = userService.getById(ShiroUtils.getUserId());
-        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED);
+        AssertUtils.isNull(data, ErrorCode.DB_RECORD_NOT_EXISTED); // 不应该出现
         // 校验原密码
-        AssertUtils.isFalse(PasswordUtils.verify(passwordPlaintext, data.getPassword()), ErrorCode.ACCOUNT_PASSWORD_ERROR);
+        AssertUtils.isFalse(PasswordUtils.verify(passwordPlaintext, data.getPassword()), "原密码错误");
         // 更新密码
         userService.updatePassword(data.getId(), newPasswordPlaintext, authProps.getPasswordStoreKey());
         // 注销该用户所有token,提示用户重新登录

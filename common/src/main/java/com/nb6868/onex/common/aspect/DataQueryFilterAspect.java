@@ -8,6 +8,7 @@ import com.nb6868.onex.common.exception.ErrorCode;
 import com.nb6868.onex.common.pojo.BaseReq;
 import com.nb6868.onex.common.shiro.ShiroUtils;
 import com.nb6868.onex.common.validator.AssertUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -28,6 +29,7 @@ import java.lang.reflect.Method;
 @Component
 @ConditionalOnProperty(name = "onex.data-query-filter.enable", havingValue = "true")
 @Order(150)
+@Slf4j
 public class DataQueryFilterAspect {
 
     @Pointcut("@annotation(com.nb6868.onex.common.annotation.QueryDataScope)")
@@ -66,7 +68,7 @@ public class DataQueryFilterAspect {
                                 AssertUtils.isFalse(tenantCode.equalsIgnoreCase(tenantCodeInParam.toString()), ErrorCode.TENANT_NOT_MATCH);
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.info("QueryDataScope中租户过滤，参数中不存在租户", e);
                         }
                     }
                 }
@@ -77,7 +79,7 @@ public class DataQueryFilterAspect {
                     try {
                         ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.userId()), userId);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.info("QueryDataScope中用户过滤，参数中不存在用户", e);
                     }
                 }
                 if (queryDataScope.areaFilter()) {
@@ -87,7 +89,7 @@ public class DataQueryFilterAspect {
                     try {
                         ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.areaCode()), areaCode);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.info("QueryDataScope中区域过滤，参数中不存在区域", e);
                     }
                 }
                 if (queryDataScope.deptFilter()) {
@@ -97,7 +99,7 @@ public class DataQueryFilterAspect {
                     try {
                         ReflectUtil.invoke(params, "set" + StrUtil.upperFirst(queryDataScope.deptCode()), deptCode);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.info("QueryDataScope中部门过滤，参数中不存在部门", e);
                     }
                 }
             }
